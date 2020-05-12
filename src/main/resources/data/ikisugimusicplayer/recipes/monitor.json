@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "tag": "forge:glass_panes"
+    },
+    "C": {
+      "tag": "forge:dusts/glowstone"
+    }
+  },
+  "result": {
+    "item": "ikisugimusicplayer:monitor",
+    "count": 1
+  }
+}

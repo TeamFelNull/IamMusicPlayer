@@ -1,0 +1,15 @@
+modLoader="javafml"
+loaderVersion="[31,)" 
+issueTrackerURL="http://my.issue.tracker/"
+[[mods]]
+modId="ikisugimusicplayer"
+version="${file.jarVersion}" 
+displayName="Ikisugi Music Player"
+updateJSONURL="http://myurl.me/" 
+displayURL="" 
+logoFile="null.png" 
+credits=""
+authors="MORIMORI0317" 
+description='''
+Thank you for downloading!
+'''

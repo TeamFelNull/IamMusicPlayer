@@ -1,0 +1,103 @@
+{
+
+  "_comment": "Thank you matcha98!",
+
+  "_comment": "Item",
+  "item.ikisugimusicplayer.test_cassette_tape": "Test Casset Tape",
+  "item.ikisugimusicplayer.parabolic_antenna": "Parabolic Antenna",
+  "item.ikisugimusicplayer.no_record_cassette_tape": "No Record Cassette Tape",
+  "item.ikisugimusicplayer.record_cassette_tape": "Record Cassette Tape",
+  "item.ikisugimusicplayer.iron_bowl": "Iron Bowl",
+  "item.ikisugimusicplayer.iron_stick": "Iron Stick",
+  "item.ikisugimusicplayer.receiver": "Receiver",
+  "item.ikisugimusicplayer.speaker": "Speaker",
+  "item.ikisugimusicplayer.acoustic_amplifier": "Acoustic Amplifier",
+  "item.ikisugimusicplayer.monitor": "Monitor",
+  "item.ikisugimusicplayer.keyboard": "Keyboard",
+  "item.ikisugimusicplayer.computer": "Computer",
+  "item.ikisugimusicplayer.cassette_player": "Cassette Player",
+  "item.ikisugimusicplayer.magnetic_tape": "Magnetic Tape",
+  "item.ikisugimusicplayer.overwritable_cassette_tape": "Overwritable Cassette Tape",
+  "item.ikisugimusicplayer.cassette_tape.written": "%s Tape",
+  
+  
+  "soundata.title": "Title : %s",
+  "soundata.artist": "Artist : %s",
+  "soundata.album": "Album : %s",
+  "soundata.albumimage": "Album Image : %s",
+  "soundata.track": "Track : %s",
+
+
+
+
+  "_comment": "Block",
+  "block.ikisugimusicplayer.boombox": "Boombox",
+  "block.ikisugimusicplayer.soundfile_uploader": "Sound File Uploader",
+  "block.ikisugimusicplayer.cassette_deck": "Cassette Deck",
+  
+  "_comment": "CreativeTab",
+  "itemGroup.ikisugimusicplayer": "Ikisugi Music Player",
+
+  "_comment": "CreativeTab",
+  "itemGroup.ikisugimusicplayer": "Ikisugi Music Player",
+
+  "_comment": "Screen",
+  "narrator.button.power": "Power",
+  "narrator.button.exit": "Exit",
+  "narrator.fileupload": "Uploading %s %s",
+  "narrator.fileuploadsuccess": "%s was uploaded successfully",
+  "narrator.fileuploadtimeout": "Uploading of %s timed out",
+  "narrator.fileuploadstop": "Upload of %s was failed",
+  "narrator.filedownload": "Download %s %s",
+  "narrator.filedownloadsuccess": "%s was downloaded successfully",
+  "narrator.filedownloadtimeout": "Downloading of %s timed out ",
+  "narrator.filedownloadstop": "Download of %s failed",
+  "sfu.folder": "Folder",
+  "sfu.reload": "Reload",
+  "sfu.start": "Start",
+  "sfu.stop": "Stop",
+  "sfu.download": "Download",
+  "sfu.selectfileupdate.world": "Upload to World?",
+  "sfu.selectfileupdate.server": "Upload to Server?",
+  "sfu.selectfileupdatedother": "There's already a file being uploaded",
+  "sfu.selectfileupding.world": "Uploading to World",
+  "sfu.selectfileupding.server": "Uploading to Server",
+  "sfu.selectfileupdate.nofile": "File does not exist",
+  "sfu.selectfileupdate.noantena": "No signal",
+  "sfu.selectfileupdate.error": "Error!",
+  "sfu.selectfileupdate.anotherplater": "This Box is already in use by another player",
+  "sfu.selectfileupdate.worldfilecont": "Total Files %s Total Size %s",
+  "sfu.selectfileupdate.forupload": "Upload",
+  "sfu.selectfileupdate.overwrite": "Overwrite",
+  "sfu.selectfileupdate.samenameexists": "A file with the already exists in this location",
+  "sfu.selectfileupdate.updloadby": "Uploaded by %s",
+  "sfu.everyone": "Everyone",
+  "sfu.main": "Main",
+
+  "soundCategory.ikisugimusicplayer": "Ikisugi Music Player",
+
+  "cd.recording": "Recording",
+  "cd.playing": "Playing",
+  "cd.deliting": "Deleting",
+  "cd.copying": "Copying",
+  "cd.waiting": "Waiting",
+  "cd.selected": "Selecting:%s",
+  "narrator.recording": "Record",
+  "narrator.playing": "Play",
+  "narrator.deliting": "Delet",
+  "narrator.copying": "Copy",
+  "narrator.waiting": "Wait",
+  
+  
+  "overlay.sending.world": "Uploading %s to World",
+  "overlay.sending.server": "Uploading %s to Server",
+  "overlay.receiver.world": "Downloading %s from World",
+  "overlay.receiver.server": "Downloading %s from Server",
+  "overlay.receiver.othertask": "Other %s Download Tasks...",
+  "overlay.soundwaitthread.crash": "Sound Thread Crash! Restarting...",
+  
+  "message.volume.set": "Volume to %s",
+  
+  "_comment": "Last"
+  
+}
