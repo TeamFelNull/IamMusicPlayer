@@ -1,5 +1,5 @@
 # IkisugiMusicPlayer
-The Ikisugi Music Player MOD
+The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
 # Library used
 
