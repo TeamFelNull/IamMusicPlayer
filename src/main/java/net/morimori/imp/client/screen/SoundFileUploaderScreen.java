@@ -389,7 +389,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				71, 12, 0, 125, 12,
 				SFU_GUI_TEXTURE2, 256, 256, (p_213096_1_) -> {
 
-					if (!ClientFileSender.sending) {
+					if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
 						if (serverSelectTargetR == ServerFileSelectTarget.MAIN) {
 							serverSelectTargetR = ServerFileSelectTarget.EVERYONE;
 							sendSFUPacket(19, serverSelectTargetR.toString());
@@ -466,16 +466,26 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
 		AbstractGui.blit(xs + 20, ys + 25 + 30, 12, 149, 12, 12, 256, 256);
 		RenderSystem.popMatrix();
+		if (ClientFileSender.isSending(this.selectFile.toPath())) {
+			try {
 
-		int b = (int) (12 * ((float) ClientFileSender.sendingprograse / (float) ClientFileSender.sendingall));
+				int b = (int) (12
+						* ((float) ClientFileSender.sendingprograses
+								.get(ClientFileSender.getId(this.selectFile.toPath()))
+								/ (float) ClientFileSender.sendingalls
+										.get(ClientFileSender.getId(this.selectFile.toPath()))));
 
-		if (ClientFileSender.sending) {
-			RenderSystem.pushMatrix();
-			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-			mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
-			AbstractGui.blit(xs + 20, ys + 25 + 30, 0, 149, 12, b, 256, 256);
-			RenderSystem.popMatrix();
-			this.font.drawString(ClientFileSender.getPrograsePar(), xs + 20 + 15, ys + 25 + 32, 0);
+				RenderSystem.pushMatrix();
+				RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+				mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
+				AbstractGui.blit(xs + 20, ys + 25 + 30, 0, 149, 12, b, 256, 256);
+				RenderSystem.popMatrix();
+				this.font.drawString(ClientFileSender.getPrograsePar(this.selectFile.toPath()), xs + 20 + 15,
+						ys + 25 + 32,
+						0);
+			} catch (Exception e) {
+
+			}
 		}
 
 		if (PlayList.isExistsWorldPlaylistFile(selectFile)) {
@@ -551,21 +561,24 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 
 					if (hasWindows(SoundFileUploaderWindwos.UPLOAD_FILE)) {
 
-						if (ClientFileSender.sending) {
+						if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
 
-							ClientFileSender.stopSend();
-							sendSFUPacket(15);
+							if (ClientFileSender.stopResevaionOrSending(this.selectFile.toPath())) {
+								sendSFUPacket(15, String.valueOf(ClientFileSender.getId(this.selectFile.toPath())));
+							}
+
 						} else {
 							serverFilelistUpdate();
 							sendSFUPacket(13);
 						}
 
 					} else if (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)) {
-						if (ClientFileSender.sending) {
-							ClientFileSender.stopSend();
-							sendSFUPacket(15);
+						if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
+							if (ClientFileSender.stopResevaionOrSending(this.selectFile.toPath())) {
+								sendSFUPacket(15, String.valueOf(ClientFileSender.getId(this.selectFile.toPath())));
+							}
 						} else {
-							ClientFileSender.startSend(selectFile.toPath(),
+							ClientFileSender.addSenderReservation(selectFile.toPath(),
 									this.serverSelectTargetR == ServerFileSelectTarget.MAIN);
 						}
 					}
@@ -600,7 +613,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 					uploadstart.visible = false;
 
 				}
-				if (!ClientFileSender.sending) {
+				if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
 					uploadstart.setMessage(I18n.format("sfu.start"));
 					((StringImageButton) uploadstart).dredclos = false;
 				} else {
@@ -622,9 +635,12 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		}
 
 		if (isUsingMain()) {
-			if (selectFile == null || ClientFileSender.sending || !selectFile.exists()) {
+			if (selectFile == null || ClientFileSender.isResevationOrSending(this.selectFile.toPath())
+					|| !selectFile.exists()) {
 
-				if (ClientFileSender.sending && ClientFileSender.FileName.equals(selectFile.getName())) {
+				if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())
+						&& ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
+								.toFile().getName().equals(selectFile.getName())) {
 					uploadstart.visible = true;
 					uploadstart.setMessage(I18n.format("sfu.stop"));
 					((StringImageButton) uploadstart).dredclos = true;
@@ -665,7 +681,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		SoundFileUploaderTileEntity sfit = (SoundFileUploaderTileEntity) mc.world
 				.getTileEntity(this.container.pos);
 		if (sfit.getUsePlayerUUID().equals(PlayerHelper.getUUID(mc.player))) {
-			if (!ClientFileSender.sending) {
+			if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
 				if (selectFile != null && selectFile.exists()) {
 					this.drawCenteredString(this.font,
 							I18n.format("sfu.selectfileupdate." + (mc.isSingleplayer() ? "world" : "server")),
@@ -686,19 +702,21 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				}
 
 			} else {
-				if (ClientFileSender.FileName == null || selectFile.getName() == null
+				if (ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
+						.toFile().getName() == null || selectFile.getName() == null
 						|| !selectFile.exists()) {
 					this.drawCenteredString(this.font, "Error", this.width / 2, ys + 27 + 20, 11797508);
 
 				} else {
 
-					if (ClientFileSender.FileName.equals(selectFile.getName())) {
+					if (ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
+							.toFile().getName().equals(selectFile.getName())) {
 						this.drawCenteredString(this.font,
 								I18n.format("sfu.selectfileupding." + (mc.isSingleplayer() ? "world" : "server")),
 								this.width / 2, ys + 27 + 20, 16777215);
 						this.drawCenteredString(this.font, selectFile.getName(),
 								this.width / 2, ys + 27 + 12, 16777215);
-						this.drawCenteredString(this.font, ClientFileSender.getPrograsePar(),
+						this.drawCenteredString(this.font, ClientFileSender.getPrograsePar(this.selectFile.toPath()),
 								this.width / 2, ys + 27 + 28, 16777215);
 					} else {
 						this.drawCenteredString(this.font, I18n.format("sfu.selectfileupdatedother"),

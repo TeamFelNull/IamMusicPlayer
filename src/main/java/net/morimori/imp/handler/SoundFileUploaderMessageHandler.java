@@ -100,7 +100,7 @@ public class SoundFileUploaderMessageHandler {
 							SoundfileUploaderBlock.SOUNDFILE_UPLOADER_WINDWOS,
 							SoundFileUploaderWindwos.EDIT_FILE));
 		} else if (message.state == 15) {
-			ServerFileReceiver.stopReceiver(PlayerHelper.getUUID(SPE));
+			ServerFileReceiver.stopReceiver(PlayerHelper.getUUID(SPE),Integer.valueOf(message.string));
 		} else if (message.state == 16) {
 			ServerFileSender.startSender(PlayerHelper.getUUID(SPE), Paths.get(message.string), true,
 					SPE.getServer());

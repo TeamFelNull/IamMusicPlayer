@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -33,6 +34,8 @@ public class PlayList {
 
 	public static String FakeUUID = "11451419-1981-0364-364931-000000000000";
 	public static String FakePlayerName = "UnknowOfUnknowInUnknowFromUnknow";
+
+	public static long filesizelimit = 50 * 1024 * 1024;
 
 	public static boolean isExistsClientPlaylistFile(String name) {
 		if (ClientFileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter()) != null) {
@@ -139,7 +142,15 @@ public class PlayList {
 			@Override
 			public boolean accept(File pathname) {
 
-				return !pathname.isDirectory();
+				boolean flag1 = !pathname.isDirectory();
+				boolean flag2 = false;
+				boolean flag3 = pathname.length() <= filesizelimit;
+
+				String[] filenames = pathname.getName().split(Pattern.quote("."));
+				if (filenames.length != 1) {
+					flag2 = filenames[filenames.length - 1].equals("mp3");
+				}
+				return flag1 && flag2 && flag3;
 			}
 		};
 

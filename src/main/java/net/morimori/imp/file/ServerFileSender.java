@@ -212,6 +212,5 @@ public class ServerFileSender extends Thread {
 
 	public void finishSend() {
 		senderBuffer.get(pluuid).remove(id);
-
 	}
 }

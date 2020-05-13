@@ -24,10 +24,10 @@ public class ClientResponseMessageHandler {
 
 			if (ServerFileSender.canSending(PlayerHelper.getUUID(ctx.get().getSender()))) {
 				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
-						new ServerResponseMessage(1));
+						new ServerResponseMessage(1,0));
 			}else {
 				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
-						new ServerResponseMessage(2));
+						new ServerResponseMessage(2,0));
 			}
 
 		}

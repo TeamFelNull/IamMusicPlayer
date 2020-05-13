@@ -25,10 +25,17 @@
   "soundata.artist": "Artist : %s",
   "soundata.album": "Album : %s",
   "soundata.albumimage": "Album Image : %s",
+  "soundata.year": "Year : %s",
   "soundata.track": "Track : %s",
-
-
-
+  "soundata.genre": "Genre : %s",
+  "soundata.comment": "Comment : %s",
+  "soundata.composet": "Composer : %s",
+  "soundata.originalartist": "Original Artist : %s",
+  "soundata.copyright": "Copyright : %s",
+  "soundata.url": "URL : %s",
+  "soundata.bitrate": "Bit Rate : %s kbps",
+  "soundata.layer": "Layer : %s",
+  "soundata.emphasis": "Emphasis : %s",
 
   "_comment": "Block",
   "block.ikisugimusicplayer.boombox": "Boombox",
@@ -95,6 +102,8 @@
   "overlay.receiver.server": "Downloading %s from Server",
   "overlay.receiver.othertask": "Other %s Download Tasks...",
   "overlay.soundwaitthread.crash": "Sound Thread Crash! Restarting...",
+  "overlay.sender.othertask": "Other %s Upload Tasks...",
+  "overlay.sender.reservation": "%s Upload reservations...",
   
   "message.volume.set": "Volume to %s",
   

@@ -9,6 +9,7 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
 import com.mpatric.mp3agic.UnsupportedTagException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -29,6 +30,9 @@ public class SoundData {
 	public String copyright = "null";
 	public String url = "null";
 	public String albumimage = "null";
+	public String bitrate = "null";
+	public String layer = "null";
+	public String emphasis = "null";
 
 	public SoundData(Path path) {
 		try {
@@ -71,6 +75,17 @@ public class SoundData {
 
 			if (tag.getAlbum() != null)
 				this.albumimage = tag.getAlbum();
+
+			if (tag.getComposer() != null)
+				this.composet = tag.getComposer();
+
+			this.bitrate = String.valueOf(mfile.getBitrate());
+
+			if (mfile.getLayer() != null)
+				this.layer = mfile.getLayer();
+
+			if (mfile.getEmphasis() != null)
+				this.emphasis = mfile.getEmphasis();
 
 		} catch (UnsupportedTagException | InvalidDataException | IOException e) {
 
@@ -119,6 +134,18 @@ public class SoundData {
 
 		if (tag.contains("AlbumImage"))
 			this.albumimage = tag.getString("AlbumImage");
+
+		if (tag.contains("Composet"))
+			this.composet = tag.getString("Composet");
+
+		if (tag.contains("BitRate"))
+			this.bitrate = tag.getString("BitRate");
+
+		if (tag.contains("Layer"))
+			this.layer = tag.getString("Layer");
+
+		if (tag.contains("Emphasis"))
+			this.emphasis = tag.getString("Emphasis");
 	}
 
 	public CompoundNBT writeNBT(CompoundNBT tag) {
@@ -134,7 +161,10 @@ public class SoundData {
 		tag.putString("Copyright", this.copyright);
 		tag.putString("Url", this.url);
 		tag.putString("AlbumImage", this.albumimage);
-
+		tag.putString("Composet", this.composet);
+		tag.putString("BitRate", this.bitrate);
+		tag.putString("Layer", this.layer);
+		tag.putString("Emphasis", this.emphasis);
 		return tag;
 	}
 
@@ -152,14 +182,54 @@ public class SoundData {
 		if (sd.artist != null && !sd.artist.equals("null") && !sd.artist.isEmpty())
 			lores.add(new TranslationTextComponent("soundata.artist", sd.artist));
 
-		if (sd.album != null && !sd.album.equals("null") && !sd.album.isEmpty())
-			lores.add(new TranslationTextComponent("soundata.album", sd.album));
+		Minecraft mc = Minecraft.getInstance();
+		if (!mc.gameSettings.advancedItemTooltips) {
+			return;
+		}
 
-		if (sd.albumimage != null && !sd.albumimage.equals("null") && !sd.albumimage.isEmpty())
+		String album = null;
+
+		if (sd.album != null && !sd.album.equals("null") && !sd.album.isEmpty()) {
+			lores.add(new TranslationTextComponent("soundata.album", sd.album));
+			album = sd.album;
+		}
+
+		if ((album == null || !album.equals(sd.albumimage)) && sd.albumimage != null && !sd.albumimage.equals("null")
+				&& !sd.albumimage.isEmpty())
 			lores.add(new TranslationTextComponent("soundata.albumimage", sd.albumimage));
+
+		if (sd.year != null && !sd.year.equals("null") && !sd.year.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.year", sd.year));
 
 		if (sd.track != null && !sd.track.equals("null") && !sd.track.isEmpty())
 			lores.add(new TranslationTextComponent("soundata.track", sd.track));
+
+		if (sd.genre != null && !sd.genre.equals("null") && !sd.genre.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.genre", sd.genre));
+
+		if (sd.comment != null && !sd.comment.equals("null") && !sd.comment.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.comment", sd.comment));
+
+		if (sd.composet != null && !sd.composet.equals("null") && !sd.composet.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.composet", sd.composet));
+
+		if (sd.originalartist != null && !sd.originalartist.equals("null") && !sd.originalartist.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.originalartist", sd.originalartist));
+
+		if (sd.copyright != null && !sd.copyright.equals("null") && !sd.copyright.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.copyright", sd.copyright));
+
+		if (sd.url != null && !sd.url.equals("null") && !sd.url.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.url", sd.url));
+
+		if (sd.bitrate != null && !sd.bitrate.equals("null") && !sd.bitrate.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.bitrate", sd.bitrate));
+
+		if (sd.layer != null && !sd.layer.equals("null") && !sd.layer.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.layer", sd.layer));
+
+		if (sd.emphasis != null && !sd.emphasis.equals("null") && !sd.emphasis.equals("None") && !sd.emphasis.isEmpty())
+			lores.add(new TranslationTextComponent("soundata.emphasis", sd.emphasis));
 
 	}
 

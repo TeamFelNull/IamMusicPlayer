@@ -16,13 +16,13 @@ public class ClientSendSoundFileMessageHandler {
 		if (message.isFrist) {
 			ServerFileReceiver fr = new ServerFileReceiver(PlayerHelper.getUUID(ctx.get().getSender()),
 					message.bytecont,
-					message.name, ctx.get().getSender().server, message.isPlayerFile,message.sd);
+					message.name, ctx.get().getSender().server, message.isPlayerFile, message.sd, message.id);
 			fr.start();
 		}
 
-		ServerFileReceiver.addBufferBytes(PlayerHelper.getUUID(ctx.get().getSender()), message.soundbyte);
+		ServerFileReceiver.addBufferBytes(PlayerHelper.getUUID(ctx.get().getSender()), message.soundbyte,message.id);
 
 		PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
-				new ServerResponseMessage(0));
+				new ServerResponseMessage(0,message.id));
 	}
 }

@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=south": { "model": "ikisugimusicplayer:block/cassette_storing", "y": 90 },
+        "facing=west": { "model": "ikisugimusicplayer:block/cassette_storing", "y": 180 },
+        "facing=north": { "model": "ikisugimusicplayer:block/cassette_storing", "y": 270 },
+        "facing=east": { "model": "ikisugimusicplayer:block/cassette_storing", "y": 0 }
+    }
+}

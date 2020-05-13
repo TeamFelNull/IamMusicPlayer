@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.file.ClientFileReceiver;
+import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.ClientResponseMessage;
@@ -33,6 +34,9 @@ public class SoundWaitThread extends Thread {
 	public void run() {
 		while (true) {
 			cheking = true;
+
+			ClientFileSender.reservationDownloading();
+
 			if (ms.player != null) {
 				PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(2, 0, "null"));
 			} else {

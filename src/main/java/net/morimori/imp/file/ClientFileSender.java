@@ -1,6 +1,9 @@
 package net.morimori.imp.file;
 
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -15,60 +18,173 @@ import net.morimori.imp.util.StringHelper;
 public class ClientFileSender extends Thread {
 
 	private static Minecraft mc = Minecraft.getInstance();
+	public int id;
 
-	public static int sendingprograse;
-	public static int sendingall;
+	public static Map<Integer, ClientFileSender> senderBuffer = new HashMap<Integer, ClientFileSender>();
+	public static Map<Integer, Boolean> responseWaits = new HashMap<Integer, Boolean>();
+	public static Map<Integer, Boolean> stops = new HashMap<Integer, Boolean>();
+	public static Map<Integer, Integer> sendingprograses = new HashMap<Integer, Integer>();
+	public static Map<Integer, Integer> sendingalls = new HashMap<Integer, Integer>();
+	public static Map<Path, Boolean> reservationSenders = new HashMap<Path, Boolean>();
 
-	public static boolean sending;
-
-	public static String FileName;
-
+	public static int MaxSendCont = 5;
 	public static int bytespeed = 5000;
 
-	public static boolean responseWait;
-
-	public static boolean stop;
-
-	private Path path;
+	public Path path;
 	public boolean playerfile;
 
-	public ClientFileSender(Path path, boolean playerfile) {
+	public ClientFileSender(int id, Path path, boolean playerfile) {
 		this.path = path;
 		this.playerfile = playerfile;
+		this.id = id;
+	}
+
+	public static boolean stopResevaionOrSending(Path path) {
+
+		if (isSending(path)) {
+			stopSend(ClientFileSender.getId(path));
+			return true;
+		}
+
+		if (reservationSenders.containsKey(path)) {
+			reservationSenders.remove(path);
+		}
+
+		return false;
+	}
+
+	public static boolean isResevationOrSending(Path path) {
+		boolean resevation = reservationSenders.containsKey(path);
+		boolean downloading = isSending(path);
+		return resevation || downloading;
+	}
+
+	public static void reservationDownloading() {
+
+		int sndid = -1;
+
+		if (mc.player == null)
+			return;
+
+		for (int c = 0; c < MaxSendCont; c++) {
+			if (!senderBuffer.containsKey(c)) {
+				sndid = c;
+				break;
+			}
+		}
+
+		if (sndid == -1 || reservationSenders.isEmpty())
+			return;
+
+		for (Entry<Path, Boolean> pathes : reservationSenders.entrySet()) {
+			startSender(pathes.getKey(), pathes.getValue());
+			reservationSenders.remove(pathes.getKey());
+			break;
+		}
+	}
+
+	public static void addSenderReservation(Path path, boolean playerfile) {
+		reservationSenders.put(path, playerfile);
+	}
+
+	public static void startSender(Path path, boolean playerfile) {
+		int sndid = -1;
+
+		if (mc.player == null)
+			return;
+
+		for (int c = 0; c < MaxSendCont; c++) {
+			if (!senderBuffer.containsKey(c)) {
+				sndid = c;
+				break;
+			}
+		}
+		if (sndid != -1) {
+			stops.put(sndid, false);
+			sendingprograses.put(sndid, 0);
+			ClientFileSender SFS = new ClientFileSender(sndid, path, playerfile);
+			SFS.start();
+		}
 	}
 
 	public static void stopSend() {
-		stop = true;
+
+		for (int c = 0; c < MaxSendCont; c++) {
+			if (senderBuffer.containsKey(c)) {
+				stopSend(c);
+			}
+		}
 	}
 
-	public static void startSend(Path path, boolean playerfile) {
+	public static void stopSend(int id) {
 
-		if (sending || mc.player == null)
+		if (id == -1)
 			return;
 
-		stop = false;
-		sending = true;
-		sendingprograse = 0;
-		ClientFileSender fs = new ClientFileSender(path, playerfile);
-		fs.start();
-
+		stops.put(id, true);
 	}
 
-	public static String getPrograsePar() {
+	public static String getPrograsePar(int id) {
+		int sendingprograse = sendingprograses.get(id);
+		int sendingall = sendingalls.get(id);
 
 		return Math.round(((float) sendingprograse / (float) sendingall) * 100) + " %";
 	}
 
+	public static String getPrograsePar(Path path) {
+
+		if (sendingprograses.isEmpty() || sendingalls.isEmpty()) {
+			return "None";
+		}
+		int num = -1;
+
+		for (Entry<Integer, ClientFileSender> sets : senderBuffer.entrySet()) {
+			if (sets.getValue().path.equals(path)) {
+				num = sets.getKey();
+				break;
+			}
+		}
+
+		if (num == -1)
+			return "None";
+
+		int sendingprograse = sendingprograses.get(num);
+		int sendingall = sendingalls.get(num);
+
+		return Math.round(((float) sendingprograse / (float) sendingall) * 100) + " %";
+	}
+
+	public static boolean isSending(Path path) {
+		for (Entry<Integer, ClientFileSender> sets : senderBuffer.entrySet()) {
+			if (sets.getValue().path.equals(path)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static int getId(Path path) {
+		int num = -1;
+		for (Entry<Integer, ClientFileSender> sets : senderBuffer.entrySet()) {
+			if (sets.getValue().path.equals(path)) {
+				num = sets.getKey();
+				break;
+			}
+		}
+		return num;
+	}
+
 	public void run() {
+
+		senderBuffer.put(id, this);
 		byte[] bytes = FileLoader.fileBytesReader(this.path);
 		boolean frist = true;
 		long fristtime = System.currentTimeMillis();
 		long logtime = System.currentTimeMillis();
 		long time = System.currentTimeMillis();
-		FileName = this.path.toFile().getName();
 		if (bytes == null) {
 			IkisugiMusicPlayer.LOGGER.info("Null Sender File : " + this.path.toFile().toString());
-			sending = false;
+			finishSend();
 			return;
 		}
 		int cont = 0;
@@ -86,7 +202,7 @@ public class ClientFileSender extends Thread {
 					cont++;
 				}
 			}
-			responseWait = true;
+			responseWaits.put(id, true);
 			try {
 
 				if (mc.player == null) {
@@ -97,34 +213,21 @@ public class ClientFileSender extends Thread {
 				PacketHandler.INSTANCE
 						.sendToServer(
 								new ClientSendSoundFileMessage(bi, frist, bytes.length, this.path.toFile().getName(),
-										playerfile, new SoundData(this.path)));
+										playerfile, new SoundData(this.path), id));
 				frist = false;
-				sendingprograse = cont;
-				sendingall = bytes.length;
+				sendingprograses.put(id, cont);
+				sendingalls.put(id, bytes.length);
 
-				if (stop) {
-					IkisugiMusicPlayer.LOGGER.error("Client File Sending Stop :"
-							+ " Name "
-							+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
-							+ " Target "
-							+ (playerfile ? "Main" : "Everyone") + " Elapsed "
-							+ (System.currentTimeMillis() - fristtime)
-							+ "ms " + getPrograsePar());
-					NarratorHelper.say(I18n.format("narrator.fileuploadstop", this.path.toFile().getName()));
-					finishSend();
-					return;
-				}
+				while (responseWaits.get(id)) {
 
-				while (responseWait) {
-
-					if (stop) {
+					if (stops.get(id)) {
 						IkisugiMusicPlayer.LOGGER.error("Client File Sending Stop : Player "
 								+ " Name "
 								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
 								+ " Target "
 								+ (playerfile ? "Main" : "Everyone") + " Elapsed "
 								+ (System.currentTimeMillis() - fristtime)
-								+ "ms " + getPrograsePar());
+								+ "ms " + getPrograsePar(id));
 						NarratorHelper.say(I18n.format("narrator.fileuploadstop", this.path.toFile().getName()));
 						finishSend();
 						return;
@@ -139,7 +242,7 @@ public class ClientFileSender extends Thread {
 								+ " Target "
 								+ (playerfile ? "Main" : "Everyone") + " Elapsed "
 								+ (System.currentTimeMillis() - fristtime)
-								+ "ms " + getPrograsePar());
+								+ "ms " + getPrograsePar(id));
 						NarratorHelper.say(I18n.format("narrator.fileuploadtimeout", this.path.toFile().getName()));
 						finishSend();
 						return;
@@ -156,8 +259,9 @@ public class ClientFileSender extends Thread {
 				IkisugiMusicPlayer.LOGGER.info("Client File Sending :" + " Name " + this.path.toFile().getName()
 						+ " Sent " + StringHelper.fileCapacityNotation(cont) + " Target "
 						+ (playerfile ? "Main" : "Everyone") + " Elapsed "
-						+ (System.currentTimeMillis() - fristtime) + "ms " + getPrograsePar());
-				NarratorHelper.say(I18n.format("narrator.fileupload", this.path.toFile().getName(), getPrograsePar()));
+						+ (System.currentTimeMillis() - fristtime) + "ms " + getPrograsePar(id));
+				NarratorHelper
+						.say(I18n.format("narrator.fileupload", this.path.toFile().getName(), getPrograsePar(id)));
 			}
 			time = System.currentTimeMillis();
 		}
@@ -170,11 +274,10 @@ public class ClientFileSender extends Thread {
 	}
 
 	public void finishSend() {
-		sending = false;
-		sendingprograse = 0;
-		sendingall = 0;
-		FileName = "";
-		path = null;
-
+		senderBuffer.remove(id);
+		sendingprograses.put(id, 0);
+		sendingalls.put(id, 0);
+		stops.put(id, false);
 	}
+
 }

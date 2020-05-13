@@ -20,16 +20,22 @@ public class IMPBlocks {
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IkisugiMusicPlayer.MODID, "cassette_deck");
 
+	public static final Block CASSETTE_STORING = new CassetteStoringBlock(Block.Properties.create(Material.IRON)
+			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
+					IkisugiMusicPlayer.MODID, "cassette_storing");
+
 	public static void registerBlock(IForgeRegistry<Block> r) {
 		registryBlock(r, BOOMBOX);
 		registryBlock(r, SOUNDFILE_UPLOADER);
 		registryBlock(r, CASSETTE_DECK);
+		registryBlock(r, CASSETTE_STORING);
 	}
 
 	public static void registerItem(IForgeRegistry<Item> r) {
 		registryBlockItem(r, BOOMBOX);
 		registryBlockItem(r, SOUNDFILE_UPLOADER);
 		registryBlockItem(r, CASSETTE_DECK);
+		registryBlockItem(r, CASSETTE_STORING);
 	}
 
 	private static void registryBlock(IForgeRegistry<Block> r, Block b) {

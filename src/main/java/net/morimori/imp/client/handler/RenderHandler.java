@@ -61,13 +61,36 @@ public class RenderHandler {
 
 	private static List<String> addUpLoadPrograse() {
 		List<String> stlist = new ArrayList<String>();
-		if (ClientFileSender.sending) {
-			stlist.add(I18n.format("overlay.sending." + (mc.isSingleplayer() ? "world" : "server"),
-					ClientFileSender.FileName));
-			stlist.add(StringHelper.fileCapacityNotation(ClientFileSender.sendingprograse) + " / "
-					+ StringHelper.fileCapacityNotation(ClientFileSender.sendingall) + " "
-					+ ClientFileSender.getPrograsePar());
+
+		if (ClientFileSender.senderBuffer.isEmpty()) {
+			return stlist;
 		}
+		int cont = 0;
+		try {
+			for (Entry<Integer, ClientFileSender> en : ClientFileSender.senderBuffer.entrySet()) {
+				stlist.add(I18n.format("overlay.sending." + (mc.isSingleplayer() ? "world" : "server"),
+						ClientFileSender.senderBuffer.get(en.getKey()).path.toFile().getName(),
+						stlist.add(StringHelper.fileCapacityNotation(ClientFileSender.sendingprograses.get(en.getKey()))
+								+ " / "
+								+ StringHelper.fileCapacityNotation(ClientFileSender.sendingalls.get(en.getKey())) + " "
+								+ ClientFileSender.getPrograsePar(en.getKey()))));
+
+				cont++;
+				if (cont > MaxDraw) {
+					stlist.add(I18n.format("overlay.sender.othertask",
+							ClientFileSender.senderBuffer.entrySet().size() - MaxDraw));
+					break;
+				}
+
+			}
+		} catch (Exception e) {
+
+		}
+
+		if (!ClientFileSender.reservationSenders.isEmpty()) {
+			stlist.add(I18n.format("overlay.sender.reservation", ClientFileSender.reservationSenders.size()));
+		}
+
 		return stlist;
 	}
 

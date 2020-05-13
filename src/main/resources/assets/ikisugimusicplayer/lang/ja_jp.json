@@ -17,6 +17,23 @@
   "item.ikisugimusicplayer.overwritable_cassette_tape": "上書き可能なカセットテープ",
   "item.ikisugimusicplayer.cassette_tape.written": "%s のテープ",
 
+
+  "soundata.title": "タイトル : %s",
+  "soundata.artist": "アーティスト : %s",
+  "soundata.album": "アルバム : %s",
+  "soundata.albumimage": "アルバムイメージ : %s",
+  "soundata.year": "年 : %s",
+  "soundata.track": "トラック : %s",
+  "soundata.genre": "ジャンル : %s",
+  "soundata.comment": "コメント : %s",
+  "soundata.composet": "作曲 : %s",
+  "soundata.originalartist": "オリジナルアーティスト : %s",
+  "soundata.copyright": "著作権 : %s",
+  "soundata.url": "URL : %s",
+  "soundata.bitrate": "ビッドレート : %s kbps",
+  "soundata.layer": "レイヤー : %s",
+  "soundata.emphasis": "強調 : %s",
+  
   "_comment": "Block",
   "block.ikisugimusicplayer.boombox": "ラジカセ",
   "block.ikisugimusicplayer.soundfile_uploader": "サウンドファイルアップローダー",
@@ -80,6 +97,8 @@
   "overlay.receiver.server": "%s をサーバーからダウンロード中",
   "overlay.receiver.othertask": "その他 %s 個のダウンロードタスク...",
   "overlay.soundwaitthread.crash": "サウンドスレッドがクラッシュしました！ 再起動中です...",
+  "overlay.sender.othertask": "その他 %s 個のアップロードタスク...",
+  "overlay.sender.reservation": "%s 件のアップロード予約",
   
   "_comment": "Last"
   

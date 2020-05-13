@@ -12,7 +12,7 @@ public class ServerResponseMessageHandler {
 		ctx.get().setPacketHandled(true);
 
 		if (message.num == 0) {
-			ClientFileSender.responseWait = false;
+			ClientFileSender.responseWaits.put(message.id, false);
 		} else if (message.num == 1) {
 			ClientFileReceiver.canReceiving = true;
 		} else if (message.num == 2) {
