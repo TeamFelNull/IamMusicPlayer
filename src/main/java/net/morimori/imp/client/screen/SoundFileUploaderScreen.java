@@ -466,8 +466,8 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
 		AbstractGui.blit(xs + 20, ys + 25 + 30, 12, 149, 12, 12, 256, 256);
 		RenderSystem.popMatrix();
-		if (ClientFileSender.isSending(this.selectFile.toPath())) {
-			try {
+		try {
+			if (ClientFileSender.isSending(this.selectFile.toPath())) {
 
 				int b = (int) (12
 						* ((float) ClientFileSender.sendingprograses
@@ -483,11 +483,11 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				this.font.drawString(ClientFileSender.getPrograsePar(this.selectFile.toPath()), xs + 20 + 15,
 						ys + 25 + 32,
 						0);
-			} catch (Exception e) {
 
 			}
-		}
+		} catch (Exception e) {
 
+		}
 		if (PlayList.isExistsWorldPlaylistFile(selectFile)) {
 			this.font.drawString(I18n.format("sfu.selectfileupdate.overwrite"), xs + 20 + 71, ys + 25 + 46,
 					0);

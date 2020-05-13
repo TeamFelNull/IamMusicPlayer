@@ -38,6 +38,8 @@
   "block.ikisugimusicplayer.boombox": "ラジカセ",
   "block.ikisugimusicplayer.soundfile_uploader": "サウンドファイルアップローダー",
   "block.ikisugimusicplayer.cassette_deck": "カセットデッキ",
+  "block.ikisugimusicplayer.cassette_storing": "カセット収納ケース",
+  
   
   "_comment": "CreativeTab",
   "itemGroup.ikisugimusicplayer": "イキスギた音楽プレーヤー",

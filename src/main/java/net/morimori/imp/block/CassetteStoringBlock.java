@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
+import net.morimori.imp.util.VoxelShapeHelper;
 
 public class CassetteStoringBlock extends Block {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -33,15 +34,15 @@ public class CassetteStoringBlock extends Block {
 
 		switch (direction) {
 		case NORTH:
-			return CassetteStoringVoxelShape.NORTH_AXIS_AABB;
+			return VoxelShapeHelper.addCuboidShaoe90(0.45, 0, 0.85, 15.2, 16, 6.2);
 		case SOUTH:
-			return CassetteStoringVoxelShape.SOUTH_AXIS_AABB;
+			return VoxelShapeHelper.addCuboidShaoe270(0.45, 0, 0.85, 15.2, 16, 6.2);
 		case EAST:
-			return CassetteStoringVoxelShape.EAST_AXIS_AABB;
+			return VoxelShapeHelper.addCuboidShaoe0(0.45, 0, 0.85, 15.2, 16, 6.2);
 		case WEST:
-			return CassetteStoringVoxelShape.WEST_AXIS_AABB;
+			return VoxelShapeHelper.addCuboidShaoe180(0.45, 0, 0.85, 15.2, 16, 6.2);
 		default:
-			return CassetteStoringVoxelShape.NORTH_AXIS_AABB;
+			return VoxelShapeHelper.addCuboidShaoe0(0.45, 0, 0.85, 15.2, 16, 6.2);
 		}
 
 	}

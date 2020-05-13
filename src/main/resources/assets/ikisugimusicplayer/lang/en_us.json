@@ -41,6 +41,8 @@
   "block.ikisugimusicplayer.boombox": "Boombox",
   "block.ikisugimusicplayer.soundfile_uploader": "Sound File Uploader",
   "block.ikisugimusicplayer.cassette_deck": "Cassette Deck",
+  "block.ikisugimusicplayer.cassette_storing": "Cassette Storing",
+  
   
   "_comment": "CreativeTab",
   "itemGroup.ikisugimusicplayer": "Ikisugi Music Player",
