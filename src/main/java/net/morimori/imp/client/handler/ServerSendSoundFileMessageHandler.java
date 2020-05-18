@@ -14,7 +14,7 @@ public class ServerSendSoundFileMessageHandler {
 
 		if (message.isFrist) {
 			ClientFileReceiver CFR = new ClientFileReceiver(message.id, message.bytecont, message.name,
-					message.isDownload, message.souuid,message.sd);
+					message.isDownload, message.souuid);
 			CFR.start();
 		}
 		ClientFileReceiver.addBufferBytes(message.id, message.soundbyte);

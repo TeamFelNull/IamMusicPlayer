@@ -10,9 +10,9 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.container.CassetteStoringContainer;
 import net.morimori.imp.packet.CassetteStoringSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
@@ -118,7 +118,7 @@ public class CassetteStoringTileEntity extends LockableTileEntity
 	@Override
 	protected ITextComponent getDefaultName() {
 
-		return IMPBlocks.CASSETTE_STORING.getNameTextComponent();
+		return new TranslationTextComponent("block.ikisugimusicplayer.cassette_storing");
 	}
 
 	@Override

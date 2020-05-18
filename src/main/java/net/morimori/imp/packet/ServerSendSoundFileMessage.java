@@ -1,8 +1,6 @@
 package net.morimori.imp.packet;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.morimori.imp.sound.SoundData;
 
 public class ServerSendSoundFileMessage {
 	public byte[] soundbyte;
@@ -12,10 +10,9 @@ public class ServerSendSoundFileMessage {
 	public String name;
 	public boolean isDownload;
 	public String souuid;
-	public SoundData sd;
 
 	public ServerSendSoundFileMessage(byte[] filebytedata1, int id, boolean frist, int cont, String filename,
-			boolean download, String sounduuid, SoundData sd) {
+			boolean download, String sounduuid) {
 		this.soundbyte = filebytedata1;
 		this.isFrist = frist;
 		this.bytecont = cont;
@@ -23,13 +20,12 @@ public class ServerSendSoundFileMessage {
 		this.name = filename;
 		this.isDownload = download;
 		this.souuid = sounduuid;
-		this.sd = sd;
 	}
 
 	public static ServerSendSoundFileMessage decodeMessege(PacketBuffer buffer) {
 
 		return new ServerSendSoundFileMessage(buffer.readByteArray(), buffer.readInt(), buffer.readBoolean(),
-				buffer.readInt(), buffer.readString(32767), buffer.readBoolean(), buffer.readString(32767),new SoundData(buffer.readCompoundTag()));
+				buffer.readInt(), buffer.readString(32767), buffer.readBoolean(), buffer.readString(32767));
 	}
 
 	public static void encodeMessege(ServerSendSoundFileMessage messegeIn, PacketBuffer buffer) {
@@ -41,6 +37,5 @@ public class ServerSendSoundFileMessage {
 		buffer.writeString(messegeIn.name);
 		buffer.writeBoolean(messegeIn.isDownload);
 		buffer.writeString(messegeIn.souuid);
-		buffer.writeCompoundTag(messegeIn.sd.writeNBT(new CompoundNBT()));
 	}
 }

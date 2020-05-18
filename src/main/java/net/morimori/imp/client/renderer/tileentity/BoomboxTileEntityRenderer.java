@@ -35,6 +35,7 @@ public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEnt
 	private ModelRenderer lidNorth;
 
 	public BoomboxTileEntityRenderer(TileEntityRendererDispatcher terd) {
+
 		super(terd);
 		this.lidWest = new ModelRenderer(64, 64, 10, 53);
 		this.lidWest.func_228301_a_(6, 0, 0, 4, 3, 0.3f, 0.0F);

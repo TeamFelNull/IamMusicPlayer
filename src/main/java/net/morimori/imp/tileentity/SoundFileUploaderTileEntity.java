@@ -14,9 +14,9 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.block.SoundfileUploaderBlock;
 import net.morimori.imp.client.screen.SoundFileUploaderMonitorTextures;
 import net.morimori.imp.client.screen.SoundFileUploaderWindwos;
@@ -255,7 +255,7 @@ public class SoundFileUploaderTileEntity extends LockableTileEntity
 	@Override
 	protected ITextComponent getDefaultName() {
 
-		return IMPBlocks.SOUNDFILE_UPLOADER.getNameTextComponent();
+		return new TranslationTextComponent("block.ikisugimusicplayer.soundfile_uploader");
 	}
 
 	@Override

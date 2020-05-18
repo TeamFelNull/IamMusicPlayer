@@ -645,7 +645,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 			if (selectFile == null || ClientFileSender.isResevationOrSending(this.selectFile.toPath())
 					|| !selectFile.exists()) {
 
-				if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())
+				if (selectFile != null&&ClientFileSender.isResevationOrSending(this.selectFile.toPath())
 						&& ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
 								.toFile().getName().equals(selectFile.getName())) {
 					uploadstart.visible = true;

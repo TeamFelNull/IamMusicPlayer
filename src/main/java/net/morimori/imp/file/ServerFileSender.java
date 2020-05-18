@@ -141,8 +141,7 @@ public class ServerFileSender extends Thread {
 			PacketHandler.INSTANCE.send(
 					PacketDistributor.PLAYER.with(() -> ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid))),
 					new ServerSendSoundFileMessage(bi, this.id, frist, bytes.length, this.path.toString(),
-							downloaddolder, PlayList.getWorldPlaylistNBTDataString(ms, path, "UUID"),
-							frist ? PlayList.getWorldPlaylistNBTDataSoundData(ms, path, "SoundData") : null));
+							downloaddolder, PlayList.getWorldPlaylistNBTDataString(ms, path, "UUID")));
 			frist = false;
 
 			try {

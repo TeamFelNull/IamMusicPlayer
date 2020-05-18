@@ -22,6 +22,11 @@ public class ClientProxy extends CommonProxy {
 	public static void clientInit() {
 		IMPTileEntityRenderers.registerTileEntityRenderer();
 		RegisterScrennContainerFactorys.registerFactories();
+
+
+//		ModelLoader.addSpecialModel(
+//				new ModelResourceLocation(IMPItems.NO_RECORD_CASSETTE_TAPE.getRegistryName() + "_test", "inventory"));
+
 	}
 
 	@Override

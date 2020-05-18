@@ -3,6 +3,7 @@ package net.morimori.imp.client.handler;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Strings;
@@ -10,14 +11,18 @@ import com.google.common.base.Strings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.OptionsSoundsScreen;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.file.ClientFileReceiver;
 import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
+import net.morimori.imp.item.MusicItem;
 import net.morimori.imp.util.StringHelper;
 
 public class RenderHandler {
@@ -129,4 +134,12 @@ public class RenderHandler {
 		}
 
 	}
+
+	@SubscribeEvent
+	public static void onModel(ModelBakeEvent e) {
+		Map<ResourceLocation, IBakedModel> map = e.getModelRegistry();
+		MusicItem.test = map;
+
+	}
+
 }

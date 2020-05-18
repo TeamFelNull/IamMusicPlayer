@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import net.minecraft.client.resources.I18n;
 import net.morimori.imp.IkisugiMusicPlayer;
-import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.ClientFileHelper;
@@ -25,13 +24,11 @@ public class ClientFileReceiver extends Thread {
 	public String filename;
 	public String path;
 	public String sounduuid;
-	public SoundData sd;
 
 	public boolean downloaddolder;
 	public int id;
 
-	public ClientFileReceiver(int id, int bytecont, String filepath, boolean downloaddolder, String sounduuid,
-			SoundData sd) {
+	public ClientFileReceiver(int id, int bytecont, String filepath, boolean downloaddolder, String sounduuid) {
 		stop.put(id, false);
 		receiverBufer.put(id, new FileReceiverBuffer(bytecont, filepath));
 		this.path = filepath;
@@ -39,7 +36,6 @@ public class ClientFileReceiver extends Thread {
 		this.downloaddolder = downloaddolder;
 		this.id = id;
 		this.sounduuid = sounduuid;
-		this.sd = sd;
 	}
 
 	public static boolean isReceving(File file) {
@@ -156,7 +152,7 @@ public class ClientFileReceiver extends Thread {
 							.resolve(Paths.get(path).getParent().toFile().getName()).resolve(filename));
 			PlayList.addClientPlayeyListFileNBT(Paths.get(path).getParent().toFile().getName(), filename,
 					sounduuid);
-			SoundWaitThread.finishedDownload(new WorldPlayListSoundData(path, sounduuid, sd));
+			SoundWaitThread.finishedDownload(new WorldPlayListSoundData(path, sounduuid, null));
 		}
 
 		IkisugiMusicPlayer.LOGGER.info("Client File Receiver was Success Full :" + " Name "
