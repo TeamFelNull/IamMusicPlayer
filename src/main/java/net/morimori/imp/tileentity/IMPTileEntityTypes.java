@@ -22,6 +22,9 @@ public class IMPTileEntityTypes {
 	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_deck")
 	public static TileEntityType<CassetteDeckTileEntity> CASSETTE_DECK;
 
+	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_storing")
+	public static TileEntityType<CassetteStoringTileEntity> CASSETTE_STORING;
+
 	public static void registerTileEntityType(IForgeRegistry<TileEntityType<?>> r) {
 		registryTileEntityType(r, BoomboxTileEntity::new, BOOMBOX, "boombox",
 				IMPBlocks.BOOMBOX);
@@ -31,6 +34,10 @@ public class IMPTileEntityTypes {
 
 		registryTileEntityType(r, CassetteDeckTileEntity::new, CASSETTE_DECK, "cassette_deck",
 				IMPBlocks.CASSETTE_DECK);
+
+		registryTileEntityType(r, CassetteStoringTileEntity::new, CASSETTE_STORING, "cassette_storing",
+				IMPBlocks.CASSETTE_STORING);
+
 	}
 
 	private static void registryTileEntityType(IForgeRegistry<TileEntityType<?>> r,

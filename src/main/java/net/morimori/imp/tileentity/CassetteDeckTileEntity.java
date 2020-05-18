@@ -17,7 +17,6 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,6 +24,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.block.CassetteDeckBlock;
 import net.morimori.imp.block.CassetteDeckStates;
+import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.container.CassetteDeckContainer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.CassetteDeckSyncMessage;
@@ -240,12 +240,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 	@Override
 	public boolean isEmpty() {
-		for (ItemStack itemstack : this.items) {
-			if (!itemstack.isEmpty()) {
-				return true;
-			}
-		}
-		return true;
+
+		return this.getItems().stream().allMatch(ItemStack::isEmpty);
 	}
 
 	@Override
@@ -304,7 +300,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	@Override
 	protected ITextComponent getDefaultName() {
 
-		return new TranslationTextComponent("block.ikisugimusicplayer.cassette_deck");
+		return IMPBlocks.CASSETTE_DECK.getNameTextComponent();
 	}
 
 	@Override

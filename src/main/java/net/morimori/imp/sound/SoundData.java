@@ -33,6 +33,7 @@ public class SoundData {
 	public String bitrate = "null";
 	public String layer = "null";
 	public String emphasis = "null";
+	public byte[] album_image = null;
 
 	public SoundData(Path path) {
 		try {
@@ -86,6 +87,9 @@ public class SoundData {
 
 			if (mfile.getEmphasis() != null)
 				this.emphasis = mfile.getEmphasis();
+
+			if (tag.getAlbumImage() != null)
+				this.album_image = tag.getAlbumImage();
 
 		} catch (UnsupportedTagException | InvalidDataException | IOException e) {
 
@@ -146,6 +150,10 @@ public class SoundData {
 
 		if (tag.contains("Emphasis"))
 			this.emphasis = tag.getString("Emphasis");
+
+		if (tag.contains("AlbumImage"))
+			this.album_image = tag.getByteArray("AlbumImage");
+
 	}
 
 	public CompoundNBT writeNBT(CompoundNBT tag) {
@@ -165,6 +173,11 @@ public class SoundData {
 		tag.putString("BitRate", this.bitrate);
 		tag.putString("Layer", this.layer);
 		tag.putString("Emphasis", this.emphasis);
+
+		if (this.album_image != null) {
+			tag.putByteArray("AlbumImage", this.album_image);
+		}
+
 		return tag;
 	}
 

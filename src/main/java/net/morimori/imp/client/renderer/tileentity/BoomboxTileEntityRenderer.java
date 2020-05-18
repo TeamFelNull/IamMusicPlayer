@@ -100,7 +100,7 @@ public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEnt
 				RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 0.55f);
 			}
 
-			Minecraft.getInstance().getItemRenderer().func_229110_a_(tile.getPlayCassette(),
+			Minecraft.getInstance().getItemRenderer().func_229110_a_(cassette,
 					TransformType.FIXED, light, overlay, matrix, buff);
 
 			RenderHelper.matrixPop(matrix);

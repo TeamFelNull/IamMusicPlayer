@@ -406,8 +406,12 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 	}
 
 	public void updateUploadCofin() {
+		SoundFileUploaderTileEntity sfit = (SoundFileUploaderTileEntity) mc.world
+				.getTileEntity(this.container.pos);
 
-		if (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)) {
+		if (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)
+				&& sfit.getUsePlayerUUID().equals(PlayerHelper.getUUID(mc.player))) {
+
 			serverFilelistUpdate();
 			if (serverSelectTargetR == ServerFileSelectTarget.MAIN) {
 				uploadtarget.setMessage(I18n.format("sfu.main"));
@@ -456,53 +460,52 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				this.font.drawString(I18n.format("sfu.selectfileupdate.nofile"), xs + 20, ys + 37, 0);
 			}
 
+			RenderSystem.pushMatrix();
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
+			AbstractGui.blit(xs + 20, ys + 25 + 30, 12, 149, 12, 12, 256, 256);
+			RenderSystem.popMatrix();
+			try {
+				if (ClientFileSender.isSending(this.selectFile.toPath())) {
+
+					int b = (int) (12
+							* ((float) ClientFileSender.sendingprograses
+									.get(ClientFileSender.getId(this.selectFile.toPath()))
+									/ (float) ClientFileSender.sendingalls
+											.get(ClientFileSender.getId(this.selectFile.toPath()))));
+
+					RenderSystem.pushMatrix();
+					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+					mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
+					AbstractGui.blit(xs + 20, ys + 25 + 30, 0, 149, 12, b, 256, 256);
+					RenderSystem.popMatrix();
+					this.font.drawString(ClientFileSender.getPrograsePar(this.selectFile.toPath()), xs + 20 + 15,
+							ys + 25 + 32,
+							0);
+
+				}
+			} catch (Exception e) {
+
+			}
+			if (PlayList.isExistsWorldPlaylistFile(selectFile)) {
+				this.font.drawString(I18n.format("sfu.selectfileupdate.overwrite"), xs + 20 + 71, ys + 25 + 46,
+						0);
+				this.font.drawString(
+						I18n.format("sfu.selectfileupdate.samenameexists"), xs + 20, ys + 25 + 65, 0);
+			} else {
+				this.font.drawString(I18n.format("sfu.selectfileupdate.forupload"), xs + 20 + 71, ys + 25 + 46,
+						0);
+			}
+
+			if (PlayList.worldPlayList != null) {
+				this.font.drawString(
+						I18n.format("sfu.selectfileupdate.worldfilecont", PlayList.worldPlayList.length,
+								StringHelper.fileCapacityNotation(PlayList.worldPlayListSize)),
+						xs + 20, ys + 25 + 57, 0);
+			}
 		} else {
 			this.drawCenteredString(this.font, I18n.format("sfu.selectfileupdate.anotherplater"),
 					this.width / 2, ys + 27 + 20, 16777215);
-		}
-
-		RenderSystem.pushMatrix();
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
-		AbstractGui.blit(xs + 20, ys + 25 + 30, 12, 149, 12, 12, 256, 256);
-		RenderSystem.popMatrix();
-		try {
-			if (ClientFileSender.isSending(this.selectFile.toPath())) {
-
-				int b = (int) (12
-						* ((float) ClientFileSender.sendingprograses
-								.get(ClientFileSender.getId(this.selectFile.toPath()))
-								/ (float) ClientFileSender.sendingalls
-										.get(ClientFileSender.getId(this.selectFile.toPath()))));
-
-				RenderSystem.pushMatrix();
-				RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-				mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
-				AbstractGui.blit(xs + 20, ys + 25 + 30, 0, 149, 12, b, 256, 256);
-				RenderSystem.popMatrix();
-				this.font.drawString(ClientFileSender.getPrograsePar(this.selectFile.toPath()), xs + 20 + 15,
-						ys + 25 + 32,
-						0);
-
-			}
-		} catch (Exception e) {
-
-		}
-		if (PlayList.isExistsWorldPlaylistFile(selectFile)) {
-			this.font.drawString(I18n.format("sfu.selectfileupdate.overwrite"), xs + 20 + 71, ys + 25 + 46,
-					0);
-			this.font.drawString(
-					I18n.format("sfu.selectfileupdate.samenameexists"), xs + 20, ys + 25 + 65, 0);
-		} else {
-			this.font.drawString(I18n.format("sfu.selectfileupdate.forupload"), xs + 20 + 71, ys + 25 + 46,
-					0);
-		}
-
-		if (PlayList.worldPlayList != null) {
-			this.font.drawString(
-					I18n.format("sfu.selectfileupdate.worldfilecont", PlayList.worldPlayList.length,
-							StringHelper.fileCapacityNotation(PlayList.worldPlayListSize)),
-					xs + 20, ys + 25 + 57, 0);
 		}
 	}
 
@@ -598,38 +601,42 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 	}
 
 	public void updateFileUpload() {
+		if (this.selectFile != null) {
+			if (!hasWindows(SoundFileUploaderWindwos.UPLOAD_FILE)) {
 
-		if (!hasWindows(SoundFileUploaderWindwos.UPLOAD_FILE)) {
+				if (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)) {
 
-			if (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)) {
-
-				if (isUsingMain()) {
-					if (selectFile.exists()) {
-						uploadstart.visible = true;
+					if (isUsingMain()) {
+						if (selectFile.exists()) {
+							uploadstart.visible = true;
+						} else {
+							uploadstart.visible = false;
+						}
 					} else {
 						uploadstart.visible = false;
+
 					}
+					if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
+						uploadstart.setMessage(I18n.format("sfu.start"));
+						((StringImageButton) uploadstart).dredclos = false;
+					} else {
+						uploadstart.setMessage(I18n.format("sfu.stop"));
+						((StringImageButton) uploadstart).dredclos = true;
+					}
+
+					uploadno.visible = true;
+					uploadno.setMessage(I18n.format("gui.back"));
 				} else {
 					uploadstart.visible = false;
-
+					uploadno.visible = false;
 				}
-				if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
-					uploadstart.setMessage(I18n.format("sfu.start"));
-					((StringImageButton) uploadstart).dredclos = false;
-				} else {
-					uploadstart.setMessage(I18n.format("sfu.stop"));
-					((StringImageButton) uploadstart).dredclos = true;
-				}
-
-				uploadno.visible = true;
-				uploadno.setMessage(I18n.format("gui.back"));
-			} else {
-				uploadstart.visible = false;
-				uploadno.visible = false;
+				return;
 			}
-			return;
-		}
+		} else {
 
+			uploadstart.visible = false;
+			uploadno.visible = false;
+		}
 		if (!(mc.world.getTileEntity(this.container.pos) instanceof SoundFileUploaderTileEntity)) {
 			return;
 		}
@@ -1249,7 +1256,9 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				&& sfit.getUsePlayerUUID()
 						.equals(PlayerHelper.getUUID(mc.player))
 				|| hasWindows(SoundFileUploaderWindwos.SERVER_FILESELECT)
-				|| hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)) {
+				|| (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN))
+						&& sfit.getUsePlayerUUID()
+								.equals(PlayerHelper.getUUID(mc.player))) {
 			exit.visible = true;
 		} else {
 			exit.visible = false;

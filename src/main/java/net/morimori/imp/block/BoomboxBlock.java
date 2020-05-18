@@ -8,9 +8,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleTypes;
@@ -41,17 +44,18 @@ import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
 
-public class BoomboxBlock extends Block {
+public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 	public static final BooleanProperty ON = IMPBooleanPropertys.ON;
 	public static final IntegerProperty VOLUME = IMPBooleanPropertys.VOLUME_0_8;
+	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public BoomboxBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(
 				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(OPEN, Boolean.valueOf(false))
-						.with(ON, Boolean.valueOf(false)).with(VOLUME, 15));
+						.with(ON, Boolean.valueOf(false)).with(VOLUME, 6).with(WATERLOGGED, Boolean.valueOf(false)));
 
 	}
 
@@ -199,9 +203,16 @@ public class BoomboxBlock extends Block {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	public IFluidState getFluidState(BlockState state) {
+		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+	}
+
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().rotateY());
+		IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().rotateY()).with(WATERLOGGED,
+				Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
 	}
 
 	@Nullable
@@ -223,13 +234,18 @@ public class BoomboxBlock extends Block {
 
 	@Override
 	public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(FACING, OPEN, ON, VOLUME);
+		builder.add(FACING, OPEN, ON, VOLUME,WATERLOGGED);
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
 			BlockPos currentPos, BlockPos facingPos) {
+
+		if (stateIn.get(WATERLOGGED)) {
+			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+		}
+
 		return facing == Direction.DOWN && !this.isValidPosition(stateIn, worldIn, currentPos)
 				? Blocks.AIR.getDefaultState()
 				: super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);

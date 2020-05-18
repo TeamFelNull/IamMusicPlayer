@@ -6,6 +6,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.client.handler.BoomboxSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteDeckSyncMessageHandler;
+import net.morimori.imp.client.handler.CassetteStoringSyncMessageHandler;
 import net.morimori.imp.client.handler.ClientStopRequestMessageHandler;
 import net.morimori.imp.client.handler.ServerResponseMessageHandler;
 import net.morimori.imp.client.handler.ServerSendSoundFileMessageHandler;
@@ -70,6 +71,9 @@ public class PacketHandler {
 
 		INSTANCE.registerMessage(next(), SoundPlayMessage.class, SoundPlayMessage::encodeMessege,
 				SoundPlayMessage::decodeMessege, SoundPlayMessageHandler::reversiveMessage);
+
+		INSTANCE.registerMessage(next(), CassetteStoringSyncMessage.class, CassetteStoringSyncMessage::encodeMessege,
+				CassetteStoringSyncMessage::decodeMessege, CassetteStoringSyncMessageHandler::reversiveMessage);
 
 	}
 }

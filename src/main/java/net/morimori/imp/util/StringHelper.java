@@ -1,6 +1,7 @@
 package net.morimori.imp.util;
 
 import java.sql.Timestamp;
+import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
 
@@ -12,6 +13,18 @@ public class StringHelper {
 			st = slipString(st, left);
 		}
 		return st;
+	}
+
+	public static String deleteExtension(String name) {
+
+		String[] filenames = name.split(Pattern.quote("."));
+
+		if (filenames.length == 1)
+			return name;
+
+		String oname = name.substring(0, name.length() - filenames[filenames.length - 1].length() - 1);
+
+		return oname;
 	}
 
 	public static String slipString(String name, boolean left) {

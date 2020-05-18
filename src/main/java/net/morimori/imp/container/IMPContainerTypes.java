@@ -15,6 +15,10 @@ public class IMPContainerTypes {
 	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_deck")
 	public static ContainerType<CassetteDeckContainer> CASSETTE_DECK;
 
+	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_storing")
+	public static ContainerType<CassetteStoringContainer> CASSETTE_STORING;
+
+
 	@SuppressWarnings("unchecked")
 	public static void registerContainerType(IForgeRegistry<ContainerType<?>> r) {
 		SOUNDFILE_UPLOADER = (ContainerType<SoundFileUploaderContainer>) IForgeContainerType
@@ -27,6 +31,11 @@ public class IMPContainerTypes {
 			return new CassetteDeckContainer(windowId, inv, new Inventory(3), data.readBlockPos());
 		}).setRegistryName(new ResourceLocation(IkisugiMusicPlayer.MODID, "cassette_deck"));
 		r.register(CASSETTE_DECK);
+
+		CASSETTE_STORING = (ContainerType<CassetteStoringContainer>) IForgeContainerType.create((windowId, inv, data) -> {
+			return new CassetteStoringContainer(windowId, inv, new Inventory(16), data.readBlockPos());
+		}).setRegistryName(new ResourceLocation(IkisugiMusicPlayer.MODID, "cassette_storing"));
+		r.register(CASSETTE_STORING);
 
 	}
 

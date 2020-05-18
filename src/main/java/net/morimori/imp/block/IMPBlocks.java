@@ -19,7 +19,6 @@ public class IMPBlocks {
 	public static final Block CASSETTE_DECK = new CassetteDeckBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IkisugiMusicPlayer.MODID, "cassette_deck");
-
 	public static final Block CASSETTE_STORING = new CassetteStoringBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IkisugiMusicPlayer.MODID, "cassette_storing");

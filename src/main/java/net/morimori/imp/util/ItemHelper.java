@@ -19,7 +19,7 @@ public class ItemHelper {
 		if (!isWritedSound(stack))
 			return stack.getDisplayName().getString();
 
-		return WorldPlayListSoundData.getWorldPlayListData(stack).getName();
+		return StringHelper.deleteExtension(WorldPlayListSoundData.getWorldPlayListData(stack).getName());
 	}
 
 	public static boolean canWriteCassette(ItemStack stack) {
