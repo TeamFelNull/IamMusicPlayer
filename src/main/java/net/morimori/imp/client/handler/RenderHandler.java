@@ -5,25 +5,44 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 import com.google.common.base.Strings;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.OptionsSoundsScreen;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.model.ModelRotation;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.client.renderer.item.CassetteItemRenderer;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.file.ClientFileReceiver;
 import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
-import net.morimori.imp.item.MusicItem;
+import net.morimori.imp.item.CassetteTapeItem;
+import net.morimori.imp.item.IMPItems;
+import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.util.ItemHelper;
+import net.morimori.imp.util.PictuerUtil;
+import net.morimori.imp.util.RenderHelper;
 import net.morimori.imp.util.StringHelper;
+
+@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 
 public class RenderHandler {
 	private static Minecraft mc = Minecraft.getInstance();
@@ -135,11 +154,72 @@ public class RenderHandler {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@SubscribeEvent
-	public static void onModel(ModelBakeEvent e) {
+	public static void onModelBaked(ModelBakeEvent e) {
+
 		Map<ResourceLocation, IBakedModel> map = e.getModelRegistry();
-		MusicItem.test = map;
+
+		List<CassetteTapeItem> tapes = new ArrayList<CassetteTapeItem>();
+		tapes.add((CassetteTapeItem) IMPItems.NO_RECORD_CASSETTE_TAPE);
+		tapes.add((CassetteTapeItem) IMPItems.RECORD_CASSETTE_TAPE);
+		tapes.add((CassetteTapeItem) IMPItems.OVERWRITABLE_CASSETTE_TAPE);
+
+		for (CassetteTapeItem tape : tapes) {
+			bakaItemModel(map, tape,
+					md -> (tape).getModel(md));
+			CassetteItemRenderer.casettomodels.put(tape, e.getModelLoader().func_217845_a(
+					new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + tape.getRegistryName()
+							.getPath()),
+					ModelRotation.X0_Y0));
+		}
 
 	}
 
+	public static void onModelRegistry(ModelRegistryEvent e) {
+
+		List<CassetteTapeItem> tapes = new ArrayList<CassetteTapeItem>();
+		tapes.add((CassetteTapeItem) IMPItems.NO_RECORD_CASSETTE_TAPE);
+		tapes.add((CassetteTapeItem) IMPItems.RECORD_CASSETTE_TAPE);
+		tapes.add((CassetteTapeItem) IMPItems.OVERWRITABLE_CASSETTE_TAPE);
+
+		for (CassetteTapeItem tape : tapes) {
+			ModelLoader.addSpecialModel(tape.getModel(null).getLocation());
+		}
+
+	}
+
+	private static <T extends IBakedModel> void bakaItemModel(Map<ResourceLocation, IBakedModel> map, Item item,
+			Function<IBakedModel, T> factory) {
+		map.put(new ModelResourceLocation(item.getRegistryName(), "inventory"),
+				factory.apply(map.get(new ModelResourceLocation(item.getRegistryName(), "inventory"))));
+	}
+
+	@SubscribeEvent
+	public static void onToolTipRender(RenderTooltipEvent.PostBackground e) {
+
+		if (!ItemHelper.isWritedSound(e.getStack())
+				|| WorldPlayListSoundData.getWorldPlayListData(e.getStack()).getSoundData().album_image == null) {
+			return;
+		}
+		byte[] bytes = WorldPlayListSoundData.getWorldPlayListData(e.getStack()).getSoundData().album_image;
+
+		if (bytes.length <= 0) {
+			return;
+		}
+		int x = e.getX();
+		int y = e.getY();
+
+		int pxsize = PictuerUtil.getImage(bytes).getWidth();
+		int pysize = PictuerUtil.getImage(bytes).getHeight();
+		int size = 128;
+
+		RenderSystem.pushMatrix();
+		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.getTextureManager().bindTexture(RenderHelper.getBytePictuerLocation(bytes));
+		AbstractGui.blit(x + (size - pxsize) / 4, y + (size - pysize) / 4, 0, 0, pxsize / 2, pysize / 2, pxsize / 2,
+				pysize / 2);
+		RenderSystem.popMatrix();
+
+	}
 }

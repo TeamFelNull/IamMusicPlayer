@@ -1,6 +1,7 @@
 package net.morimori.imp.item;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,6 +12,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.morimori.imp.IkisugiMusicPlayer;
 
 public class MusicItem extends Item {
 	public static Map<ResourceLocation, IBakedModel> test;
@@ -31,9 +33,13 @@ public class MusicItem extends Item {
 				ssp.startSound();
 
 			}*/
+		for (Entry<ResourceLocation, IBakedModel> m : test.entrySet()) {
 
-		playerIn.sendMessage(new StringTextComponent(test.toString()));
+			if (m.getKey().getNamespace().equals(IkisugiMusicPlayer.MODID)&&m.getKey().getPath().equals("no_record_cassette_tape")) {
+				playerIn.sendMessage(new StringTextComponent(m.getValue().getClass().toString()));
+			}
 
+		}
 		return ActionResult.func_226248_a_(item);
 	}
 }

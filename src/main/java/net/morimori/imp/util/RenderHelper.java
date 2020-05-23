@@ -1,5 +1,11 @@
 package net.morimori.imp.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -7,13 +13,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.morimori.imp.IkisugiMusicPlayer;
 
 public class RenderHelper {
 	private static Minecraft mc = Minecraft.getInstance();
 	private static TextureManager tm = mc.getTextureManager();
+
+	private static Map<byte[], ResourceLocation> byteloactions = new HashMap<byte[], ResourceLocation>();
 
 	public static void drawTexture(ResourceLocation rl, int p_innerBlit_0_, int p_innerBlit_1_, int p_innerBlit_2_,
 			int p_innerBlit_3_, int p_innerBlit_4_, float p_innerBlit_5_, float p_innerBlit_6_, float p_innerBlit_7_,
@@ -64,5 +75,29 @@ public class RenderHelper {
 
 	public static void matrixRotateDegreefZ(MatrixStack ms, float z) {
 		ms.func_227863_a_(new Vector3f(0, 0, 1).func_229187_a_(z));
+	}
+
+	public static ResourceLocation getBytePictuerLocation(byte[] bytes) {
+
+		if (byteloactions.containsKey(bytes)) {
+			return byteloactions.get(bytes);
+		}
+
+		ResourceLocation imagelocation = new ResourceLocation(IkisugiMusicPlayer.MODID,
+				"byteimage/" + UUID.randomUUID().toString());
+
+		try {
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+
+			NativeImage NI = NativeImage.read(bis);
+
+			tm.func_229263_a_(imagelocation, new DynamicTexture(NI));
+			byteloactions.put(bytes, imagelocation);
+			return imagelocation;
+		} catch (IOException e) {
+
+		}
+
+		return null;
 	}
 }

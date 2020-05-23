@@ -22,7 +22,7 @@ public class ServerFileSender extends Thread {
 	public static Map<String, Map<Integer, Boolean>> responseWaits = new HashMap<String, Map<Integer, Boolean>>();
 	public static Map<String, Map<Integer, Boolean>> stop = new HashMap<String, Map<Integer, Boolean>>();
 
-	public static int bytespeed = 5000;
+	public static int bytespeed = 1024 * 8;
 
 	private Path path;
 	public String pluuid;

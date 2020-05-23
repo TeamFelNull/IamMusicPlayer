@@ -14,7 +14,7 @@ public class ClientFileHelper {
 	}
 
 	public static Path getClientServerSoundsDataPath() {
-		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("serversounddata");
+		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("cash");
 	}
 
 	public static Path getClientCurrentServerSoundDataPath() {

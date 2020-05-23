@@ -28,7 +28,7 @@ public class ClientFileSender extends Thread {
 	public static Map<Path, Boolean> reservationSenders = new HashMap<Path, Boolean>();
 
 	public static int MaxSendCont = 5;
-	public static int bytespeed = 5000;
+	public static int bytespeed = 1024*8;
 
 	public Path path;
 	public boolean playerfile;

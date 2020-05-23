@@ -1,5 +1,6 @@
 package net.morimori.imp.sound;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -16,6 +17,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.morimori.imp.util.PictuerUtil;
 
 public class SoundData {
 	public String track = "null";
@@ -88,9 +90,31 @@ public class SoundData {
 			if (mfile.getEmphasis() != null)
 				this.emphasis = mfile.getEmphasis();
 
-			if (tag.getAlbumImage() != null)
-				this.album_image = tag.getAlbumImage();
+			if (tag.getAlbumImage() != null) {
 
+				byte[] motobytes = tag.getAlbumImage();
+
+				BufferedImage motos = PictuerUtil.getImage(motobytes);
+				int size = 128;
+				float w = motos.getWidth();
+				float h = motos.getHeight();
+
+				int aw = 10;
+				int ah = 10;
+
+				if (w == h) {
+					aw = size;
+					ah = size;
+				} else if (w > h) {
+					aw = size;
+					ah = (int) ((float) size * (h / w));
+				} else if (w > h) {
+					aw = (int) ((float) size * (w / h));
+					ah = size;
+				}
+
+				this.album_image = PictuerUtil.setSize(motobytes, aw, ah);
+			}
 		} catch (UnsupportedTagException | InvalidDataException | IOException e) {
 
 		}

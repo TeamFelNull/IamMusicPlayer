@@ -24,4 +24,5 @@ public class NoRecordCassetteTapeItem extends CassetteTapeItem {
 		}
 		return outstack;
 	}
+
 }

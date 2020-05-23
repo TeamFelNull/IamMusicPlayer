@@ -81,7 +81,7 @@ repositories {
 
 dependencies {
 
-  minecraft 'net.minecraftforge:forge:1.15.2-31.1.46'
+  minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
   compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
   runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
 }
