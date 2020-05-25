@@ -38,7 +38,9 @@ public class SoundData {
 	public String emphasis = "null";
 	public byte[] album_image = null;
 	public String album_image_uuid = "null";
+	public SoundData() {
 
+	}
 	public SoundData(Path path) {
 		try {
 			Mp3File mfile = new Mp3File(path.toString());

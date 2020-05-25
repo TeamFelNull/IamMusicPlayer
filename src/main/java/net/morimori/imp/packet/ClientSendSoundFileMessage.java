@@ -1,8 +1,6 @@
 package net.morimori.imp.packet;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.morimori.imp.sound.SoundData;
 
 public class ClientSendSoundFileMessage {
 	public byte[] soundbyte;
@@ -10,24 +8,22 @@ public class ClientSendSoundFileMessage {
 	public int bytecont;
 	public String name;
 	public boolean isPlayerFile;
-	public SoundData sd;
 	public int id;
 
 	public ClientSendSoundFileMessage(byte[] filebytedata1, boolean frist, int cont, String filename,
-			boolean playerfile, SoundData sd, int id) {
+			boolean playerfile, int id) {
 		this.soundbyte = filebytedata1;
 		this.isFrist = frist;
 		this.bytecont = cont;
 		this.name = filename;
 		this.isPlayerFile = playerfile;
-		this.sd = sd;
 		this.id = id;
 	}
 
 	public static ClientSendSoundFileMessage decodeMessege(PacketBuffer buffer) {
 
 		return new ClientSendSoundFileMessage(buffer.readByteArray(), buffer.readBoolean(), buffer.readInt(),
-				buffer.readString(32767), buffer.readBoolean(), new SoundData(buffer.readCompoundTag()),buffer.readInt());
+				buffer.readString(32767), buffer.readBoolean(),buffer.readInt());
 	}
 
 	public static void encodeMessege(ClientSendSoundFileMessage messegeIn, PacketBuffer buffer) {
@@ -37,7 +33,6 @@ public class ClientSendSoundFileMessage {
 		buffer.writeInt(messegeIn.bytecont);
 		buffer.writeString(messegeIn.name);
 		buffer.writeBoolean(messegeIn.isPlayerFile);
-		buffer.writeCompoundTag(messegeIn.sd.writeNBT(new CompoundNBT()));
 		buffer.writeInt(messegeIn.id);
 	}
 }

@@ -10,7 +10,6 @@ import net.minecraft.client.resources.I18n;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.packet.ClientSendSoundFileMessage;
 import net.morimori.imp.packet.PacketHandler;
-import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.util.FileLoader;
 import net.morimori.imp.util.NarratorHelper;
 import net.morimori.imp.util.StringHelper;
@@ -28,7 +27,7 @@ public class ClientFileSender extends Thread {
 	public static Map<Path, Boolean> reservationSenders = new HashMap<Path, Boolean>();
 
 	public static int MaxSendCont = 5;
-	public static int bytespeed = 1024*8;
+	public static int bytespeed = 1024 * 8;
 
 	public Path path;
 	public boolean playerfile;
@@ -213,7 +212,7 @@ public class ClientFileSender extends Thread {
 				PacketHandler.INSTANCE
 						.sendToServer(
 								new ClientSendSoundFileMessage(bi, frist, bytes.length, this.path.toFile().getName(),
-										playerfile, new SoundData(this.path), id));
+										playerfile, id));
 				frist = false;
 				sendingprograses.put(id, cont);
 				sendingalls.put(id, bytes.length);

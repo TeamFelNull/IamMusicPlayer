@@ -16,7 +16,7 @@ public class ClientSendSoundFileMessageHandler {
 		if (message.isFrist) {
 			ServerFileReceiver fr = new ServerFileReceiver(PlayerHelper.getUUID(ctx.get().getSender()),
 					message.bytecont,
-					message.name, ctx.get().getSender().server, message.isPlayerFile, message.sd, message.id);
+					message.name, ctx.get().getSender().server, message.isPlayerFile,  message.id);
 			fr.start();
 		}
 

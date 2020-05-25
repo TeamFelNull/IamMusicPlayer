@@ -107,7 +107,9 @@
   "overlay.sender.othertask": "Other %s Upload Tasks...",
   "overlay.sender.reservation": "%s Upload reservations...",
   
-  "message.volume.set": "Volume to %s",
+  "music.ikisugimusicplayer.test": "Test",
+  
+  "item.ikisugimusicplayer.cassette_tape.written": "%s Tape",
   
   "_comment": "Last"
   

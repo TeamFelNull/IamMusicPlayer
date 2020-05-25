@@ -21,11 +21,10 @@ public class ServerFileReceiver extends Thread {
 	private MinecraftServer ms;
 	private String filename;
 	private boolean playerfile;
-	private SoundData sd;
 	int id;
 
 	public ServerFileReceiver(String uuid, int bytecont, String filename, MinecraftServer msi, boolean isPlayerFile,
-			SoundData sd, int id) {
+			int id) {
 
 		if (!receiverBufer.containsKey(uuid)) {
 			receiverBufer.put(uuid, new HashMap<Integer, FileReceiverBuffer>());
@@ -42,7 +41,6 @@ public class ServerFileReceiver extends Thread {
 		this.filename = filename;
 		this.ms = msi;
 		this.playerfile = isPlayerFile;
-		this.sd = sd;
 		this.id = id;
 	}
 
@@ -127,11 +125,25 @@ public class ServerFileReceiver extends Thread {
 		if (playerfile) {
 			FileLoader.fileBytesWriter(receiverBufer.get(pluuid).get(id).getBytes(),
 					FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(filename));
-			PlayList.addPlayeyListFileNBT(ms, pluuid, filename, pluuid, sd);
+
+			try {
+				sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			PlayList.addPlayeyListFileNBT(ms, pluuid, filename, pluuid,
+					new SoundData(FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(filename)));
+
 		} else {
 			FileLoader.fileBytesWriter(receiverBufer.get(pluuid).get(id).getBytes(),
 					FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(filename));
-			PlayList.addPlayeyListFileNBT(ms, "everyone", filename, pluuid, sd);
+			try {
+				sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			PlayList.addPlayeyListFileNBT(ms, "everyone", filename, pluuid,
+					new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(filename)));
 		}
 		IkisugiMusicPlayer.LOGGER.info("Server File Receiver was Success Full :  "
 				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString() + " Name "

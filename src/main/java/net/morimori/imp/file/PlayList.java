@@ -271,13 +271,25 @@ public class PlayList {
 		if (!stag.contains("UUID"))
 			stag.putString("UUID", UUID.randomUUID().toString());
 
-		if (!stag.contains("PlayerUUID"))
-			stag.putString("PlayerUUID", playeruuid);
+		if (!stag.contains("PlayerUUID")) {
+			try {
+				ms.getPlayerList().getPlayerByUUID(UUID.fromString(playeruuid)).getDisplayName().getString();
+				stag.putString("PlayerUUID", playeruuid);
+			} catch (Exception e) {
+				stag.putString("PlayerName", FakeUUID);
+			}
 
-		if (!stag.contains("PlayerName"))
-			stag.putString("PlayerName",
-					ms.getPlayerList().getPlayerByUUID(UUID.fromString(playeruuid)).getDisplayName().getString());
+		}
 
+		if (!stag.contains("PlayerName")) {
+
+			try {
+				stag.putString("PlayerName",
+						ms.getPlayerList().getPlayerByUUID(UUID.fromString(playeruuid)).getDisplayName().getString());
+			} catch (Exception e) {
+				stag.putString("PlayerName", playeruuid);
+			}
+		}
 		if (!stag.contains("SoundData"))
 			stag.put("SoundData", sd.writeNBT(new CompoundNBT()));
 
@@ -380,6 +392,10 @@ public class PlayList {
 			IkisugiMusicPlayer.LOGGER
 					.info("Checking Sound Data : " + playlistname + ":" + soundfilename);
 			CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
+
+			if (tag == null) {
+				return;
+			}
 
 			CompoundNBT pltag = tag.contains(playlistname) ? (CompoundNBT) tag.get(playlistname)
 					: new CompoundNBT();
