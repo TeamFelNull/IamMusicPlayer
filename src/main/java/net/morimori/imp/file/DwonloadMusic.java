@@ -36,10 +36,11 @@ public class DwonloadMusic {
 
 		public void dwonloadSoundFromWorldPlayLists(MinecraftServer ms) {
 			for (Entry<ResourceLocation, String> ruen : IMPRegistries.DwonloadMusics.entrySet()) {
+				IkisugiMusicPlayer.LOGGER.info("Dwonload Stating : " + ruen.getKey().toString());
 				dwonloadSound(ms, ruen.getValue(), new TranslationTextComponent(
 						"music." + ruen.getKey().getNamespace() + "." + ruen.getKey().getPath()).getString(),
 						ruen.getKey());
-				IkisugiMusicPlayer.LOGGER.info("Dwonload Stating : " + ruen.getKey().toString());
+
 			}
 
 		}
@@ -55,9 +56,9 @@ public class DwonloadMusic {
 
 				PlayList.addPlayeyListFileNBT(ms, "everyone", name + ".mp3", rl.getNamespace(),
 						new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name + ".mp3")));
-
+				IkisugiMusicPlayer.LOGGER.info("Dwonload  was Success Full  : " + rl.toString());
 			} catch (IOException | InterruptedException e) {
-				IkisugiMusicPlayer.LOGGER.info("Dwonload Failure : " + url);
+				IkisugiMusicPlayer.LOGGER.info("Dwonload was Failure : " + url);
 			}
 
 		}

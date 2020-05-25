@@ -98,7 +98,7 @@
   "overlay.receiver.world": "%s をワールドからダウンロード中",
   "overlay.receiver.server": "%s をサーバーからダウンロード中",
   "overlay.receiver.othertask": "その他 %s 個のダウンロードタスク...",
-  "overlay.soundwaitthread.crash": "サウンドスレッドがクラッシュしました！ 再起動中です...",
+  "overlay.soundwaitthread.crash": "申し訳ないがサウンドスレッドがクラッシュしました！ 再起動中です...",
   "overlay.sender.othertask": "その他 %s 個のアップロードタスク...",
   "overlay.sender.reservation": "%s 件のアップロード予約",
   

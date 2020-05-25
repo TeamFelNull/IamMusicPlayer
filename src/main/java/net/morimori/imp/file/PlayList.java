@@ -272,12 +272,7 @@ public class PlayList {
 			stag.putString("UUID", UUID.randomUUID().toString());
 
 		if (!stag.contains("PlayerUUID")) {
-			try {
-				ms.getPlayerList().getPlayerByUUID(UUID.fromString(playeruuid)).getDisplayName().getString();
-				stag.putString("PlayerUUID", playeruuid);
-			} catch (Exception e) {
-				stag.putString("PlayerName", FakeUUID);
-			}
+			stag.putString("PlayerUUID", playeruuid);
 
 		}
 

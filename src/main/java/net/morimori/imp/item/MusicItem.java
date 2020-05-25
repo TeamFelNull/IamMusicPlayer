@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import net.morimori.imp.file.DwonloadMusic;
 
 public class MusicItem extends Item {
 
@@ -25,8 +24,6 @@ public class MusicItem extends Item {
 
 							ssp.startSound();
 			*/
-		} else {
-			DwonloadMusic.dwonloadSoundFromWorldPlayLists(worldIn.getServer());
 		}
 
 		return ActionResult.func_226248_a_(item);
