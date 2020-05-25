@@ -1,5 +1,8 @@
 package net.morimori.imp.client.screen;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
@@ -19,12 +22,35 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 			"textures/gui/container/cassete_storing.png");
 	private static Minecraft mc = Minecraft.getInstance();
 
+	public static Map<Integer, Integer> slips = new HashMap<Integer, Integer>();
+	public static Map<Integer, Integer> slipmaxs = new HashMap<Integer, Integer>();
+
 	public CassetteStoringScreen(CassetteStoringContainer screenContainer, PlayerInventory inv,
 			ITextComponent titleIn) {
 		super(screenContainer, inv, titleIn);
 
 		this.ySize = 238;
 
+	}
+
+	public String getSlipedNameString(int num) {
+
+		if (!(mc.world.getTileEntity(this.container.pos) instanceof CassetteStoringTileEntity))
+			return null;
+
+		CassetteStoringTileEntity tile = (CassetteStoringTileEntity) mc.world
+				.getTileEntity(this.container.pos);
+
+		ItemStack cassette = tile.getCassette(num);
+		String outst = ItemHelper.getCassetteMusicName(cassette);
+
+		slipmaxs.put(num, outst.length());
+
+		if (slips.containsKey(num)) {
+			outst = StringHelper.slipString(outst, true, slips.get(num));
+		}
+
+		return outst;
 	}
 
 	@Override
@@ -74,7 +100,7 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 				int ys = (this.height - this.ySize) / 2;
 				this.blit(xs + 7, ys + 7 + 18 * i, 0, 238, 54, 18);
 				RenderSystem.popMatrix();
-				drawString(StringHelper.characterLimit(mc, ItemHelper.getCassetteMusicName(cassette), 40), 18,
+				drawString(StringHelper.characterLimit(mc, getSlipedNameString(i), 40, false), 18,
 						12 + 18 * i, coloer);
 			}
 		}
@@ -89,7 +115,7 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 				int ys = (this.height - this.ySize) / 2;
 				this.blit(xs + 115, ys + 7 + 18 * i, 0, 238, 54, 18);
 				RenderSystem.popMatrix();
-				drawString(StringHelper.characterLimit(mc, ItemHelper.getCassetteMusicName(cassette), 40), 126,
+				drawString(StringHelper.characterLimit(mc, getSlipedNameString(i + 8), 40, false), 126,
 						12 + 18 * i, coloer);
 			}
 		}

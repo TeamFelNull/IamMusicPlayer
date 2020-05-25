@@ -4,14 +4,19 @@ import java.nio.file.Paths;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.util.RenderHelper;
 
 public class WorldPlayListSoundData {
 
 	private String uuid;
 	private String name;
 	private String folder;
-
 	private SoundData data;
+
+	private static ResourceLocation noalbumimage = new ResourceLocation(IkisugiMusicPlayer.MODID,
+			"textures/gui/no_album_image.png");
 
 	public WorldPlayListSoundData(String name, String folder, String uuid, SoundData sounddata) {
 		this.name = name;
@@ -76,5 +81,13 @@ public class WorldPlayListSoundData {
 	public static void setWorldPlayList(ItemStack stack, WorldPlayListSoundData WPLSD) {
 		CompoundNBT tag = stack.getOrCreateTag();
 		tag.put("WorldPlayListSoundData", WPLSD.writeNBT(new CompoundNBT()));
+	}
+
+	public ResourceLocation getAlbumImage() {
+		if (this.getSoundData().album_image.length <= 0) {
+			return noalbumimage;
+		} else {
+			return RenderHelper.getBytePictuerLocation(this.getSoundData().album_image,this.getSoundData().album_image_uuid);
+		}
 	}
 }

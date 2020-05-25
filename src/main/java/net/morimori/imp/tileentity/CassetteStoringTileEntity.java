@@ -39,7 +39,10 @@ public class CassetteStoringTileEntity extends LockableTileEntity
 
 		return tag2;
 	}
-
+	public void setItem(int id, ItemStack item) {
+		this.items.set(id, item);
+		this.markDirty();
+	}
 	public ItemStack getCassette(int num) {
 		return getItems().get(num);
 	}

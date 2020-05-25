@@ -24,7 +24,7 @@ public class RenderHelper {
 	private static Minecraft mc = Minecraft.getInstance();
 	private static TextureManager tm = mc.getTextureManager();
 
-	private static Map<byte[], ResourceLocation> byteloactions = new HashMap<byte[], ResourceLocation>();
+	private static Map<String, ResourceLocation> byteloactions = new HashMap<String, ResourceLocation>();
 
 	public static void drawTexture(ResourceLocation rl, int p_innerBlit_0_, int p_innerBlit_1_, int p_innerBlit_2_,
 			int p_innerBlit_3_, int p_innerBlit_4_, float p_innerBlit_5_, float p_innerBlit_6_, float p_innerBlit_7_,
@@ -77,10 +77,10 @@ public class RenderHelper {
 		ms.func_227863_a_(new Vector3f(0, 0, 1).func_229187_a_(z));
 	}
 
-	public static ResourceLocation getBytePictuerLocation(byte[] bytes) {
+	public static ResourceLocation getBytePictuerLocation(byte[] bytes, String uuid) {
 
-		if (byteloactions.containsKey(bytes)) {
-			return byteloactions.get(bytes);
+		if (byteloactions.containsKey(uuid)) {
+			return byteloactions.get(uuid);
 		}
 
 		ResourceLocation imagelocation = new ResourceLocation(IkisugiMusicPlayer.MODID,
@@ -90,9 +90,8 @@ public class RenderHelper {
 			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 
 			NativeImage NI = NativeImage.read(bis);
-
 			tm.func_229263_a_(imagelocation, new DynamicTexture(NI));
-			byteloactions.put(bytes, imagelocation);
+			byteloactions.put(uuid, imagelocation);
 			return imagelocation;
 		} catch (IOException e) {
 

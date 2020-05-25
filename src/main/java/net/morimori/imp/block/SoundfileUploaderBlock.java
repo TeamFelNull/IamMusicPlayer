@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -37,7 +38,7 @@ import net.morimori.imp.client.screen.SoundFileUploaderMonitorTextures;
 import net.morimori.imp.client.screen.SoundFileUploaderWindwos;
 import net.morimori.imp.tileentity.SoundFileUploaderTileEntity;
 
-public class SoundfileUploaderBlock extends Block {
+public class SoundfileUploaderBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty ON = IMPBooleanPropertys.ON;
 	public static final EnumProperty<SoundFileUploaderMonitorTextures> SOUNDFILE_UPLOADER_MONITOR = IMPBooleanPropertys.SOUNDFILE_UPLOADER_MONITOR;
@@ -53,6 +54,11 @@ public class SoundfileUploaderBlock extends Block {
 	}
 
 	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return !state.get(WATERLOGGED);
+	}
+
+	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
 
@@ -61,10 +67,12 @@ public class SoundfileUploaderBlock extends Block {
 				.with(SOUNDFILE_UPLOADER_WINDWOS, SoundFileUploaderWindwos.NONE).with(WATERLOGGED,
 						Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
 	}
+
 	@SuppressWarnings("deprecation")
 	public IFluidState getFluidState(BlockState state) {
 		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
 	}
+
 	@Override
 	@Deprecated
 	public int getLightValue(BlockState state) {
@@ -140,7 +148,7 @@ public class SoundfileUploaderBlock extends Block {
 
 	@Override
 	public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(FACING, ON, SOUNDFILE_UPLOADER_MONITOR, SOUNDFILE_UPLOADER_WINDWOS,WATERLOGGED);
+		builder.add(FACING, ON, SOUNDFILE_UPLOADER_MONITOR, SOUNDFILE_UPLOADER_WINDWOS, WATERLOGGED);
 	}
 
 	@Override

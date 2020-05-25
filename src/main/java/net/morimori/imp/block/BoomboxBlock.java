@@ -58,7 +58,10 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 						.with(ON, Boolean.valueOf(false)).with(VOLUME, 6).with(WATERLOGGED, Boolean.valueOf(false)));
 
 	}
-
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return !state.get(WATERLOGGED);
+	}
 	@Override
 	public ActionResultType func_225533_a_(BlockState stateIn, World worldIn, BlockPos pos,
 			PlayerEntity player, Hand hand, BlockRayTraceResult brtr) {

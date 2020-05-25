@@ -644,19 +644,25 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		if (isUsingMain()) {
 			if (selectFile == null || ClientFileSender.isResevationOrSending(this.selectFile.toPath())
 					|| !selectFile.exists()) {
+				try {
 
-				if (selectFile != null&&ClientFileSender.isResevationOrSending(this.selectFile.toPath())
-						&& ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
-								.toFile().getName().equals(selectFile.getName())) {
-					uploadstart.visible = true;
-					uploadstart.setMessage(I18n.format("sfu.stop"));
-					((StringImageButton) uploadstart).dredclos = true;
-				} else {
-					uploadstart.visible = false;
-					uploadno.setMessage(I18n.format("gui.back"));
-					((StringImageButton) uploadstart).dredclos = false;
+					if (selectFile != null) {
+						if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())
+								&& ClientFileSender.senderBuffer
+										.get(ClientFileSender.getId(this.selectFile.toPath())).path
+												.toFile().getName().equals(selectFile.getName())) {
+							uploadstart.visible = true;
+							uploadstart.setMessage(I18n.format("sfu.stop"));
+							((StringImageButton) uploadstart).dredclos = true;
+						} else {
+							uploadstart.visible = false;
+							uploadno.setMessage(I18n.format("gui.back"));
+							((StringImageButton) uploadstart).dredclos = false;
+						}
+					}
+
+				} catch (Exception e) {
 				}
-
 			} else {
 				uploadstart.visible = true;
 				uploadstart.setMessage(I18n.format("gui.yes"));

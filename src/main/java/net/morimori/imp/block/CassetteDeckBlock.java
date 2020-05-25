@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,7 +44,7 @@ import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.tileentity.CassetteDeckTileEntity;
 import net.morimori.imp.util.PlayerHelper;
 
-public class CassetteDeckBlock extends Block {
+public class CassetteDeckBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty ON = IMPBooleanPropertys.ON;
 	public static final EnumProperty<CassetteDeckStates> CASSETTE_DECK_STATES = IMPBooleanPropertys.CASSETTE_DECK_STATES;
@@ -54,6 +55,11 @@ public class CassetteDeckBlock extends Block {
 		this.setDefaultState(
 				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(ON, Boolean.valueOf(false))
 						.with(CASSETTE_DECK_STATES, CassetteDeckStates.NONE).with(WATERLOGGED, Boolean.valueOf(false)));
+	}
+
+	@Override
+	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+		return !state.get(WATERLOGGED);
 	}
 
 	@Override

@@ -45,6 +45,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	public Map<String, String> playerstager = new HashMap<String, String>();
 	public Set<String> lisnFinishedPlayers = new HashSet<String>();
 	public int recodingPrograse;
+	public int copyingPrograse;
+	public int deletingPrograse;
 
 	private String selectedFile;
 
@@ -55,6 +57,10 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 	public ItemStack getPlayCassette() {
 		return this.getWriteCassette();
+	}
+
+	public ItemStack getCopyingCassete() {
+		return this.getItems().get(2);
 	}
 
 	public String getFliePath() {
@@ -81,14 +87,79 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 						CassetteDeckStates.NONE));
 	}
 
+	public void finishCopying() {
+
+		if (ItemHelper.canWriteCassette(this.getWriteCassette()) && ItemHelper.isWritedSound(getCopyingCassete())) {
+			setWriteCassette(ItemHelper.writeSoundOnCassette(this.getWriteCassette(),
+					WorldPlayListSoundData.getWorldPlayListData(getCopyingCassete())));
+		}
+		copyingPrograse = 0;
+		world.setBlockState(this.pos,
+				this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES,
+						CassetteDeckStates.NONE));
+	}
+
+	public void finishDeleting() {
+
+		if (ItemHelper.isCassette(getWriteCassette()) && ItemHelper.isWritedSound(getWriteCassette())) {
+			setWriteCassette(ItemHelper.deleteSound(getWriteCassette()));
+		}
+		deletingPrograse = 0;
+		world.setBlockState(this.pos,
+				this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES,
+						CassetteDeckStates.NONE));
+	}
+
 	public int getRecodingTotalTime() {
 		return 200;
+	}
+
+	public int getCoppyTotalTime() {
+		return 100;
+	}
+
+	public int getDeleteTotalTime() {
+		return 150;
 	}
 
 	@Override
 	public void tick() {
 		if (!world.isRemote) {
 
+			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.DELETE) {
+
+				if (ItemHelper.isCassette(getWriteCassette()) && ItemHelper.isWritedSound(getWriteCassette())) {
+					if (deletingPrograse < getDeleteTotalTime()) {
+						deletingPrograse++;
+					}
+					if (deletingPrograse == getDeleteTotalTime()) {
+						finishDeleting();
+					}
+				}
+
+			} else {
+				deletingPrograse = 0;
+			}
+
+			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.COPY) {
+				if (ItemHelper.canWriteCassette(getWriteCassette()) && ItemHelper.isWritedSound(getCopyingCassete())
+						&& !WorldPlayListSoundData.getWorldPlayListData(getWriteCassette())
+								.equals(WorldPlayListSoundData.getWorldPlayListData(getCopyingCassete()))) {
+					if (copyingPrograse < getCoppyTotalTime()) {
+						copyingPrograse++;
+					}
+					if (copyingPrograse == getCoppyTotalTime()) {
+						finishCopying();
+					}
+				} else {
+					copyingPrograse = 0;
+					world.setBlockState(this.pos,
+							this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES,
+									CassetteDeckStates.NONE));
+				}
+			} else {
+				copyingPrograse = 0;
+			}
 			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.RECORD) {
 				if (ItemHelper.canWriteCassette(getWriteCassette())) {
 					if (recodingPrograse < getRecodingTotalTime()) {
@@ -190,6 +261,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		this.inversionPitch = tag.getBoolean("InversionPitch");
 		this.selectedFile = tag.getString("SelectedFile");
 		this.recodingPrograse = tag.getInt("RecodingPrograse");
+		this.copyingPrograse = tag.getInt("CopyingPrograse");
+		this.deletingPrograse = tag.getInt("DeletingPrograse");
 
 		ItemStackHelper.loadAllItems(tag, items);
 
@@ -213,6 +286,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		tag.putBoolean("InversionPitch", this.inversionPitch);
 		tag.putString("SelectedFile", this.selectedFile);
 		tag.putInt("RecodingPrograse", this.recodingPrograse);
+		tag.putInt("CopyingPrograse", this.copyingPrograse);
+		tag.putInt("DeletingPrograse", this.deletingPrograse);
 
 		CompoundNBT ptmnbt = new CompoundNBT();
 		for (Entry<String, String> ent : playerstager.entrySet()) {
@@ -318,7 +393,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		PacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> ch),
 				new CassetteDeckSyncMessage(this.world.dimension.getDimension().getType().getId(), this.pos,
 						this.items, this.rotationPitch, this.rotationYaw, this.selectedFile, this.playerstager,
-						this.recodingPrograse, this.lisnFinishedPlayers));
+						this.recodingPrograse, this.lisnFinishedPlayers, this.copyingPrograse, this.deletingPrograse));
 	}
 
 	public void clientSync(CassetteDeckSyncMessage message) {
@@ -329,6 +404,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		this.playerstager = message.playerstager;
 		this.recodingPrograse = message.recordingPrograse;
 		this.lisnFinishedPlayers = message.lisnFinishedPlayers;
+		this.copyingPrograse = message.copyingPrograse;
+		this.deletingPrograse = message.deletingPrograse;
 	}
 
 	@Override

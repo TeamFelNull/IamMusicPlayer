@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
@@ -36,6 +37,7 @@ public class SoundData {
 	public String layer = "null";
 	public String emphasis = "null";
 	public byte[] album_image = null;
+	public String album_image_uuid = "null";
 
 	public SoundData(Path path) {
 		try {
@@ -94,7 +96,7 @@ public class SoundData {
 
 				byte[] motobytes = tag.getAlbumImage();
 
-				BufferedImage motos = PictuerUtil.getImage(motobytes);
+				BufferedImage motos = PictuerUtil.getImage(motobytes, null);
 				int size = 128;
 				float w = motos.getWidth();
 				float h = motos.getHeight();
@@ -114,6 +116,7 @@ public class SoundData {
 				}
 
 				this.album_image = PictuerUtil.setSize(motobytes, aw, ah);
+				this.album_image_uuid = UUID.randomUUID().toString();
 			}
 		} catch (UnsupportedTagException | InvalidDataException | IOException e) {
 
@@ -178,6 +181,8 @@ public class SoundData {
 		if (tag.contains("AlbumImage"))
 			this.album_image = tag.getByteArray("AlbumImage");
 
+		if (tag.contains("AlbumImageUUID"))
+			this.album_image_uuid = tag.getString("AlbumImageUUID");
 	}
 
 	public CompoundNBT writeNBT(CompoundNBT tag) {
@@ -202,6 +207,8 @@ public class SoundData {
 			tag.putByteArray("AlbumImage", this.album_image);
 		}
 
+		tag.putString("AlbumImageUUID", this.album_image_uuid);
+
 		return tag;
 	}
 
@@ -218,14 +225,7 @@ public class SoundData {
 
 		if (sd.artist != null && !sd.artist.equals("null") && !sd.artist.isEmpty())
 			lores.add(new TranslationTextComponent("soundata.artist", sd.artist));
-
-		Minecraft mc = Minecraft.getInstance();
-		if (!mc.gameSettings.advancedItemTooltips) {
-			return;
-		}
-
 		String album = null;
-
 		if (sd.album != null && !sd.album.equals("null") && !sd.album.isEmpty()) {
 			lores.add(new TranslationTextComponent("soundata.album", sd.album));
 			album = sd.album;
@@ -237,6 +237,11 @@ public class SoundData {
 
 		if (sd.year != null && !sd.year.equals("null") && !sd.year.isEmpty())
 			lores.add(new TranslationTextComponent("soundata.year", sd.year));
+
+		Minecraft mc = Minecraft.getInstance();
+		if (!mc.gameSettings.advancedItemTooltips) {
+			return;
+		}
 
 		if (sd.track != null && !sd.track.equals("null") && !sd.track.isEmpty())
 			lores.add(new TranslationTextComponent("soundata.track", sd.track));

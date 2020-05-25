@@ -28,4 +28,17 @@ public class IMPMath {
 		}
 		return k;
 	}
+
+	public static int mostNumber(int... nums) {
+
+		int most = 0;
+
+		for (int num : nums) {
+			if (most < num) {
+				most = num;
+			}
+		}
+
+		return most;
+	}
 }

@@ -53,6 +53,25 @@ public class ItemHelper {
 		return stack;
 	}
 
+	public static ItemStack deleteSound(ItemStack stack) {
+
+		if (!(stack.getItem() instanceof CassetteTapeItem))
+			return ItemStack.EMPTY;
+
+		if (((CassetteTapeItem) stack.getItem()).canOverwrite()) {
+
+			ItemStack stacki = stack.copy();
+
+			CompoundNBT tag = stacki.getOrCreateTag();
+
+			tag.remove("WorldPlayListSoundData");
+
+			return stacki;
+		}
+
+		return new ItemStack(IMPItems.MAGNETIC_TAPE, stack.getCount());
+	}
+
 	public static boolean canPlay(ItemStack stack) {
 
 		return isWritedSound(stack);

@@ -6,16 +6,27 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 public class PictuerUtil {
+	private static Map<String, BufferedImage> byteloactions = new HashMap<String, BufferedImage>();
 
-	public static BufferedImage getImage(byte[] bytes) {
-
+	public static BufferedImage getImage(byte[] bytes, String uuid) {
+		if (uuid != null) {
+			if (byteloactions.containsKey(uuid)) {
+				return byteloactions.get(uuid);
+			}
+		}
 		ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
 		try {
 			BufferedImage bi = ImageIO.read(bis);
+			if (uuid != null) {
+				byteloactions.put(uuid, bi);
+			}
+
 			return bi;
 		} catch (IOException e) {
 			return null;
@@ -24,7 +35,7 @@ public class PictuerUtil {
 
 	public static byte[] setSize(byte[] bytes, int width, int height) {
 
-		BufferedImage image = getImage(bytes);
+		BufferedImage image = getImage(bytes, null);
 
 		BufferedImage outimage = new BufferedImage(width, height, image.getType());
 

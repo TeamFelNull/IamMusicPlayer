@@ -23,6 +23,7 @@ import net.morimori.imp.container.CassetteDeckContainer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.CassetteDeckMessage;
 import net.morimori.imp.packet.PacketHandler;
+import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.tileentity.CassetteDeckTileEntity;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
@@ -125,7 +126,12 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 				}, I18n.format("narrator.deliting")));
 		this.addButton(new ImageButton(xs + 117 + 22 * 4, ys + 60, 22,
 				17, 22 * 4, 166, 17, CD_GUI_TEXTURE, 256, 256, (p_213096_1_) -> {
-					sendCDPacket(4);
+					if (ItemHelper.canWriteCassette(getWriteCassette())
+							&& ItemHelper.isWritedSound(sfit.getCopyingCassete())
+							&& !WorldPlayListSoundData.getWorldPlayListData(getWriteCassette())
+									.equals(WorldPlayListSoundData.getWorldPlayListData(sfit.getCopyingCassete()))) {
+						sendCDPacket(4);
+					}
 				}, I18n.format("narrator.copying")));
 
 		fristSoundSelecter();
@@ -145,10 +151,19 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 		RenderSystem.pushMatrix();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		this.minecraft.getTextureManager().bindTexture(CD_GUI_TEXTURE);
-
 		int Rprograsse = (int) (23 * ((float) sfit.recodingPrograse / (float) sfit.getRecodingTotalTime()));
-
 		this.blit(xs + 120, ys + 38, 110, 166, Rprograsse, 16);
+
+		this.minecraft.getTextureManager().bindTexture(CD_GUI_TEXTURE);
+		int Cprograsse = (int) (23 * ((float) sfit.copyingPrograse / (float) sfit.getCoppyTotalTime()));
+		this.blit(xs + 173 + 23 - Cprograsse, ys + 38, 110 + 23 - Cprograsse, 182, Cprograsse, 16);
+
+		this.minecraft.getTextureManager().bindTexture(CD_GUI_TEXTURE);
+		int Dprograsse = (int) (23 * ((float) sfit.deletingPrograse / (float) sfit.getDeleteTotalTime()));
+		this.blit(xs + 120, ys + 38, 110, 166, Dprograsse, 16);
+		this.minecraft.getTextureManager().bindTexture(CD_GUI_TEXTURE);
+		this.blit(xs + 173 + 23 - Dprograsse, ys + 38, 110 + 23 - Dprograsse, 182, Dprograsse, 16);
+
 		RenderSystem.popMatrix();
 
 	}
