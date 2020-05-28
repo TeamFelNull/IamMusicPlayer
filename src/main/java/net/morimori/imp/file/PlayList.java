@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.WorldPlaylistMessage;
 import net.morimori.imp.sound.SoundData;
@@ -34,8 +35,6 @@ public class PlayList {
 
 	public static String FakeUUID = "11451419-1981-0364-364931-000000000000";
 	public static String FakePlayerName = "UnknowOfUnknowInUnknowFromUnknow";
-
-	public static long filesizelimit = 50 * 1024 * 1024;
 
 	public static boolean isExistsClientPlaylistFile(String name) {
 		if (ClientFileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter()) != null) {
@@ -144,7 +143,7 @@ public class PlayList {
 
 				boolean flag1 = !pathname.isDirectory();
 				boolean flag2 = false;
-				boolean flag3 = pathname.length() <= filesizelimit;
+				boolean flag3 = pathname.length() <= (CommonConfig.MAX_LIMIT.get() * 1024 * 1024);
 
 				String[] filenames = pathname.getName().split(Pattern.quote("."));
 				if (filenames.length != 1) {

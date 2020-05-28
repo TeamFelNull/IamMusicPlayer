@@ -10,6 +10,7 @@ public class CommonProxy {
 	public void preInit() {
 		PacketHandler.init();
 		MinecraftForge.EVENT_BUS.register(ServerHandler.class);
+
 	}
 
 	public void init() {

@@ -10,6 +10,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.proxy.ClientProxy;
 import net.morimori.imp.proxy.CommonProxy;
 
@@ -26,7 +27,7 @@ public class IkisugiMusicPlayer {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-
+		CommonConfig.init();
 	}
 
 	private void setup(final FMLCommonSetupEvent event) {

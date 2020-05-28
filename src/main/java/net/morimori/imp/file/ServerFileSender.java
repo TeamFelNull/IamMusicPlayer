@@ -9,6 +9,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.ClientStopRequestMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.ServerSendSoundFileMessage;
@@ -21,8 +22,6 @@ public class ServerFileSender extends Thread {
 	public static Map<String, Map<Integer, ServerFileSender>> senderBuffer = new HashMap<String, Map<Integer, ServerFileSender>>();
 	public static Map<String, Map<Integer, Boolean>> responseWaits = new HashMap<String, Map<Integer, Boolean>>();
 	public static Map<String, Map<Integer, Boolean>> stop = new HashMap<String, Map<Integer, Boolean>>();
-
-	public static int bytespeed = 1024 * 8;
 
 	private Path path;
 	public String pluuid;
@@ -129,9 +128,10 @@ public class ServerFileSender extends Thread {
 				+ this.path.toFile().getName() + " Size "
 				+ StringHelper.fileCapacityNotation(this.path.toFile().length()));
 
-		for (int i = 0; i < bytes.length; i += bytespeed) {
-			byte[] bi = new byte[bytes.length - i >= bytespeed ? bytespeed : bytes.length - i];
-			for (int c = 0; c < bytespeed; c++) {
+		for (int i = 0; i < bytes.length; i += CommonConfig.SEND_BYTE.get()) {
+			byte[] bi = new byte[bytes.length - i >= CommonConfig.SEND_BYTE.get() ? CommonConfig.SEND_BYTE.get()
+					: bytes.length - i];
+			for (int c = 0; c < CommonConfig.SEND_BYTE.get(); c++) {
 				if ((i + c) < bytes.length) {
 					bi[c] = bytes[i + c];
 					cont++;

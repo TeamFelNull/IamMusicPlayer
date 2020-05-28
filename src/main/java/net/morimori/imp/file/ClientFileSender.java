@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.ClientSendSoundFileMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.util.FileLoader;
@@ -27,7 +28,6 @@ public class ClientFileSender extends Thread {
 	public static Map<Path, Boolean> reservationSenders = new HashMap<Path, Boolean>();
 
 	public static int MaxSendCont = 5;
-	public static int bytespeed = 1024 * 8;
 
 	public Path path;
 	public boolean playerfile;
@@ -193,9 +193,10 @@ public class ClientFileSender extends Thread {
 				+ StringHelper.fileCapacityNotation(this.path.toFile().length())
 				+ " Target " + (playerfile ? "Main" : "Everyone"));
 
-		for (int i = 0; i < bytes.length; i += bytespeed) {
-			byte[] bi = new byte[bytes.length - i >= bytespeed ? bytespeed : bytes.length - i];
-			for (int c = 0; c < bytespeed; c++) {
+		for (int i = 0; i < bytes.length; i += CommonConfig.SEND_BYTE.get()) {
+			byte[] bi = new byte[bytes.length - i >= CommonConfig.SEND_BYTE.get() ? CommonConfig.SEND_BYTE.get()
+					: bytes.length - i];
+			for (int c = 0; c < CommonConfig.SEND_BYTE.get(); c++) {
 				if ((i + c) < bytes.length) {
 					bi[c] = bytes[i + c];
 					cont++;
