@@ -44,7 +44,7 @@ import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
 
-public class BoomboxBlock extends Block implements IWaterLoggable {
+public class BoomboxWallBlock  extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 	public static final BooleanProperty ON = IMPBooleanProperties.ON;
@@ -52,7 +52,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final IntegerProperty VOLUME = IMPBooleanProperties.VOLUME_0_8;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-	public BoomboxBlock(Properties properties) {
+	public BoomboxWallBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(
 				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(OPEN, Boolean.valueOf(false))

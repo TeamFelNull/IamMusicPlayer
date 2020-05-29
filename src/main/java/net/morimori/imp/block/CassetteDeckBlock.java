@@ -46,8 +46,8 @@ import net.morimori.imp.util.PlayerHelper;
 
 public class CassetteDeckBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
-	public static final BooleanProperty ON = IMPBooleanPropertys.ON;
-	public static final EnumProperty<CassetteDeckStates> CASSETTE_DECK_STATES = IMPBooleanPropertys.CASSETTE_DECK_STATES;
+	public static final BooleanProperty ON = IMPBooleanProperties.ON;
+	public static final EnumProperty<CassetteDeckStates> CASSETTE_DECK_STATES = IMPBooleanProperties.CASSETTE_DECK_STATES;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public CassetteDeckBlock(Properties properties) {

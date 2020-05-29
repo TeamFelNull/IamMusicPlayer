@@ -13,6 +13,9 @@ public class IMPBlocks {
 	public static final Block BOOMBOX = new BoomboxBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IkisugiMusicPlayer.MODID, "boombox");
+	public static final BlockItem BOOMBOXITEM = (BlockItem) new BoomboxBlockItem(BOOMBOX, BOOMBOX, new Item.Properties()
+			.group(IMPItemGroup.MOD_TAB)).setRegistryName(
+					IkisugiMusicPlayer.MODID, "boombox");
 	public static final Block SOUNDFILE_UPLOADER = new SoundfileUploaderBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IkisugiMusicPlayer.MODID, "soundfile_uploader");
@@ -31,7 +34,7 @@ public class IMPBlocks {
 	}
 
 	public static void registerItem(IForgeRegistry<Item> r) {
-		registryBlockItem(r, BOOMBOX);
+		r.register(BOOMBOXITEM);
 		registryBlockItem(r, SOUNDFILE_UPLOADER);
 		registryBlockItem(r, CASSETTE_DECK);
 		registryBlockItem(r, CASSETTE_STORING);

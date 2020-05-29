@@ -40,9 +40,9 @@ import net.morimori.imp.tileentity.SoundFileUploaderTileEntity;
 
 public class SoundfileUploaderBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
-	public static final BooleanProperty ON = IMPBooleanPropertys.ON;
-	public static final EnumProperty<SoundFileUploaderMonitorTextures> SOUNDFILE_UPLOADER_MONITOR = IMPBooleanPropertys.SOUNDFILE_UPLOADER_MONITOR;
-	public static final EnumProperty<SoundFileUploaderWindwos> SOUNDFILE_UPLOADER_WINDWOS = IMPBooleanPropertys.SOUNDFILE_UPLOADER_WINDWOS;
+	public static final BooleanProperty ON = IMPBooleanProperties.ON;
+	public static final EnumProperty<SoundFileUploaderMonitorTextures> SOUNDFILE_UPLOADER_MONITOR = IMPBooleanProperties.SOUNDFILE_UPLOADER_MONITOR;
+	public static final EnumProperty<SoundFileUploaderWindwos> SOUNDFILE_UPLOADER_WINDWOS = IMPBooleanProperties.SOUNDFILE_UPLOADER_WINDWOS;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public SoundfileUploaderBlock(Properties properties) {

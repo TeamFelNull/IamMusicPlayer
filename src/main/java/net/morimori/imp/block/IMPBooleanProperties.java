@@ -6,8 +6,9 @@ import net.minecraft.state.IntegerProperty;
 import net.morimori.imp.client.screen.SoundFileUploaderMonitorTextures;
 import net.morimori.imp.client.screen.SoundFileUploaderWindwos;
 
-public class IMPBooleanPropertys {
+public class IMPBooleanProperties {
 	public static final BooleanProperty ON = BooleanProperty.create("on");
+	public static final BooleanProperty WALL = BooleanProperty.create("wall");
 	public static final EnumProperty<SoundFileUploaderMonitorTextures> SOUNDFILE_UPLOADER_MONITOR = EnumProperty
 			.create("monitor", SoundFileUploaderMonitorTextures.class);
 	public static final EnumProperty<SoundFileUploaderWindwos> SOUNDFILE_UPLOADER_WINDWOS = EnumProperty
