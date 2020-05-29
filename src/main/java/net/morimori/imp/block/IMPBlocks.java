@@ -38,16 +38,19 @@ public class IMPBlocks {
 		registryBlockItem(r, SOUNDFILE_UPLOADER);
 		registryBlockItem(r, CASSETTE_DECK);
 		registryBlockItem(r, CASSETTE_STORING);
+
 	}
 
 	private static void registryBlock(IForgeRegistry<Block> r, Block b) {
 		IkisugiMusicPlayer.LOGGER.info("Registering Block : " + b.getRegistryName());
 		r.register(b);
+
 	}
 
 	private static void registryBlockItem(IForgeRegistry<Item> r, Block b) {
 		IkisugiMusicPlayer.LOGGER.info("Registering BlockItem : " + b.getRegistryName());
 		r.register(new BlockItem(b, new Item.Properties().group(IMPItemGroup.MOD_TAB))
 				.setRegistryName(b.getRegistryName()));
+
 	}
 }

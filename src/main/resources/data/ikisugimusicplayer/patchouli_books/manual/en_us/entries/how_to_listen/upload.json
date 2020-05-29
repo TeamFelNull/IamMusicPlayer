@@ -1,7 +1,7 @@
 {
   "name": "ikisugimusicplayer.entry.upload",
   "category": "ikisugimusicplayer:how_to_listen",
-  "icon": "ikisugimusicplayer:soundfile_uploader",
+  "icon": "ikisugimusicplayer:textures/gui/patchouli/upload.png",
    "pages": [
     {
       "type": "text",

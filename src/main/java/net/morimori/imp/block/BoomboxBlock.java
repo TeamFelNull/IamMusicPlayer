@@ -217,9 +217,15 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+<<<<<<< Updated upstream
 		return this.getDefaultState()
 				.with(FACING, context.getPlacementHorizontalFacing().rotateY())
 				.with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
+=======
+
+		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().rotateY()).with(WATERLOGGED,
+				Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
+>>>>>>> Stashed changes
 	}
 
 	@Nullable
@@ -241,7 +247,11 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+<<<<<<< Updated upstream
 		builder.add(FACING, OPEN, ON, WALL, VOLUME, WATERLOGGED);
+=======
+		builder.add(FACING, OPEN, ON, VOLUME, WATERLOGGED);
+>>>>>>> Stashed changes
 	}
 
 	@SuppressWarnings("deprecation")
