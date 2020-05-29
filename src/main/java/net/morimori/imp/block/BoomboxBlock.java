@@ -56,7 +56,8 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		super(properties);
 		this.setDefaultState(
 				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(OPEN, Boolean.valueOf(false))
-						.with(ON, Boolean.valueOf(false)).with(VOLUME, 6).with(WATERLOGGED, Boolean.valueOf(false)));
+						.with(ON, Boolean.valueOf(false)).with(VOLUME, 6).with(WATERLOGGED, Boolean.valueOf(false))
+						.with(WALL, Boolean.valueOf(false)));
 
 	}
 

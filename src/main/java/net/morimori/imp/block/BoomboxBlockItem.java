@@ -13,9 +13,8 @@ import net.minecraft.world.IWorldReader;
 
 public class BoomboxBlockItem extends WallOrFloorItem {
 
-	public BoomboxBlockItem(Block floorBlock, Block wallBlockIn, Properties propertiesIn) {
-		super(floorBlock, wallBlockIn, propertiesIn);
-		// TODO 自動生成されたコンストラクター・スタブ
+	public BoomboxBlockItem(Block floorBlock, Properties propertiesIn) {
+		super(floorBlock, floorBlock, propertiesIn);
 	}
 
 	   @Nullable
