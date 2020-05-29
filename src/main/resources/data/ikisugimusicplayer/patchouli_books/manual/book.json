@@ -1,0 +1,10 @@
+{
+	"name": "item.ikisugimusicplayer.manual",
+	"landing_text": "ikisugimusicplayer.manual.landing",
+	"version": "buildNumber",
+	"i18n": true,
+	"creative_tab": "ikisugimusicplayer",
+	"book_texture": "ikisugimusicplayer:textures/gui/patchouli/book_light_gray.png",
+	"model": "ikisugimusicplayer:manual"
+	
+}

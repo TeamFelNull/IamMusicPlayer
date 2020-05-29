@@ -1,0 +1,16 @@
+{
+  "name": "item.ikisugimusicplayer.parabolic_antenna",
+  "category": "ikisugimusicplayer:necessities",
+  "icon": "ikisugimusicplayer:parabolic_antenna",
+   "pages": [
+    {
+      "type": "text",
+      "text": "ikisugimusicplayer.page.parabolic_antenna.1"
+    },
+    {
+      "type": "crafting",
+      "text": "ikisugimusicplayer.page.parabolic_antenna.2",
+      "recipe": "ikisugimusicplayer:parabolic_antenna"
+    }
+  ]
+}

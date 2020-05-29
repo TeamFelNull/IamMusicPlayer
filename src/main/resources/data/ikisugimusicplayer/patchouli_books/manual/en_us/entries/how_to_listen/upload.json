@@ -1,0 +1,16 @@
+{
+  "name": "ikisugimusicplayer.entry.upload",
+  "category": "ikisugimusicplayer:how_to_listen",
+  "icon": "ikisugimusicplayer:soundfile_uploader",
+   "pages": [
+    {
+      "type": "text",
+      "text": "ikisugimusicplayer.page.upload.1"
+    },
+    {
+      "type": "crafting",
+      "text": "ikisugimusicplayer.page.upload.2",
+      "recipe": "ikisugimusicplayer:soundfile_uploader"
+    }
+  ]
+}

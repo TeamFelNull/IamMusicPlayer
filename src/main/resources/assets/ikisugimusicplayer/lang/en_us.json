@@ -19,7 +19,7 @@
   "item.ikisugimusicplayer.magnetic_tape": "Magnetic Tape",
   "item.ikisugimusicplayer.overwritable_cassette_tape": "Overwritable Cassette Tape",
   "item.ikisugimusicplayer.cassette_tape.written": "%s Tape",
-  
+  "item.ikisugimusicplayer.manual": "Ikisugi Music Manual",
   
   "soundata.title": "Title : %s",
   "soundata.artist": "Artist : %s",
@@ -107,10 +107,20 @@
   "overlay.soundwaitthread.crash": "Sound Thread Crash! Restarting...",
   "overlay.sender.othertask": "Other %s Upload Tasks...",
   "overlay.sender.reservation": "%s Upload reservations...",
+
+  "_comment": "Patchouli",
+  "ikisugimusicplayer.manual.landing": "This book is all about Ikisugi Music player.$(br2)Ikisugi Music Player is a MOD that can play external music in the game.$(br)",
   
-  "music.ikisugimusicplayer.test": "Test",
+  "ikisugimusicplayer.category.how_to_listen": "How to Listen",
+  "ikisugimusicplayer.category.how_to_listen.desc": "Will show you how to listen to music.",
+  "ikisugimusicplayer.entry.upload": "Upload Music File",
+  "ikisugimusicplayer.page.upload.1": "To listen to upload music, please upload the music file first.$(br)To do so, use the $(#00f)Sound File Uploader$() to send the file to the world or server.",
+  "ikisugimusicplayer.page.upload.2": "Craft a Sound File Uploader",
   
-  "item.ikisugimusicplayer.cassette_tape.written": "%s Tape",
+  "ikisugimusicplayer.category.necessities": "Necessities",
+  "ikisugimusicplayer.category.necessities.desc": "Items used very often in this mod.",
+  "ikisugimusicplayer.page.parabolic_antenna.1": "Use for $(l:how_to_listen/upload)Sound File Uploader$() or cassette deck.",
+  "ikisugimusicplayer.page.parabolic_antenna.2": "Craft a Parabolic Antenna",
   
   "_comment": "Last"
   
