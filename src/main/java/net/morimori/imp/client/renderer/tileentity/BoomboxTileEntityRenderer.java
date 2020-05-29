@@ -53,6 +53,7 @@ public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEnt
 		this.lidNorth.func_228301_a_(0, 0, 6, 0.3f, 3, 4, 0.0F);
 		this.lidNorth.setRotationPoint(10.7f, 2, 0);
 
+
 	}
 
 	@Override

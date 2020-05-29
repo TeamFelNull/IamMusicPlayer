@@ -123,7 +123,7 @@
   "ikisugimusicplayer.page.parabolic_antenna.2": "Craft a Parabolic Antenna",
   "ikisugimusicplayer.page.soundfile_uploader.1": "Used to upload music files or edit uploaded music files.$(br)A $(l:necessities/parabolic_antenna)Parabolic Antenna$() is required for use.",
   "ikisugimusicplayer.page.soundfile_uploader.2": "Craft a Sound File Uploader",
-  "ikisugimusicplayer.page.soundfile_uploader.3.tite": "Appearance"
+  "ikisugimusicplayer.page.soundfile_uploader.3.tite": "Appearance",
   
   "_comment": "Last"
   
