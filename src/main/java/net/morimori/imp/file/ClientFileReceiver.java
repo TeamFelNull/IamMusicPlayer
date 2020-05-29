@@ -37,7 +37,6 @@ public class ClientFileReceiver extends Thread {
 		this.id = id;
 		this.sounduuid = sounduuid;
 	}
-
 	public static boolean isReceving(File file) {
 
 		return getReceivingId(file) != -1;

@@ -97,6 +97,7 @@
   "narrator.copying": "Copy",
   "narrator.waiting": "Wait",
   
+  "message.volume.set": "Volume set to %s",
   
   "overlay.sending.world": "Uploading %s to World",
   "overlay.sending.server": "Uploading %s to Server",
