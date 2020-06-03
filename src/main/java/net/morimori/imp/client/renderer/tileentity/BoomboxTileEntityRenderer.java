@@ -53,7 +53,6 @@ public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEnt
 		this.lidNorth.func_228301_a_(0, 0, 6, 0.3f, 3, 4, 0.0F);
 		this.lidNorth.setRotationPoint(10.7f, 2, 0);
 
-
 	}
 
 	@Override
@@ -67,41 +66,80 @@ public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEnt
 		Direction direction = tile.getBlockState().get(BoomboxBlock.FACING);
 
 		RenderHelper.matrixPush(matrix);
-		if (direction == Direction.NORTH) {
-			this.lidNorth.rotateAngleZ = -opend;
-			this.lidNorth.func_228308_a_(matrix, IVB, light, overlay);
-		} else if (direction == Direction.SOUTH) {
-			this.lidSouth.rotateAngleZ = opend;
-			this.lidSouth.func_228308_a_(matrix, IVB, light, overlay);
-		} else if (direction == Direction.EAST) {
-			this.lidEast.rotateAngleX = opend;
-			this.lidEast.func_228308_a_(matrix, IVB, light, overlay);
-		} else if (direction == Direction.WEST) {
-			this.lidWest.rotateAngleX = -opend;
-			this.lidWest.func_228308_a_(matrix, IVB, light, overlay);
+
+		if (tile.getBlockState().get(BoomboxBlock.WALL)) {
+			if (direction == Direction.NORTH) {
+				RenderHelper.matrixTranslatef(matrix, -0.314f, 0.185f, 0);
+				this.lidNorth.rotateAngleZ = -opend;
+				this.lidNorth.func_228308_a_(matrix, IVB, light, overlay);
+			} else if (direction == Direction.SOUTH) {
+				RenderHelper.matrixTranslatef(matrix, 0.314f, 0.185f, 0);
+				this.lidSouth.rotateAngleZ = opend;
+				this.lidSouth.func_228308_a_(matrix, IVB, light, overlay);
+			} else if (direction == Direction.EAST) {
+				RenderHelper.matrixTranslatef(matrix, 0, 0.185f, -0.314f);
+				this.lidEast.rotateAngleX = opend;
+				this.lidEast.func_228308_a_(matrix, IVB, light, overlay);
+			} else if (direction == Direction.WEST) {
+				RenderHelper.matrixTranslatef(matrix, 0, 0.185f, 0.314f);
+				this.lidWest.rotateAngleX = -opend;
+				this.lidWest.func_228308_a_(matrix, IVB, light, overlay);
+			}
+		} else {
+			if (direction == Direction.NORTH) {
+				this.lidNorth.rotateAngleZ = -opend;
+				this.lidNorth.func_228308_a_(matrix, IVB, light, overlay);
+			} else if (direction == Direction.SOUTH) {
+				this.lidSouth.rotateAngleZ = opend;
+				this.lidSouth.func_228308_a_(matrix, IVB, light, overlay);
+			} else if (direction == Direction.EAST) {
+				this.lidEast.rotateAngleX = opend;
+				this.lidEast.func_228308_a_(matrix, IVB, light, overlay);
+			} else if (direction == Direction.WEST) {
+				this.lidWest.rotateAngleX = -opend;
+				this.lidWest.func_228308_a_(matrix, IVB, light, overlay);
+			}
 		}
+
 		RenderHelper.matrixPop(matrix);
 
 		ItemStack cassette = tile.getPlayCassette();
 		if (!cassette.isEmpty()) {
 			RenderHelper.matrixPush(matrix);
-			RenderHelper.matrixScalf(matrix, 0.65f, 0.65f, 0.65f);
+			float scale = 0.65f;
+			RenderHelper.matrixScalf(matrix, scale, scale, scale);
+			if (tile.getBlockState().get(BoomboxBlock.WALL)) {
+				if (direction == Direction.NORTH) {
+					RenderHelper.matrixTranslatef(matrix, -0.314f / scale, 0.185f / scale, 0);
+					RenderHelper.matrixTranslatef(matrix, 1.0f, 0.3f, 0.77f);
+					RenderHelper.matrixRotateDegreefY(matrix, 270);
+				} else if (direction == Direction.SOUTH) {
+					RenderHelper.matrixTranslatef(matrix, 0.314f / scale, 0.185f / scale, 0);
+					RenderHelper.matrixTranslatef(matrix, 0.55f, 0.3f, 0.77f);
+					RenderHelper.matrixRotateDegreefY(matrix, 90);
+				} else if (direction == Direction.EAST) {
+					RenderHelper.matrixTranslatef(matrix, 0, 0.185f / scale, -0.314f / scale);
+					RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 1.0f);
+					RenderHelper.matrixRotateDegreefY(matrix, 180);
+				} else if (direction == Direction.WEST) {
+					RenderHelper.matrixTranslatef(matrix, 0, 0.185f / scale, 0.314f / scale);
+					RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 0.55f);
+				}
+			} else {
+				if (direction == Direction.NORTH) {
+					RenderHelper.matrixTranslatef(matrix, 1.0f, 0.3f, 0.77f);
+					RenderHelper.matrixRotateDegreefY(matrix, 270);
+				} else if (direction == Direction.SOUTH) {
+					RenderHelper.matrixTranslatef(matrix, 0.55f, 0.3f, 0.77f);
+					RenderHelper.matrixRotateDegreefY(matrix, 90);
 
-			if (direction == Direction.NORTH) {
-				RenderHelper.matrixTranslatef(matrix, 1.0f, 0.3f, 0.77f);
-				RenderHelper.matrixRotateDegreefY(matrix, 270);
-			} else if (direction == Direction.SOUTH) {
-				RenderHelper.matrixTranslatef(matrix, 0.55f, 0.3f, 0.77f);
-				RenderHelper.matrixRotateDegreefY(matrix, 90);
-
-			} else if (direction == Direction.EAST) {
-				RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 1.0f);
-				RenderHelper.matrixRotateDegreefY(matrix, 180);
-
-			} else if (direction == Direction.WEST) {
-				RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 0.55f);
+				} else if (direction == Direction.EAST) {
+					RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 1.0f);
+					RenderHelper.matrixRotateDegreefY(matrix, 180);
+				} else if (direction == Direction.WEST) {
+					RenderHelper.matrixTranslatef(matrix, 0.77f, 0.3f, 0.55f);
+				}
 			}
-
 			Minecraft.getInstance().getItemRenderer().func_229110_a_(cassette,
 					TransformType.FIXED, light, overlay, matrix, buff);
 

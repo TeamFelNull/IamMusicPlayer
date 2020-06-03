@@ -21,8 +21,8 @@ import net.morimori.imp.sound.SoundPlayer;
 import net.morimori.imp.sound.SoundPos;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
-import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class BoomboxTileEntity extends TileEntity implements IClearable, ITickableTileEntity, ISoundPlayer {
 
@@ -104,7 +104,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 			}
 
 			if (this.openProgress == 0) {
-				if (!this.getBlockState().get(BoomboxBlock.OPEN) && ItemHelper.canPlay(this.getPlayCassette())
+				if (!this.getBlockState().get(BoomboxBlock.OPEN) && SoundHelper.canPlay(this.getPlayCassette())
 						&& this.openProgress == 0) {
 					boolean flag = this.world.isBlockPowered(pos);
 					if (flag) {
@@ -141,7 +141,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	@Override
 	public boolean isSoundStop() {
 
-		return !(ItemHelper.canPlay(getPlayCassette()) && this.getBlockState().get(BoomboxBlock.ON));
+		return !(SoundHelper.canPlay(getPlayCassette()) && this.getBlockState().get(BoomboxBlock.ON));
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	@OnlyIn(Dist.CLIENT)
 	public void playSound() {
 		if (world.isRemote) {
-			if (ItemHelper.canPlay(getPlayCassette()) && this.getBlockState().get(BoomboxBlock.ON)) {
+			if (SoundHelper.canPlay(getPlayCassette()) && this.getBlockState().get(BoomboxBlock.ON)) {
 				Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
 				int vol = this.getBlockState().get(BoomboxBlock.VOLUME);
 

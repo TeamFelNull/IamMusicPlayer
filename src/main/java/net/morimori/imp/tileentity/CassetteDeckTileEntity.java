@@ -35,6 +35,7 @@ import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class CassetteDeckTileEntity extends LockableTileEntity implements ITickableTileEntity, ISoundPlayer {
 
@@ -74,8 +75,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 	public void finishRecoding() {
 
-		if (ItemHelper.canWriteCassette(this.getWriteCassette())) {
-			setWriteCassette(ItemHelper.writeSoundOnCassette(this.getWriteCassette(),
+		if (SoundHelper.canWriteCassette(this.getWriteCassette())) {
+			setWriteCassette(SoundHelper.writeSoundOnCassette(this.getWriteCassette(),
 					new WorldPlayListSoundData(this.selectedFile, PlayList.getWorldPlaylistNBTDataString(
 							this.getWorld().getServer(), Paths.get(this.selectedFile), "UUID"),
 							PlayList.getWorldPlaylistNBTDataSoundData(
@@ -89,8 +90,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 	public void finishCopying() {
 
-		if (ItemHelper.canWriteCassette(this.getWriteCassette()) && ItemHelper.isWritedSound(getCopyingCassete())) {
-			setWriteCassette(ItemHelper.writeSoundOnCassette(this.getWriteCassette(),
+		if (SoundHelper.canWriteCassette(this.getWriteCassette()) && SoundHelper.isWritedSound(getCopyingCassete())) {
+			setWriteCassette(SoundHelper.writeSoundOnCassette(this.getWriteCassette(),
 					WorldPlayListSoundData.getWorldPlayListData(getCopyingCassete())));
 		}
 		copyingPrograse = 0;
@@ -101,8 +102,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 	public void finishDeleting() {
 
-		if (ItemHelper.isCassette(getWriteCassette()) && ItemHelper.isWritedSound(getWriteCassette())) {
-			setWriteCassette(ItemHelper.deleteSound(getWriteCassette()));
+		if (ItemHelper.isCassette(getWriteCassette()) && SoundHelper.isWritedSound(getWriteCassette())) {
+			setWriteCassette(SoundHelper.deleteSound(getWriteCassette()));
 		}
 		deletingPrograse = 0;
 		world.setBlockState(this.pos,
@@ -128,7 +129,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.DELETE) {
 
-				if (ItemHelper.isCassette(getWriteCassette()) && ItemHelper.isWritedSound(getWriteCassette())) {
+				if (ItemHelper.isCassette(getWriteCassette()) && SoundHelper.isWritedSound(getWriteCassette())) {
 					if (deletingPrograse < getDeleteTotalTime()) {
 						deletingPrograse++;
 					}
@@ -142,7 +143,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 			}
 
 			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.COPY) {
-				if (ItemHelper.canWriteCassette(getWriteCassette()) && ItemHelper.isWritedSound(getCopyingCassete())
+				if (SoundHelper.canWriteCassette(getWriteCassette()) && SoundHelper.isWritedSound(getCopyingCassete())
 						&& !WorldPlayListSoundData.getWorldPlayListData(getWriteCassette())
 								.equals(WorldPlayListSoundData.getWorldPlayListData(getCopyingCassete()))) {
 					if (copyingPrograse < getCoppyTotalTime()) {
@@ -161,7 +162,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 				copyingPrograse = 0;
 			}
 			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.RECORD) {
-				if (ItemHelper.canWriteCassette(getWriteCassette())) {
+				if (SoundHelper.canWriteCassette(getWriteCassette())) {
 					if (recodingPrograse < getRecodingTotalTime()) {
 						recodingPrograse++;
 					}
@@ -411,7 +412,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	@Override
 	public boolean isSoundStop() {
 
-		return !(ItemHelper.canPlay(getWriteCassette())
+		return !(SoundHelper.canPlay(getWriteCassette())
 				&& this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY);
 	}
 
@@ -425,7 +426,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	@OnlyIn(Dist.CLIENT)
 	public void playSound() {
 		if (world.isRemote) {
-			if (ItemHelper.canPlay(getWriteCassette())
+			if (SoundHelper.canPlay(getWriteCassette())
 					&& this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY) {
 				net.minecraft.client.Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
 				if (!lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {

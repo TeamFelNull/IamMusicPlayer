@@ -1,7 +1,7 @@
 # Blender v2.82 (sub 7) OBJ File: 'parabolic_antenna.blend'
 # www.blender.org
 # Thankyou KameSuta
-mtllib parabolic_antenna.mtl
+mtllib parabolic_antenna_null.mtl
 o Cylinder.001
 v 0.000000 -2.492532 -1.000000
 v 0.000000 -1.959199 -1.748637

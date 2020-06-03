@@ -19,7 +19,6 @@ import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.WorldPlaylistMessage;
 import net.morimori.imp.sound.SoundData;
-import net.morimori.imp.util.ClientFileHelper;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
 
@@ -37,8 +36,8 @@ public class PlayList {
 	public static String FakePlayerName = "UnknowOfUnknowInUnknowFromUnknow";
 
 	public static boolean isExistsClientPlaylistFile(String name) {
-		if (ClientFileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter()) != null) {
-			for (File file : ClientFileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter())) {
+		if (FileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter()) != null) {
+			for (File file : FileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter())) {
 				if (file.getName().equals(name))
 					return true;
 			}
@@ -66,7 +65,7 @@ public class PlayList {
 	}
 
 	public static void createClientPlayList() {
-		FileLoader.createFolder(ClientFileHelper.getClientPlayFileDataPath());
+		FileLoader.createFolder(FileHelper.getClientPlayFileDataPath());
 	}
 
 	public static void syncdEveryoneServerWorldList(ServerPlayerEntity pl) {
@@ -126,7 +125,7 @@ public class PlayList {
 	}
 
 	public static File[] getClientSoundFileList() {
-		File[] list = ClientFileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter());
+		File[] list = FileHelper.getClientPlayFileDataPath().toFile().listFiles(getSoundFileFilter());
 		return list;
 	}
 
@@ -161,7 +160,7 @@ public class PlayList {
 	}
 
 	public static String getClientPlaylistNBTdata(Path path, String nbtname) {
-		CompoundNBT tag = FileLoader.fileNBTReader(ClientFileHelper.getClientCurrentServerPlaylistNBTDataPath());
+		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getClientCurrentServerPlaylistNBTDataPath());
 
 		if (!tag.contains(path.getParent().toFile().getName()))
 			return null;
@@ -238,7 +237,7 @@ public class PlayList {
 
 	public static void addClientPlayeyListFileNBT(String foldername,
 			String filename, String uuid) {
-		CompoundNBT tag = FileLoader.fileNBTReader(ClientFileHelper.getClientCurrentServerPlaylistNBTDataPath());
+		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getClientCurrentServerPlaylistNBTDataPath());
 		CompoundNBT fotag = tag.contains(foldername) ? (CompoundNBT) tag.get(foldername)
 				: new CompoundNBT();
 
@@ -252,7 +251,7 @@ public class PlayList {
 
 		tag.put(foldername, fotag);
 
-		FileLoader.fileNBTWriter(tag, ClientFileHelper.getClientCurrentServerPlaylistNBTDataPath());
+		FileLoader.fileNBTWriter(tag, FileHelper.getClientCurrentServerPlaylistNBTDataPath());
 
 	}
 

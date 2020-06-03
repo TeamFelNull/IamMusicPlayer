@@ -14,7 +14,7 @@ import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.proxy.ClientProxy;
 import net.morimori.imp.proxy.CommonProxy;
 
-@Mod("ikisugimusicplayer")
+@Mod(IkisugiMusicPlayer.MODID)
 public class IkisugiMusicPlayer {
 	public static final String MODID = "ikisugimusicplayer";
 	public static final Logger LOGGER = LogManager.getLogger();
@@ -36,6 +36,7 @@ public class IkisugiMusicPlayer {
 
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		ClientProxy.clientInit();
+
 	}
 
 	private void enqueueIMC(final InterModEnqueueEvent event) {

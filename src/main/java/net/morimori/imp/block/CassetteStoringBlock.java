@@ -32,17 +32,17 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.morimori.imp.tileentity.CassetteStoringTileEntity;
-import net.morimori.imp.util.VoxelShapeHelper;
 
 public class CassetteStoringBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+	public static final BooleanProperty WALL = IMPBooleanProperties.WALL;
 
 	public CassetteStoringBlock(Properties properties) {
 		super(properties);
 		this.setDefaultState(
 				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED,
-						Boolean.valueOf(false)));
+						Boolean.valueOf(false)).with(WALL, Boolean.valueOf(false)));
 	}
 
 	@Nullable
@@ -140,17 +140,32 @@ public class CassetteStoringBlock extends Block implements IWaterLoggable {
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		Direction direction = state.get(FACING);
 
-		switch (direction) {
-		case NORTH:
-			return VoxelShapeHelper.addCuboidShaoe90(0.45, 0, 0.85, 15.2, 16, 6.2);
-		case SOUTH:
-			return VoxelShapeHelper.addCuboidShaoe270(0.45, 0, 0.85, 15.2, 16, 6.2);
-		case EAST:
-			return VoxelShapeHelper.addCuboidShaoe0(0.45, 0, 0.85, 15.2, 16, 6.2);
-		case WEST:
-			return VoxelShapeHelper.addCuboidShaoe180(0.45, 0, 0.85, 15.2, 16, 6.2);
-		default:
-			return VoxelShapeHelper.addCuboidShaoe0(0.45, 0, 0.85, 15.2, 16, 6.2);
+		if (state.get(WALL)) {
+			switch (direction) {
+			case NORTH:
+				return CassetteStoringVoxelShape.NORTH_WALL_AXIS_AABB;
+			case SOUTH:
+				return CassetteStoringVoxelShape.SOUTH_WALL_AXIS_AABB;
+			case EAST:
+				return CassetteStoringVoxelShape.EAST_WALL_AXIS_AABB;
+			case WEST:
+				return CassetteStoringVoxelShape.WEST_WALL_AXIS_AABB;
+			default:
+				return CassetteStoringVoxelShape.NORTH_WALL_AXIS_AABB;
+			}
+		} else {
+			switch (direction) {
+			case NORTH:
+				return CassetteStoringVoxelShape.NORTH_AXIS_AABB;
+			case SOUTH:
+				return CassetteStoringVoxelShape.SOUTH_AXIS_AABB;
+			case EAST:
+				return CassetteStoringVoxelShape.EAST_AXIS_AABB;
+			case WEST:
+				return CassetteStoringVoxelShape.WEST_AXIS_AABB;
+			default:
+				return CassetteStoringVoxelShape.EAST_AXIS_AABB;
+			}
 		}
 
 	}
@@ -163,6 +178,6 @@ public class CassetteStoringBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(FACING, WATERLOGGED);
+		builder.add(FACING, WATERLOGGED, WALL);
 	}
 }

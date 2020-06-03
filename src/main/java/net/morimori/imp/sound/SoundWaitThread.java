@@ -18,7 +18,7 @@ import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.ClientResponseMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.tileentity.ISoundPlayer;
-import net.morimori.imp.util.ClientFileHelper;
+import net.morimori.imp.util.FileHelper;
 
 public class SoundWaitThread extends Thread {
 
@@ -72,7 +72,7 @@ public class SoundWaitThread extends Thread {
 						}
 						if (!maps.getValue().played && !dawonloadwaitedplayers.containsKey(maps.getValue())) {
 
-							Path soundath = ClientFileHelper.getClientCurrentServerPlaylistPath()
+							Path soundath = FileHelper.getClientCurrentServerPlaylistPath()
 									.resolve(maps.getValue().worldplaylistsounddata.getFolderName())
 									.resolve(maps.getValue().worldplaylistsounddata.getName());
 							if (!soundath.toFile().exists()) {

@@ -21,7 +21,10 @@ public class IMPItems {
 			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
 					"overwritable_cassette_tape");
 
-	public static final Item PARABOLIC_ANTENNA = newItem("parabolic_antenna", 1);
+	public static final Item PARABOLIC_ANTENNA = new ParabolicAntennaItem(
+			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
+					"parabolic_antenna");
+
 	public static final Item IRON_BOWL = newItem("iron_bowl");
 	public static final Item IRON_STICK = newItem("iron_stick");
 	public static final Item RECEIVER = newItem("receiver");
@@ -49,7 +52,7 @@ public class IMPItems {
 		registryItem(r, CASSETTE_PLAYER);
 		registryItem(r, MAGNETIC_TAPE);
 
-//		registryItem(r, SOUNDTEST);
+		//		registryItem(r, SOUNDTEST);
 
 	}
 

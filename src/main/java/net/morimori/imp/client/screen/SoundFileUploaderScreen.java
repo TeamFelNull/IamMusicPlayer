@@ -27,7 +27,7 @@ import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.SoundFileUploaderMessage;
 import net.morimori.imp.tileentity.SoundFileUploaderTileEntity;
-import net.morimori.imp.util.ClientFileHelper;
+import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.PlayerHelper;
 import net.morimori.imp.util.StringHelper;
 
@@ -831,7 +831,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		openfolder = new StringImageButton(xs + 18, ys + 99,
 				71, 12, 181, 0, 12,
 				SFU_GUI_TEXTURE2, 256, 256, (p_213096_1_) -> {
-					Util.getOSType().openFile(ClientFileHelper.getClientPlayFileDataPath().toFile());
+					Util.getOSType().openFile(FileHelper.getClientPlayFileDataPath().toFile());
 				}, I18n.format("sfu.folder"), -25, false);
 
 		this.addButton(openfolder);

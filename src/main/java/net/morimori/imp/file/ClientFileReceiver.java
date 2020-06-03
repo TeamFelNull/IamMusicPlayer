@@ -11,7 +11,7 @@ import net.minecraft.client.resources.I18n;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
-import net.morimori.imp.util.ClientFileHelper;
+import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
 import net.morimori.imp.util.NarratorHelper;
 import net.morimori.imp.util.StringHelper;
@@ -144,10 +144,10 @@ public class ClientFileReceiver extends Thread {
 			}
 
 			FileLoader.fileBytesWriter(receiverBufer.get(id).getBytes(),
-					ClientFileHelper.getClientPlayFileDataPath().resolve(writefilename));
+					FileHelper.getClientPlayFileDataPath().resolve(writefilename));
 		} else {
 			FileLoader.fileBytesWriter(receiverBufer.get(id).getBytes(),
-					ClientFileHelper.getClientCurrentServerPlaylistPath()
+					FileHelper.getClientCurrentServerPlaylistPath()
 							.resolve(Paths.get(path).getParent().toFile().getName()).resolve(filename));
 			PlayList.addClientPlayeyListFileNBT(Paths.get(path).getParent().toFile().getName(), filename,
 					sounduuid);

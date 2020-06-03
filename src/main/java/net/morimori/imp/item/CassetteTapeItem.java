@@ -7,7 +7,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.morimori.imp.client.renderer.item.CassetteItemRenderer;
 import net.morimori.imp.client.renderer.model.CassetteBakedModel;
-import net.morimori.imp.util.ItemHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class CassetteTapeItem extends Item {
 
@@ -37,9 +37,9 @@ public class CassetteTapeItem extends Item {
 		}
 	*/
 	public ITextComponent getDisplayName(ItemStack stack) {
-		return ItemHelper.isWritedSound(stack)
+		return SoundHelper.isWritedSound(stack)
 				? new TranslationTextComponent("item.ikisugimusicplayer.cassette_tape.written",
-						ItemHelper.getCassetteMusicName(
+						SoundHelper.getCassetteSoundName(
 								stack))
 				: super.getDisplayName(stack);
 	}

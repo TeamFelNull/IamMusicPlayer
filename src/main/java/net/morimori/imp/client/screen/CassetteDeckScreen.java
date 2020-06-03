@@ -25,8 +25,8 @@ import net.morimori.imp.packet.CassetteDeckMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.tileentity.CassetteDeckTileEntity;
-import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
@@ -105,14 +105,14 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 
 		this.addButton(new ImageButton(xs + 117, ys + 60, 22,
 				17, 0, 166, 17, CD_GUI_TEXTURE, 256, 256, (p_213096_1_) -> {
-					if (isAntena() && ItemHelper.canWriteCassette(getWriteCassette()) && !(sfit.getFliePath() == null
+					if (isAntena() && SoundHelper.canWriteCassette(getWriteCassette()) && !(sfit.getFliePath() == null
 							|| sfit.getFliePath().isEmpty() || sfit.getFliePath().equals("null"))) {
 						sendCDPacket(0);
 					}
 				}, I18n.format("narrator.recording")));
 		this.addButton(new ImageButton(xs + 117 + 22, ys + 60, 22,
 				17, 22, 166, 17, CD_GUI_TEXTURE, 256, 256, (p_213096_1_) -> {
-					if (ItemHelper.canPlay(getWriteCassette())) {
+					if (SoundHelper.canPlay(getWriteCassette())) {
 						sendCDPacket(1);
 					}
 				}, I18n.format("narrator.playing")));
@@ -126,8 +126,8 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 				}, I18n.format("narrator.deliting")));
 		this.addButton(new ImageButton(xs + 117 + 22 * 4, ys + 60, 22,
 				17, 22 * 4, 166, 17, CD_GUI_TEXTURE, 256, 256, (p_213096_1_) -> {
-					if (ItemHelper.canWriteCassette(getWriteCassette())
-							&& ItemHelper.isWritedSound(sfit.getCopyingCassete())
+					if (SoundHelper.canWriteCassette(getWriteCassette())
+							&& SoundHelper.isWritedSound(sfit.getCopyingCassete())
 							&& !WorldPlayListSoundData.getWorldPlayListData(getWriteCassette())
 									.equals(WorldPlayListSoundData.getWorldPlayListData(sfit.getCopyingCassete()))) {
 						sendCDPacket(4);
@@ -545,7 +545,7 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 			return;
 
 		if (!getWriteCassette().isEmpty()) {
-			drawString(StringHelper.characterLimit(mc, ItemHelper.getCassetteMusicName(getWriteCassette()), 106), 120,
+			drawString(StringHelper.characterLimit(mc, SoundHelper.getCassetteSoundName(getWriteCassette()), 106), 120,
 					7, 2722312);
 		}
 

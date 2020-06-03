@@ -35,17 +35,19 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.client.renderer.item.CassetteItemRenderer;
+import net.morimori.imp.client.renderer.item.ParabolicAntennaRenderer;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.file.ClientFileReceiver;
 import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.item.IMPItems;
+import net.morimori.imp.item.ParabolicAntennaItem;
 import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.IMPMath;
-import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PictuerUtil;
+import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -173,6 +175,19 @@ public class RenderHandler {
 		tapes.add((CassetteTapeItem) IMPItems.RECORD_CASSETTE_TAPE);
 		tapes.add((CassetteTapeItem) IMPItems.OVERWRITABLE_CASSETTE_TAPE);
 
+		bakaItemModel(map, IMPItems.PARABOLIC_ANTENNA,
+				md -> ((ParabolicAntennaItem) IMPItems.PARABOLIC_ANTENNA).getModel(md, false));
+
+		ParabolicAntennaRenderer.pmodel = e.getModelLoader().func_217845_a(
+				new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName()
+						.getPath()),
+				ModelRotation.X0_Y0);
+
+		ParabolicAntennaRenderer.pmodel_null = e.getModelLoader().func_217845_a(
+				new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName()
+						.getPath() + "_null"),
+				ModelRotation.X0_Y0);
+
 		for (CassetteTapeItem tape : tapes) {
 			bakaItemModel(map, tape,
 					md -> (tape).getModel(md));
@@ -195,6 +210,12 @@ public class RenderHandler {
 			ModelLoader.addSpecialModel(tape.getModel(null).getLocation());
 		}
 
+		ModelLoader.addSpecialModel(
+				((ParabolicAntennaItem) IMPItems.PARABOLIC_ANTENNA).getModel(null, false).getLocation());
+
+		ModelLoader.addSpecialModel(
+				((ParabolicAntennaItem) IMPItems.PARABOLIC_ANTENNA).getModel(null, true).getLocation());
+
 	}
 
 	private static <T extends IBakedModel> void bakaItemModel(Map<ResourceLocation, IBakedModel> map, Item item,
@@ -206,7 +227,7 @@ public class RenderHandler {
 	@SubscribeEvent
 	public static void onToolTipRender(RenderTooltipEvent.PostBackground e) {
 
-		if (!ItemHelper.isWritedSound(e.getStack())
+		if (!SoundHelper.isWritedSound(e.getStack())
 				|| WorldPlayListSoundData.getWorldPlayListData(e.getStack()).getSoundData().album_image == null) {
 			return;
 		}
@@ -253,7 +274,7 @@ public class RenderHandler {
 
 		RenderSystem.pushMatrix();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		fr.drawString(ItemHelper.getCassetteMusicName(stack), x + 2 + pxsize / 4 + 3, y + 2, 0);
+		fr.drawString(SoundHelper.getCassetteSoundName(stack), x + 2 + pxsize / 4 + 3, y + 2, 0);
 
 		List<ITextComponent> itc = new ArrayList<ITextComponent>();
 		SoundData.addSoundDataTooltip(stack, itc);
@@ -307,7 +328,7 @@ public class RenderHandler {
 
 		size += pysize;
 
-		int namesize = fr.getStringWidth(ItemHelper.getCassetteMusicName(stack)) + 3;
+		int namesize = fr.getStringWidth(SoundHelper.getCassetteSoundName(stack)) + 3;
 
 		List<ITextComponent> itc = new ArrayList<ITextComponent>();
 		SoundData.addSoundDataTooltip(stack, itc);
@@ -380,7 +401,7 @@ public class RenderHandler {
 				AbstractGui.blit(x + 1 + i * mwb, y + 1 + i2 * mhb, 1, 1, mwb, mhb, 256, 256);
 			}
 			tm.bindTexture(tootiplaction);
-			AbstractGui.blit(x + 1 + i * mwb, y + 1+ ahcb * mhb, 1, 1, mwb, ahab, 256, 256);
+			AbstractGui.blit(x + 1 + i * mwb, y + 1 + ahcb * mhb, 1, 1, mwb, ahab, 256, 256);
 		}
 		tm.bindTexture(tootiplaction);
 		AbstractGui.blit(x + 1 + awcb * mwb, y + 1 + ahcb * mhb, 1, 1, awab, ahab, 256, 256);

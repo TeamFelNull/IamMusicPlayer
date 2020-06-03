@@ -18,9 +18,9 @@ import net.minecraft.item.ItemStack;
 import net.morimori.imp.client.renderer.model.CassetteBakedModel;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.sound.WorldPlayListSoundData;
-import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.RenderHelper;
+import net.morimori.imp.util.SoundHelper;
 
 @SuppressWarnings("deprecation")
 public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
@@ -50,7 +50,7 @@ public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
 
 		}
 		TextureManager tm = mc.getTextureManager();
-		if (ItemHelper.isWritedSound(stack) && isTransTyape(TransformType.GUI)) {
+		if (SoundHelper.isWritedSound(stack) && isTransTyape(TransformType.GUI)) {
 			RenderSystem.pushMatrix();
 			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			RenderSystem.rotatef(180, 1, 0, 0);

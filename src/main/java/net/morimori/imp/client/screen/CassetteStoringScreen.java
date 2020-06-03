@@ -15,6 +15,7 @@ import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.container.CassetteStoringContainer;
 import net.morimori.imp.tileentity.CassetteStoringTileEntity;
 import net.morimori.imp.util.ItemHelper;
+import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContainer> {
@@ -42,7 +43,7 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 				.getTileEntity(this.container.pos);
 
 		ItemStack cassette = tile.getCassette(num);
-		String outst = ItemHelper.getCassetteMusicName(cassette);
+		String outst = SoundHelper.getCassetteSoundName(cassette);
 
 		slipmaxs.put(num, outst.length());
 
@@ -92,7 +93,7 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 
 		for (int i = 0; i < 8; ++i) {
 			ItemStack cassette = tile.getCassette(i);
-			if (ItemHelper.isCassette(cassette) && ItemHelper.isWritedSound(cassette)) {
+			if (ItemHelper.isCassette(cassette) && SoundHelper.isWritedSound(cassette)) {
 				RenderSystem.pushMatrix();
 				RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 				this.minecraft.getTextureManager().bindTexture(CS_GUI_TEXTURE);
@@ -107,7 +108,7 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 
 		for (int i = 0; i < 8; ++i) {
 			ItemStack cassette = tile.getCassette(i + 8);
-			if (ItemHelper.isCassette(cassette) && ItemHelper.isWritedSound(cassette)) {
+			if (ItemHelper.isCassette(cassette) && SoundHelper.isWritedSound(cassette)) {
 				RenderSystem.pushMatrix();
 				RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 				this.minecraft.getTextureManager().bindTexture(CS_GUI_TEXTURE);

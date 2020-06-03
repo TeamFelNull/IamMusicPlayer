@@ -43,6 +43,7 @@ import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -58,7 +59,6 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(OPEN, Boolean.valueOf(false))
 						.with(ON, Boolean.valueOf(false)).with(VOLUME, 6).with(WATERLOGGED, Boolean.valueOf(false))
 						.with(WALL, Boolean.valueOf(false)));
-
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 				}
 			}
 
-			if (!player.isCrouching() && !stateIn.get(OPEN) && ItemHelper.canPlay(tileentity.getPlayCassette())
+			if (!player.isCrouching() && !stateIn.get(OPEN) && SoundHelper.canPlay(tileentity.getPlayCassette())
 					&& tileentity.openProgress == 0 && !worldIn.isBlockPowered(pos)) {
 				stateIn = stateIn.cycle(ON);
 				worldIn.setBlockState(pos, stateIn, 2);
@@ -254,6 +254,13 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
 		}
 
+		if (stateIn.get(WALL)) {
+			return facing == stateIn.get(FACING).rotateY().rotateY().rotateY()
+					&& !this.isValidPosition(stateIn, worldIn, currentPos)
+							? Blocks.AIR.getDefaultState()
+							: super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		}
+
 		return facing == Direction.DOWN && !this.isValidPosition(stateIn, worldIn, currentPos)
 				? Blocks.AIR.getDefaultState()
 				: super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
@@ -261,6 +268,12 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 
 	@Override
 	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos) {
+
+		if (state.get(WALL)) {
+			return func_220055_a(worldIn, pos.offset(state.get(FACING).rotateY().rotateY().rotateY()),
+					state.get(FACING));
+		}
+
 		return func_220055_a(worldIn, pos.down(), Direction.UP);
 
 	}
@@ -269,17 +282,32 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
 		Direction direction = state.get(FACING);
 
-		switch (direction) {
-		case NORTH:
-			return BoomboxVoxelShape.NORTH_AXIS_AABB;
-		case SOUTH:
-			return BoomboxVoxelShape.SOUTH_AXIS_AABB;
-		case EAST:
-			return BoomboxVoxelShape.EAST_AXIS_AABB;
-		case WEST:
-			return BoomboxVoxelShape.WEST_AXIS_AABB;
-		default:
-			return BoomboxVoxelShape.NORTH_AXIS_AABB;
+		if (state.get(WALL)) {
+			switch (direction) {
+			case NORTH:
+				return BoomboxVoxelShape.NORTH_WALL_AXIS_AABB;
+			case SOUTH:
+				return BoomboxVoxelShape.SOUTH_WALL_AXIS_AABB;
+			case EAST:
+				return BoomboxVoxelShape.EAST_WALL_AXIS_AABB;
+			case WEST:
+				return BoomboxVoxelShape.WEST_WALL_AXIS_AABB;
+			default:
+				return BoomboxVoxelShape.NORTH_WALL_AXIS_AABB;
+			}
+		} else {
+			switch (direction) {
+			case NORTH:
+				return BoomboxVoxelShape.NORTH_AXIS_AABB;
+			case SOUTH:
+				return BoomboxVoxelShape.SOUTH_AXIS_AABB;
+			case EAST:
+				return BoomboxVoxelShape.EAST_AXIS_AABB;
+			case WEST:
+				return BoomboxVoxelShape.WEST_AXIS_AABB;
+			default:
+				return BoomboxVoxelShape.EAST_AXIS_AABB;
+			}
 		}
 
 	}

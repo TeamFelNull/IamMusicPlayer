@@ -8,13 +8,11 @@ import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.morimori.imp.IkisugiMusicPlayer;
 import net.morimori.imp.item.IMPItemGroup;
+import net.morimori.imp.item.WallOrFloorStateBlockItem;
 
 public class IMPBlocks {
 	public static final Block BOOMBOX = new BoomboxBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
-					IkisugiMusicPlayer.MODID, "boombox");
-	public static final BlockItem BOOMBOXITEM = (BlockItem) new BoomboxBlockItem(BOOMBOX, new Item.Properties()
-			.group(IMPItemGroup.MOD_TAB)).setRegistryName(
 					IkisugiMusicPlayer.MODID, "boombox");
 	public static final Block SOUNDFILE_UPLOADER = new SoundfileUploaderBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
@@ -34,23 +32,26 @@ public class IMPBlocks {
 	}
 
 	public static void registerItem(IForgeRegistry<Item> r) {
-		r.register(BOOMBOXITEM);
 		registryBlockItem(r, SOUNDFILE_UPLOADER);
 		registryBlockItem(r, CASSETTE_DECK);
-		registryBlockItem(r, CASSETTE_STORING);
-
+		registryWallblaeBlockItem(r, BOOMBOX);
+		registryWallblaeBlockItem(r, CASSETTE_STORING);
 	}
 
 	private static void registryBlock(IForgeRegistry<Block> r, Block b) {
 		IkisugiMusicPlayer.LOGGER.info("Registering Block : " + b.getRegistryName());
 		r.register(b);
+	}
 
+	private static void registryWallblaeBlockItem(IForgeRegistry<Item> r, Block b) {
+		IkisugiMusicPlayer.LOGGER.info("Registering BlockItem : " + b.getRegistryName());
+		r.register(new WallOrFloorStateBlockItem(b, new Item.Properties().group(IMPItemGroup.MOD_TAB))
+				.setRegistryName(b.getRegistryName()));
 	}
 
 	private static void registryBlockItem(IForgeRegistry<Item> r, Block b) {
 		IkisugiMusicPlayer.LOGGER.info("Registering BlockItem : " + b.getRegistryName());
 		r.register(new BlockItem(b, new Item.Properties().group(IMPItemGroup.MOD_TAB))
 				.setRegistryName(b.getRegistryName()));
-
 	}
 }

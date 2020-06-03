@@ -9,7 +9,7 @@ import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.SoundPlayMessage;
 import net.morimori.imp.tileentity.ISoundPlayer;
-import net.morimori.imp.util.ClientFileHelper;
+import net.morimori.imp.util.FileHelper;
 
 public class SoundPlayer extends Thread {
 
@@ -51,7 +51,7 @@ public class SoundPlayer extends Thread {
 				"Play Start : " + worldplaylistsounddata.getFolderName() + ":" + worldplaylistsounddata.getName());
 
 		while (true) {
-			thread = new SoundThread(ClientFileHelper.getClientCurrentServerPlaylistPath()
+			thread = new SoundThread(FileHelper.getClientCurrentServerPlaylistPath()
 					.resolve(worldplaylistsounddata.getFolderName()).resolve(worldplaylistsounddata.getName())
 					.toString());
 			thread.start();
@@ -87,7 +87,7 @@ public class SoundPlayer extends Thread {
 	}
 
 	public static void play(WorldPlayListSoundData wplsd, SoundPos sppos, float volume, int maxdis) {
-		Path soundath = ClientFileHelper.getClientCurrentServerPlaylistPath().resolve(wplsd.getFolderName())
+		Path soundath = FileHelper.getClientCurrentServerPlaylistPath().resolve(wplsd.getFolderName())
 				.resolve(wplsd.getName());
 		if (!soundath.toFile().exists()) {
 			SoundWaitThread.addDwonloadWait(wplsd);
