@@ -19,6 +19,7 @@ public class IamMusicPlayer {
 	public static final String MODID = "iammusicplayer";
 	public static final Logger LOGGER = LogManager.getLogger();
 
+	@SuppressWarnings("deprecation")
 	public static final CommonProxy proxy = DistExecutor
 			.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 

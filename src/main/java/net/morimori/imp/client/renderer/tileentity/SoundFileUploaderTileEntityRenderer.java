@@ -12,7 +12,6 @@ import net.morimori.imp.block.SoundfileUploaderBlock;
 import net.morimori.imp.tileentity.SoundFileUploaderTileEntity;
 import net.morimori.imp.util.RenderHelper;
 
-@SuppressWarnings("deprecation")
 public class SoundFileUploaderTileEntityRenderer extends TileEntityRenderer<SoundFileUploaderTileEntity> {
 
 	public SoundFileUploaderTileEntityRenderer(TileEntityRendererDispatcher p_i226006_1_) {
@@ -22,7 +21,7 @@ public class SoundFileUploaderTileEntityRenderer extends TileEntityRenderer<Soun
 
 	@Override
 	public void func_225616_a_(SoundFileUploaderTileEntity tile, float partialTicks, MatrixStack matrix,
-			IRenderTypeBuffer buff,int light, int overlay) {
+			IRenderTypeBuffer buff, int light, int overlay) {
 
 		if (!tile.getAntenna().isEmpty()) {
 			Direction direction = tile.getBlockState().get(SoundfileUploaderBlock.FACING);
@@ -45,7 +44,7 @@ public class SoundFileUploaderTileEntityRenderer extends TileEntityRenderer<Soun
 			if (tile.rotationPitch >= 0) {
 				float parpich = tile.rotationPitch / 90f;
 				RenderHelper.matrixTranslatef(matrix, 0.13f * parpich, -0.1f * parpich, 0);
-			}else {
+			} else {
 				float parpich = tile.rotationPitch / -90f;
 				RenderHelper.matrixTranslatef(matrix, -0.13f * parpich, -0.1f * parpich, 0);
 			}

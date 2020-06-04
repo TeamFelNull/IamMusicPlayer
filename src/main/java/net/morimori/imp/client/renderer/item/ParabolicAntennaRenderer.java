@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.morimori.imp.client.renderer.model.ParabolicAntennaBakedModel;
 import net.morimori.imp.util.RenderHelper;
 
-@SuppressWarnings("deprecation")
 public class ParabolicAntennaRenderer extends ItemStackTileEntityRenderer {
 	public static IBakedModel pmodel;
 	public static IBakedModel pmodel_null;

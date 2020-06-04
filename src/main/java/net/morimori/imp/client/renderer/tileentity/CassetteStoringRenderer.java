@@ -14,7 +14,7 @@ import net.morimori.imp.block.CassetteStoringBlock;
 import net.morimori.imp.tileentity.CassetteStoringTileEntity;
 import net.morimori.imp.util.RenderHelper;
 
-@SuppressWarnings("deprecation")
+
 public class CassetteStoringRenderer extends TileEntityRenderer<CassetteStoringTileEntity> {
 
 	public CassetteStoringRenderer(TileEntityRendererDispatcher p_i226006_1_) {

@@ -23,7 +23,7 @@ import net.morimori.imp.util.RenderHelper;
 import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.TextureHelper;
 
-@SuppressWarnings("deprecation")
+
 public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
 	private static Minecraft mc = Minecraft.getInstance();
 

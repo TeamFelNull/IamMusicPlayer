@@ -4,7 +4,7 @@ issueTrackerURL="http://my.issue.tracker/"
 [[mods]]
 modId="iammusicplayer"
 version="${file.jarVersion}" 
-displayName="Ikisugi Music Player"
+displayName="Iam Music Player"
 updateJSONURL="http://myurl.me/" 
 displayURL="" 
 logoFile="n.png" 

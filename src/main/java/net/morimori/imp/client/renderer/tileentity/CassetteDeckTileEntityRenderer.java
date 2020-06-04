@@ -12,7 +12,6 @@ import net.morimori.imp.block.SoundfileUploaderBlock;
 import net.morimori.imp.tileentity.CassetteDeckTileEntity;
 import net.morimori.imp.util.RenderHelper;
 
-@SuppressWarnings("deprecation")
 public class CassetteDeckTileEntityRenderer extends TileEntityRenderer<CassetteDeckTileEntity> {
 
 	public CassetteDeckTileEntityRenderer(TileEntityRendererDispatcher terd) {
