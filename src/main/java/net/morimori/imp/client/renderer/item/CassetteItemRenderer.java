@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.morimori.imp.client.renderer.model.CassetteBakedModel;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.RenderHelper;
 import net.morimori.imp.util.SoundHelper;
 
@@ -59,18 +60,17 @@ public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
 			RenderSystem.translatef(-0.5f / scale, -0.5f / scale, 0);
 
 			WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
-			//		byte[] bytes = wplsd.getSoundData().album_image;
 
-			int pxsize = 128;
-			int pysize = 128;
-			/*		if (bytes.length <= 0) {
+			int pxsize = 0;
+			int pysize = 0;
+				if (wplsd.getSoundData().album_image_uuid.equals("null")) {
 						pxsize = 128;
 						pysize = 128;
 					} else {
-						pxsize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getWidth();
-						pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getHeight();
+						pxsize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth();
+						pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight();
 					}
-			*/
+
 			tm.bindTexture(WorldPlayListSoundData.getWorldPlayListData(stack).getAlbumImage());
 			AbstractGui.blit(0, 0, 0, 0, pxsize / 8, pysize / 8,
 					pxsize / 8, pysize / 8);

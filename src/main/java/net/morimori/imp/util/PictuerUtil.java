@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,20 @@ import javax.imageio.ImageIO;
 
 public class PictuerUtil {
 	private static Map<String, BufferedImage> byteloactions = new HashMap<String, BufferedImage>();
+
+	public static BufferedImage getImage(String uuid) {
+		File picfile = FileHelper.getClientPictuerCashPath().resolve(uuid + ".png").toFile();
+		if (picfile.exists() && picfile != null) {
+
+			if (byteloactions.containsKey(uuid)) {
+				return byteloactions.get(uuid);
+			}
+
+			return getImage(FileLoader.fileBytesReader(picfile.toPath()), uuid);
+		}
+
+		return null;
+	}
 
 	public static BufferedImage getImage(byte[] bytes, String uuid) {
 		if (uuid != null) {
