@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.packet.ServerClientDataSyncMessage;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
@@ -28,7 +28,7 @@ public class ServerClientDataSyncMessageHandler {
 				FileLoader.fileBytesWriter(message.data,
 						FileHelper.getClientPictuerCashPath().resolve(message.st + ".png"));
 
-				ResourceLocation imagelocation = new ResourceLocation(IkisugiMusicPlayer.MODID,
+				ResourceLocation imagelocation = new ResourceLocation(IamMusicPlayer.MODID,
 						"pictuer/" + message.st);
 				try {
 					ByteArrayInputStream bis = new ByteArrayInputStream(message.data);

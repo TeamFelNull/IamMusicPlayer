@@ -2,27 +2,27 @@ package net.morimori.imp.item;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class IMPItems {
 
 	public static final Item SOUNDTEST = new MusicItem(new Item.Properties().group(IMPItemGroup.MOD_TAB))
-			.setRegistryName(IkisugiMusicPlayer.MODID, "soundtest");
+			.setRegistryName(IamMusicPlayer.MODID, "soundtest");
 	public static final Item TEST_CASSETTE_TAPE = new CassetteTapeItem(
-			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
+			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IamMusicPlayer.MODID,
 					"test_cassette_tape");
 	public static final Item NO_RECORD_CASSETTE_TAPE = new NoRecordCassetteTapeItem(
-			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
+			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IamMusicPlayer.MODID,
 					"no_record_cassette_tape");
 	public static final Item RECORD_CASSETTE_TAPE = new RecordCassetteTapeItem(
-			new Item.Properties().maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
+			new Item.Properties().maxStackSize(1)).setRegistryName(IamMusicPlayer.MODID,
 					"record_cassette_tape");
 	public static final Item OVERWRITABLE_CASSETTE_TAPE = new OverwritableCassetteTapeItem(
-			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
+			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IamMusicPlayer.MODID,
 					"overwritable_cassette_tape");
 
 	public static final Item PARABOLIC_ANTENNA = new ParabolicAntennaItem(
-			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IkisugiMusicPlayer.MODID,
+			new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IamMusicPlayer.MODID,
 					"parabolic_antenna");
 
 	public static final Item IRON_BOWL = newItem("iron_bowl");
@@ -66,6 +66,6 @@ public class IMPItems {
 
 	private static Item newItem(String name, int maxsize) {
 		return new Item(new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(maxsize))
-				.setRegistryName(IkisugiMusicPlayer.MODID, name);
+				.setRegistryName(IamMusicPlayer.MODID, name);
 	}
 }

@@ -12,16 +12,16 @@ public class Options {
 		HashMap<String, String> opmap = new HashMap<String, String>();
 		FileLoader.txtReader(opmap, FileHelper.getClientOptionTxtPath());
 		if (opmap.isEmpty()) {
-			opmap.put("soundCategory_ikisugimusicplayer", "1.0");
+			opmap.put("soundCategory_iammusicplayer", "1.0");
 			FileLoader.txtWriter(opmap, FileHelper.getClientOptionTxtPath());
 		}
-		SoundWaitThread.AllSoundVolume = Float.valueOf(opmap.get("soundCategory_ikisugimusicplayer"));
+		SoundWaitThread.AllSoundVolume = Float.valueOf(opmap.get("soundCategory_iammusicplayer"));
 	}
 
 	public static void writeOption(boolean tread) {
 		if (!tread) {
 			HashMap<String, String> opmap = new HashMap<String, String>();
-			opmap.put("soundCategory_ikisugimusicplayer", String.valueOf(SoundWaitThread.AllSoundVolume));
+			opmap.put("soundCategory_iammusicplayer", String.valueOf(SoundWaitThread.AllSoundVolume));
 			FileLoader.txtWriter(opmap, FileHelper.getClientOptionTxtPath());
 		} else {
 			WriteThread wt = new WriteThread();

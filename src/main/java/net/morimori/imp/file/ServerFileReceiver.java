@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import net.minecraft.server.MinecraftServer;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
@@ -77,7 +77,7 @@ public class ServerFileReceiver extends Thread {
 		long logtime = System.currentTimeMillis();
 		long fristtime = System.currentTimeMillis();
 
-		IkisugiMusicPlayer.LOGGER.info("Server File Receiver Start : "
+		IamMusicPlayer.LOGGER.info("Server File Receiver Start : "
 				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString() + " Name "
 				+ filename + " Size "
 				+ StringHelper.fileCapacityNotation(receiverBufer.get(pluuid).get(id).getBytes().length)
@@ -87,7 +87,7 @@ public class ServerFileReceiver extends Thread {
 		while (!receiverBufer.get(pluuid).get(id).isPerfectByte()) {
 
 			if (stop.get(pluuid).get(id)) {
-				IkisugiMusicPlayer.LOGGER.error("Server File Receiver Stop : Player "
+				IamMusicPlayer.LOGGER.error("Server File Receiver Stop : Player "
 						+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString()
 						+ " Name "
 						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Target "
@@ -97,7 +97,7 @@ public class ServerFileReceiver extends Thread {
 			}
 
 			if (cont == receiverBufer.get(pluuid).get(id).getCont() && System.currentTimeMillis() - time >= 10000) {
-				IkisugiMusicPlayer.LOGGER.error("Server File Receiver Time Out : Player "
+				IamMusicPlayer.LOGGER.error("Server File Receiver Time Out : Player "
 						+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString()
 						+ " Name "
 						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Target "
@@ -108,7 +108,7 @@ public class ServerFileReceiver extends Thread {
 			}
 			if (System.currentTimeMillis() - logtime >= 5000) {
 				logtime = System.currentTimeMillis();
-				IkisugiMusicPlayer.LOGGER.info("Server File Receing :"
+				IamMusicPlayer.LOGGER.info("Server File Receing :"
 						+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString()
 						+ " Name "
 						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Target "
@@ -150,7 +150,7 @@ public class ServerFileReceiver extends Thread {
 			PlayList.addPlayeyListFileNBT(ms, "everyone", filename, pluuid,
 					new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(filename), uuid));
 		}
-		IkisugiMusicPlayer.LOGGER.info("Server File Receiver was Success Full :  "
+		IamMusicPlayer.LOGGER.info("Server File Receiver was Success Full :  "
 				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString() + " Name "
 				+ filename + " Size " + StringHelper.fileCapacityNotation(cont) + " Target "
 				+ (playerfile ? "Main" : "Everyone") + " Elapsed " + (System.currentTimeMillis() - fristtime) + "ms");

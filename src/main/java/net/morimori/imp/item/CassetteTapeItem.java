@@ -38,7 +38,7 @@ public class CassetteTapeItem extends Item {
 	*/
 	public ITextComponent getDisplayName(ItemStack stack) {
 		return SoundHelper.isWritedSound(stack)
-				? new TranslationTextComponent("item.ikisugimusicplayer.cassette_tape.written",
+				? new TranslationTextComponent("item.iammusicplayer.cassette_tape.written",
 						SoundHelper.getCassetteSoundName(
 								stack))
 				: super.getDisplayName(stack);

@@ -2,7 +2,7 @@ modLoader="javafml"
 loaderVersion="[28,)" 
 issueTrackerURL="http://my.issue.tracker/"
 [[mods]]
-modId="ikisugimusicplayer"
+modId="iammusicplayer"
 version="${file.jarVersion}" 
 displayName="Ikisugi Music Player"
 updateJSONURL="http://myurl.me/" 

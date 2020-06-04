@@ -42,7 +42,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.item.BoomBoxTileEntityStack;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
@@ -332,7 +332,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 			return;
 
 		BoomboxTileEntity tileentity = (BoomboxTileEntity) worldIn.getTileEntity(pos);
-		Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
+		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 
 		if (stateIn.get(ON) && !tileentity.lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {
 			worldIn.addParticle(ParticleTypes.NOTE, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.2D,

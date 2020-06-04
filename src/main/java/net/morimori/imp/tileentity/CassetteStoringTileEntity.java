@@ -121,7 +121,7 @@ public class CassetteStoringTileEntity extends LockableTileEntity
 	@Override
 	protected ITextComponent getDefaultName() {
 
-		return new TranslationTextComponent("block.ikisugimusicplayer.cassette_storing");
+		return new TranslationTextComponent("block.iammusicplayer.cassette_storing");
 	}
 
 	@Override

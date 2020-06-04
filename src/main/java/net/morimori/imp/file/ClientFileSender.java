@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.ClientSendSoundFileMessage;
 import net.morimori.imp.packet.PacketHandler;
@@ -182,13 +182,13 @@ public class ClientFileSender extends Thread {
 		long logtime = System.currentTimeMillis();
 		long time = System.currentTimeMillis();
 		if (bytes == null) {
-			IkisugiMusicPlayer.LOGGER.info("Null Sender File : " + this.path.toFile().toString());
+			IamMusicPlayer.LOGGER.info("Null Sender File : " + this.path.toFile().toString());
 			finishSend();
 			return;
 		}
 		int cont = 0;
 
-		IkisugiMusicPlayer.LOGGER.info("Client File Sender Start : " + " Name "
+		IamMusicPlayer.LOGGER.info("Client File Sender Start : " + " Name "
 				+ this.path.toFile().getName() + " Size "
 				+ StringHelper.fileCapacityNotation(this.path.toFile().length())
 				+ " Target " + (playerfile ? "Main" : "Everyone"));
@@ -221,7 +221,7 @@ public class ClientFileSender extends Thread {
 				while (responseWaits.get(id)) {
 
 					if (stops.get(id)) {
-						IkisugiMusicPlayer.LOGGER.error("Client File Sending Stop : Player "
+						IamMusicPlayer.LOGGER.error("Client File Sending Stop : Player "
 								+ " Name "
 								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
 								+ " Target "
@@ -236,7 +236,7 @@ public class ClientFileSender extends Thread {
 					Thread.sleep(1);
 
 					if (System.currentTimeMillis() - time >= 10000) {
-						IkisugiMusicPlayer.LOGGER.error("Client File Sender Time Out : Player "
+						IamMusicPlayer.LOGGER.error("Client File Sender Time Out : Player "
 								+ " Name "
 								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
 								+ " Target "
@@ -256,7 +256,7 @@ public class ClientFileSender extends Thread {
 			if (System.currentTimeMillis() - logtime >= 5000) {
 
 				logtime = System.currentTimeMillis();
-				IkisugiMusicPlayer.LOGGER.info("Client File Sending :" + " Name " + this.path.toFile().getName()
+				IamMusicPlayer.LOGGER.info("Client File Sending :" + " Name " + this.path.toFile().getName()
 						+ " Sent " + StringHelper.fileCapacityNotation(cont) + " Target "
 						+ (playerfile ? "Main" : "Everyone") + " Elapsed "
 						+ (System.currentTimeMillis() - fristtime) + "ms " + getPrograsePar(id));
@@ -266,7 +266,7 @@ public class ClientFileSender extends Thread {
 			time = System.currentTimeMillis();
 		}
 
-		IkisugiMusicPlayer.LOGGER.info("Client File Sender was Success Full :" + " Name "
+		IamMusicPlayer.LOGGER.info("Client File Sender was Success Full :" + " Name "
 				+ this.path.toFile().getName() + " Size " + StringHelper.fileCapacityNotation(cont) + " Target "
 				+ (playerfile ? "Main" : "Everyone") + " Elapsed " + (System.currentTimeMillis() - fristtime) + "ms");
 		NarratorHelper.say(I18n.format("narrator.fileuploadsuccess", this.path.toFile().getName()));

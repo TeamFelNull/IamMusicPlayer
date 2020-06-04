@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.item.CassetteTapeItem;
 
 @SuppressWarnings("deprecation")
@@ -85,7 +85,7 @@ public class CassetteBakedModel implements IBakedModel {
 
 	public ResourceLocation getLocation() {
 
-		return new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + cassette.getRegistryName().getPath());
+		return new ResourceLocation(IamMusicPlayer.MODID, "item/" + cassette.getRegistryName().getPath());
 	}
 
 	public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {

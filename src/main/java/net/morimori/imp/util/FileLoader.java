@@ -16,7 +16,7 @@ import java.util.Map;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class FileLoader {
 	public static void createFolder(Path path) {
@@ -27,7 +27,7 @@ public class FileLoader {
 		try {
 			return Files.readAllBytes(path);
 		} catch (IOException e) {
-			IkisugiMusicPlayer.LOGGER.error("Failed to Read the File : " + e.getLocalizedMessage());
+			IamMusicPlayer.LOGGER.error("Failed to Read the File : " + e.getLocalizedMessage());
 			return null;
 		}
 	}
@@ -37,7 +37,7 @@ public class FileLoader {
 		try {
 			Files.write(path, bytedatas);
 		} catch (IOException e) {
-			IkisugiMusicPlayer.LOGGER.error("Failed to Write the File : " + e.getLocalizedMessage());
+			IamMusicPlayer.LOGGER.error("Failed to Write the File : " + e.getLocalizedMessage());
 		}
 	}
 
@@ -52,9 +52,9 @@ public class FileLoader {
 			nbt.putString("Timestamp", StringHelper.getTimeStamp());
 			CompressedStreamTools.writeCompressed(nbt, stream);
 		} catch (FileNotFoundException e) {
-			IkisugiMusicPlayer.LOGGER.error("Failed to Write the NBT File : " + e.getLocalizedMessage());
+			IamMusicPlayer.LOGGER.error("Failed to Write the NBT File : " + e.getLocalizedMessage());
 		} catch (IOException e) {
-			IkisugiMusicPlayer.LOGGER.error("Failed to Write the NBT File : " + e.getLocalizedMessage());
+			IamMusicPlayer.LOGGER.error("Failed to Write the NBT File : " + e.getLocalizedMessage());
 		}
 	}
 
@@ -68,9 +68,9 @@ public class FileLoader {
 			stream = new FileInputStream(path.toFile());
 			return CompressedStreamTools.readCompressed(stream);
 		} catch (FileNotFoundException e) {
-			IkisugiMusicPlayer.LOGGER.error("Failed to Read the NBT File : " + e.getLocalizedMessage());
+			IamMusicPlayer.LOGGER.error("Failed to Read the NBT File : " + e.getLocalizedMessage());
 		} catch (IOException e) {
-			IkisugiMusicPlayer.LOGGER.error("Failed to Read the NBT File : " + e.getLocalizedMessage());
+			IamMusicPlayer.LOGGER.error("Failed to Read the NBT File : " + e.getLocalizedMessage());
 		}
 		return null;
 	}

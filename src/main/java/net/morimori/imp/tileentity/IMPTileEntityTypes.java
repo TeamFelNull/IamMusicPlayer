@@ -8,21 +8,21 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.IMPBlocks;
 
 public class IMPTileEntityTypes {
 
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "boombox")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "boombox")
 	public static TileEntityType<BoomboxTileEntity> BOOMBOX;
 
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "soundfile_uploader")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "soundfile_uploader")
 	public static TileEntityType<SoundFileUploaderTileEntity> SOUNDFILE_UPLOADER;
 
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_deck")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_deck")
 	public static TileEntityType<CassetteDeckTileEntity> CASSETTE_DECK;
 
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_storing")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_storing")
 	public static TileEntityType<CassetteStoringTileEntity> CASSETTE_STORING;
 
 	public static void registerTileEntityType(IForgeRegistry<TileEntityType<?>> r) {
@@ -44,7 +44,7 @@ public class IMPTileEntityTypes {
 			Supplier<? extends TileEntity> factoryIn, TileEntityType<?> te, String name,
 			Block... blocks) {
 		te = TileEntityType.Builder.create(factoryIn, blocks).build(null)
-				.setRegistryName(new ResourceLocation(IkisugiMusicPlayer.MODID, name));
+				.setRegistryName(new ResourceLocation(IamMusicPlayer.MODID, name));
 		r.register(te);
 
 	}

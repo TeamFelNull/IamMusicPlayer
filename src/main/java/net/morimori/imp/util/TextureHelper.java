@@ -17,14 +17,14 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.packet.ClientResponseMessage;
 import net.morimori.imp.packet.PacketHandler;
 
 public class TextureHelper {
 	private static Minecraft mc = Minecraft.getInstance();
 	private static TextureManager tm = mc.getTextureManager();
-	private static ResourceLocation lodinglocation = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	private static ResourceLocation lodinglocation = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/loading_image.png");
 
 	public static Map<String, ResourceLocation> pictuers = new HashMap<String, ResourceLocation>();
@@ -50,7 +50,7 @@ public class TextureHelper {
 			return pictuers.get(uuid);
 		}
 
-		ResourceLocation imagelocation = new ResourceLocation(IkisugiMusicPlayer.MODID,
+		ResourceLocation imagelocation = new ResourceLocation(IamMusicPlayer.MODID,
 				"pictuer/" + uuid);
 
 		File picfile = FileHelper.getClientPictuerCashPath().resolve(uuid + ".png").toFile();
@@ -71,9 +71,13 @@ public class TextureHelper {
 		} else {
 			PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(3, 0, uuid));
 			pictuers.put(uuid, lodinglocation);
-
 		}
 		return lodinglocation;
+	}
+
+	public static boolean isImageNotExists(String uuid) {
+
+		return uuid.equals("null") || (!pictuers.containsKey(uuid) || pictuers.get(uuid).equals(lodinglocation));
 	}
 
 }

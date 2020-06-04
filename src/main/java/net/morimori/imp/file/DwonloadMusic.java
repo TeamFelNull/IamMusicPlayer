@@ -11,7 +11,7 @@ import org.apache.commons.io.IOUtils;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.registries.IMPRegistries;
 import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.util.FileHelper;
@@ -37,7 +37,7 @@ public class DwonloadMusic {
 
 		public void dwonloadSoundFromWorldPlayLists(MinecraftServer ms) {
 			for (Entry<ResourceLocation, String> ruen : IMPRegistries.DwonloadMusics.entrySet()) {
-				IkisugiMusicPlayer.LOGGER.info("Dwonload Stating : " + ruen.getKey().toString());
+				IamMusicPlayer.LOGGER.info("Dwonload Stating : " + ruen.getKey().toString());
 				dwonloadSound(ms, ruen.getValue(), new TranslationTextComponent(
 						"music." + ruen.getKey().getNamespace() + "." + ruen.getKey().getPath()).getString(),
 						ruen.getKey());
@@ -58,9 +58,9 @@ public class DwonloadMusic {
 						ms);
 				PlayList.addPlayeyListFileNBT(ms, "everyone", name + ".mp3", rl.getNamespace(),
 						new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name + ".mp3"), uuid));
-				IkisugiMusicPlayer.LOGGER.info("Dwonload  was Success Full  : " + rl.toString());
+				IamMusicPlayer.LOGGER.info("Dwonload  was Success Full  : " + rl.toString());
 			} catch (IOException e) {
-				IkisugiMusicPlayer.LOGGER.info("Dwonload was Failure : " + url);
+				IamMusicPlayer.LOGGER.info("Dwonload was Failure : " + url);
 			}
 
 		}

@@ -4,7 +4,7 @@ import java.nio.file.Path;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.SoundPlayMessage;
@@ -47,7 +47,7 @@ public class SoundPlayer extends Thread {
 
 	public void run() {
 		played = true;
-		IkisugiMusicPlayer.LOGGER.info(
+		IamMusicPlayer.LOGGER.info(
 				"Play Start : " + worldplaylistsounddata.getFolderName() + ":" + worldplaylistsounddata.getName());
 
 		while (true) {

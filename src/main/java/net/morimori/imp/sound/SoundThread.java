@@ -8,7 +8,7 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class SoundThread extends Thread {
 	protected AdvancedPlayer player;
@@ -55,7 +55,7 @@ public class SoundThread extends Thread {
 				player.play();
 
 			} catch (JavaLayerException e) {
-				IkisugiMusicPlayer.LOGGER.error("Could not play Sound");
+				IamMusicPlayer.LOGGER.error("Could not play Sound");
 			}
 			finishSound();
 		}

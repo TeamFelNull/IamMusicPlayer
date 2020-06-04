@@ -6,16 +6,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.ObjectHolder;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class IMPContainerTypes {
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "soundfile_uploader")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "soundfile_uploader")
 	public static ContainerType<SoundFileUploaderContainer> SOUNDFILE_UPLOADER;
 
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_deck")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_deck")
 	public static ContainerType<CassetteDeckContainer> CASSETTE_DECK;
 
-	@ObjectHolder(IkisugiMusicPlayer.MODID + ":" + "cassette_storing")
+	@ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_storing")
 	public static ContainerType<CassetteStoringContainer> CASSETTE_STORING;
 
 
@@ -24,17 +24,17 @@ public class IMPContainerTypes {
 		SOUNDFILE_UPLOADER = (ContainerType<SoundFileUploaderContainer>) IForgeContainerType
 				.create((windowId, inv, data) -> {
 					return new SoundFileUploaderContainer(windowId, inv, new Inventory(1), data.readBlockPos());
-				}).setRegistryName(new ResourceLocation(IkisugiMusicPlayer.MODID, "soundfile_uploader"));
+				}).setRegistryName(new ResourceLocation(IamMusicPlayer.MODID, "soundfile_uploader"));
 		r.register(SOUNDFILE_UPLOADER);
 
 		CASSETTE_DECK = (ContainerType<CassetteDeckContainer>) IForgeContainerType.create((windowId, inv, data) -> {
 			return new CassetteDeckContainer(windowId, inv, new Inventory(3), data.readBlockPos());
-		}).setRegistryName(new ResourceLocation(IkisugiMusicPlayer.MODID, "cassette_deck"));
+		}).setRegistryName(new ResourceLocation(IamMusicPlayer.MODID, "cassette_deck"));
 		r.register(CASSETTE_DECK);
 
 		CASSETTE_STORING = (ContainerType<CassetteStoringContainer>) IForgeContainerType.create((windowId, inv, data) -> {
 			return new CassetteStoringContainer(windowId, inv, new Inventory(16), data.readBlockPos());
-		}).setRegistryName(new ResourceLocation(IkisugiMusicPlayer.MODID, "cassette_storing"));
+		}).setRegistryName(new ResourceLocation(IamMusicPlayer.MODID, "cassette_storing"));
 		r.register(CASSETTE_STORING);
 
 	}

@@ -40,7 +40,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.tileentity.CassetteDeckTileEntity;
 import net.morimori.imp.util.PlayerHelper;
 
@@ -196,7 +196,7 @@ public class CassetteDeckBlock extends Block implements IWaterLoggable {
 			return;
 
 		CassetteDeckTileEntity tileentity = (CassetteDeckTileEntity) worldIn.getTileEntity(pos);
-		Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
+		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 
 		if (stateIn.get(CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY
 				&& !tileentity.lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {

@@ -33,7 +33,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.client.renderer.item.CassetteItemRenderer;
 import net.morimori.imp.client.renderer.item.ParabolicAntennaRenderer;
 import net.morimori.imp.client.screen.IMPSoundSlider;
@@ -49,13 +49,14 @@ import net.morimori.imp.util.IMPMath;
 import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
+import net.morimori.imp.util.TextureHelper;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 
 public class RenderHandler {
 	private static Minecraft mc = Minecraft.getInstance();
 	public static int waitThreadCrash;
-	private static ResourceLocation tootiplaction = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	private static ResourceLocation tootiplaction = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/cassette_tooltip.png");
 
 	public static int MaxDraw = 3;
@@ -179,12 +180,12 @@ public class RenderHandler {
 				md -> ((ParabolicAntennaItem) IMPItems.PARABOLIC_ANTENNA).getModel(md, false));
 
 		ParabolicAntennaRenderer.pmodel = e.getModelLoader().func_217845_a(
-				new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName()
+				new ResourceLocation(IamMusicPlayer.MODID, "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName()
 						.getPath()),
 				ModelRotation.X0_Y0);
 
 		ParabolicAntennaRenderer.pmodel_null = e.getModelLoader().func_217845_a(
-				new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName()
+				new ResourceLocation(IamMusicPlayer.MODID, "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName()
 						.getPath() + "_null"),
 				ModelRotation.X0_Y0);
 
@@ -192,7 +193,7 @@ public class RenderHandler {
 			bakaItemModel(map, tape,
 					md -> (tape).getModel(md));
 			CassetteItemRenderer.casettomodels.put(tape, e.getModelLoader().func_217845_a(
-					new ResourceLocation(IkisugiMusicPlayer.MODID, "item/" + tape.getRegistryName()
+					new ResourceLocation(IamMusicPlayer.MODID, "item/" + tape.getRegistryName()
 							.getPath()),
 					ModelRotation.X0_Y0));
 		}
@@ -256,7 +257,7 @@ public class RenderHandler {
 		int pxsize = 0;
 		int pysize = 0;
 
-		if (imageuuid.equals("null")) {
+		if (TextureHelper.isImageNotExists(imageuuid)) {
 			pxsize = 128;
 			pysize = 128;
 		} else {
@@ -294,7 +295,7 @@ public class RenderHandler {
 		WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
 
 		int pysize = 0;
-		if (wplsd.getSoundData().album_image_uuid.equals("null")) {
+		if (TextureHelper.isImageNotExists(wplsd.getSoundData().album_image_uuid)) {
 			pysize = 32;
 		} else {
 			pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight() / 4;
@@ -317,7 +318,7 @@ public class RenderHandler {
 		WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
 
 		int pysize = 0;
-		if (wplsd.getSoundData().album_image_uuid.equals("null")) {
+		if (TextureHelper.isImageNotExists(wplsd.getSoundData().album_image_uuid)) {
 			pysize = 32;
 		} else {
 			pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth() / 4;

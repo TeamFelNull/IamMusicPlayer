@@ -13,7 +13,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.WorldPlaylistMessage;
@@ -321,7 +321,7 @@ public class PlayList {
 	}
 
 	public static void checkWorldPlayListNBT(MinecraftServer ms, String playlistname, String soundfilename) {
-		IkisugiMusicPlayer.LOGGER.info("Checking Sound NBT Data : " + playlistname + ":" + soundfilename);
+		IamMusicPlayer.LOGGER.info("Checking Sound NBT Data : " + playlistname + ":" + soundfilename);
 		if (!FileHelper.getWorldPlayListDataPath(ms).resolve(playlistname).toFile().exists()) {
 			CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
 			if (tag.contains(playlistname)) {
@@ -336,7 +336,7 @@ public class PlayList {
 			if (tag.contains(playlistname)) {
 				CompoundNBT pltag = (CompoundNBT) tag.get(playlistname);
 				if (pltag.contains(soundfilename)) {
-					IkisugiMusicPlayer.LOGGER
+					IamMusicPlayer.LOGGER
 							.error("Nonsense NBT Data Deleted : " + playlistname + ":" + soundfilename);
 					pltag.remove(soundfilename);
 					tag.put(playlistname, pltag);
@@ -378,7 +378,7 @@ public class PlayList {
 		File soundfile = FileHelper.getWorldPlayListDataPath(ms).resolve(playlistname).resolve(soundfilename).toFile();
 
 		if (soundfile != null) {
-			IkisugiMusicPlayer.LOGGER
+			IamMusicPlayer.LOGGER
 					.info("Checking Sound Data : " + playlistname + ":" + soundfilename);
 			CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
 

@@ -1,0 +1,6 @@
+{
+    "parent": "iammusicplayer:item/cassette",
+	"textures": {
+		"0": "iammusicplayer:item/no_record_cassette_tape"
+	}
+}

@@ -17,7 +17,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.BoomboxBlock;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.RenderHelper;
@@ -27,7 +27,7 @@ import net.morimori.imp.util.RenderHelper;
 public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEntity> {
 
 	public static Material material = new Material(AtlasTexture.LOCATION_BLOCKS_TEXTURE,
-			new ResourceLocation(IkisugiMusicPlayer.MODID, "block/boombox"));
+			new ResourceLocation(IamMusicPlayer.MODID, "block/boombox"));
 
 	private ModelRenderer lidWest;
 	private ModelRenderer lidEast;

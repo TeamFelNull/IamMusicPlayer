@@ -3,7 +3,7 @@ package net.morimori.imp.packet;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.client.handler.BoomboxSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteDeckSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteStoringSyncMessageHandler;
@@ -22,7 +22,7 @@ import net.morimori.imp.handler.SoundPlayMessageHandler;
 public class PacketHandler {
 	public static final String PROTOCOL_VERSION = "1";
 	public static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
-			.named(new ResourceLocation(IkisugiMusicPlayer.MODID, "ikisugi_channel"))
+			.named(new ResourceLocation(IamMusicPlayer.MODID, "imp_channel"))
 			.clientAcceptedVersions(a -> true).serverAcceptedVersions(a -> true)
 			.networkProtocolVersion(() -> PROTOCOL_VERSION)
 			.simpleChannel();

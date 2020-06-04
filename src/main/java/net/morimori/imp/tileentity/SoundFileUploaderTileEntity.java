@@ -255,7 +255,7 @@ public class SoundFileUploaderTileEntity extends LockableTileEntity
 	@Override
 	protected ITextComponent getDefaultName() {
 
-		return new TranslationTextComponent("block.ikisugimusicplayer.soundfile_uploader");
+		return new TranslationTextComponent("block.iammusicplayer.soundfile_uploader");
 	}
 
 	@Override

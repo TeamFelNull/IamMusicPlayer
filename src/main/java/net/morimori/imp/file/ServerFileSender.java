@@ -8,7 +8,7 @@ import java.util.UUID;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.ClientStopRequestMessage;
 import net.morimori.imp.packet.PacketHandler;
@@ -113,7 +113,7 @@ public class ServerFileSender extends Thread {
 		boolean frist = true;
 		long time = System.currentTimeMillis();
 		if (bytes == null) {
-			IkisugiMusicPlayer.LOGGER.info(
+			IamMusicPlayer.LOGGER.info(
 					"Null Sender File : " + this.path.toFile().toString());
 			finishSend();
 			return;
@@ -121,7 +121,7 @@ public class ServerFileSender extends Thread {
 
 		int cont = 0;
 
-		IkisugiMusicPlayer.LOGGER.info("Server File Sender Start : "
+		IamMusicPlayer.LOGGER.info("Server File Sender Start : "
 				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
 						.getString()
 				+ " Name "
@@ -151,7 +151,7 @@ public class ServerFileSender extends Thread {
 
 					if (stop.get(pluuid).get(id)) {
 
-						IkisugiMusicPlayer.LOGGER.error("Server File Sender Stop : Player "
+						IamMusicPlayer.LOGGER.error("Server File Sender Stop : Player "
 								+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
 										.getString()
 								+ " Name "
@@ -169,7 +169,7 @@ public class ServerFileSender extends Thread {
 					}
 
 					if (System.currentTimeMillis() - time >= 10000) {
-						IkisugiMusicPlayer.LOGGER.error("Client File Sender Time Out : Player "
+						IamMusicPlayer.LOGGER.error("Client File Sender Time Out : Player "
 								+ " Name "
 								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
 								+ " Elapsed "
@@ -182,7 +182,7 @@ public class ServerFileSender extends Thread {
 
 					if (System.currentTimeMillis() - logtime >= 5000) {
 						logtime = System.currentTimeMillis();
-						IkisugiMusicPlayer.LOGGER.info("Server File Sending :"
+						IamMusicPlayer.LOGGER.info("Server File Sending :"
 								+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
 										.getString()
 								+ " Name "
@@ -199,7 +199,7 @@ public class ServerFileSender extends Thread {
 			time = System.currentTimeMillis();
 		}
 
-		IkisugiMusicPlayer.LOGGER.info("Server File Sender was Success Full :"
+		IamMusicPlayer.LOGGER.info("Server File Sender was Success Full :"
 				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
 						.getString()
 				+ " Name "

@@ -21,6 +21,7 @@ import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.RenderHelper;
 import net.morimori.imp.util.SoundHelper;
+import net.morimori.imp.util.TextureHelper;
 
 @SuppressWarnings("deprecation")
 public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
@@ -63,13 +64,13 @@ public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
 
 			int pxsize = 0;
 			int pysize = 0;
-				if (wplsd.getSoundData().album_image_uuid.equals("null")) {
-						pxsize = 128;
-						pysize = 128;
-					} else {
-						pxsize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth();
-						pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight();
-					}
+			if (TextureHelper.isImageNotExists(wplsd.getSoundData().album_image_uuid)) {
+				pxsize = 128;
+				pysize = 128;
+			} else {
+				pxsize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth();
+				pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight();
+			}
 
 			tm.bindTexture(WorldPlayListSoundData.getWorldPlayListData(stack).getAlbumImage());
 			AbstractGui.blit(0, 0, 0, 0, pxsize / 8, pysize / 8,
@@ -85,7 +86,7 @@ public class CassetteItemRenderer extends ItemStackTileEntityRenderer {
 		//		fr.func_228079_a_("test", nazo, 0, 0, false, matx.func_227866_c_().func_227870_a_(), bff, false, 0,
 		//				p_228364_4_);
 		//
-		//		ResourceLocation test = new ResourceLocation(IkisugiMusicPlayer.MODID,
+		//		ResourceLocation test = new ResourceLocation(IamMusicPlayer.MODID,
 		//				"textures/gui/container/soundfile_uploader_2.png");
 		//
 		//		mc.getTextureManager().bindTexture(test);

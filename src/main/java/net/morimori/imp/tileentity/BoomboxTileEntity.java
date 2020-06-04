@@ -13,7 +13,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.BoomboxBlock;
 import net.morimori.imp.packet.BoomboxSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
@@ -155,7 +155,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	public void playSound() {
 		if (world.isRemote) {
 			if (SoundHelper.canPlay(getPlayCassette()) && this.getBlockState().get(BoomboxBlock.ON)) {
-				Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
+				Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 				int vol = this.getBlockState().get(BoomboxBlock.VOLUME);
 
 				if (!lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {

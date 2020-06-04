@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "BCB",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:nuggets/iron"
+    },
+    "B": {
+    "item": "iammusicplayer:magnetic_tape"
+    },
+    "C": {
+    "item": "minecraft:paper"
+    }
+  },
+  "result": {
+    "item": "iammusicplayer:no_record_cassette_tape",
+    "count": 1
+  }
+}

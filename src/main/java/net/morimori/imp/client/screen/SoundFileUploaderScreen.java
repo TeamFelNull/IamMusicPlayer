@@ -18,7 +18,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.SoundfileUploaderBlock;
 import net.morimori.imp.container.SoundFileUploaderContainer;
 import net.morimori.imp.file.ClientFileReceiver;
@@ -32,9 +32,9 @@ import net.morimori.imp.util.PlayerHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderContainer> {
-	protected static final ResourceLocation SFU_GUI_TEXTURE = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	protected static final ResourceLocation SFU_GUI_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/container/soundfile_uploader.png");
-	protected static final ResourceLocation SFU_GUI_TEXTURE2 = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	protected static final ResourceLocation SFU_GUI_TEXTURE2 = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/container/soundfile_uploader_2.png");
 	private static Minecraft mc = Minecraft.getInstance();
 

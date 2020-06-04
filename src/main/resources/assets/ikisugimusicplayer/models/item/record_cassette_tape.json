@@ -1,6 +1,0 @@
-{
-    "parent": "ikisugimusicplayer:item/cassette",
-	"textures": {
-		"0": "ikisugimusicplayer:item/record_cassette_tape"
-	}
-}

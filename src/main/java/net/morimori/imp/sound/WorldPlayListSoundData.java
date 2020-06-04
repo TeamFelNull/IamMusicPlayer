@@ -5,7 +5,7 @@ import java.nio.file.Paths;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.util.TextureHelper;
 
 public class WorldPlayListSoundData {
@@ -15,7 +15,7 @@ public class WorldPlayListSoundData {
 	private String folder;
 	private SoundData data;
 
-	private static ResourceLocation noalbumimage = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	private static ResourceLocation noalbumimage = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/no_album_image.png");
 
 	public WorldPlayListSoundData(String name, String folder, String uuid, SoundData sounddata) {

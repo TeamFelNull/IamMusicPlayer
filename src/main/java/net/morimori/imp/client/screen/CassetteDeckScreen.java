@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.CassetteDeckBlock;
 import net.morimori.imp.block.CassetteDeckStates;
 import net.morimori.imp.block.IMPBlocks;
@@ -30,7 +30,7 @@ import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
-	protected static final ResourceLocation CD_GUI_TEXTURE = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	protected static final ResourceLocation CD_GUI_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/container/cassette_deck.png");
 	private static Minecraft mc = Minecraft.getInstance();
 	private int page;

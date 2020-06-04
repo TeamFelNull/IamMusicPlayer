@@ -8,7 +8,7 @@ import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.Player;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class SoundStreamPlayer extends Thread {
 	public Bitstream stream;
@@ -40,7 +40,7 @@ public class SoundStreamPlayer extends Thread {
 			try {
 				player.play();
 			} catch (JavaLayerException e) {
-				IkisugiMusicPlayer.LOGGER.error("Could not play Sound");
+				IamMusicPlayer.LOGGER.error("Could not play Sound");
 			}
 
 		}

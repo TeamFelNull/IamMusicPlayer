@@ -11,7 +11,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.container.CassetteStoringContainer;
 import net.morimori.imp.tileentity.CassetteStoringTileEntity;
 import net.morimori.imp.util.ItemHelper;
@@ -19,7 +19,7 @@ import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContainer> {
-	protected static final ResourceLocation CS_GUI_TEXTURE = new ResourceLocation(IkisugiMusicPlayer.MODID,
+	protected static final ResourceLocation CS_GUI_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/container/cassete_storing.png");
 	private static Minecraft mc = Minecraft.getInstance();
 

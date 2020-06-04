@@ -22,7 +22,7 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.CassetteDeckBlock;
 import net.morimori.imp.block.CassetteDeckStates;
 import net.morimori.imp.container.CassetteDeckContainer;
@@ -376,7 +376,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	@Override
 	protected ITextComponent getDefaultName() {
 
-		return new TranslationTextComponent("block.ikisugimusicplayer.cassette_deck");
+		return new TranslationTextComponent("block.iammusicplayer.cassette_deck");
 	}
 
 	@Override
@@ -428,7 +428,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		if (world.isRemote) {
 			if (SoundHelper.canPlay(getWriteCassette())
 					&& this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY) {
-				net.minecraft.client.Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
+				net.minecraft.client.Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 				if (!lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {
 					if (new SoundPos(this.pos).canLisn(15)) {
 						if (!SoundWaitThread.posplayMap.containsKey(this.pos)) {

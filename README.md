@@ -1,4 +1,4 @@
-# IkisugiMusicPlayer
+# IamMusicPlayer
 The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
 # Library used
@@ -8,4 +8,4 @@ The Ikisugi Music Player MOD (Minecraft Forge MOD)
 [Mp3agic](https://github.com/mpatric/mp3agic) - Get ID3 tag of mp3
 
 # Dwonload
-https://www.curseforge.com/minecraft/mc-mods/ikisugimusicplayer
+https://www.curseforge.com/minecraft/mc-mods/iammusicplayer

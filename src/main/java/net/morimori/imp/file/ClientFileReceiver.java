@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.resources.I18n;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.FileHelper;
@@ -75,12 +75,12 @@ public class ClientFileReceiver extends Thread {
 		long time = System.currentTimeMillis();
 		long fristtime = System.currentTimeMillis();
 		long logtime = System.currentTimeMillis();
-		IkisugiMusicPlayer.LOGGER.info("Client File Receiver Start : " + " Name "
+		IamMusicPlayer.LOGGER.info("Client File Receiver Start : " + " Name "
 				+ filename + " Size " + StringHelper.fileCapacityNotation(receiverBufer.get(id).getBytes().length));
 
 		while (!receiverBufer.get(id).isPerfectByte()) {
 			if (stop.get(id)) {
-				IkisugiMusicPlayer.LOGGER.error("Client File Receiver Stop :"
+				IamMusicPlayer.LOGGER.error("Client File Receiver Stop :"
 						+ " Name "
 						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont)
 						+ " Elapsed "
@@ -92,7 +92,7 @@ public class ClientFileReceiver extends Thread {
 			}
 
 			if (cont == receiverBufer.get(id).getCont() && System.currentTimeMillis() - time >= 10000) {
-				IkisugiMusicPlayer.LOGGER.error("Client File Receiver Time Out :"
+				IamMusicPlayer.LOGGER.error("Client File Receiver Time Out :"
 						+ " Name "
 						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
 						+ (System.currentTimeMillis() - fristtime)
@@ -104,7 +104,7 @@ public class ClientFileReceiver extends Thread {
 
 			if (System.currentTimeMillis() - logtime >= 5000) {
 				logtime = System.currentTimeMillis();
-				IkisugiMusicPlayer.LOGGER.info("Client File Receing :"
+				IamMusicPlayer.LOGGER.info("Client File Receing :"
 						+ " Name "
 						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
 						+ (System.currentTimeMillis() - fristtime)
@@ -154,7 +154,7 @@ public class ClientFileReceiver extends Thread {
 			SoundWaitThread.finishedDownload(new WorldPlayListSoundData(path, sounduuid, null));
 		}
 
-		IkisugiMusicPlayer.LOGGER.info("Client File Receiver was Success Full :" + " Name "
+		IamMusicPlayer.LOGGER.info("Client File Receiver was Success Full :" + " Name "
 				+ filename + " Size " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
 				+ (System.currentTimeMillis() - fristtime) + "ms");
 		NarratorHelper.say(I18n.format("narrator.filedownloadsuccess", filename));

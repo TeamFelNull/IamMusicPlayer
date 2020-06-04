@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.item.IMPItems;
 
 @SuppressWarnings("deprecation")
@@ -85,11 +85,11 @@ public class ParabolicAntennaBakedModel implements IBakedModel {
 	public ResourceLocation getLocation() {
 
 		if (kame) {
-			return new ResourceLocation(IkisugiMusicPlayer.MODID,
+			return new ResourceLocation(IamMusicPlayer.MODID,
 					"item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName().getPath() + "_kame");
 		}
 
-		return new ResourceLocation(IkisugiMusicPlayer.MODID,
+		return new ResourceLocation(IamMusicPlayer.MODID,
 				"item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName().getPath());
 	}
 

@@ -6,7 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.item.BoomBoxItem;
 import net.morimori.imp.item.IMPItemGroup;
 import net.morimori.imp.item.WallOrFloorStateBlockItem;
@@ -14,16 +14,16 @@ import net.morimori.imp.item.WallOrFloorStateBlockItem;
 public class IMPBlocks {
 	public static final Block BOOMBOX = new BoomboxBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
-					IkisugiMusicPlayer.MODID, "boombox");
+					IamMusicPlayer.MODID, "boombox");
 	public static final Block SOUNDFILE_UPLOADER = new SoundfileUploaderBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
-					IkisugiMusicPlayer.MODID, "soundfile_uploader");
+					IamMusicPlayer.MODID, "soundfile_uploader");
 	public static final Block CASSETTE_DECK = new CassetteDeckBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
-					IkisugiMusicPlayer.MODID, "cassette_deck");
+					IamMusicPlayer.MODID, "cassette_deck");
 	public static final Block CASSETTE_STORING = new CassetteStoringBlock(Block.Properties.create(Material.IRON)
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
-					IkisugiMusicPlayer.MODID, "cassette_storing");
+					IamMusicPlayer.MODID, "cassette_storing");
 
 	public static void registerBlock(IForgeRegistry<Block> r) {
 		registryBlock(r, BOOMBOX);

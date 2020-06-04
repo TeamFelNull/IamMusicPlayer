@@ -6,7 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class CommonConfig {
 	public static ConfigValue<Integer> SEND_BYTE;
@@ -19,7 +19,7 @@ public class CommonConfig {
 
 	static class ConfigLoder {
 		public ConfigLoder(ForgeConfigSpec.Builder builder) {
-			IkisugiMusicPlayer.LOGGER.info("Loading Common Config");
+			IamMusicPlayer.LOGGER.info("Loading Common Config");
 			builder.push("Sound File");
 			SEND_BYTE = builder.define("sendbyte(byte)", 1024 * 8);
 			MAX_LIMIT = builder.define("sizelimit(mb)", 50);

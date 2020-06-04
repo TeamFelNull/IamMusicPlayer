@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.IamMusicPlayer;
 
 public class FileHelper {
 
@@ -17,7 +17,7 @@ public class FileHelper {
 	}
 
 	public static Path getWorldDataPath(MinecraftServer ms) {
-		return getWorldSaveDataPath(ms).resolve(IkisugiMusicPlayer.MODID);
+		return getWorldSaveDataPath(ms).resolve(IamMusicPlayer.MODID);
 	}
 
 	public static Path getWorldPlayListNBTDataPath(MinecraftServer ms) {
@@ -46,17 +46,17 @@ public class FileHelper {
 
 	@OnlyIn(Dist.CLIENT)
 	public static Path getClientPlayFileDataPath() {
-		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("musics");
+		return new File(IamMusicPlayer.MODID).toPath().resolve("musics");
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static Path getClientCashPath() {
-		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("cash");
+		return new File(IamMusicPlayer.MODID).toPath().resolve("cash");
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static Path getClientCurrentServerSoundDataPath() {
-		Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
+		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 		return getClientSoundCashPath().resolve(
 				mc.isSingleplayer()
 						? String.valueOf(IMPMath.stringDecimalConverter(mc.getIntegratedServer().getFolderName()))
@@ -75,7 +75,7 @@ public class FileHelper {
 
 	@OnlyIn(Dist.CLIENT)
 	public static Path getClientOptionTxtPath() {
-		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("options.txt");
+		return new File(IamMusicPlayer.MODID).toPath().resolve("options.txt");
 	}
 
 	@OnlyIn(Dist.CLIENT)

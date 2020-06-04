@@ -14,15 +14,15 @@ import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.proxy.ClientProxy;
 import net.morimori.imp.proxy.CommonProxy;
 
-@Mod(IkisugiMusicPlayer.MODID)
-public class IkisugiMusicPlayer {
-	public static final String MODID = "ikisugimusicplayer";
+@Mod(IamMusicPlayer.MODID)
+public class IamMusicPlayer {
+	public static final String MODID = "iammusicplayer";
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	public static final CommonProxy proxy = DistExecutor
 			.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
 
-	public IkisugiMusicPlayer() {
+	public IamMusicPlayer() {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
