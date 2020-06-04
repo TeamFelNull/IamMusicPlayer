@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.morimori.imp.IkisugiMusicPlayer;
-import net.morimori.imp.util.RenderHelper;
+import net.morimori.imp.util.TextureHelper;
 
 public class WorldPlayListSoundData {
 
@@ -84,10 +84,13 @@ public class WorldPlayListSoundData {
 	}
 
 	public ResourceLocation getAlbumImage() {
-		if (this.getSoundData().album_image.length <= 0) {
+		if (this.getSoundData().album_image_uuid.equals("null")) {
 			return noalbumimage;
 		} else {
-			return RenderHelper.getBytePictuerLocation(this.getSoundData().album_image,this.getSoundData().album_image_uuid);
+
+			ResourceLocation pt = TextureHelper.getPictueLocation(this.getSoundData().album_image_uuid);
+
+			return pt;
 		}
 	}
 }

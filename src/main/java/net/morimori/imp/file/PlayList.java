@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -21,6 +20,7 @@ import net.morimori.imp.packet.WorldPlaylistMessage;
 import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
+import net.morimori.imp.util.StringHelper;
 
 public class PlayList {
 
@@ -141,13 +141,9 @@ public class PlayList {
 			public boolean accept(File pathname) {
 
 				boolean flag1 = !pathname.isDirectory();
-				boolean flag2 = false;
+				boolean flag2 = StringHelper.getExtension(pathname.getName()).equals("mp3");
 				boolean flag3 = pathname.length() <= (CommonConfig.MAX_LIMIT.get() * 1024 * 1024);
 
-				String[] filenames = pathname.getName().split(Pattern.quote("."));
-				if (filenames.length != 1) {
-					flag2 = filenames[filenames.length - 1].equals("mp3");
-				}
 				return flag1 && flag2 && flag3;
 			}
 		};
@@ -406,11 +402,15 @@ public class PlayList {
 			if (!stag.contains("PlayerName"))
 				stag.putString("PlayerName", FakePlayerName);
 
-			if (!stag.contains("SoundData"))
+			if (!stag.contains("SoundData")) {
+				String uuid = UUID.randomUUID().toString();
+				ImagePictuers.addPictuer(uuid,
+						FileHelper.getWorldPlayListDataPath(ms).resolve(playlistname).resolve(soundfilename), ms);
 				stag.put("SoundData", new SoundData(
-						FileHelper.getWorldPlayListDataPath(ms).resolve(playlistname).resolve(soundfilename))
-								.writeNBT(new CompoundNBT()));
+						FileHelper.getWorldPlayListDataPath(ms).resolve(playlistname).resolve(soundfilename),
+						uuid).writeNBT(new CompoundNBT()));
 
+			}
 			pltag.put(soundfile.getName(), stag);
 
 			tag.put(playlistname, pltag);

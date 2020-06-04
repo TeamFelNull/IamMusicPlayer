@@ -46,7 +46,6 @@ import net.morimori.imp.item.ParabolicAntennaItem;
 import net.morimori.imp.sound.SoundData;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.IMPMath;
-import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
@@ -228,7 +227,8 @@ public class RenderHandler {
 	public static void onToolTipRender(RenderTooltipEvent.PostBackground e) {
 
 		if (!SoundHelper.isWritedSound(e.getStack())
-				|| WorldPlayListSoundData.getWorldPlayListData(e.getStack()).getSoundData().album_image == null) {
+				|| WorldPlayListSoundData.getWorldPlayListData(e.getStack()).getSoundData().album_image_uuid
+						.equals("uuid")) {
 			return;
 		}
 
@@ -241,7 +241,7 @@ public class RenderHandler {
 
 		WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
 
-		byte[] bytes = wplsd.getSoundData().album_image;
+		//	byte[] bytes = wplsd.getSoundData().album_image;
 
 		TextureManager tm = mc.getTextureManager();
 
@@ -252,17 +252,17 @@ public class RenderHandler {
 				getSoundDataTooltipWidth(stack), getSoundDataTooltipHeight(stack), rnd.nextFloat() / 2f,
 				rnd.nextFloat() / 2f, rnd.nextFloat() / 2f);
 
-		int pxsize = 0;
-		int pysize = 0;
-
-		if (bytes.length <= 0) {
-			pxsize = 128;
-			pysize = 128;
-		} else {
-			pxsize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getWidth();
-			pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getHeight();
-		}
-
+		int pxsize = 128;
+		int pysize = 128;
+		/*
+				if (bytes.length <= 0) {
+					pxsize = 128;
+					pysize = 128;
+				} else {
+					pxsize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getWidth();
+					pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getHeight();
+				}
+		*/
 		RenderSystem.pushMatrix();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		tm.bindTexture(WorldPlayListSoundData.getWorldPlayListData(stack).getAlbumImage());
@@ -290,17 +290,17 @@ public class RenderHandler {
 	public static int getSoundDataTooltipHeight(ItemStack stack) {
 
 		int size1 = 0;
-		WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
-
-		int pysize = 0;
-		byte[] bytes = wplsd.getSoundData().album_image;
-		if (bytes.length <= 0) {
-			pysize = 32;
-		} else {
-			pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getHeight() / 4;
-		}
-
-		size1 = pysize;
+		//WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
+		/*
+				int pysize = 0;
+				if (wplsd.getSoundData().album_image_uuid.equals("uuid")) {
+					pysize = 32;
+				} else {
+					byte [] = FileHelper.getClientPictuerCashPath().resolve(other)
+					pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getHeight() / 4;
+				}
+		*/
+		size1 = 32;
 
 		int size2 = 0;
 		List<ITextComponent> itc = new ArrayList<ITextComponent>();
@@ -317,16 +317,16 @@ public class RenderHandler {
 		int size = 0;
 		FontRenderer fr = mc.fontRenderer;
 		WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
-
-		int pysize = 0;
-		byte[] bytes = wplsd.getSoundData().album_image;
-		if (bytes.length <= 0) {
-			pysize = 32;
-		} else {
-			pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getWidth() / 4;
-		}
-
-		size += pysize;
+		/*
+				int pysize = 0;
+			//	byte[] bytes = wplsd.getSoundData().album_image;
+				if (bytes.length <= 0) {
+					pysize = 32;
+				} else {
+					pysize = PictuerUtil.getImage(bytes, wplsd.getSoundData().album_image_uuid).getWidth() / 4;
+				}
+		*/
+		size += 32;
 
 		int namesize = fr.getStringWidth(SoundHelper.getCassetteSoundName(stack)) + 3;
 

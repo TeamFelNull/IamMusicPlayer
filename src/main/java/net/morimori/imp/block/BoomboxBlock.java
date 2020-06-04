@@ -1,5 +1,6 @@
 package net.morimori.imp.block;
 
+import java.util.List;
 import java.util.Random;
 
 import javax.annotation.Nullable;
@@ -37,9 +38,12 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.item.BoomBoxTileEntityStack;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
@@ -140,19 +144,6 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		return state.get(ON) ? 5 : 0;
 	}
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onReplaced(BlockState before, World worldIn, BlockPos pos, BlockState after,
-			boolean isMoving) {
-
-		if (before.getBlock() != after.getBlock()) {
-			this.dropCassette(worldIn, pos, false);
-		}
-
-		super.onReplaced(before, worldIn, pos, after, isMoving);
-
-	}
-
 	public boolean insertCassette(World worldIn, BlockPos pos, ItemStack stackIn) {
 
 		TileEntity tileentity = worldIn.getTileEntity(pos);
@@ -167,6 +158,27 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 			return true;
 		}
 		return false;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+
+		List<ItemStack> drops = super.getDrops(state, builder);
+		if (builder.get(LootParameters.BLOCK_ENTITY) instanceof BoomboxTileEntity) {
+			BoomboxTileEntity tileentity = (BoomboxTileEntity) builder.get(LootParameters.BLOCK_ENTITY);
+			for (ItemStack di : drops) {
+				if (di.getItem() == IMPBlocks.BOOMBOX.asItem()) {
+					BoomBoxTileEntityStack bbtes = new BoomBoxTileEntityStack(di);
+					bbtes.load(tileentity);
+					bbtes.save();
+					break;
+				}
+			}
+
+		}
+
+		return drops;
 	}
 
 	public void dropCassette(World worldIn, BlockPos pos, boolean tossed) {
@@ -218,6 +230,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 	@Override
 	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+
 		return this.getDefaultState()
 				.with(FACING, context.getPlacementHorizontalFacing().rotateY())
 				.with(WATERLOGGED, Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));

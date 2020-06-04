@@ -7,6 +7,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.morimori.imp.IkisugiMusicPlayer;
+import net.morimori.imp.item.BoomBoxItem;
 import net.morimori.imp.item.IMPItemGroup;
 import net.morimori.imp.item.WallOrFloorStateBlockItem;
 
@@ -32,25 +33,24 @@ public class IMPBlocks {
 	}
 
 	public static void registerItem(IForgeRegistry<Item> r) {
+
 		registryBlockItem(r, SOUNDFILE_UPLOADER);
 		registryBlockItem(r, CASSETTE_DECK);
-		registryWallblaeBlockItem(r, BOOMBOX);
 		registryWallblaeBlockItem(r, CASSETTE_STORING);
+		r.register(new BoomBoxItem(BOOMBOX, new Item.Properties().group(IMPItemGroup.MOD_TAB))
+				.setRegistryName(BOOMBOX.getRegistryName()));
 	}
 
 	private static void registryBlock(IForgeRegistry<Block> r, Block b) {
-		IkisugiMusicPlayer.LOGGER.info("Registering Block : " + b.getRegistryName());
 		r.register(b);
 	}
 
 	private static void registryWallblaeBlockItem(IForgeRegistry<Item> r, Block b) {
-		IkisugiMusicPlayer.LOGGER.info("Registering BlockItem : " + b.getRegistryName());
 		r.register(new WallOrFloorStateBlockItem(b, new Item.Properties().group(IMPItemGroup.MOD_TAB))
 				.setRegistryName(b.getRegistryName()));
 	}
 
 	private static void registryBlockItem(IForgeRegistry<Item> r, Block b) {
-		IkisugiMusicPlayer.LOGGER.info("Registering BlockItem : " + b.getRegistryName());
 		r.register(new BlockItem(b, new Item.Properties().group(IMPItemGroup.MOD_TAB))
 				.setRegistryName(b.getRegistryName()));
 	}

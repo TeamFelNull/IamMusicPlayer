@@ -8,6 +8,7 @@ import net.morimori.imp.client.handler.BoomboxSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteDeckSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteStoringSyncMessageHandler;
 import net.morimori.imp.client.handler.ClientStopRequestMessageHandler;
+import net.morimori.imp.client.handler.ServerClientDataSyncMessageHandler;
 import net.morimori.imp.client.handler.ServerResponseMessageHandler;
 import net.morimori.imp.client.handler.ServerSendSoundFileMessageHandler;
 import net.morimori.imp.client.handler.SoundFileUploaderSyncMessageHandler;
@@ -74,6 +75,9 @@ public class PacketHandler {
 
 		INSTANCE.registerMessage(next(), CassetteStoringSyncMessage.class, CassetteStoringSyncMessage::encodeMessege,
 				CassetteStoringSyncMessage::decodeMessege, CassetteStoringSyncMessageHandler::reversiveMessage);
+
+		INSTANCE.registerMessage(next(), ServerClientDataSyncMessage.class, ServerClientDataSyncMessage::encodeMessege,
+				ServerClientDataSyncMessage::decodeMessege, ServerClientDataSyncMessageHandler::reversiveMessage);
 
 	}
 }

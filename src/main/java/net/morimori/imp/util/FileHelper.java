@@ -28,6 +28,10 @@ public class FileHelper {
 		return getWorldDataPath(ms).resolve("playlist");
 	}
 
+	public static Path getWorldPictuerPath(MinecraftServer ms) {
+		return getWorldDataPath(ms).resolve("pictuer");
+	}
+
 	public static Path getWorldEveryonePlayListDataPath(MinecraftServer ms) {
 		return getWorldPlayListDataPath(ms).resolve("everyone");
 	}
@@ -46,14 +50,14 @@ public class FileHelper {
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static Path getClientServerSoundsDataPath() {
+	public static Path getClientCashPath() {
 		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("cash");
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	public static Path getClientCurrentServerSoundDataPath() {
 		Minecraft mc = IkisugiMusicPlayer.proxy.getMinecraft();
-		return getClientServerSoundsDataPath().resolve(
+		return getClientSoundCashPath().resolve(
 				mc.isSingleplayer()
 						? String.valueOf(IMPMath.stringDecimalConverter(mc.getIntegratedServer().getFolderName()))
 						: String.valueOf(IMPMath.stringDecimalConverter(mc.getCurrentServerData().serverIP)));
@@ -72,5 +76,15 @@ public class FileHelper {
 	@OnlyIn(Dist.CLIENT)
 	public static Path getClientOptionTxtPath() {
 		return new File(IkisugiMusicPlayer.MODID).toPath().resolve("options.txt");
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static Path getClientSoundCashPath() {
+		return getClientCashPath().resolve("sound");
+	}
+
+	@OnlyIn(Dist.CLIENT)
+	public static Path getClientPictuerCashPath() {
+		return getClientCashPath().resolve("pictuer");
 	}
 }

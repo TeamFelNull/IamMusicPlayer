@@ -28,6 +28,7 @@ public class ServerHandler {
 	@SubscribeEvent
 	public static void onServerStart(FMLServerStartingEvent e) {
 		FileLoader.createFolder(FileHelper.getWorldEveryonePlayListDataPath(e.getServer()));
+		FileLoader.createFolder(FileHelper.getWorldPictuerPath(e.getServer()));
 		PlayList.checkWorldPlayLists(e.getServer(), false);
 		DwonloadMusic.dwonloadSoundFromWorldPlayLists(e.getServer());
 	}
@@ -36,4 +37,5 @@ public class ServerHandler {
 	public static void onWorldSave(WorldEvent.Save e) {
 		PlayList.checkWorldPlayLists(e.getWorld().getWorld().getServer(), true);
 	}
+
 }

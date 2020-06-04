@@ -131,8 +131,11 @@ public class ServerFileReceiver extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
+			String uuid = UUID.randomUUID().toString();
+			ImagePictuers.addPictuer(uuid, FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(filename), ms);
 			PlayList.addPlayeyListFileNBT(ms, pluuid, filename, pluuid,
-					new SoundData(FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(filename)));
+					new SoundData(FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(filename), uuid));
 
 		} else {
 			FileLoader.fileBytesWriter(receiverBufer.get(pluuid).get(id).getBytes(),
@@ -142,8 +145,10 @@ public class ServerFileReceiver extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			String uuid = UUID.randomUUID().toString();
+			ImagePictuers.addPictuer(uuid, FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(filename), ms);
 			PlayList.addPlayeyListFileNBT(ms, "everyone", filename, pluuid,
-					new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(filename)));
+					new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(filename), uuid));
 		}
 		IkisugiMusicPlayer.LOGGER.info("Server File Receiver was Success Full :  "
 				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName().getString() + " Name "

@@ -53,11 +53,10 @@ public class IMPItems {
 		registryItem(r, MAGNETIC_TAPE);
 
 		//		registryItem(r, SOUNDTEST);
-
+	
 	}
 
 	private static void registryItem(IForgeRegistry<Item> r, Item i) {
-		IkisugiMusicPlayer.LOGGER.info("Registering Item : " + i.getRegistryName());
 		r.register(i);
 	}
 

@@ -1,10 +1,8 @@
 package net.morimori.imp.sound;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.InvalidDataException;
@@ -18,7 +16,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.morimori.imp.util.PictuerUtil;
 
 public class SoundData {
 	public String track = "null";
@@ -36,12 +33,13 @@ public class SoundData {
 	public String bitrate = "null";
 	public String layer = "null";
 	public String emphasis = "null";
-	public byte[] album_image = null;
 	public String album_image_uuid = "null";
+
 	public SoundData() {
 
 	}
-	public SoundData(Path path) {
+
+	public SoundData(Path path, String imageuuid) {
 		try {
 			Mp3File mfile = new Mp3File(path.toString());
 			ID3v2 tag = mfile.getId3v2Tag();
@@ -93,33 +91,40 @@ public class SoundData {
 
 			if (mfile.getEmphasis() != null)
 				this.emphasis = mfile.getEmphasis();
+			/*
+						if (tag.getAlbumImage() != null) {
 
+							byte[] motobytes = tag.getAlbumImage();
+
+							BufferedImage motos = PictuerUtil.getImage(motobytes, null);
+							int size = 128;
+							float w = motos.getWidth();
+							float h = motos.getHeight();
+
+							int aw = 10;
+							int ah = 10;
+
+							if (w == h) {
+								aw = size;
+								ah = size;
+							} else if (w > h) {
+								aw = size;
+								ah = (int) ((float) size * (h / w));
+							} else if (w > h) {
+								aw = (int) ((float) size * (w / h));
+								ah = size;
+							}
+
+							this.album_image = PictuerUtil.setSize(motobytes, aw, ah);
+
+						}
+						*/
 			if (tag.getAlbumImage() != null) {
-
-				byte[] motobytes = tag.getAlbumImage();
-
-				BufferedImage motos = PictuerUtil.getImage(motobytes, null);
-				int size = 128;
-				float w = motos.getWidth();
-				float h = motos.getHeight();
-
-				int aw = 10;
-				int ah = 10;
-
-				if (w == h) {
-					aw = size;
-					ah = size;
-				} else if (w > h) {
-					aw = size;
-					ah = (int) ((float) size * (h / w));
-				} else if (w > h) {
-					aw = (int) ((float) size * (w / h));
-					ah = size;
-				}
-
-				this.album_image = PictuerUtil.setSize(motobytes, aw, ah);
-				this.album_image_uuid = UUID.randomUUID().toString();
+				this.album_image_uuid = imageuuid;
+			} else {
+				this.album_image_uuid = "null";
 			}
+
 		} catch (UnsupportedTagException | InvalidDataException | IOException e) {
 
 		}
@@ -180,9 +185,6 @@ public class SoundData {
 		if (tag.contains("Emphasis"))
 			this.emphasis = tag.getString("Emphasis");
 
-		if (tag.contains("AlbumImage"))
-			this.album_image = tag.getByteArray("AlbumImage");
-
 		if (tag.contains("AlbumImageUUID"))
 			this.album_image_uuid = tag.getString("AlbumImageUUID");
 	}
@@ -204,10 +206,6 @@ public class SoundData {
 		tag.putString("BitRate", this.bitrate);
 		tag.putString("Layer", this.layer);
 		tag.putString("Emphasis", this.emphasis);
-
-		if (this.album_image != null) {
-			tag.putByteArray("AlbumImage", this.album_image);
-		}
 
 		tag.putString("AlbumImageUUID", this.album_image_uuid);
 

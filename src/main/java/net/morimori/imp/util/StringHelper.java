@@ -15,6 +15,16 @@ public class StringHelper {
 		return st;
 	}
 
+	public static String getExtension(String name) {
+
+		String[] filenames = name.split(Pattern.quote("."));
+		if (filenames.length != 1) {
+			return filenames[filenames.length - 1];
+		}
+
+		return "";
+	}
+
 	public static String deleteExtension(String name) {
 
 		String[] filenames = name.split(Pattern.quote("."));

@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 
@@ -52,12 +53,13 @@ public class DwonloadMusic {
 				FileLoader.fileBytesWriter(IOUtils.toByteArray(in),
 						FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name + ".mp3"));
 
-				sleep(10);
-
+				String uuid = UUID.randomUUID().toString();
+				ImagePictuers.addPictuer(uuid, FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name + ".mp3"),
+						ms);
 				PlayList.addPlayeyListFileNBT(ms, "everyone", name + ".mp3", rl.getNamespace(),
-						new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name + ".mp3")));
+						new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name + ".mp3"), uuid));
 				IkisugiMusicPlayer.LOGGER.info("Dwonload  was Success Full  : " + rl.toString());
-			} catch (IOException | InterruptedException e) {
+			} catch (IOException e) {
 				IkisugiMusicPlayer.LOGGER.info("Dwonload was Failure : " + url);
 			}
 

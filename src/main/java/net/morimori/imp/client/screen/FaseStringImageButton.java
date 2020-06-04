@@ -1,18 +1,11 @@
 package net.morimori.imp.client.screen;
 
-import java.util.Map;
-
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.RenderHelper;
 
 public class FaseStringImageButton extends StringImageButton {
 	private static Minecraft mc = Minecraft.getInstance();
@@ -79,12 +72,7 @@ public class FaseStringImageButton extends StringImageButton {
 				RenderSystem.popMatrix();
 			} else {
 				if (!faseplayername.isEmpty()) {
-					ResourceLocation faselocation;
-					GameProfile GP = PlayerHelper.getPlayerTextuerProfile(faseplayername);
-					Map<Type, MinecraftProfileTexture> map = mc.getSkinManager().loadSkinFromCache(GP);
-					faselocation = map.containsKey(Type.SKIN)
-							? mc.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN)
-							: DefaultPlayerSkin.getDefaultSkin(PlayerEntity.getUUID(GP));
+
 					RenderSystem.pushMatrix();
 
 					if (isReddish)
@@ -92,9 +80,9 @@ public class FaseStringImageButton extends StringImageButton {
 					else
 						RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-					mc.getTextureManager().bindTexture(faselocation);
-					AbstractGui.blit(this.x + (fileselectbuton ? 0 : 2), this.y + (this.height - 8) / 2, 8, 8, 8, 8, 64,
-							64);
+					RenderHelper.drawPlayerFase(
+							faseplayername, this.x + (fileselectbuton ? 0 : 2), this.y + (this.height - 8) / 2);
+
 					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 					RenderSystem.popMatrix();
 				}
