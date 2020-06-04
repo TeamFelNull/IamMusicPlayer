@@ -77,18 +77,22 @@ repositories {
     url = "https://modmaven.k-4u.nl"
   }
   maven {
-    name = "Patchouli"
-    url = "https://maven.blamejared.com"
+    name = "HWYLA"
+    url = "http://tehnut.info/maven"
+  }
+  maven {
+    name = "top"
+    url = "http://maven.tterrag.com/"
   }
 }
 
 dependencies {
 
-  minecraft 'net.minecraftforge:forge:1.15.2-31.2.0'
+  minecraft 'net.minecraftforge:forge:1.15.2-31.2.7'
   compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
   runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
+  compile fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+  implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-${top_version}")
 }
 
 
