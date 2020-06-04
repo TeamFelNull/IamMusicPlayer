@@ -53,26 +53,25 @@ public class TextureHelper {
 		ResourceLocation imagelocation = new ResourceLocation(IkisugiMusicPlayer.MODID,
 				"pictuer/" + uuid);
 
-		if (FileHelper.getClientPictuerCashPath().toFile().exists()) {
+		File picfile = FileHelper.getClientPictuerCashPath().resolve(uuid + ".png").toFile();
 
-			File picfile = FileHelper.getClientPictuerCashPath().resolve(uuid + ".png").toFile();
+		if (picfile.exists() && picfile != null) {
+			try {
+				byte[] pibyte = FileLoader.fileBytesReader(picfile.toPath());
+				ByteArrayInputStream bis = new ByteArrayInputStream(pibyte);
+				NativeImage NI = NativeImage.read(bis);
+				tm.func_229263_a_(imagelocation, new DynamicTexture(NI));
+				pictuers.put(uuid, imagelocation);
+				return imagelocation;
 
-			if (picfile.exists() && picfile != null) {
-				System.out.println("tesssssss");
-				try {
-					byte[] pibyte = FileLoader.fileBytesReader(picfile.toPath());
-					ByteArrayInputStream bis = new ByteArrayInputStream(pibyte);
-					NativeImage NI = NativeImage.read(bis);
-					tm.func_229263_a_(imagelocation, new DynamicTexture(NI));
-					pictuers.put(uuid, imagelocation);
-					return imagelocation;
-				} catch (IOException e) {
+			} catch (IOException e) {
 
-				}
 			}
+
 		} else {
 			PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(3, 0, uuid));
 			pictuers.put(uuid, lodinglocation);
+
 		}
 		return lodinglocation;
 	}
