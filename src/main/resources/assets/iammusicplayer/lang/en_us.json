@@ -108,7 +108,8 @@
   "overlay.sender.othertask": "Other %s Upload Tasks...",
   "overlay.sender.reservation": "%s Upload reservations...",
 
-
+  "iammusicplayer.command.plreload": "Reload World Playlist",
+  
   "_comment": "Last"
   
 }

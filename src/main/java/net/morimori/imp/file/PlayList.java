@@ -411,6 +411,22 @@ public class PlayList {
 						uuid).writeNBT(new CompoundNBT()));
 
 			}
+
+			if (stag.contains("SoundData")) {
+
+				SoundData sd = new SoundData((CompoundNBT) stag.get("SoundData"));
+
+				if (sd.album_image_uuid != null && !sd.album_image_uuid.equals("null")) {
+
+					if (!FileHelper.getWorldPictuerPath(ms).resolve(sd.album_image_uuid + ".png").toFile().exists()) {
+						ImagePictuers.addPictuer(sd.album_image_uuid, soundfile.toPath(), ms);
+
+					}
+
+				}
+
+			}
+
 			pltag.put(soundfile.getName(), stag);
 
 			tag.put(playlistname, pltag);

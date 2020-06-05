@@ -5,6 +5,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.morimori.imp.command.IMPCommands;
 import net.morimori.imp.file.DwonloadMusic;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.file.ServerFileReceiver;
@@ -31,6 +32,7 @@ public class ServerHandler {
 		FileLoader.createFolder(FileHelper.getWorldPictuerPath(e.getServer()));
 		PlayList.checkWorldPlayLists(e.getServer(), false);
 		DwonloadMusic.dwonloadSoundFromWorldPlayLists(e.getServer());
+		IMPCommands.registerCommand(e.getCommandDispatcher());
 	}
 
 	@SubscribeEvent

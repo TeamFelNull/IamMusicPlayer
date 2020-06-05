@@ -102,6 +102,8 @@
   "overlay.sender.othertask": "その他 %s 個のアップロードタスク...",
   "overlay.sender.reservation": "%s 件のアップロード予約",
   
+  "iammusicplayer.command.plreload": "ワールドのプレイリストを再読み込みしました",
+  
   "_comment": "Last"
   
 }

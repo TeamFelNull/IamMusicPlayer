@@ -13,7 +13,6 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
@@ -23,7 +22,6 @@ import net.morimori.imp.packet.PacketHandler;
 
 public class TextureHelper {
 	private static Minecraft mc = Minecraft.getInstance();
-	private static TextureManager tm = mc.getTextureManager();
 	private static ResourceLocation lodinglocation = new ResourceLocation(IamMusicPlayer.MODID,
 			"textures/gui/loading_image.png");
 
@@ -60,7 +58,7 @@ public class TextureHelper {
 				byte[] pibyte = FileLoader.fileBytesReader(picfile.toPath());
 				ByteArrayInputStream bis = new ByteArrayInputStream(pibyte);
 				NativeImage NI = NativeImage.read(bis);
-				tm.func_229263_a_(imagelocation, new DynamicTexture(NI));
+				mc.textureManager.func_229263_a_(imagelocation, new DynamicTexture(NI));
 				pictuers.put(uuid, imagelocation);
 				return imagelocation;
 
