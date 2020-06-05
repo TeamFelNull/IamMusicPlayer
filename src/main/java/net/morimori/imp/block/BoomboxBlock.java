@@ -167,11 +167,13 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		List<ItemStack> drops = super.getDrops(state, builder);
 		if (builder.get(LootParameters.BLOCK_ENTITY) instanceof BoomboxTileEntity) {
 			BoomboxTileEntity tileentity = (BoomboxTileEntity) builder.get(LootParameters.BLOCK_ENTITY);
+
 			for (ItemStack di : drops) {
 				if (di.getItem() == IMPBlocks.BOOMBOX.asItem()) {
 					BoomBoxTileEntityStack bbtes = new BoomBoxTileEntityStack(di);
 					bbtes.load(tileentity);
 					bbtes.save();
+
 					break;
 				}
 			}
@@ -179,6 +181,18 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		}
 
 		return drops;
+	}
+
+	@SuppressWarnings("deprecation")
+	public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+		if (state.getBlock() != newState.getBlock()) {
+			TileEntity tileentity = worldIn.getTileEntity(pos);
+			if (tileentity instanceof BoomboxTileEntity) {
+				worldIn.updateComparatorOutputLevel(pos, state.getBlock());
+			}
+
+			super.onReplaced(state, worldIn, pos, newState, isMoving);
+		}
 	}
 
 	public void dropCassette(World worldIn, BlockPos pos, boolean tossed) {

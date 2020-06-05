@@ -11,6 +11,7 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.morimori.imp.IamMusicPlayer;
+import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.file.ClientFileReceiver;
 import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
@@ -30,7 +31,6 @@ public class SoundWaitThread extends Thread {
 	private static Minecraft mc = Minecraft.getInstance();
 	public static boolean cheking = false;
 
-	@SuppressWarnings("deprecation")
 	public void run() {
 		while (true) {
 			cheking = true;
@@ -56,7 +56,8 @@ public class SoundWaitThread extends Thread {
 			if (!posplayMap.isEmpty()) {
 				try {
 					for (Entry<BlockPos, SoundPlayer> maps : posplayMap.entrySet()) {
-						boolean flag1 = mc.world.getBlockState(maps.getKey()).isAir();
+						boolean flag1 = !(mc.world.getBlockState(maps.getKey()).getBlock() == IMPBlocks.BOOMBOX
+								|| mc.world.getBlockState(maps.getKey()).getBlock() == IMPBlocks.CASSETTE_DECK);
 
 						boolean flag2 = false;
 
@@ -123,14 +124,16 @@ public class SoundWaitThread extends Thread {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void finishedDownload(WorldPlayListSoundData worlddata) {
 		if (!dawonloadwaitedplayers.isEmpty()) {
 			try {
 				for (Entry<SoundPlayer, WorldPlayListSoundData> df : dawonloadwaitedplayers.entrySet()) {
 					if (df.getValue().equals(worlddata)) {
 
-						boolean flag1 = !mc.world.getBlockState(df.getKey().soundpos.getBlockPos()).isAir();
+						boolean flag1 = mc.world.getBlockState(df.getKey().soundpos.getBlockPos())
+								.getBlock() == IMPBlocks.BOOMBOX
+								|| mc.world.getBlockState(df.getKey().soundpos.getBlockPos())
+										.getBlock() == IMPBlocks.CASSETTE_DECK;
 						boolean flag2 = false;
 						boolean flag3 = false;
 

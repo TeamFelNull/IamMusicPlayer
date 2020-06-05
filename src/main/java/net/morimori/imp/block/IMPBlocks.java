@@ -16,13 +16,13 @@ public class IMPBlocks {
 			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IamMusicPlayer.MODID, "boombox");
 	public static final Block SOUNDFILE_UPLOADER = new SoundfileUploaderBlock(Block.Properties.create(Material.IRON)
-			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
+			.sound(SoundType.METAL).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IamMusicPlayer.MODID, "soundfile_uploader");
 	public static final Block CASSETTE_DECK = new CassetteDeckBlock(Block.Properties.create(Material.IRON)
-			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
+			.sound(SoundType.METAL).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IamMusicPlayer.MODID, "cassette_deck");
 	public static final Block CASSETTE_STORING = new CassetteStoringBlock(Block.Properties.create(Material.IRON)
-			.sound(SoundType.LANTERN).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
+			.sound(SoundType.METAL).hardnessAndResistance(1f, 0.5f).func_226896_b_()).setRegistryName(
 					IamMusicPlayer.MODID, "cassette_storing");
 
 	public static void registerBlock(IForgeRegistry<Block> r) {
