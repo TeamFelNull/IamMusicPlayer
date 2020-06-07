@@ -131,7 +131,7 @@ class SoundRingedThread extends Thread {
 			player = new AdvancedPlayer(new BufferedInputStream(st));
 			player.play(frame, Integer.MAX_VALUE);
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 		player.close();
 	}
