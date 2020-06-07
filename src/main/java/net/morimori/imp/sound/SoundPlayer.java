@@ -8,7 +8,6 @@ import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.SoundPlayMessage;
-import net.morimori.imp.tileentity.ISoundPlayer;
 import net.morimori.imp.util.FileHelper;
 
 public class SoundPlayer extends Thread {

@@ -14,20 +14,25 @@ public class BoomboxSyncMessage {
 	public ItemStack cassette;
 	public int openProgress;
 	public Set<String> lisnFinishedPlayers;
+	public long position;
+	public float volume;
 
 	public BoomboxSyncMessage(int dimID, BlockPos postion, ItemStack cassetteItem, int opProgress,
-			Set<String> finishedplayes) {
+			Set<String> finishedplayes, long position, float volume) {
 		this.dim = dimID;
 		this.pos = postion;
 		this.cassette = cassetteItem;
 		this.openProgress = opProgress;
 		this.lisnFinishedPlayers = finishedplayes;
+		this.position = position;
+		this.volume = volume;
 	}
 
 	public static BoomboxSyncMessage decodeMessege(PacketBuffer buffer) {
 		return new BoomboxSyncMessage(buffer.readInt(),
 				new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()),
-				ItemStack.read(buffer.readCompoundTag()), buffer.readInt(), readSet(buffer));
+				ItemStack.read(buffer.readCompoundTag()), buffer.readInt(), readSet(buffer), buffer.readLong(),
+				buffer.readFloat());
 	}
 
 	private static Set<String> readSet(PacketBuffer buffer) {
@@ -55,5 +60,7 @@ public class BoomboxSyncMessage {
 			cont++;
 		}
 		buffer.writeCompoundTag(ptmnbt);
+		buffer.writeLong(messegeIn.position);
+		buffer.writeFloat(messegeIn.volume);
 	}
 }

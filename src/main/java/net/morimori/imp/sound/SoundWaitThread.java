@@ -18,7 +18,6 @@ import net.morimori.imp.file.FileReceiverBuffer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.ClientResponseMessage;
 import net.morimori.imp.packet.PacketHandler;
-import net.morimori.imp.tileentity.ISoundPlayer;
 import net.morimori.imp.util.FileHelper;
 
 public class SoundWaitThread extends Thread {

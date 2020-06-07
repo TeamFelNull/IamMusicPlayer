@@ -1,4 +1,4 @@
-package net.morimori.imp.tileentity;
+package net.morimori.imp.sound;
 
 import net.minecraft.item.ItemStack;
 

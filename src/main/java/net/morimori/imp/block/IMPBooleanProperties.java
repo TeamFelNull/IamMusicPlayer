@@ -15,5 +15,5 @@ public class IMPBooleanProperties {
 			.create("windwos", SoundFileUploaderWindwos.class);
 	public static final EnumProperty<CassetteDeckStates> CASSETTE_DECK_STATES = EnumProperty
 			.create("cd_state", CassetteDeckStates.class);
-	public static final IntegerProperty VOLUME_0_8 = IntegerProperty.create("volume", 0, 32);
+	public static final IntegerProperty VOLUME_0_32 = IntegerProperty.create("volume", 0, 32);
 }

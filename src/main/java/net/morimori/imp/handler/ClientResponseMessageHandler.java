@@ -43,9 +43,7 @@ public class ClientResponseMessageHandler {
 
 				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
 						new ServerClientDataSyncMessage(0, message.st, picbyte));
-
 			}
-
 		}
 	}
 }

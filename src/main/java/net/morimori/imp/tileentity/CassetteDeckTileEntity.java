@@ -29,6 +29,7 @@ import net.morimori.imp.container.CassetteDeckContainer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.CassetteDeckSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
+import net.morimori.imp.sound.ISoundPlayer;
 import net.morimori.imp.sound.SoundPlayer;
 import net.morimori.imp.sound.SoundPos;
 import net.morimori.imp.sound.SoundWaitThread;

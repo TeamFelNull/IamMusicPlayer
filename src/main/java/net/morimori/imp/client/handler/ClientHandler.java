@@ -9,6 +9,7 @@ import net.morimori.imp.client.screen.CassetteDeckScreen;
 import net.morimori.imp.client.screen.CassetteStoringScreen;
 import net.morimori.imp.file.ClientFileReceiver;
 import net.morimori.imp.file.ClientFileSender;
+import net.morimori.imp.sound.ClientSoundPlayer;
 import net.morimori.imp.sound.SoundWaitThread;
 
 public class ClientHandler {
@@ -19,6 +20,16 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent e) {
+
+		ClientSoundPlayer.INSTANS.tick();
+
+		for (Entry<String, Integer> exs : RenderHandler.expations.entrySet()) {
+			if (exs.getValue() > 0) {
+				RenderHandler.expations.put(exs.getKey(), exs.getValue() - 1);
+			} else {
+				RenderHandler.expations.remove(exs.getKey());
+			}
+		}
 
 		if (RenderHandler.waitThreadCrash > 0) {
 			RenderHandler.waitThreadCrash--;

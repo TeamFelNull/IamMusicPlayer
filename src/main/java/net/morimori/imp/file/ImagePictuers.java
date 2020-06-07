@@ -21,7 +21,7 @@ public class ImagePictuers {
 			mfile = new Mp3File(sopath.toString());
 			ID3v2 tag = mfile.getId3v2Tag();
 
-			if (tag.getAlbumImage() != null) {
+			if (tag != null && tag.getAlbumImage() != null) {
 
 				byte[] motobytes = tag.getAlbumImage();
 

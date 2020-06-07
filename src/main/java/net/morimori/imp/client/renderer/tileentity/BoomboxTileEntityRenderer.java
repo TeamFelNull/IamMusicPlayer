@@ -103,7 +103,7 @@ public class BoomboxTileEntityRenderer extends TileEntityRenderer<BoomboxTileEnt
 
 		RenderHelper.matrixPop(matrix);
 
-		ItemStack cassette = tile.getPlayCassette();
+		ItemStack cassette = tile.getCassette();
 		if (!cassette.isEmpty()) {
 			RenderHelper.matrixPush(matrix);
 			float scale = 0.65f;

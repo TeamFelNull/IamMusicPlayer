@@ -7,6 +7,7 @@ import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.client.handler.BoomboxSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteDeckSyncMessageHandler;
 import net.morimori.imp.client.handler.CassetteStoringSyncMessageHandler;
+import net.morimori.imp.client.handler.ClientSoundStreamMessageHandler;
 import net.morimori.imp.client.handler.ClientStopRequestMessageHandler;
 import net.morimori.imp.client.handler.ServerClientDataSyncMessageHandler;
 import net.morimori.imp.client.handler.ServerResponseMessageHandler;
@@ -16,6 +17,7 @@ import net.morimori.imp.client.handler.WorldPlaylistMessageHandler;
 import net.morimori.imp.handler.CassetteDeckMessageHandler;
 import net.morimori.imp.handler.ClientResponseMessageHandler;
 import net.morimori.imp.handler.ClientSendSoundFileMessageHandler;
+import net.morimori.imp.handler.ServerSoundStreamMessageHandler;
 import net.morimori.imp.handler.SoundFileUploaderMessageHandler;
 import net.morimori.imp.handler.SoundPlayMessageHandler;
 
@@ -78,6 +80,12 @@ public class PacketHandler {
 
 		INSTANCE.registerMessage(next(), ServerClientDataSyncMessage.class, ServerClientDataSyncMessage::encodeMessege,
 				ServerClientDataSyncMessage::decodeMessege, ServerClientDataSyncMessageHandler::reversiveMessage);
+
+		INSTANCE.registerMessage(next(), ServerSoundStreamMessage.class, ServerSoundStreamMessage::encodeMessege,
+				ServerSoundStreamMessage::decodeMessege, ServerSoundStreamMessageHandler::reversiveMessage);
+
+		INSTANCE.registerMessage(next(), ClientSoundStreamMessage.class, ClientSoundStreamMessage::encodeMessege,
+				ClientSoundStreamMessage::decodeMessege, ClientSoundStreamMessageHandler::reversiveMessage);
 
 	}
 }

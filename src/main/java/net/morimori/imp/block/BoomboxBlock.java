@@ -54,7 +54,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 	public static final BooleanProperty ON = IMPBooleanProperties.ON;
 	public static final BooleanProperty WALL = IMPBooleanProperties.WALL;
-	public static final IntegerProperty VOLUME = IMPBooleanProperties.VOLUME_0_8;
+	public static final IntegerProperty VOLUME = IMPBooleanProperties.VOLUME_0_32;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public BoomboxBlock(Properties properties) {
@@ -95,19 +95,19 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 				ItemStack insertstack = helditem.copy();
 				insertstack.setCount(1);
 				if (ItemHelper.isCassette(
-						helditem) && tileentity.getPlayCassette().isEmpty()
+						helditem) && tileentity.getCassette().isEmpty()
 						&& insertCassette(worldIn, pos, insertstack)) {
 					if (!player.isCreative()) {
 						helditem.shrink(1);
 					}
 					return ActionResultType.SUCCESS;
-				} else if (!tileentity.getPlayCassette().isEmpty()) {
+				} else if (!tileentity.getCassette().isEmpty()) {
 					this.dropCassette(worldIn, pos, true);
 					return ActionResultType.SUCCESS;
 				}
 			}
 
-			if (!player.isCrouching() && !stateIn.get(OPEN) && SoundHelper.canPlay(tileentity.getPlayCassette())
+			if (!player.isCrouching() && !stateIn.get(OPEN) && SoundHelper.canPlay(tileentity.getCassette())
 					&& tileentity.openProgress == 0 && !worldIn.isBlockPowered(pos)) {
 				stateIn = stateIn.cycle(ON);
 				worldIn.setBlockState(pos, stateIn, 2);
@@ -151,7 +151,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		if (!(tileentity instanceof BoomboxTileEntity))
 			return false;
 
-		ItemStack cassette = ((BoomboxTileEntity) tileentity).getPlayCassette();
+		ItemStack cassette = ((BoomboxTileEntity) tileentity).getCassette();
 
 		if (cassette.isEmpty()) {
 			((BoomboxTileEntity) tileentity).setCassette(stackIn.copy());
@@ -205,7 +205,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		if (!(tileentity instanceof BoomboxTileEntity))
 			return;
 
-		ItemStack cassette = ((BoomboxTileEntity) tileentity).getPlayCassette();
+		ItemStack cassette = ((BoomboxTileEntity) tileentity).getCassette();
 
 		if (!cassette.isEmpty()) {
 			worldIn.playEvent(1010, pos, 0);

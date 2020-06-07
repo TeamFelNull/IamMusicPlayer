@@ -2,6 +2,7 @@ package net.morimori.imp.client.handler;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,21 +62,27 @@ public class RenderHandler {
 
 	public static int MaxDraw = 3;
 
+	public static Map<String, Integer> expations = new HashMap<String, Integer>();
+
 	@SubscribeEvent
 	public static void onRender(RenderTickEvent e) {
 
 		if (!mc.gameSettings.showDebugInfo) {
-			drawPrograse();
+			drawStrings();
 		}
 	}
 
-	private static void drawPrograse() {
+	private static void drawStrings() {
 
 		List<String> stlist = new ArrayList<String>();
 
 		stlist.addAll(addUpLoadPrograse());
 
 		stlist.addAll(addDownloadPrograse());
+
+		for (Entry<String, Integer> exs : RenderHandler.expations.entrySet()) {
+			stlist.add(exs.getKey());
+		}
 
 		if (waitThreadCrash != 0) {
 			stlist.add(I18n.format("overlay.soundwaitthread.crash"));

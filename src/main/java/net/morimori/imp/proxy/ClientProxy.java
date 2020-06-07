@@ -8,6 +8,7 @@ import net.morimori.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 import net.morimori.imp.client.screen.RegisterScrennContainerFactorys;
 import net.morimori.imp.file.Options;
 import net.morimori.imp.file.PlayList;
+import net.morimori.imp.sound.ClientSoundPlayer;
 import net.morimori.imp.sound.SoundWaitThread;
 
 public class ClientProxy extends CommonProxy {
@@ -22,7 +23,7 @@ public class ClientProxy extends CommonProxy {
 	public static void clientInit() {
 		IMPTileEntityRenderers.registerTileEntityRenderer();
 		RegisterScrennContainerFactorys.registerFactories();
-
+		ClientSoundPlayer.INSTANS = new ClientSoundPlayer();
 	}
 
 	@Override
