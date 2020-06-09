@@ -77,11 +77,18 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	public void finishRecoding() {
 
 		if (SoundHelper.canWriteCassette(this.getWriteCassette())) {
-			setWriteCassette(SoundHelper.writeSoundOnCassette(this.getWriteCassette(),
-					new WorldPlayListSoundData(this.selectedFile, PlayList.getWorldPlaylistNBTDataString(
-							this.getWorld().getServer(), Paths.get(this.selectedFile), "UUID"),
-							PlayList.getWorldPlaylistNBTDataSoundData(
-									this.getWorld().getServer(), Paths.get(this.selectedFile), "SoundData"))));
+
+			if (PlayList.getWorldPlaylistNBTDataString(
+					this.getWorld().getServer(), Paths.get(this.selectedFile), "UUID") != null
+					&& PlayList.getWorldPlaylistNBTDataSoundData(
+							this.getWorld().getServer(), Paths.get(this.selectedFile), "SoundData") != null) {
+				setWriteCassette(SoundHelper.writeSoundOnCassette(this.getWriteCassette(),
+						new WorldPlayListSoundData(this.selectedFile, PlayList.getWorldPlaylistNBTDataString(
+								this.getWorld().getServer(), Paths.get(this.selectedFile), "UUID"),
+								PlayList.getWorldPlaylistNBTDataSoundData(
+										this.getWorld().getServer(), Paths.get(this.selectedFile), "SoundData"))));
+			}
+
 		}
 		recodingPrograse = 0;
 		world.setBlockState(this.pos,

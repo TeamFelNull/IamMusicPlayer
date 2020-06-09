@@ -6,6 +6,8 @@ import java.nio.file.Path;
 
 import com.mpatric.mp3agic.Mp3File;
 
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 
 public class SoundRinger extends Thread {
@@ -33,6 +35,16 @@ public class SoundRinger extends Thread {
 			e.printStackTrace();
 		}
 
+	}
+
+	public void setVolume(float vol) {
+		if (player != null) {
+			AudioDevice dev = player.audio;
+			if (dev instanceof JavaSoundAudioDevice) {
+				float v = -60 + 60 * vol;
+				((JavaSoundAudioDevice) dev).setVolume(v);
+			}
+		}
 	}
 
 	public boolean isRing() {

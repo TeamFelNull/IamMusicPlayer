@@ -2,7 +2,7 @@ package net.morimori.imp.file;
 
 import java.util.HashMap;
 
-import net.morimori.imp.sound.SoundWaitThread;
+import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
 
@@ -15,13 +15,13 @@ public class Options {
 			opmap.put("soundCategory_iammusicplayer", "1.0");
 			FileLoader.txtWriter(opmap, FileHelper.getClientOptionTxtPath());
 		}
-		SoundWaitThread.AllSoundVolume = Float.valueOf(opmap.get("soundCategory_iammusicplayer"));
+		IMPSoundSlider.AllSoundVolume = Float.valueOf(opmap.get("soundCategory_iammusicplayer"));
 	}
 
 	public static void writeOption(boolean tread) {
 		if (!tread) {
 			HashMap<String, String> opmap = new HashMap<String, String>();
-			opmap.put("soundCategory_iammusicplayer", String.valueOf(SoundWaitThread.AllSoundVolume));
+			opmap.put("soundCategory_iammusicplayer", String.valueOf(IMPSoundSlider.AllSoundVolume));
 			FileLoader.txtWriter(opmap, FileHelper.getClientOptionTxtPath());
 		} else {
 			WriteThread wt = new WriteThread();

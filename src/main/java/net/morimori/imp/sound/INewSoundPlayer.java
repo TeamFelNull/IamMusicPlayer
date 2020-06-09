@@ -2,7 +2,7 @@ package net.morimori.imp.sound;
 
 public interface INewSoundPlayer {
 
-	WorldPlayListSoundData getSound();
+	PlayData getSound();
 
 	SoundPos getSoundPos();
 
@@ -19,5 +19,7 @@ public interface INewSoundPlayer {
 	long getPosition();
 
 	void setPosition(long position);
+
+	boolean canExistence();
 
 }

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javazoom.jl.player.AudioDevice;
+import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.ServerSoundStreamMessage;
@@ -17,17 +19,23 @@ public class WorldSoundRinger extends SoundRinger {
 	public static Map<String, List<byte[]>> bytebuf = new HashMap<String, List<byte[]>>();
 	public static Map<String, Integer> leths = new HashMap<String, Integer>();
 	public static Map<String, Boolean> stops = new HashMap<String, Boolean>();
-	public static Map<String, Long> milisecs = new HashMap<String, Long>();
-	public static Map<String, Float> bairitus = new HashMap<String, Float>();
-	public static Map<String, Float> sbairitus = new HashMap<String, Float>();
 
 	private WorldSoundKey wsk;
 	private String key;
 	private boolean stop;
+	private long posmi;
+
+	private float vol;
 
 	public WorldSoundRinger(WorldSoundKey ws) {
 		this.wsk = ws;
 		this.key = UUID.randomUUID().toString();
+		this.vol = 0;
+	}
+
+	@Override
+	public void setPotision(long posionmilisec) {
+		this.posmi = posionmilisec;
 	}
 
 	@Override
@@ -40,6 +48,11 @@ public class WorldSoundRinger extends SoundRinger {
 	}
 
 	@Override
+	public void setVolume(float vol) {
+		this.vol = vol;
+	}
+
+	@Override
 	public void run() {
 
 		stops.put(key, false);
@@ -48,8 +61,7 @@ public class WorldSoundRinger extends SoundRinger {
 			bytebuf.put(key, new ArrayList<byte[]>());
 		}
 		leths.put(key, -1);
-		milisecs.put(key, -1l);
-		PacketHandler.INSTANCE.sendToServer(new ServerSoundStreamMessage(key, wsk, 0, false));
+		PacketHandler.INSTANCE.sendToServer(new ServerSoundStreamMessage(key, wsk, posmi, false));
 
 		int co = 0;
 		while (!stop) {
@@ -58,11 +70,15 @@ public class WorldSoundRinger extends SoundRinger {
 				break;
 			}
 
-			while (WorldSoundRinger.bytebuf.get(key).isEmpty()) {
+			while (true) {
 
-				if (stops.get(key)) {
+				if (stops.get(key) || stop) {
 					finishe();
 					return;
+				}
+
+				if (!WorldSoundRinger.bytebuf.get(key).isEmpty()) {
+					break;
 				}
 
 				try {
@@ -70,24 +86,35 @@ public class WorldSoundRinger extends SoundRinger {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+
 			}
 
 			SoundRingedThread srt = new SoundRingedThread(WorldSoundRinger.bytebuf.get(key).get(0), 0);
 			srt.start();
+			srt.setVolume(0);
 
-			long sl = (long) (milisecs.get(key) * bairitus.get(key));
+			while (!srt.finish) {
 
-			if (leths.get(key) != co) {
+				srt.setVolume(vol);
+
+				if (stops.get(key) || stop) {
+					srt.stopr();
+					finishe();
+					return;
+				}
+
 				try {
-					sleep(sl - 17);
+					sleep(1);
 				} catch (InterruptedException e) {
 				}
+
 			}
+
+			co += WorldSoundRinger.bytebuf.get(key).get(0).length;
 
 			if (WorldSoundRinger.bytebuf.containsKey(key))
 				WorldSoundRinger.bytebuf.get(key).remove(0);
 
-			co++;
 		}
 
 		finishe();
@@ -97,10 +124,6 @@ public class WorldSoundRinger extends SoundRinger {
 	protected void finishe() {
 		WorldSoundRinger.bytebuf.remove(key);
 		WorldSoundRinger.leths.remove(key);
-		WorldSoundRinger.milisecs.remove(key);
-		WorldSoundRinger.bairitus.remove(key);
-		WorldSoundRinger.sbairitus.remove(key);
-
 		PacketHandler.INSTANCE.sendToServer(new ServerSoundStreamMessage(key, wsk, 0, true));
 		finished = true;
 		ringd = false;
@@ -112,15 +135,28 @@ class SoundRingedThread extends Thread {
 	private byte[] bytes;
 	private int frame;
 	private AdvancedPlayer player;
+	public boolean finish;
 
 	public SoundRingedThread(byte[] bytes, int frame) {
 		this.bytes = bytes;
 		this.frame = frame;
+
 	}
 
 	public void stopr() {
 		if (player != null) {
 			player.close();
+			finish = true;
+		}
+	}
+
+	public void setVolume(float vol) {
+		if (player != null) {
+			AudioDevice dev = player.audio;
+			if (dev instanceof JavaSoundAudioDevice) {
+				float v = -60 + 60 * vol;
+				((JavaSoundAudioDevice) dev).setVolume(v);
+			}
 		}
 	}
 
@@ -134,5 +170,6 @@ class SoundRingedThread extends Thread {
 
 		}
 		player.close();
+		finish = true;
 	}
 }

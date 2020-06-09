@@ -4,12 +4,12 @@ import net.minecraft.client.gui.widget.AbstractSlider;
 import net.minecraft.client.resources.I18n;
 import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.file.Options;
-import net.morimori.imp.sound.SoundWaitThread;
 
 public class IMPSoundSlider extends AbstractSlider {
+	public static float AllSoundVolume = 1;
 
 	public IMPSoundSlider(int xIn, int yIn, int widthIn, int heightIn) {
-		super(xIn, yIn, widthIn, heightIn, SoundWaitThread.AllSoundVolume);
+		super(xIn, yIn, widthIn, heightIn, AllSoundVolume);
 
 		this.updateMessage();
 	}
@@ -23,7 +23,7 @@ public class IMPSoundSlider extends AbstractSlider {
 
 	@Override
 	protected void applyValue() {
-		SoundWaitThread.AllSoundVolume = (float) this.value;
+		AllSoundVolume = (float) this.value;
 		Options.writeOption(true);
 	}
 

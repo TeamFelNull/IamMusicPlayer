@@ -158,6 +158,10 @@ public class PlayList {
 	public static String getClientPlaylistNBTdata(Path path, String nbtname) {
 		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getClientCurrentServerPlaylistNBTDataPath());
 
+		if (tag == null) {
+			return null;
+		}
+
 		if (!tag.contains(path.getParent().toFile().getName()))
 			return null;
 
@@ -178,6 +182,10 @@ public class PlayList {
 	public static String getWorldPlaylistNBTDataString(MinecraftServer ms, Path path, String nbtname) {
 		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
 
+		if (tag == null) {
+			return null;
+		}
+
 		if (!tag.contains(path.getParent().toFile().getName()))
 			return null;
 
@@ -197,6 +205,10 @@ public class PlayList {
 	public static SoundData getWorldPlaylistNBTDataSoundData(MinecraftServer ms, Path path, String nbtname) {
 		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
 
+		if (tag == null) {
+			return null;
+		}
+
 		if (!tag.contains(path.getParent().toFile().getName()))
 			return null;
 
@@ -215,6 +227,10 @@ public class PlayList {
 
 	public static void deletePlayeyListFileNBT(MinecraftServer ms, String playlistname, String filename) {
 		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
+
+		if (tag == null) {
+			return;
+		}
 
 		if (!tag.contains(playlistname))
 			return;

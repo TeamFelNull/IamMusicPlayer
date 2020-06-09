@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
 import net.morimori.imp.IamMusicPlayer;
+import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.SoundPlayMessage;
@@ -59,7 +60,7 @@ public class SoundPlayer extends Thread {
 						- soundpos.distance(mc.player.func_226277_ct_(), mc.player.func_226278_cu_() + 1,
 								mc.player.func_226281_cx_()));
 				float disvol = (float) (disk <= 0 ? 0 : disk / maxdistance);
-				thread.setVolume(SoundWaitThread.AllSoundVolume * volume * disvol
+				thread.setVolume(IMPSoundSlider.AllSoundVolume * volume * disvol
 						* mc.gameSettings.getSoundLevel(SoundCategory.MASTER));
 				try {
 					sleep(1);
@@ -100,4 +101,5 @@ public class SoundPlayer extends Thread {
 		}
 
 	}
+
 }

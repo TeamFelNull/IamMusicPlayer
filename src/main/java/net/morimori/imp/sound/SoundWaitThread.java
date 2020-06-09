@@ -25,7 +25,6 @@ public class SoundWaitThread extends Thread {
 	public static Set<WorldPlayListSoundData> downloadwaitedfiles = new HashSet<WorldPlayListSoundData>();
 	public static Map<SoundPlayer, WorldPlayListSoundData> dawonloadwaitedplayers = new HashMap<SoundPlayer, WorldPlayListSoundData>();
 	private static Minecraft ms = Minecraft.getInstance();
-	public static float AllSoundVolume = 1;
 	public static Map<BlockPos, SoundPlayer> posplayMap = new HashMap<BlockPos, SoundPlayer>();
 	private static Minecraft mc = Minecraft.getInstance();
 	public static boolean cheking = false;

@@ -11,12 +11,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.morimori.imp.block.BoomboxBlock;
+import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.packet.BoomboxSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.sound.INewSoundPlayer;
+import net.morimori.imp.sound.PlayData;
 import net.morimori.imp.sound.SoundPos;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.sound.WorldSoundKey;
 import net.morimori.imp.util.SoundHelper;
 
 public class BoomboxTileEntity extends TileEntity implements IClearable, ITickableTileEntity, INewSoundPlayer {
@@ -120,7 +123,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 			//		}
 
 		} else {
-			//	playSound();
+			SoundHelper.soundPlayerTick(this);
 		}
 	}
 
@@ -180,9 +183,9 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	}*/
 
 	@Override
-	public WorldPlayListSoundData getSound() {
+	public PlayData getSound() {
 
-		return WorldPlayListSoundData.getWorldPlayListData(this.getCassette());
+		return new PlayData(new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getCassette())));
 	}
 
 	@Override
@@ -212,7 +215,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	public float getVolume() {
 		float invol = this.getBlockState().get(BoomboxBlock.VOLUME);
 
-		return invol / 32;
+		return invol / 16;
 	}
 
 	@Override
@@ -231,5 +234,12 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		this.position = position;
 	}
 
+	@Override
+	public boolean canExistence() {
+
+		boolean flag1 = this.world.getBlockState(this.pos).getBlock() == IMPBlocks.BOOMBOX;
+
+		return flag1;
+	}
 
 }

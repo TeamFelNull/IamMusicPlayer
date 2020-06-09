@@ -48,6 +48,12 @@ public class WorldSoundKey {
 
 	public boolean isServerExistence(MinecraftServer ms) {
 
+		if (getServerPath(ms).toFile() == null || FileHelper.getWorldPlayListNBTDataPath(ms).toFile() == null
+				&& !FileHelper.getWorldPlayListNBTDataPath(ms).toFile().exists()
+				|| PlayList.getWorldPlaylistNBTDataString(ms, getServerPath(ms), "UUID") == null) {
+			return false;
+		}
+
 		boolean flag1 = getServerPath(ms).toFile().exists();
 		boolean flag2 = PlayList.getWorldPlaylistNBTDataString(ms, getServerPath(ms), "UUID").equals(getUUID());
 

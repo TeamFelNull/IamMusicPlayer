@@ -20,12 +20,13 @@ import net.morimori.imp.util.FileLoader;
 
 public class ServerSoundStreamMessageHandler {
 	public static Map<WorldSoundKey, byte[]> dwonloadbuf = new HashMap<WorldSoundKey, byte[]>();
-	public static int sendspeed = 1024 * 8;
+	public static int sendspeed = 1024 * 32;
 	public static Map<String, Boolean> stopsends = new HashMap<String, Boolean>();
 
 	public static void reversiveMessage(ServerSoundStreamMessage message, Supplier<NetworkEvent.Context> ctx) {
 		if (!message.stop) {
 			stopsends.put(message.key, false);
+
 			SendThread ST = new SendThread(message.key, message.wsk, message.offsetpos, ctx.get().getSender());
 			ST.start();
 		} else {
@@ -38,25 +39,25 @@ public class ServerSoundStreamMessageHandler {
 class SendThread extends Thread {
 	public String key;
 	public WorldSoundKey wsk;
-	public int offsetpos;
+	public long offsetpos;
 	public ServerPlayerEntity SPE;
 
-	public SendThread(String key, WorldSoundKey wsk, int offsetpos, ServerPlayerEntity spe) {
+	public SendThread(String key, WorldSoundKey wsk, long offsetpos2, ServerPlayerEntity spe) {
 		this.key = key;
 		this.wsk = wsk;
-		this.offsetpos = offsetpos;
+		this.offsetpos = offsetpos2;
 		this.SPE = spe;
 	}
 
 	public void run() {
 		if (!ServerSoundStreamMessageHandler.dwonloadbuf.containsKey(wsk)) {
-			if (wsk.isServerExistence(SPE.getServer())) {
+			if (wsk != null && wsk.isServerExistence(SPE.getServer())) {
 				ServerSoundStreamMessageHandler.dwonloadbuf.put(wsk,
 						FileLoader.fileBytesReader(wsk.getServerPath(SPE.getServer())));
 			} else {
 				PacketHandler.INSTANCE.send(
 						PacketDistributor.PLAYER.with(() -> SPE),
-						new ClientSoundStreamMessage(key, new byte[1], 0, true, 0, 0, 0));
+						new ClientSoundStreamMessage(key, new byte[1], 0, true));
 				return;
 			}
 		}
@@ -65,14 +66,9 @@ class SendThread extends Thread {
 				|| ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk) == null) {
 			PacketHandler.INSTANCE.send(
 					PacketDistributor.PLAYER.with(() -> SPE),
-					new ClientSoundStreamMessage(key, new byte[1], 0, true, 0, 0, 0));
+					new ClientSoundStreamMessage(key, new byte[1], 0, true));
 			return;
 		}
-
-		int le = (ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk).length - offsetpos);
-
-		int liscont = (int) Math
-				.ceil((float) le / (float) ServerSoundStreamMessageHandler.sendspeed);
 
 		int contl = 0;
 
@@ -81,6 +77,14 @@ class SendThread extends Thread {
 			mfile = new Mp3File(wsk.getServerPath(SPE.getServer()));
 
 			long milsecnd = mfile.getLengthInMilliseconds();
+
+			int oft = (int) ((float) ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk).length
+					* ((float) offsetpos / (float) milsecnd));
+
+			int le = (ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk).length - oft);
+
+			int liscont = (int) Math
+					.ceil((float) le / (float) ServerSoundStreamMessageHandler.sendspeed);
 
 			for (int i = 0; i < liscont; i++) {
 				if (ServerSoundStreamMessageHandler.stopsends.get(key)) {
@@ -95,32 +99,25 @@ class SendThread extends Thread {
 
 					byte[] b = new byte[ServerSoundStreamMessageHandler.sendspeed];
 					for (int ai = 0; ai < ServerSoundStreamMessageHandler.sendspeed; ai++) {
-						b[ai] = ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk)[contl + ai + offsetpos];
+						b[ai] = ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk)[contl + ai + oft];
 					}
-
-					float bairitu = (float) ServerSoundStreamMessageHandler.sendspeed / (float) le;
 
 					PacketHandler.INSTANCE.send(
 							PacketDistributor.PLAYER.with(() -> SPE),
-							new ClientSoundStreamMessage(key, b, liscont, false, milsecnd, bairitu, 0));
+							new ClientSoundStreamMessage(key, b, le, false));
 					contl += ServerSoundStreamMessageHandler.sendspeed;
 				} else {
-
 					byte[] b = new byte[le - contl];
 					for (int ai = 0; ai < le - contl; ai++) {
-						b[ai] = ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk)[contl + ai + offsetpos];
-
-						float bairitu = (float) ServerSoundStreamMessageHandler.sendspeed / (float) le;
-
-						float sab = (float) (le - contl) / (float) ServerSoundStreamMessageHandler.sendspeed;
-
-						PacketHandler.INSTANCE.send(
-								PacketDistributor.PLAYER.with(() -> SPE),
-								new ClientSoundStreamMessage(key, b, liscont, false, milsecnd, bairitu, sab));
-
-						contl += le - contl;
-
+						b[ai] = ServerSoundStreamMessageHandler.dwonloadbuf.get(wsk)[contl + ai + oft];
 					}
+
+					PacketHandler.INSTANCE.send(
+							PacketDistributor.PLAYER.with(() -> SPE),
+							new ClientSoundStreamMessage(key, b, le, false));
+
+					contl += le - contl;
+
 				}
 			}
 		} catch (UnsupportedTagException | InvalidDataException | IOException e1) {
