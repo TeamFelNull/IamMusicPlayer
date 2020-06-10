@@ -1,4 +1,4 @@
-package net.morimori.imp.sound;
+package net.morimori.imp.util;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -16,8 +16,12 @@ import net.minecraft.world.World;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.item.IMPItems;
-import net.morimori.imp.util.ItemHelper;
-import net.morimori.imp.util.StringHelper;
+import net.morimori.imp.sound.ClientSoundPlayer;
+import net.morimori.imp.sound.INewSoundPlayer;
+import net.morimori.imp.sound.PlayData;
+import net.morimori.imp.sound.PlayData.PlayDatasTypes;
+import net.morimori.imp.sound.SoundPos;
+import net.morimori.imp.sound.WorldPlayListSoundData;
 
 public class SoundHelper {
 	private static Minecraft mc = Minecraft.getInstance();
@@ -169,6 +173,11 @@ public class SoundHelper {
 					isp.setPosition(0);
 				}
 			}
+
+			if (isp.isReset()) {
+				isp.setPosition(0);
+			}
+
 		} else {
 			if (!ClientSoundPlayer.INSTANS.playdSounds.containsValue(isp)) {
 				ClientSoundPlayer.INSTANS.playdSounds.put(UUID.randomUUID().toString(), isp);

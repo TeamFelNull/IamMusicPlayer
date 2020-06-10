@@ -23,10 +23,9 @@ public class PlayData {
 		this.wsk = key;
 		this.type = PlayDatasTypes.WORLD;
 	}
+	public	static enum PlayDatasTypes {
+		WORLD, URL_STREAM, FILE
 
+	}
 }
 
-enum PlayDatasTypes {
-	WORLD, URL_STREAM, FILE
-
-}

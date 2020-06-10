@@ -13,9 +13,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.container.CassetteStoringContainer;
-import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.tileentity.CassetteStoringTileEntity;
 import net.morimori.imp.util.ItemHelper;
+import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContainer> {

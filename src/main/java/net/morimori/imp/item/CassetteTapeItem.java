@@ -7,7 +7,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.morimori.imp.client.renderer.item.CassetteItemRenderer;
 import net.morimori.imp.client.renderer.model.CassetteBakedModel;
-import net.morimori.imp.sound.SoundHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class CassetteTapeItem extends Item {
 

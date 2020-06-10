@@ -13,11 +13,11 @@ import net.morimori.imp.packet.BoomboxSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.sound.INewSoundPlayer;
 import net.morimori.imp.sound.PlayData;
-import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.sound.SoundPos;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.sound.WorldSoundKey;
+import net.morimori.imp.util.SoundHelper;
 
 public class BoomboxTileEntity extends TileEntity implements IClearable, ITickableTileEntity, INewSoundPlayer {
 
@@ -141,8 +141,9 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 
 	@Override
 	public boolean canPlayed() {
-
-		return SoundHelper.canPlay(getCassette());
+		WorldSoundKey wsk = new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getCassette()));
+		boolean flag = wsk.isServerExistence(this.getWorld().getServer());
+		return SoundHelper.canPlay(getCassette()) && flag;
 	}
 
 	@Override
@@ -202,6 +203,12 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	public boolean isLoop() {
 
 		return this.getWorld().isBlockPowered(this.pos);
+	}
+
+	@Override
+	public boolean isReset() {
+
+		return this.getBlockState().get(BoomboxBlock.OPEN);
 	}
 
 }

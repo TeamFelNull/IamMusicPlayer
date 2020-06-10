@@ -42,9 +42,9 @@ import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.morimori.imp.item.BoomBoxTileEntityStack;
-import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -104,8 +104,14 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 				}
 			}
 
+			boolean canplflag = true;
+
+			if (!worldIn.isRemote) {
+				canplflag = tileentity.canPlayed();
+			}
+
 			if (!player.isCrouching() && !stateIn.get(OPEN) && SoundHelper.canPlay(tileentity.getCassette())
-					&& tileentity.openProgress == 0 && !worldIn.isBlockPowered(pos)) {
+					&& tileentity.openProgress == 0 && !worldIn.isBlockPowered(pos) && canplflag) {
 				stateIn = stateIn.cycle(ON);
 				worldIn.setBlockState(pos, stateIn, 2);
 				return ActionResultType.SUCCESS;

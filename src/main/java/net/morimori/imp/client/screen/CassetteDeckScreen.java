@@ -23,10 +23,10 @@ import net.morimori.imp.container.CassetteDeckContainer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.CassetteDeckMessage;
 import net.morimori.imp.packet.PacketHandler;
-import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.tileentity.CassetteDeckTileEntity;
 import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 
 public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {

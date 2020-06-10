@@ -28,4 +28,5 @@ public interface INewSoundPlayer {
 
 	boolean isLoop();
 
+	boolean isReset();
 }

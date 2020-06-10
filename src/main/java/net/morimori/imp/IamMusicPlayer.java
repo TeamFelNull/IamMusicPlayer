@@ -4,12 +4,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.morimori.imp.compat.theoneprobe.TheOneProbePlugin;
 import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.proxy.ClientProxy;
 import net.morimori.imp.proxy.CommonProxy;
@@ -28,6 +31,7 @@ public class IamMusicPlayer {
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::intermodEqueue);
 		CommonConfig.init();
 	}
 
@@ -47,4 +51,11 @@ public class IamMusicPlayer {
 	private void processIMC(final InterModProcessEvent event) {
 		proxy.posInit();
 	}
+
+	private void intermodEqueue(final InterModEnqueueEvent event) {
+		if (ModList.get().isLoaded("theoneprobe")) {
+			InterModComms.sendTo("theoneprobe", "getTheOneProbe", TheOneProbePlugin::new);
+		}
+	}
+
 }

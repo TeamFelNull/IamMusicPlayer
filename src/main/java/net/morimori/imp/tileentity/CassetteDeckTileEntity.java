@@ -30,13 +30,13 @@ import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.CassetteDeckSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.sound.ISoundPlayer;
-import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.sound.SoundPlayer;
 import net.morimori.imp.sound.SoundPos;
 import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.ItemHelper;
 import net.morimori.imp.util.PlayerHelper;
+import net.morimori.imp.util.SoundHelper;
 
 public class CassetteDeckTileEntity extends LockableTileEntity implements ITickableTileEntity, ISoundPlayer {
 
