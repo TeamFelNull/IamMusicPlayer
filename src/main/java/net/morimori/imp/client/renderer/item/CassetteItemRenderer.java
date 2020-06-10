@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.morimori.imp.client.renderer.model.CassetteBakedModel;
 import net.morimori.imp.item.CassetteTapeItem;
+import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.RenderHelper;
-import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.TextureHelper;
 
 

@@ -11,8 +11,8 @@ import net.morimori.imp.block.SoundfileUploaderBlock;
 import net.morimori.imp.client.screen.SoundFileUploaderMonitorTextures;
 import net.morimori.imp.client.screen.SoundFileUploaderWindwos;
 import net.morimori.imp.file.PlayList;
-import net.morimori.imp.file.ServerFileReceiver;
 import net.morimori.imp.file.ServerFileSender;
+import net.morimori.imp.file.ServerSoundFileReceiver;
 import net.morimori.imp.packet.SoundFileUploaderMessage;
 import net.morimori.imp.tileentity.SoundFileUploaderTileEntity;
 import net.morimori.imp.util.PlayerHelper;
@@ -100,14 +100,14 @@ public class SoundFileUploaderMessageHandler {
 							SoundfileUploaderBlock.SOUNDFILE_UPLOADER_WINDWOS,
 							SoundFileUploaderWindwos.EDIT_FILE));
 		} else if (message.state == 15) {
-			ServerFileReceiver.stopReceiver(PlayerHelper.getUUID(SPE),Integer.valueOf(message.string));
+			ServerSoundFileReceiver.receiveStop(PlayerHelper.getUUID(SPE), message.string);
 		} else if (message.state == 16) {
 			ServerFileSender.startSender(PlayerHelper.getUUID(SPE), Paths.get(message.string), true,
 					SPE.getServer());
 		} else if (message.state == 17) {
 			ServerFileSender.stopSend(PlayerHelper.getUUID(SPE), Integer.parseInt(message.string));
 		} else if (message.state == 18) {
-			PlayList.deleteWorldPlayListSoundFile(ctx.get().getSender().getServer(),message.string);
+			PlayList.deleteWorldPlayListSoundFile(ctx.get().getSender().getServer(), message.string);
 		} else if (message.state == 19) {
 			if (SPE.world.getTileEntity(message.pos) instanceof SoundFileUploaderTileEntity) {
 				SoundFileUploaderTileEntity sfit = (SoundFileUploaderTileEntity) SPE.world

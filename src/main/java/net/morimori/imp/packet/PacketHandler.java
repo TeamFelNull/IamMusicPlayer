@@ -41,12 +41,18 @@ public class PacketHandler {
 		INSTANCE.registerMessage(next(), BoomboxSyncMessage.class, BoomboxSyncMessage::encodeMessege,
 				BoomboxSyncMessage::decodeMessege, BoomboxSyncMessageHandler::reversiveMessage);
 
+		INSTANCE.registerMessage(next(), SoundFileUploaderSyncMessage.class,
+				SoundFileUploaderSyncMessage::encodeMessege, SoundFileUploaderSyncMessage::decodeMessege,
+				SoundFileUploaderSyncMessageHandler::reversiveMessage);
+
+		INSTANCE.registerMessage(next(), CassetteDeckSyncMessage.class, CassetteDeckSyncMessage::encodeMessege,
+				CassetteDeckSyncMessage::decodeMessege, CassetteDeckSyncMessageHandler::reversiveMessage);
+
+		INSTANCE.registerMessage(next(), CassetteStoringSyncMessage.class, CassetteStoringSyncMessage::encodeMessege,
+				CassetteStoringSyncMessage::decodeMessege, CassetteStoringSyncMessageHandler::reversiveMessage);
+
 		INSTANCE.registerMessage(next(), ClientSendSoundFileMessage.class, ClientSendSoundFileMessage::encodeMessege,
 				ClientSendSoundFileMessage::decodeMessege, ClientSendSoundFileMessageHandler::reversiveMessage);
-
-		INSTANCE.registerMessage(next(), SoundFileUploaderSyncMessage.class,
-				SoundFileUploaderSyncMessage::encodeMessege,
-				SoundFileUploaderSyncMessage::decodeMessege, SoundFileUploaderSyncMessageHandler::reversiveMessage);
 
 		INSTANCE.registerMessage(next(), SoundFileUploaderMessage.class, SoundFileUploaderMessage::encodeMessege,
 				SoundFileUploaderMessage::decodeMessege, SoundFileUploaderMessageHandler::reversiveMessage);
@@ -66,17 +72,11 @@ public class PacketHandler {
 		INSTANCE.registerMessage(next(), ClientStopRequestMessage.class, ClientStopRequestMessage::encodeMessege,
 				ClientStopRequestMessage::decodeMessege, ClientStopRequestMessageHandler::reversiveMessage);
 
-		INSTANCE.registerMessage(next(), CassetteDeckSyncMessage.class, CassetteDeckSyncMessage::encodeMessege,
-				CassetteDeckSyncMessage::decodeMessege, CassetteDeckSyncMessageHandler::reversiveMessage);
-
 		INSTANCE.registerMessage(next(), CassetteDeckMessage.class, CassetteDeckMessage::encodeMessege,
 				CassetteDeckMessage::decodeMessege, CassetteDeckMessageHandler::reversiveMessage);
 
 		INSTANCE.registerMessage(next(), SoundPlayMessage.class, SoundPlayMessage::encodeMessege,
 				SoundPlayMessage::decodeMessege, SoundPlayMessageHandler::reversiveMessage);
-
-		INSTANCE.registerMessage(next(), CassetteStoringSyncMessage.class, CassetteStoringSyncMessage::encodeMessege,
-				CassetteStoringSyncMessage::decodeMessege, CassetteStoringSyncMessageHandler::reversiveMessage);
 
 		INSTANCE.registerMessage(next(), ServerClientDataSyncMessage.class, ServerClientDataSyncMessage::encodeMessege,
 				ServerClientDataSyncMessage::decodeMessege, ServerClientDataSyncMessageHandler::reversiveMessage);

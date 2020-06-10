@@ -134,4 +134,9 @@ public class StringHelper {
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		return timestamp.toString();
 	}
+
+	public static String getPercentage(int all, int co) {
+
+		return Math.round(((float) co / (float) all) * 100) + " %";
+	}
 }

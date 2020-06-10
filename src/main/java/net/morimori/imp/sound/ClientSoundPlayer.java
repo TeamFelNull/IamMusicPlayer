@@ -8,23 +8,27 @@ import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.morimori.imp.client.handler.RenderHandler;
-import net.morimori.imp.util.SoundHelper;
+import net.morimori.imp.file.ClientFileReceiver;
+import net.morimori.imp.packet.ClientResponseMessage;
+import net.morimori.imp.packet.PacketHandler;
 
 public class ClientSoundPlayer {
 	public static ClientSoundPlayer INSTANS;
 
 	private Map<String, SoundRinger> ringSounds = new HashMap<String, SoundRinger>();
 	public Map<String, INewSoundPlayer> playdSounds = new HashMap<String, INewSoundPlayer>();
+	private Map<String, Boolean> nooneSound = new HashMap<String, Boolean>();
+	private Set<WorldSoundKey> dwonloadwait = new HashSet<WorldSoundKey>();
 
 	private static Minecraft mc = Minecraft.getInstance();
 
 	public void tick() {
-
 		try {
 			ringtick();
 			playedtick();
 		} catch (Exception e) {
-			RenderHandler.expations.put("Exception : " + e, 100);
+			RenderHandler.expations.put("Exception : " + e, 200);
+			e.printStackTrace();
 		}
 	}
 
@@ -53,7 +57,11 @@ public class ClientSoundPlayer {
 	private void ringtick() {
 
 		if (mc.player == null) {
+			for (Entry<String, SoundRinger> rs : ringSounds.entrySet()) {
+				rs.getValue().stopRing();
+			}
 			ringSounds.clear();
+
 		}
 
 		remringmaps.forEach(n -> ringSounds.remove(n));
@@ -63,7 +71,16 @@ public class ClientSoundPlayer {
 			SoundRinger sr = rs.getValue();
 
 			if (sr.isFinish()) {
-				removeRingSound(rs.getKey());
+				if (playdSounds.get(rs.getKey()).isLoop()) {
+					nooneSound.put(rs.getKey(), true);
+					removeRingSound(rs.getKey());
+				} else {
+					if (nooneSound.containsKey(rs.getKey())) {
+						nooneSound.remove(rs.getKey());
+					}
+					removeRingSound(rs.getKey());
+				}
+
 			}
 
 			if (!sr.isRing() && !sr.isFinish())
@@ -77,6 +94,8 @@ public class ClientSoundPlayer {
 	private void playedtick() {
 		if (mc.player == null) {
 			playdSounds.clear();
+		} else {
+			PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(2, 0, "null"));
 		}
 
 		removespke.forEach(n -> playdSounds.remove(n));
@@ -87,15 +106,26 @@ public class ClientSoundPlayer {
 			if (!ringSounds.containsKey(rs.getKey()) && rs.getValue().isPlayed()) {
 
 				SoundRinger sr = null;
-
 				if (rs.getValue().getSound().type == PlayDatasTypes.FILE) {
 					sr = new SoundRinger(rs.getValue().getSound().path);
 				} else if (rs.getValue().getSound().type == PlayDatasTypes.WORLD) {
-					sr = new WorldSoundRinger(rs.getValue().getSound().wsk);
+					WorldSoundKey wsk = rs.getValue().getSound().wsk;
+
+					if (!ClientFileReceiver.canReceiving || dwonloadwait.contains(wsk) || !wsk.isClientExistence()) {
+						sr = new WorldSoundRinger(wsk);
+						dwonloadwait.add(wsk);
+					} else {
+						sr = new SoundRinger(wsk.getClientPath());
+					}
+
 				} else if (rs.getValue().getSound().type == PlayDatasTypes.URL_STREAM) {
 					sr = new StreamSoundRinger(rs.getValue().getSound().url);
 				}
-				sr.setPotision(rs.getValue().getPosition());
+				boolean flag = false;
+				if (nooneSound.containsKey(rs.getKey())) {
+					flag = nooneSound.get(rs.getKey());
+				}
+				sr.setPotision(!flag ? rs.getValue().getPosition() : 0);
 				addRingSound(rs.getKey(), sr);
 			}
 
@@ -110,6 +140,7 @@ public class ClientSoundPlayer {
 
 			if (ringSounds.containsKey(rs.getKey()) && !rs.getValue().isPlayed()
 					|| ringSounds.containsKey(rs.getKey()) && !rs.getValue().canExistence()) {
+
 				removeRingSound(rs.getKey());
 			}
 
@@ -118,5 +149,9 @@ public class ClientSoundPlayer {
 			}
 		}
 
+	}
+
+	public void finishedDownload(WorldSoundKey wsk) {
+		dwonloadwait.remove(wsk);
 	}
 }

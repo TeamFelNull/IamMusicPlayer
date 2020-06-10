@@ -10,10 +10,8 @@ import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
-import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.file.ClientFileReceiver;
-import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.ClientResponseMessage;
@@ -27,13 +25,13 @@ public class SoundWaitThread extends Thread {
 	private static Minecraft ms = Minecraft.getInstance();
 	public static Map<BlockPos, SoundPlayer> posplayMap = new HashMap<BlockPos, SoundPlayer>();
 	private static Minecraft mc = Minecraft.getInstance();
-	public static boolean cheking = false;
+	//public static boolean cheking = false;
 
 	public void run() {
 		while (true) {
-			cheking = true;
 
-			ClientFileSender.reservationDownloading();
+
+		//	ClientFileSender.reservationDownloading();
 
 			if (ms.player != null) {
 				PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(2, 0, "null"));
@@ -121,7 +119,7 @@ public class SoundWaitThread extends Thread {
 		}
 
 	}
-
+/*
 	public static void finishedDownload(WorldPlayListSoundData worlddata) {
 		if (!dawonloadwaitedplayers.isEmpty()) {
 			try {
@@ -157,7 +155,7 @@ public class SoundWaitThread extends Thread {
 			}
 		}
 	}
-
+*/
 	public static void addDwonloadWait(WorldPlayListSoundData wplsd) {
 		if (!isAlreadyWait(wplsd)) {
 			downloadwaitedfiles.add(wplsd);
@@ -190,9 +188,9 @@ public class SoundWaitThread extends Thread {
 	}
 
 	public static void startSoundWaiter() {
-		IamMusicPlayer.LOGGER.info("Start Sound Waiter Thread");
-		SoundWaitThread SWT = new SoundWaitThread();
-		SWT.start();
+	//	IamMusicPlayer.LOGGER.info("Start Sound Waiter Thread");
+	//	SoundWaitThread SWT = new SoundWaitThread();
+	//	SWT.start();
 	}
 
 }

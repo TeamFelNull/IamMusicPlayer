@@ -27,10 +27,10 @@ public class ClientResponseMessageHandler {
 
 			if (ServerFileSender.canSending(PlayerHelper.getUUID(ctx.get().getSender()))) {
 				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
-						new ServerResponseMessage(1, 0));
+						new ServerResponseMessage(1, ""));
 			} else {
 				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
-						new ServerResponseMessage(2, 0));
+						new ServerResponseMessage(2, ""));
 			}
 
 		} else if (message.num == 3) {

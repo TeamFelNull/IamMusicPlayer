@@ -20,6 +20,12 @@ public interface INewSoundPlayer {
 
 	void setPosition(long position);
 
+	long getLastTime();
+
+	void setLastTime(long position);
+
 	boolean canExistence();
+
+	boolean isLoop();
 
 }

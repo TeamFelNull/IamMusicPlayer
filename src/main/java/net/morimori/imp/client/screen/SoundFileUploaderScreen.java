@@ -20,9 +20,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.SoundfileUploaderBlock;
+import net.morimori.imp.client.file.ClientSoundFileSender;
+import net.morimori.imp.client.file.ClientSoundFileSender.SendFolderType;
 import net.morimori.imp.container.SoundFileUploaderContainer;
 import net.morimori.imp.file.ClientFileReceiver;
-import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.SoundFileUploaderMessage;
@@ -389,7 +390,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				71, 12, 0, 125, 12,
 				SFU_GUI_TEXTURE2, 256, 256, (p_213096_1_) -> {
 
-					if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
+					if (!ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
 						if (serverSelectTargetR == ServerFileSelectTarget.MAIN) {
 							serverSelectTargetR = ServerFileSelectTarget.EVERYONE;
 							sendSFUPacket(19, serverSelectTargetR.toString());
@@ -466,20 +467,21 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 			AbstractGui.blit(xs + 20, ys + 25 + 30, 12, 149, 12, 12, 256, 256);
 			RenderSystem.popMatrix();
 			try {
-				if (ClientFileSender.isSending(this.selectFile.toPath())) {
+				if (ClientSoundFileSender.isSending(this.selectFile.getName())) {
 
 					int b = (int) (12
-							* ((float) ClientFileSender.sendingprograses
-									.get(ClientFileSender.getId(this.selectFile.toPath()))
-									/ (float) ClientFileSender.sendingalls
-											.get(ClientFileSender.getId(this.selectFile.toPath()))));
+							* ((float) ClientSoundFileSender.getPrograses(this.selectFile.getName())
+									/ (float) ClientSoundFileSender.getLength(this.selectFile.getName())));
 
 					RenderSystem.pushMatrix();
 					RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 					mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
 					AbstractGui.blit(xs + 20, ys + 25 + 30, 0, 149, 12, b, 256, 256);
 					RenderSystem.popMatrix();
-					this.font.drawString(ClientFileSender.getPrograsePar(this.selectFile.toPath()), xs + 20 + 15,
+					this.font.drawString(
+							StringHelper.getPercentage(ClientSoundFileSender.getLength(this.selectFile.getName()),
+									ClientSoundFileSender.getPrograses(this.selectFile.getName())),
+							xs + 20 + 15,
 							ys + 25 + 32,
 							0);
 
@@ -564,11 +566,9 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 
 					if (hasWindows(SoundFileUploaderWindwos.UPLOAD_FILE)) {
 
-						if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
+						if (ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
 
-							if (ClientFileSender.stopResevaionOrSending(this.selectFile.toPath())) {
-								sendSFUPacket(15, String.valueOf(ClientFileSender.getId(this.selectFile.toPath())));
-							}
+							ClientSoundFileSender.deletReseOrStopSend(this.selectFile.getName());
 
 						} else {
 							serverFilelistUpdate();
@@ -576,13 +576,12 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 						}
 
 					} else if (hasWindows(SoundFileUploaderWindwos.UPLOAD_COFIN)) {
-						if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
-							if (ClientFileSender.stopResevaionOrSending(this.selectFile.toPath())) {
-								sendSFUPacket(15, String.valueOf(ClientFileSender.getId(this.selectFile.toPath())));
-							}
+						if (ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
+							ClientSoundFileSender.deletReseOrStopSend(this.selectFile.getName());
 						} else {
-							ClientFileSender.addSenderReservation(selectFile.toPath(),
-									this.serverSelectTargetR == ServerFileSelectTarget.MAIN);
+							ClientSoundFileSender.addReseOrStartSend(selectFile.getName(),
+									this.serverSelectTargetR == ServerFileSelectTarget.MAIN ? SendFolderType.MAIN
+											: SendFolderType.EVERYONE);
 						}
 					}
 				}, I18n.format("gui.yes"), -17, false);
@@ -616,7 +615,9 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 						uploadstart.visible = false;
 
 					}
-					if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
+
+					if (!ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
+
 						uploadstart.setMessage(I18n.format("sfu.start"));
 						((StringImageButton) uploadstart).dredclos = false;
 					} else {
@@ -642,15 +643,12 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		}
 
 		if (isUsingMain()) {
-			if (selectFile == null || ClientFileSender.isResevationOrSending(this.selectFile.toPath())
+			if (selectFile == null || ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())
 					|| !selectFile.exists()) {
 				try {
 
 					if (selectFile != null) {
-						if (ClientFileSender.isResevationOrSending(this.selectFile.toPath())
-								&& ClientFileSender.senderBuffer
-										.get(ClientFileSender.getId(this.selectFile.toPath())).path
-												.toFile().getName().equals(selectFile.getName())) {
+						if (ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
 							uploadstart.visible = true;
 							uploadstart.setMessage(I18n.format("sfu.stop"));
 							((StringImageButton) uploadstart).dredclos = true;
@@ -694,7 +692,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 		SoundFileUploaderTileEntity sfit = (SoundFileUploaderTileEntity) mc.world
 				.getTileEntity(this.container.pos);
 		if (sfit.getUsePlayerUUID().equals(PlayerHelper.getUUID(mc.player))) {
-			if (!ClientFileSender.isResevationOrSending(this.selectFile.toPath())) {
+			if (!ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
 				if (selectFile != null && selectFile.exists()) {
 					this.drawCenteredString(this.font,
 							I18n.format("sfu.selectfileupdate." + (mc.isSingleplayer() ? "world" : "server")),
@@ -715,26 +713,22 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 				}
 
 			} else {
-				if (ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
-						.toFile().getName() == null || selectFile.getName() == null
+				if (ClientSoundFileSender.getSender(this.selectFile.getName()) == null || selectFile.getName() == null
 						|| !selectFile.exists()) {
 					this.drawCenteredString(this.font, "Error", this.width / 2, ys + 27 + 20, 11797508);
 
 				} else {
 
-					if (ClientFileSender.senderBuffer.get(ClientFileSender.getId(this.selectFile.toPath())).path
-							.toFile().getName().equals(selectFile.getName())) {
-						this.drawCenteredString(this.font,
-								I18n.format("sfu.selectfileupding." + (mc.isSingleplayer() ? "world" : "server")),
-								this.width / 2, ys + 27 + 20, 16777215);
-						this.drawCenteredString(this.font, selectFile.getName(),
-								this.width / 2, ys + 27 + 12, 16777215);
-						this.drawCenteredString(this.font, ClientFileSender.getPrograsePar(this.selectFile.toPath()),
-								this.width / 2, ys + 27 + 28, 16777215);
-					} else {
-						this.drawCenteredString(this.font, I18n.format("sfu.selectfileupdatedother"),
-								this.width / 2, ys + 27 + 20, 16777215);
-					}
+					this.drawCenteredString(this.font,
+							I18n.format("sfu.selectfileupding." + (mc.isSingleplayer() ? "world" : "server")),
+							this.width / 2, ys + 27 + 20, 16777215);
+					this.drawCenteredString(this.font, selectFile.getName(),
+							this.width / 2, ys + 27 + 12, 16777215);
+					this.drawCenteredString(this.font,
+							StringHelper.getPercentage(ClientSoundFileSender.getLength(this.selectFile.getName()),
+									ClientSoundFileSender.getPrograses(this.selectFile.getName())),
+							this.width / 2, ys + 27 + 28, 16777215);
+
 				}
 			}
 		} else {

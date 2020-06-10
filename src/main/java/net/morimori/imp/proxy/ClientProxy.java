@@ -24,6 +24,7 @@ public class ClientProxy extends CommonProxy {
 		IMPTileEntityRenderers.registerTileEntityRenderer();
 		RegisterScrennContainerFactorys.registerFactories();
 		ClientSoundPlayer.INSTANS = new ClientSoundPlayer();
+
 	}
 
 	@Override

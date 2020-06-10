@@ -9,8 +9,9 @@ import java.util.regex.Pattern;
 
 import net.minecraft.client.resources.I18n;
 import net.morimori.imp.IamMusicPlayer;
-import net.morimori.imp.sound.SoundWaitThread;
+import net.morimori.imp.sound.ClientSoundPlayer;
 import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.sound.WorldSoundKey;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
 import net.morimori.imp.util.NarratorHelper;
@@ -37,6 +38,7 @@ public class ClientFileReceiver extends Thread {
 		this.id = id;
 		this.sounduuid = sounduuid;
 	}
+
 	public static boolean isReceving(File file) {
 
 		return getReceivingId(file) != -1;
@@ -151,7 +153,8 @@ public class ClientFileReceiver extends Thread {
 							.resolve(Paths.get(path).getParent().toFile().getName()).resolve(filename));
 			PlayList.addClientPlayeyListFileNBT(Paths.get(path).getParent().toFile().getName(), filename,
 					sounduuid);
-			SoundWaitThread.finishedDownload(new WorldPlayListSoundData(path, sounduuid, null));
+			ClientSoundPlayer.INSTANS
+					.finishedDownload(new WorldSoundKey(new WorldPlayListSoundData(path, sounduuid, null)));
 		}
 
 		IamMusicPlayer.LOGGER.info("Client File Receiver was Success Full :" + " Name "

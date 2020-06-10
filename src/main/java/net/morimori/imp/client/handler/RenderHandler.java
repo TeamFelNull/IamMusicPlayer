@@ -35,20 +35,20 @@ import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.morimori.imp.IamMusicPlayer;
+import net.morimori.imp.client.file.ClientSoundFileSender;
 import net.morimori.imp.client.renderer.item.CassetteItemRenderer;
 import net.morimori.imp.client.renderer.item.ParabolicAntennaRenderer;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.file.ClientFileReceiver;
-import net.morimori.imp.file.ClientFileSender;
 import net.morimori.imp.file.FileReceiverBuffer;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.item.IMPItems;
 import net.morimori.imp.item.ParabolicAntennaItem;
 import net.morimori.imp.sound.SoundData;
+import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.util.IMPMath;
 import net.morimori.imp.util.PictuerUtil;
-import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
 import net.morimori.imp.util.TextureHelper;
 
@@ -104,33 +104,18 @@ public class RenderHandler {
 	private static List<String> addUpLoadPrograse() {
 		List<String> stlist = new ArrayList<String>();
 
-		if (ClientFileSender.senderBuffer.isEmpty()) {
-			return stlist;
-		}
-		int cont = 0;
-		try {
-			for (Entry<Integer, ClientFileSender> en : ClientFileSender.senderBuffer.entrySet()) {
-				stlist.add(I18n.format("overlay.sending." + (mc.isSingleplayer() ? "world" : "server"),
-						ClientFileSender.senderBuffer.get(en.getKey()).path.toFile().getName(),
-						stlist.add(StringHelper.fileCapacityNotation(ClientFileSender.sendingprograses.get(en.getKey()))
-								+ " / "
-								+ StringHelper.fileCapacityNotation(ClientFileSender.sendingalls.get(en.getKey())) + " "
-								+ ClientFileSender.getPrograsePar(en.getKey()))));
-
-				cont++;
-				if (cont > MaxDraw) {
-					stlist.add(I18n.format("overlay.sender.othertask",
-							ClientFileSender.senderBuffer.entrySet().size() - MaxDraw));
-					break;
-				}
-
-			}
-		} catch (Exception e) {
-
+		for (Entry<String, ClientSoundFileSender> en : ClientSoundFileSender.getSender().entrySet()) {
+			stlist.add(I18n.format("overlay.sending." + (mc.isSingleplayer() ? "world" : "server"),
+					en.getKey(),
+					stlist.add(StringHelper.fileCapacityNotation(ClientSoundFileSender.getPrograses(en.getKey()))
+							+ " / "
+							+ StringHelper.fileCapacityNotation(ClientSoundFileSender.getLength(en.getKey())) + " "
+							+ StringHelper.getPercentage(ClientSoundFileSender.getLength(en.getKey()),
+									ClientSoundFileSender.getPrograses(en.getKey())))));
 		}
 
-		if (!ClientFileSender.reservationSenders.isEmpty()) {
-			stlist.add(I18n.format("overlay.sender.reservation", ClientFileSender.reservationSenders.size()));
+		if (!ClientSoundFileSender.getReservations().isEmpty()) {
+			stlist.add(I18n.format("overlay.sender.reservation", ClientSoundFileSender.getReservations().size()));
 		}
 
 		return stlist;

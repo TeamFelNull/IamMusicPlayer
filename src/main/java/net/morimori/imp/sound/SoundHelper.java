@@ -1,18 +1,23 @@
-package net.morimori.imp.util;
+package net.morimori.imp.sound;
 
+import java.io.IOException;
 import java.util.UUID;
+
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.Mp3File;
+import com.mpatric.mp3agic.UnsupportedTagException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.item.IMPItems;
-import net.morimori.imp.sound.ClientSoundPlayer;
-import net.morimori.imp.sound.INewSoundPlayer;
-import net.morimori.imp.sound.SoundPos;
-import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.util.ItemHelper;
+import net.morimori.imp.util.StringHelper;
 
 public class SoundHelper {
 	private static Minecraft mc = Minecraft.getInstance();
@@ -97,10 +102,77 @@ public class SoundHelper {
 		return IMPSoundSlider.AllSoundVolume <= master ? IMPSoundSlider.AllSoundVolume : master;
 	}
 
-	public static void soundPlayerTick(INewSoundPlayer isp) {
+	public static long getSoundLength(PlayData pd, MinecraftServer ms) {
 
-		if (!ClientSoundPlayer.INSTANS.playdSounds.containsValue(isp)) {
-			ClientSoundPlayer.INSTANS.playdSounds.put(UUID.randomUUID().toString(), isp);
+		if (pd.type == PlayDatasTypes.FILE) {
+			try {
+				Mp3File mfile = new Mp3File(pd.path.toString());
+				return mfile.getLengthInMilliseconds();
+			} catch (UnsupportedTagException | InvalidDataException | IOException e) {
+				return -1;
+			}
+
+		} else if (pd.type == PlayDatasTypes.WORLD) {
+			try {
+				Mp3File mfile = new Mp3File(pd.wsk.getServerPath(ms));
+				return mfile.getLengthInMilliseconds();
+			} catch (UnsupportedTagException | InvalidDataException | IOException e) {
+				return -1;
+			}
+		} else if (pd.type == PlayDatasTypes.URL_STREAM) {
+			return -1;
+		}
+
+		return 0;
+
+	}
+
+	public static void soundPlayerTick(INewSoundPlayer isp, World worldIn) {
+
+		if (!worldIn.isRemote) {
+			long leth = getSoundLength(isp.getSound(), worldIn.getServer());
+			long nowtime = System.currentTimeMillis();
+			if (isp.getLastTime() != 0) {
+				if (isp.isPlayed()) {
+					long keka = nowtime - isp.getLastTime();
+					long gokei = isp.getPosition() + keka;
+					if (isp.isLoop()) {
+						if (keka >= leth) {
+							int co = (int) (keka / leth);
+							long s = keka - leth * co;
+							isp.setPosition(s);
+						}
+					} else {
+						isp.setPosition(gokei);
+					}
+				}
+			}
+			isp.setLastTime(nowtime);
+
+			if (isp.isPlayed()) {
+
+				if (isp.isLoop()) {
+					if (isp.getPosition() != -1 && isp.getPosition() >= leth) {
+						isp.setPlayed(false);
+						isp.setPosition(0);
+
+						isp.setPlayed(true);
+					}
+				} else {
+					if (isp.getPosition() != -1 && isp.getPosition() >= leth) {
+						isp.setPlayed(false);
+					}
+				}
+
+			} else {
+				if (isp.getPosition() != -1 && isp.getPosition() >= leth) {
+					isp.setPosition(0);
+				}
+			}
+		} else {
+			if (!ClientSoundPlayer.INSTANS.playdSounds.containsValue(isp)) {
+				ClientSoundPlayer.INSTANS.playdSounds.put(UUID.randomUUID().toString(), isp);
+			}
 		}
 
 	}

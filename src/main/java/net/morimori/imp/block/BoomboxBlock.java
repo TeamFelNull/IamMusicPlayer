@@ -10,7 +10,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.IWaterLoggable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluids;
@@ -42,12 +41,10 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.item.BoomBoxTileEntityStack;
+import net.morimori.imp.sound.SoundHelper;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
 import net.morimori.imp.util.ItemHelper;
-import net.morimori.imp.util.PlayerHelper;
-import net.morimori.imp.util.SoundHelper;
 
 public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -345,12 +342,10 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 		if (!(worldIn.getTileEntity(pos) instanceof BoomboxTileEntity))
 			return;
 
-		BoomboxTileEntity tileentity = (BoomboxTileEntity) worldIn.getTileEntity(pos);
-		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
-
-		if (stateIn.get(ON) && !tileentity.lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {
+		if (stateIn.get(ON)) {
 			worldIn.addParticle(ParticleTypes.NOTE, (double) pos.getX() + 0.5D, (double) pos.getY() + 1.2D,
 					(double) pos.getZ() + 0.5D, (double) this.RANDOM.nextInt(25) / 24.0D, 0.0D, 0.0D);
 		}
+
 	}
 }

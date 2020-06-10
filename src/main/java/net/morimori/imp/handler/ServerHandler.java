@@ -8,8 +8,8 @@ import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.morimori.imp.command.IMPCommands;
 import net.morimori.imp.file.DwonloadMusic;
 import net.morimori.imp.file.PlayList;
-import net.morimori.imp.file.ServerFileReceiver;
 import net.morimori.imp.file.ServerFileSender;
+import net.morimori.imp.file.ServerSoundFileReceiver;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
 import net.morimori.imp.util.PlayerHelper;
@@ -23,7 +23,7 @@ public class ServerHandler {
 	@SubscribeEvent
 	public static void onPlayerLogOut(PlayerLoggedOutEvent e) {
 		ServerFileSender.stopSend(PlayerHelper.getUUID(e.getPlayer()));
-		ServerFileReceiver.stopReceiver(PlayerHelper.getUUID(e.getPlayer()));
+		ServerSoundFileReceiver.receiveStop(PlayerHelper.getUUID(e.getPlayer()));
 	}
 
 	@SubscribeEvent

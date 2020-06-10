@@ -35,6 +35,12 @@ public class WorldSoundKey {
 	@OnlyIn(Dist.CLIENT)
 	public boolean isClientExistence() {
 
+		if (getClientPath().toFile() == null || FileHelper.getClientCurrentServerPlaylistNBTDataPath().toFile() == null
+				&& !FileHelper.getClientCurrentServerPlaylistNBTDataPath().toFile().exists()
+				|| PlayList.getClientPlaylistNBTdata(getClientPath(), "UUID") == null) {
+			return false;
+		}
+
 		boolean flag1 = getClientPath().toFile().exists();
 		boolean flag2 = PlayList.getClientPlaylistNBTdata(getClientPath(), "UUID").equals(getUUID());
 

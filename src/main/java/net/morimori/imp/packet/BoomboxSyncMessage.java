@@ -1,8 +1,5 @@
 package net.morimori.imp.packet;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -13,37 +10,26 @@ public class BoomboxSyncMessage {
 	public BlockPos pos;
 	public ItemStack cassette;
 	public int openProgress;
-	public Set<String> lisnFinishedPlayers;
 	public long position;
+	public long lasttime;
 	public float volume;
 
 	public BoomboxSyncMessage(int dimID, BlockPos postion, ItemStack cassetteItem, int opProgress,
-			Set<String> finishedplayes, long position, float volume) {
+			long position, long lasttime, float volume) {
 		this.dim = dimID;
 		this.pos = postion;
 		this.cassette = cassetteItem;
 		this.openProgress = opProgress;
-		this.lisnFinishedPlayers = finishedplayes;
 		this.position = position;
+		this.lasttime = lasttime;
 		this.volume = volume;
 	}
 
 	public static BoomboxSyncMessage decodeMessege(PacketBuffer buffer) {
 		return new BoomboxSyncMessage(buffer.readInt(),
 				new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()),
-				ItemStack.read(buffer.readCompoundTag()), buffer.readInt(), readSet(buffer), buffer.readLong(),
+				ItemStack.read(buffer.readCompoundTag()), buffer.readInt(), buffer.readLong(), buffer.readLong(),
 				buffer.readFloat());
-	}
-
-	private static Set<String> readSet(PacketBuffer buffer) {
-
-		Set<String> stmap = new HashSet<String>();
-		CompoundNBT ptmnbt = buffer.readCompoundTag();
-		for (String key : ptmnbt.keySet()) {
-			stmap.add(ptmnbt.getString(key));
-		}
-
-		return stmap;
 	}
 
 	public static void encodeMessege(BoomboxSyncMessage messegeIn, PacketBuffer buffer) {
@@ -53,14 +39,8 @@ public class BoomboxSyncMessage {
 		buffer.writeInt(messegeIn.pos.getZ());
 		buffer.writeCompoundTag(messegeIn.cassette.write(new CompoundNBT()));
 		buffer.writeInt(messegeIn.openProgress);
-		CompoundNBT ptmnbt = new CompoundNBT();
-		int cont = 0;
-		for (String st : messegeIn.lisnFinishedPlayers) {
-			ptmnbt.putString(String.valueOf(cont), st);
-			cont++;
-		}
-		buffer.writeCompoundTag(ptmnbt);
 		buffer.writeLong(messegeIn.position);
+		buffer.writeLong(messegeIn.lasttime);
 		buffer.writeFloat(messegeIn.volume);
 	}
 }
