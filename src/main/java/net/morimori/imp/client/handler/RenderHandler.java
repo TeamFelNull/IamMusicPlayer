@@ -268,7 +268,7 @@ public class RenderHandler {
 
 		RenderSystem.pushMatrix();
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-		fr.drawString(SoundHelper.getCassetteSoundName(stack), x + 2 + pxsize / 4 + 3, y + 2, 0);
+		fr.drawString(SoundHelper.getSoundName(stack), x + 2 + pxsize / 4 + 3, y + 2, 0);
 
 		List<ITextComponent> itc = new ArrayList<ITextComponent>();
 		SoundData.addSoundDataTooltip(stack, itc);
@@ -318,7 +318,7 @@ public class RenderHandler {
 
 		size += pysize;
 
-		int namesize = fr.getStringWidth(SoundHelper.getCassetteSoundName(stack)) + 3;
+		int namesize = fr.getStringWidth(SoundHelper.getSoundName(stack)) + 3;
 
 		List<ITextComponent> itc = new ArrayList<ITextComponent>();
 		SoundData.addSoundDataTooltip(stack, itc);

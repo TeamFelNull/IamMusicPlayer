@@ -545,7 +545,7 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 			return;
 
 		if (!getWriteCassette().isEmpty()) {
-			drawString(StringHelper.characterLimit(mc, SoundHelper.getCassetteSoundName(getWriteCassette()), 106), 120,
+			drawString(StringHelper.characterLimit(mc, SoundHelper.getSoundName(getWriteCassette()), 106), 120,
 					7, 2722312);
 		}
 

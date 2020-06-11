@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 
 public class StringHelper {
 
@@ -138,5 +139,47 @@ public class StringHelper {
 	public static String getPercentage(int all, int co) {
 
 		return Math.round(((float) co / (float) all) * 100) + " %";
+	}
+
+	public static String getTimeDisplay(long milisec) {
+
+		String by = I18n.format("soundplayer.time.sec");
+		String hu = I18n.format("soundplayer.time.min");
+		String zik = I18n.format("soundplayer.time.hor");
+
+		long byou = milisec / 1000;
+
+		if (byou < 60) {
+			return byou + " " + by;
+		}
+
+		long hun = byou / 60;
+		long amabyou = byou - hun * 60;
+		if (hun < 60) {
+
+			if (amabyou == 0) {
+				return hun + " " + hu;
+			}
+
+			return hun + " " + hu + " " + amabyou + " " + by;
+		}
+
+		long zikan = hun / 60;
+		long amahun = hun - zikan * 60;
+
+		if (amabyou == 0 && amahun == 0) {
+			return zikan + " " + zik;
+		}
+
+		if (amabyou == 0) {
+			return zikan + " " + zik + " " + amahun + " " + hu;
+		}
+
+		if (amahun == 0) {
+			return zikan + " " + zik + " " + amabyou + " " + by;
+		}
+
+		return zikan + " " + zik + " " + amahun + " " + hu + " " + amabyou + " " + by;
+
 	}
 }

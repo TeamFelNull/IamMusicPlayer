@@ -22,6 +22,7 @@ import net.morimori.imp.sound.PlayData;
 import net.morimori.imp.sound.PlayData.PlayDatasTypes;
 import net.morimori.imp.sound.SoundPos;
 import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.sound.WorldSoundKey;
 
 public class SoundHelper {
 	private static Minecraft mc = Minecraft.getInstance();
@@ -69,11 +70,16 @@ public class SoundHelper {
 
 	}
 
-	public static String getCassetteSoundName(ItemStack stack) {
+	public static String getSoundName(WorldSoundKey wsk) {
+
+		return StringHelper.deleteExtension(wsk.getName());
+	}
+
+	public static String getSoundName(ItemStack stack) {
 		if (!isWritedSound(stack))
 			return stack.getDisplayName().getString();
 
-		return StringHelper.deleteExtension(WorldPlayListSoundData.getWorldPlayListData(stack).getName());
+		return getSoundName(new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(stack)));
 	}
 
 	public static boolean canWriteCassette(ItemStack stack) {

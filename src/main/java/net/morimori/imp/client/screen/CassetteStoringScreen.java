@@ -43,7 +43,7 @@ public class CassetteStoringScreen extends ContainerScreen<CassetteStoringContai
 				.getTileEntity(this.container.pos);
 
 		ItemStack cassette = tile.getCassette(num);
-		String outst = SoundHelper.getCassetteSoundName(cassette);
+		String outst = SoundHelper.getSoundName(cassette);
 
 		slipmaxs.put(num, outst.length());
 

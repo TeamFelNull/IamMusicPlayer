@@ -100,6 +100,10 @@
   "overlay.sender.othertask": "Other %s Upload Tasks...",
   "overlay.sender.reservation": "%s Upload reservations...",
 
+  "soundplayer.time.sec": "s",
+  "soundplayer.time.min": "m",
+  "soundplayer.time.hor": "h",
+
   "iammusicplayer.command.plreload": "Reload World Playlist",
   
   "_comment": "Last"

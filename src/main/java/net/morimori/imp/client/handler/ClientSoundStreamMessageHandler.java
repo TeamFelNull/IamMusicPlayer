@@ -28,10 +28,10 @@ public class ClientSoundStreamMessageHandler {
 						.get(WorldSoundRinger.bytebuf.get(message.key).size() - 1);
 
 				byte[] aby = ArrayUtils.addAll(mby, message.bytes);
-
-				WorldSoundRinger.bytebuf.get(message.key).set(WorldSoundRinger.bytebuf.get(message.key).size() - 1,
-						aby);
-
+				if (WorldSoundRinger.bytebuf.containsKey(message.key)) {
+					WorldSoundRinger.bytebuf.get(message.key).set(WorldSoundRinger.bytebuf.get(message.key).size() - 1,
+							aby);
+				}
 			}
 
 		} else {
