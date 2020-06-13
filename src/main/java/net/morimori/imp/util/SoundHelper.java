@@ -13,6 +13,9 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.client.screen.IMPSoundSlider;
 import net.morimori.imp.item.CassetteTapeItem;
 import net.morimori.imp.item.IMPItems;
@@ -25,7 +28,6 @@ import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.sound.WorldSoundKey;
 
 public class SoundHelper {
-	private static Minecraft mc = Minecraft.getInstance();
 
 	public static boolean canPlay(ItemStack stack) {
 		return isWritedSound(stack);
@@ -92,9 +94,9 @@ public class SoundHelper {
 		}
 		return false;
 	}
-
+	@OnlyIn(Dist.CLIENT)
 	public static float getVolumeFromSoundPos(SoundPos pos, float motovol) {
-
+		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 		float v = (16f * motovol - (float) (pos.distance(mc.player.func_226277_ct_(), mc.player.func_226278_cu_() + 1,
 				mc.player.func_226281_cx_()))) / 16f * motovol;
 
@@ -104,9 +106,9 @@ public class SoundHelper {
 	public static double getDistanceAndSoundPosFromVolume(float motovol) {
 		return 16 * motovol;
 	}
-
+	@OnlyIn(Dist.CLIENT)
 	public static float getOptionVolume() {
-
+		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
 		float master = mc.gameSettings.getSoundLevel(SoundCategory.MASTER);
 
 		return IMPSoundSlider.AllSoundVolume <= master ? IMPSoundSlider.AllSoundVolume : master;
