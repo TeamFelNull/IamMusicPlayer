@@ -26,11 +26,14 @@ public class CassetteDeckSyncMessage {
 	public Set<String> lisnFinishedPlayers;
 	public int copyingPrograse;
 	public int deletingPrograse;
+	public long position;
+	public long lasttime;
+	public float volume;
 
 	public CassetteDeckSyncMessage(int dimID, BlockPos postion, NonNullList<ItemStack> Item, int Pitch, int Yaw,
 			String foldername, String filename, Map<String, String> playerstager, int recordingPrograse,
-			Set<String> finishedplayes,
-			int copyingprograse, int deletingprograse) {
+			Set<String> finishedplayes, int copyingprograse, int deletingprograse, long position, long lasttime,
+			float volume) {
 		this.dim = dimID;
 		this.pos = postion;
 		this.items = Item;
@@ -43,6 +46,9 @@ public class CassetteDeckSyncMessage {
 		this.lisnFinishedPlayers = finishedplayes;
 		this.copyingPrograse = copyingprograse;
 		this.deletingPrograse = deletingprograse;
+		this.position = position;
+		this.lasttime = lasttime;
+		this.volume = volume;
 	}
 
 	public static CassetteDeckSyncMessage decodeMessege(PacketBuffer buffer) {
@@ -51,8 +57,8 @@ public class CassetteDeckSyncMessage {
 		return new CassetteDeckSyncMessage(buffer.readInt(),
 				new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()),
 				itemsa, buffer.readInt(), buffer.readInt(), buffer.readString(32767), buffer.readString(32767),
-				readMap(buffer),
-				buffer.readInt(), readSet(buffer), buffer.readInt(), buffer.readInt());
+				readMap(buffer), buffer.readInt(), readSet(buffer), buffer.readInt(), buffer.readInt(),
+				buffer.readLong(), buffer.readLong(), buffer.readFloat());
 	}
 
 	private static Map<String, String> readMap(PacketBuffer buffer) {
@@ -103,5 +109,8 @@ public class CassetteDeckSyncMessage {
 		buffer.writeCompoundTag(ptamnbt);
 		buffer.writeInt(messegeIn.copyingPrograse);
 		buffer.writeInt(messegeIn.deletingPrograse);
+		buffer.writeLong(messegeIn.position);
+		buffer.writeLong(messegeIn.lasttime);
+		buffer.writeFloat(messegeIn.volume);
 	}
 }

@@ -143,6 +143,10 @@ public class ClientSoundPlayer {
 
 			}
 
+			if (!rs.getValue().canExistence()) {
+				removeRingSound(rs.getKey());
+			}
+
 			if (ringSounds.containsKey(rs.getKey()) && !rs.getValue().isPlayed()
 					|| ringSounds.containsKey(rs.getKey()) && !rs.getValue().canExistence()) {
 

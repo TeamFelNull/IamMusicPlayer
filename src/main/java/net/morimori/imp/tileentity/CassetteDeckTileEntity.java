@@ -18,26 +18,24 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.CassetteDeckBlock;
 import net.morimori.imp.block.CassetteDeckStates;
+import net.morimori.imp.block.IMPBlocks;
 import net.morimori.imp.container.CassetteDeckContainer;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.packet.CassetteDeckSyncMessage;
 import net.morimori.imp.packet.PacketHandler;
-import net.morimori.imp.sound.ISoundPlayer;
-import net.morimori.imp.sound.SoundPlayer;
+import net.morimori.imp.sound.INewSoundPlayer;
+import net.morimori.imp.sound.PlayData;
 import net.morimori.imp.sound.SoundPos;
-import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
+import net.morimori.imp.sound.WorldSoundKey;
 import net.morimori.imp.util.ItemHelper;
-import net.morimori.imp.util.PlayerHelper;
 import net.morimori.imp.util.SoundHelper;
 
-public class CassetteDeckTileEntity extends LockableTileEntity implements ITickableTileEntity, ISoundPlayer {
+public class CassetteDeckTileEntity extends LockableTileEntity
+		implements ITickableTileEntity, INewSoundPlayer {
 
 	protected NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
 	public int rotationPitch;//縦方向最大90度
@@ -48,6 +46,10 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	public int recodingPrograse;
 	public int copyingPrograse;
 	public int deletingPrograse;
+
+	private long lasttime;
+	private long position;
+	private float volume;
 
 	private String foldername;
 	private String filename;
@@ -91,8 +93,9 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 					&& PlayList.getWorldPlaylistNBTDataSoundData(
 							this.getWorld().getServer(), this.foldername, this.filename, "SoundData") != null) {
 				setWriteCassette(SoundHelper.writeSoundOnCassette(this.getWriteCassette(),
-						new WorldPlayListSoundData(this.filename, this.foldername, PlayList.getWorldPlaylistNBTDataString(
-								this.getWorld().getServer(), this.foldername, this.filename, "UUID"),
+						new WorldPlayListSoundData(this.filename, this.foldername,
+								PlayList.getWorldPlaylistNBTDataString(
+										this.getWorld().getServer(), this.foldername, this.filename, "UUID"),
 								PlayList.getWorldPlaylistNBTDataSoundData(
 										this.getWorld().getServer(), this.foldername, this.filename, "SoundData"))));
 			}
@@ -141,6 +144,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 
 	@Override
 	public void tick() {
+		SoundHelper.soundPlayerTick(this, this.world);
 		if (!world.isRemote) {
 
 			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.DELETE) {
@@ -234,13 +238,9 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 				}
 			}
 
-			if (isSoundStop()) {
-				lisnFinishedPlayers.clear();
-			}
-
 			sendClientSyncPacket();
 		} else {
-			playSound();
+
 		}
 
 	}
@@ -283,6 +283,9 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		this.copyingPrograse = tag.getInt("CopyingPrograse");
 		this.deletingPrograse = tag.getInt("DeletingPrograse");
 
+		this.position = tag.getLong("Position");
+		this.volume = tag.getFloat("Volume");
+
 		ItemStackHelper.loadAllItems(tag, items);
 
 		CompoundNBT ptmnbt = tag.getCompound("PlayersTager");
@@ -309,6 +312,10 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		tag.putInt("RecodingPrograse", this.recodingPrograse);
 		tag.putInt("CopyingPrograse", this.copyingPrograse);
 		tag.putInt("DeletingPrograse", this.deletingPrograse);
+
+		tag.putLong("Position", this.position);
+		tag.putLong("LastTime", this.lasttime);
+		tag.putFloat("Volume", this.volume);
 
 		CompoundNBT ptmnbt = new CompoundNBT();
 		for (Entry<String, String> ent : playerstager.entrySet()) {
@@ -415,7 +422,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 				new CassetteDeckSyncMessage(this.world.dimension.getDimension().getType().getId(), this.pos,
 						this.items, this.rotationPitch, this.rotationYaw, this.foldername, this.filename,
 						this.playerstager, this.recodingPrograse, this.lisnFinishedPlayers, this.copyingPrograse,
-						this.deletingPrograse));
+						this.deletingPrograse, this.position, this.lasttime, this.volume));
 	}
 
 	public void clientSync(CassetteDeckSyncMessage message) {
@@ -429,38 +436,96 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		this.lisnFinishedPlayers = message.lisnFinishedPlayers;
 		this.copyingPrograse = message.copyingPrograse;
 		this.deletingPrograse = message.deletingPrograse;
+
+		this.position = message.position;
+		this.lasttime = message.lasttime;
+		this.volume = message.volume;
+
 	}
 
 	@Override
-	public boolean isSoundStop() {
+	public PlayData getSound() {
 
-		return !(SoundHelper.canPlay(getWriteCassette())
-				&& this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY);
+		return new PlayData(new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getPlayCassette())));
 	}
 
 	@Override
-	public boolean isLoopPlay() {
-
-		return this.world.isBlockPowered(this.pos);
+	public SoundPos getSoundPos() {
+		return new SoundPos(this.pos);
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void playSound() {
-		if (world.isRemote) {
-			if (SoundHelper.canPlay(getWriteCassette())
-					&& this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY) {
-				net.minecraft.client.Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
-				if (!lisnFinishedPlayers.contains(PlayerHelper.getUUID(mc.player))) {
-					if (new SoundPos(this.pos).canLisn(15)) {
-						if (!SoundWaitThread.posplayMap.containsKey(this.pos)) {
-							SoundWaitThread.posplayMap.put(this.pos,
-									new SoundPlayer(WorldPlayListSoundData.getWorldPlayListData(getWriteCassette()),
-											new SoundPos(this.pos), 1, 15));
-						}
-					}
-				}
-			}
+	public boolean canPlayed() {
+		WorldSoundKey wsk = new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getPlayCassette()));
+		boolean flag = wsk.isServerExistence(this.getWorld().getServer());
+		return SoundHelper.canPlay(getPlayCassette()) && flag;
+	}
+
+	@Override
+	public boolean isPlayed() {
+
+		return this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.PLAY;
+	}
+
+	@Override
+	public void setPlayed(boolean play) {
+		if (play) {
+			this.world.setBlockState(this.pos,
+					this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES, CassetteDeckStates.PLAY));
+		} else {
+			this.world.setBlockState(this.pos,
+					this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES, CassetteDeckStates.NONE));
 		}
+
+	}
+
+	@Override
+	public float getVolume() {
+		return 1;
+	}
+
+	@Override
+	public void setVolume(float volume) {
+
+	}
+
+	@Override
+	public long getPosition() {
+		return this.position;
+	}
+
+	@Override
+	public void setPosition(long position) {
+		this.position = position;
+	}
+
+	@Override
+	public long getLastTime() {
+		return this.lasttime;
+	}
+
+	@Override
+	public void setLastTime(long lasttime) {
+		this.lasttime = lasttime;
+	}
+
+	@Override
+	public boolean canExistence() {
+		boolean flag1 = this.world.getBlockState(this.pos).getBlock() == IMPBlocks.CASSETTE_DECK;
+		@SuppressWarnings("deprecation")
+		boolean flag2 = this.world.isBlockLoaded(this.pos);
+		return flag1 && flag2;
+	}
+
+	@Override
+	public boolean isLoop() {
+
+		return this.getWorld().isBlockPowered(this.pos);
+	}
+
+	@Override
+	public boolean isReset() {
+
+		return this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) != CassetteDeckStates.PLAY;
 	}
 }

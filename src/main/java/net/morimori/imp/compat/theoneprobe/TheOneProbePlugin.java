@@ -21,6 +21,7 @@ import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.sound.INewSoundPlayer;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.tileentity.BoomboxTileEntity;
+import net.morimori.imp.tileentity.CassetteDeckTileEntity;
 import net.morimori.imp.util.PictuerUtil;
 import net.morimori.imp.util.SoundHelper;
 import net.morimori.imp.util.StringHelper;
@@ -51,6 +52,32 @@ public class TheOneProbePlugin implements Function<ITheOneProbe, Void> {
 
 					if (te instanceof BoomboxTileEntity) {
 						ItemStack cas = ((BoomboxTileEntity) te).getCassette();
+						if (!cas.isEmpty()) {
+							WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(cas);
+
+							ResourceLocation location = wplsd.getAlbumImage();
+
+							int pxsize = 0;
+							int pysize = 0;
+							if (TextureHelper.isImageNotExists(wplsd.getSoundData().album_image_uuid)) {
+								pxsize = 128;
+								pysize = 128;
+							} else {
+								pxsize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth();
+								pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight();
+							}
+							pxsize /= 8;
+							pysize /= 8;
+
+							IIconStyle iconStyle = intfo.defaultIconStyle().width(pxsize + 4).height(pysize)
+									.textureWidth(pxsize).textureHeight(pysize);
+							horizontal.icon(location, 0, 0, pxsize, pysize, iconStyle)
+									.text(TextStyleClass.OK + SoundHelper.getSoundName(cas));
+						}
+
+					}
+					if (te instanceof CassetteDeckTileEntity) {
+						ItemStack cas = ((CassetteDeckTileEntity) te).getPlayCassette();
 						if (!cas.isEmpty()) {
 							WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(cas);
 

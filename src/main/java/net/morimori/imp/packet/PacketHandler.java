@@ -19,7 +19,6 @@ import net.morimori.imp.handler.ClientResponseMessageHandler;
 import net.morimori.imp.handler.ClientSendSoundFileMessageHandler;
 import net.morimori.imp.handler.ServerSoundStreamMessageHandler;
 import net.morimori.imp.handler.SoundFileUploaderMessageHandler;
-import net.morimori.imp.handler.SoundPlayMessageHandler;
 
 public class PacketHandler {
 	public static final String PROTOCOL_VERSION = "1";
@@ -74,9 +73,6 @@ public class PacketHandler {
 
 		INSTANCE.registerMessage(next(), CassetteDeckMessage.class, CassetteDeckMessage::encodeMessege,
 				CassetteDeckMessage::decodeMessege, CassetteDeckMessageHandler::reversiveMessage);
-
-		INSTANCE.registerMessage(next(), SoundPlayMessage.class, SoundPlayMessage::encodeMessege,
-				SoundPlayMessage::decodeMessege, SoundPlayMessageHandler::reversiveMessage);
 
 		INSTANCE.registerMessage(next(), ServerClientDataSyncMessage.class, ServerClientDataSyncMessage::encodeMessege,
 				ServerClientDataSyncMessage::decodeMessege, ServerClientDataSyncMessageHandler::reversiveMessage);

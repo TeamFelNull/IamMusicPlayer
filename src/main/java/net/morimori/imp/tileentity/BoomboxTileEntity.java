@@ -14,7 +14,6 @@ import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.sound.INewSoundPlayer;
 import net.morimori.imp.sound.PlayData;
 import net.morimori.imp.sound.SoundPos;
-import net.morimori.imp.sound.SoundWaitThread;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.sound.WorldSoundKey;
 import net.morimori.imp.util.SoundHelper;
@@ -36,10 +35,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	public void clear() {
 		this.setCassette(ItemStack.EMPTY);
 		this.openProgress = 0;
-		if (SoundWaitThread.posplayMap.containsKey(this.pos)) {
-			SoundWaitThread.posplayMap.get(this.pos).stopPlayer();
-			SoundWaitThread.removePosMap(this.pos);
-		}
+
 	}
 
 	@Override
@@ -50,7 +46,6 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 			this.setCassette(ItemStack.read(tag.getCompound("CassetteItem")));
 
 		this.openProgress = tag.getInt("OpenProgress");
-		//	this.lasttime = tag.getLong("LastTime");
 		this.position = tag.getLong("Position");
 		this.volume = tag.getFloat("Volume");
 
@@ -82,7 +77,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 
 	@Override
 	public void tick() {
-
+		SoundHelper.soundPlayerTick(this, this.world);
 		if (!world.isRemote) {
 			sendClientSyncPacket();
 			if (this.getBlockState().get(BoomboxBlock.OPEN)) {
@@ -104,8 +99,6 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 			}
 
 		}
-
-		SoundHelper.soundPlayerTick(this, this.world);
 
 	}
 
@@ -184,8 +177,9 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	public boolean canExistence() {
 
 		boolean flag1 = this.world.getBlockState(this.pos).getBlock() == IMPBlocks.BOOMBOX;
-
-		return flag1;
+		@SuppressWarnings("deprecation")
+		boolean flag2 = this.world.isBlockLoaded(this.pos);
+		return flag1 && flag2;
 	}
 
 	@Override
