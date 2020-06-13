@@ -1,6 +1,7 @@
 package net.morimori.imp.handler;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -43,6 +44,14 @@ public class ClientResponseMessageHandler {
 
 				PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> ctx.get().getSender()),
 						new ServerClientDataSyncMessage(0, message.st, picbyte));
+			}
+		} else if (message.num == 4) {
+			if (!message.st.isEmpty()&&!message.st.equals(":")) {
+				Path path = FileHelper.getWorldPlayerPlayListDataPath(ctx.get().getSender().getServer(),
+						message.st.split(":")[0]).resolve(message.st.split(":")[1]);
+
+				ServerFileSender.startSender(PlayerHelper.getUUID(ctx.get().getSender()), path, false,
+						ctx.get().getSender().getServer());
 			}
 		}
 	}

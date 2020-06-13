@@ -1,7 +1,7 @@
 package net.morimori.imp.client.screen;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -105,8 +105,10 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 
 		this.addButton(new ImageButton(xs + 117, ys + 60, 22,
 				17, 0, 166, 17, CD_GUI_TEXTURE, 256, 256, (p_213096_1_) -> {
-					if (isAntena() && SoundHelper.canWriteCassette(getWriteCassette()) && !(sfit.getFliePath() == null
-							|| sfit.getFliePath().isEmpty() || sfit.getFliePath().equals("null"))) {
+					if (isAntena() && SoundHelper.canWriteCassette(getWriteCassette()) && !(sfit.getFileName() == null
+							|| sfit.getFileName().isEmpty() || sfit.getFolderName() == null
+							|| sfit.getFolderName().isEmpty() || sfit.getFileName().equals("null")
+							|| sfit.getFolderName().equals("null"))) {
 						sendCDPacket(0);
 					}
 				}, I18n.format("narrator.recording")));
@@ -208,15 +210,16 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 			if (mc.world.getTileEntity(this.container.pos) instanceof CassetteDeckTileEntity) {
 				CassetteDeckTileEntity sfit = (CassetteDeckTileEntity) mc.world
 						.getTileEntity(this.container.pos);
-				if (sfit.getFliePath() != null && !sfit.getFliePath().isEmpty() && !sfit.getFliePath().equals("null")) {
+				if (sfit.getFolderName() != null && !sfit.getFolderName().isEmpty()
+						&& !sfit.getFolderName().equals("null") &&
+						sfit.getFileName() != null && !sfit.getFileName().isEmpty()
+						&& !sfit.getFileName().equals("null")) {
 					int x = 44 + 28;
 					if (getMaxPage(PlayList.worldPlayList) == 0 || getMaxPage(PlayList.worldPlayList) == 1) {
 						x = 33;
 					}
 
-					drawString(getSelectedName(
-							I18n.format("cd.selected", Paths.get(sfit.getFliePath()).toFile().getName())),
-							x, 66, coloer);
+					drawString(getSelectedName(I18n.format("cd.selected", sfit.getFileName())), x, 66, coloer);
 				}
 			}
 		} else {
@@ -405,7 +408,8 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 
 	public void selectSound(int num) {
 		sliselectfilestringL = 0;
-		sendCDPacket(7, fileGetter(num, PlayList.worldPlayList).getPath().toString());
+		Path fp = fileGetter(num, PlayList.worldPlayList).toPath();
+		sendCDPacket(7, fp.getParent().toFile().getName() + ":" + fp.toFile().getName());
 	}
 
 	private int getMaxPage(File[] afilse) {

@@ -7,15 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import net.minecraft.client.resources.I18n;
-import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.sound.ClientSoundPlayer;
 import net.morimori.imp.sound.WorldPlayListSoundData;
 import net.morimori.imp.sound.WorldSoundKey;
 import net.morimori.imp.util.FileHelper;
 import net.morimori.imp.util.FileLoader;
-import net.morimori.imp.util.NarratorHelper;
-import net.morimori.imp.util.StringHelper;
 
 public class ClientFileReceiver extends Thread {
 
@@ -75,44 +71,24 @@ public class ClientFileReceiver extends Thread {
 	public void run() {
 		int cont = receiverBufer.get(id).getCont();
 		long time = System.currentTimeMillis();
-		long fristtime = System.currentTimeMillis();
 		long logtime = System.currentTimeMillis();
-		IamMusicPlayer.LOGGER.info("Client File Receiver Start : " + " Name "
-				+ filename + " Size " + StringHelper.fileCapacityNotation(receiverBufer.get(id).getBytes().length));
 
 		while (!receiverBufer.get(id).isPerfectByte()) {
 			if (stop.get(id)) {
-				IamMusicPlayer.LOGGER.error("Client File Receiver Stop :"
-						+ " Name "
-						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont)
-						+ " Elapsed "
-						+ (System.currentTimeMillis() - fristtime)
-						+ "ms " + receiverBufer.get(id).getPrograsePar());
-				NarratorHelper.say(I18n.format("narrator.filedownloadstop", filename));
+
 				finishReceiver();
 				return;
 			}
 
 			if (cont == receiverBufer.get(id).getCont() && System.currentTimeMillis() - time >= 10000) {
-				IamMusicPlayer.LOGGER.error("Client File Receiver Time Out :"
-						+ " Name "
-						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
-						+ (System.currentTimeMillis() - fristtime)
-						+ "ms");
-				NarratorHelper.say(I18n.format("narratorfiledownloadtimeout", filename));
+
 				finishReceiver();
 				return;
 			}
 
 			if (System.currentTimeMillis() - logtime >= 5000) {
 				logtime = System.currentTimeMillis();
-				IamMusicPlayer.LOGGER.info("Client File Receing :"
-						+ " Name "
-						+ filename + " Sent " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
-						+ (System.currentTimeMillis() - fristtime)
-						+ "ms " + receiverBufer.get(id).getPrograsePar());
-				NarratorHelper
-						.say(I18n.format("narrator.filedownload", filename, receiverBufer.get(id).getPrograsePar()));
+
 			}
 
 			if (cont != receiverBufer.get(id).getCont()) {
@@ -156,11 +132,6 @@ public class ClientFileReceiver extends Thread {
 			ClientSoundPlayer.INSTANS
 					.finishedDownload(new WorldSoundKey(new WorldPlayListSoundData(path, sounduuid, null)));
 		}
-
-		IamMusicPlayer.LOGGER.info("Client File Receiver was Success Full :" + " Name "
-				+ filename + " Size " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
-				+ (System.currentTimeMillis() - fristtime) + "ms");
-		NarratorHelper.say(I18n.format("narrator.filedownloadsuccess", filename));
 
 		finishReceiver();
 	}

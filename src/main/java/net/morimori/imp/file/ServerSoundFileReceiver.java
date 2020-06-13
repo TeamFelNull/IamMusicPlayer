@@ -61,10 +61,12 @@ public class ServerSoundFileReceiver extends Thread {
 					new SoundData(FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(name), iuuid));
 		} else if (type == SendFolderType.EVERYONE) {
 			FileLoader.fileBytesWriter(RECEIVS.get(pluuid).get(name).getBytes(),
-					FileHelper.getWorldEveryonePlayListDataPath(ms));
-			ImagePictuers.addPictuer(iuuid, FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(name), ms);
-			PlayList.addPlayeyListFileNBT(ms, pluuid, name, pluuid,
-					new SoundData(FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(name), iuuid));
+					FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name));
+
+			String uuid = UUID.randomUUID().toString();
+			ImagePictuers.addPictuer(uuid, FileHelper.getWorldPlayerPlayListDataPath(ms, pluuid).resolve(name), ms);
+			PlayList.addPlayeyListFileNBT(ms, "everyone", name, pluuid,
+					new SoundData(FileHelper.getWorldEveryonePlayListDataPath(ms).resolve(name), uuid));
 		}
 		receiveFinish();
 	}

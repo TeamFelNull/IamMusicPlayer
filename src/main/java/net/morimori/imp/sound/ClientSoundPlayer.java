@@ -1,5 +1,6 @@
 package net.morimori.imp.sound;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.morimori.imp.client.handler.RenderHandler;
 import net.morimori.imp.file.ClientFileReceiver;
+import net.morimori.imp.file.FileReceiverBuffer;
+import net.morimori.imp.file.ServerFileSender;
 import net.morimori.imp.packet.ClientResponseMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.sound.PlayData.PlayDatasTypes;
@@ -113,9 +116,9 @@ public class ClientSoundPlayer {
 				} else if (rs.getValue().getSound().type == PlayDatasTypes.WORLD) {
 					WorldSoundKey wsk = rs.getValue().getSound().wsk;
 
-					if (!ClientFileReceiver.canReceiving || dwonloadwait.contains(wsk) || !wsk.isClientExistence()) {
+					if (!wsk.isClientExistence()) {
 						sr = new WorldSoundRinger(wsk);
-						dwonloadwait.add(wsk);
+						addDwonload(wsk);
 					} else {
 						sr = new SoundRinger(wsk.getClientPath());
 					}
@@ -155,5 +158,27 @@ public class ClientSoundPlayer {
 
 	public void finishedDownload(WorldSoundKey wsk) {
 		dwonloadwait.remove(wsk);
+	}
+
+	public void addDwonload(WorldSoundKey wsk) {
+
+		if (ClientFileReceiver.receiverBufer.size() >= ServerFileSender.MaxSendCont) {
+			return;
+		}
+
+		boolean flag = false;
+		for (Entry<Integer, FileReceiverBuffer> f : ClientFileReceiver.receiverBufer.entrySet()) {
+			if (Paths.get(f.getValue().filepath).getParent().toFile().getName().equals(wsk.getFolder())) {
+				if (Paths.get(f.getValue().filepath).toFile().getName().equals(wsk.getName())) {
+					flag = true;
+					break;
+				}
+			}
+		}
+
+		if (!flag) {
+			PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(4, 0, wsk.getFolder() + ":" + wsk.getName()));
+		}
+
 	}
 }

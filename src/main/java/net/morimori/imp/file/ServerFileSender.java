@@ -5,17 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.client.resources.I18n;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.network.PacketDistributor;
-import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.config.CommonConfig;
 import net.morimori.imp.packet.ClientStopRequestMessage;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.ServerSendSoundFileMessage;
 import net.morimori.imp.util.FileLoader;
-import net.morimori.imp.util.NarratorHelper;
-import net.morimori.imp.util.StringHelper;
 
 public class ServerFileSender extends Thread {
 
@@ -107,26 +103,18 @@ public class ServerFileSender extends Thread {
 	public void run() {
 
 		senderBuffer.get(pluuid).put(id, this);
-		long fristtime = System.currentTimeMillis();
+
 		long logtime = System.currentTimeMillis();
 		byte[] bytes = FileLoader.fileBytesReader(this.path);
 		boolean frist = true;
 		long time = System.currentTimeMillis();
 		if (bytes == null) {
-			IamMusicPlayer.LOGGER.info(
-					"Null Sender File : " + this.path.toFile().toString());
+
 			finishSend();
 			return;
 		}
 
-		int cont = 0;
-
-		IamMusicPlayer.LOGGER.info("Server File Sender Start : "
-				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
-						.getString()
-				+ " Name "
-				+ this.path.toFile().getName() + " Size "
-				+ StringHelper.fileCapacityNotation(this.path.toFile().length()));
+		//		int cont = 0;
 
 		for (int i = 0; i < bytes.length; i += CommonConfig.SEND_BYTE.get()) {
 			byte[] bi = new byte[bytes.length - i >= CommonConfig.SEND_BYTE.get() ? CommonConfig.SEND_BYTE.get()
@@ -134,7 +122,7 @@ public class ServerFileSender extends Thread {
 			for (int c = 0; c < CommonConfig.SEND_BYTE.get(); c++) {
 				if ((i + c) < bytes.length) {
 					bi[c] = bytes[i + c];
-					cont++;
+					//	cont++;
 				}
 			}
 			responseWaits.get(pluuid).put(id, true);
@@ -151,15 +139,6 @@ public class ServerFileSender extends Thread {
 
 					if (stop.get(pluuid).get(id)) {
 
-						IamMusicPlayer.LOGGER.error("Server File Sender Stop : Player "
-								+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
-										.getString()
-								+ " Name "
-								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
-								+ " Elapsed "
-								+ (System.currentTimeMillis() - fristtime)
-								+ "ms");
-
 						PacketHandler.INSTANCE.send(
 								PacketDistributor.PLAYER
 										.with(() -> ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid))),
@@ -169,26 +148,13 @@ public class ServerFileSender extends Thread {
 					}
 
 					if (System.currentTimeMillis() - time >= 10000) {
-						IamMusicPlayer.LOGGER.error("Client File Sender Time Out : Player "
-								+ " Name "
-								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
-								+ " Elapsed "
-								+ (System.currentTimeMillis() - fristtime)
-								+ "ms");
-						NarratorHelper.say(I18n.format("narrator.fileuploadtimeout", this.path.toFile().getName()));
+
 						finishSend();
 						return;
 					}
 
 					if (System.currentTimeMillis() - logtime >= 5000) {
 						logtime = System.currentTimeMillis();
-						IamMusicPlayer.LOGGER.info("Server File Sending :"
-								+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
-										.getString()
-								+ " Name "
-								+ this.path.toFile().getName() + " Sent " + StringHelper.fileCapacityNotation(cont)
-								+ " Elapsed " + (System.currentTimeMillis() - fristtime)
-								+ "ms");
 
 					}
 				}
@@ -198,13 +164,6 @@ public class ServerFileSender extends Thread {
 			}
 			time = System.currentTimeMillis();
 		}
-
-		IamMusicPlayer.LOGGER.info("Server File Sender was Success Full :"
-				+ ms.getPlayerList().getPlayerByUUID(UUID.fromString(pluuid)).getDisplayName()
-						.getString()
-				+ " Name "
-				+ this.path.toFile().getName() + " Size " + StringHelper.fileCapacityNotation(cont) + " Elapsed "
-				+ (System.currentTimeMillis() - fristtime) + "ms");
 
 		finishSend();
 	}

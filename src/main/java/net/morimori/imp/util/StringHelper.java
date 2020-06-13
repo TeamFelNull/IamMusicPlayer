@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.regex.Pattern;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 
 public class StringHelper {
 
@@ -143,14 +142,10 @@ public class StringHelper {
 
 	public static String getTimeDisplay(long milisec) {
 
-		String by = I18n.format("soundplayer.time.sec");
-		String hu = I18n.format("soundplayer.time.min");
-		String zik = I18n.format("soundplayer.time.hor");
-
 		long byou = milisec / 1000;
 
 		if (byou < 60) {
-			return byou + " " + by;
+			return String.valueOf(byou);
 		}
 
 		long hun = byou / 60;
@@ -158,28 +153,28 @@ public class StringHelper {
 		if (hun < 60) {
 
 			if (amabyou == 0) {
-				return hun + " " + hu;
+				return String.valueOf(hun);
 			}
 
-			return hun + " " + hu + " " + amabyou + " " + by;
+			return hun + ":" + amabyou;
 		}
 
 		long zikan = hun / 60;
 		long amahun = hun - zikan * 60;
 
 		if (amabyou == 0 && amahun == 0) {
-			return zikan + " " + zik;
+			return String.valueOf(zikan);
 		}
 
 		if (amabyou == 0) {
-			return zikan + " " + zik + " " + amahun + " " + hu;
+			return zikan + ":" + amahun;
 		}
 
 		if (amahun == 0) {
-			return zikan + " " + zik + " " + amabyou + " " + by;
+			return zikan + ":" + amabyou;
 		}
 
-		return zikan + " " + zik + " " + amahun + " " + hu + " " + amabyou + " " + by;
+		return zikan + ":" + amahun + ":" + amabyou;
 
 	}
 }

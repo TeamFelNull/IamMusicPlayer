@@ -180,21 +180,26 @@ public class PlayList {
 	}
 
 	public static String getWorldPlaylistNBTDataString(MinecraftServer ms, Path path, String nbtname) {
+		return getWorldPlaylistNBTDataString(ms, path.getParent().toFile().getName(), path.toFile().getName(), nbtname);
+	}
+
+	public static String getWorldPlaylistNBTDataString(MinecraftServer ms, String folname, String filename,
+			String nbtname) {
 		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
 
 		if (tag == null) {
 			return null;
 		}
 
-		if (!tag.contains(path.getParent().toFile().getName()))
+		if (!tag.contains(folname))
 			return null;
 
-		CompoundNBT pltag = (CompoundNBT) tag.get(path.getParent().toFile().getName());
+		CompoundNBT pltag = (CompoundNBT) tag.get(folname);
 
-		if (!pltag.contains(path.toFile().getName()))
+		if (!pltag.contains(filename))
 			return null;
 
-		CompoundNBT stag = (CompoundNBT) pltag.get(path.toFile().getName());
+		CompoundNBT stag = (CompoundNBT) pltag.get(filename);
 
 		if (!stag.contains(nbtname))
 			return null;
@@ -203,21 +208,28 @@ public class PlayList {
 	}
 
 	public static SoundData getWorldPlaylistNBTDataSoundData(MinecraftServer ms, Path path, String nbtname) {
+
+		return getWorldPlaylistNBTDataSoundData(ms, path.getParent().toFile().getName(), path.toFile().getName(),
+				nbtname);
+	}
+
+	public static SoundData getWorldPlaylistNBTDataSoundData(MinecraftServer ms, String folname, String filename,
+			String nbtname) {
 		CompoundNBT tag = FileLoader.fileNBTReader(FileHelper.getWorldPlayListNBTDataPath(ms));
 
 		if (tag == null) {
 			return null;
 		}
 
-		if (!tag.contains(path.getParent().toFile().getName()))
+		if (!tag.contains(folname))
 			return null;
 
-		CompoundNBT pltag = (CompoundNBT) tag.get(path.getParent().toFile().getName());
+		CompoundNBT pltag = (CompoundNBT) tag.get(folname);
 
-		if (!pltag.contains(path.toFile().getName()))
+		if (!pltag.contains(filename))
 			return null;
 
-		CompoundNBT stag = (CompoundNBT) pltag.get(path.toFile().getName());
+		CompoundNBT stag = (CompoundNBT) pltag.get(filename);
 
 		if (!stag.contains(nbtname))
 			return null;

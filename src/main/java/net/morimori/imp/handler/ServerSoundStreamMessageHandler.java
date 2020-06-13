@@ -20,6 +20,8 @@ import net.morimori.imp.util.FileLoader;
 
 public class ServerSoundStreamMessageHandler {
 	public static Map<WorldSoundKey, byte[]> dwonloadbuf = new HashMap<WorldSoundKey, byte[]>();
+	public static Map<WorldSoundKey, Long> lasttimes = new HashMap<WorldSoundKey, Long>();
+
 	public static int sendspeed = 1024 * 32;
 	public static Map<String, Boolean> stopsends = new HashMap<String, Boolean>();
 
@@ -54,6 +56,7 @@ class SendThread extends Thread {
 			if (wsk != null && wsk.isServerExistence(SPE.getServer())) {
 				ServerSoundStreamMessageHandler.dwonloadbuf.put(wsk,
 						FileLoader.fileBytesReader(wsk.getServerPath(SPE.getServer())));
+				ServerSoundStreamMessageHandler.lasttimes.put(wsk, System.currentTimeMillis());
 			} else {
 				PacketHandler.INSTANCE.send(
 						PacketDistributor.PLAYER.with(() -> SPE),
@@ -74,6 +77,7 @@ class SendThread extends Thread {
 
 		Mp3File mfile;
 		try {
+			ServerSoundStreamMessageHandler.lasttimes.put(wsk, System.currentTimeMillis());
 			mfile = new Mp3File(wsk.getServerPath(SPE.getServer()));
 
 			long milsecnd = mfile.getLengthInMilliseconds();

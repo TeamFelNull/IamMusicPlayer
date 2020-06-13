@@ -9,7 +9,6 @@ import net.morimori.imp.client.screen.RegisterScrennContainerFactorys;
 import net.morimori.imp.file.Options;
 import net.morimori.imp.file.PlayList;
 import net.morimori.imp.sound.ClientSoundPlayer;
-import net.morimori.imp.sound.SoundWaitThread;
 
 public class ClientProxy extends CommonProxy {
 	@Override
@@ -36,7 +35,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void posInit() {
 		super.posInit();
-		SoundWaitThread.startSoundWaiter();
+	//	SoundWaitThread.startSoundWaiter();
 	}
 
 	public Minecraft getMinecraft() {

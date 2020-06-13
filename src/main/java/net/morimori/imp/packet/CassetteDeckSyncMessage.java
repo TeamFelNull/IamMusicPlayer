@@ -19,7 +19,8 @@ public class CassetteDeckSyncMessage {
 	public NonNullList<ItemStack> items;
 	public int pitch;
 	public int yaw;
-	public String selectedfile;
+	public String selectedfolder;
+	public String selectfile;
 	public Map<String, String> playerstager;
 	public int recordingPrograse;
 	public Set<String> lisnFinishedPlayers;
@@ -27,14 +28,16 @@ public class CassetteDeckSyncMessage {
 	public int deletingPrograse;
 
 	public CassetteDeckSyncMessage(int dimID, BlockPos postion, NonNullList<ItemStack> Item, int Pitch, int Yaw,
-			String selectedfile, Map<String, String> playerstager, int recordingPrograse, Set<String> finishedplayes,
+			String foldername, String filename, Map<String, String> playerstager, int recordingPrograse,
+			Set<String> finishedplayes,
 			int copyingprograse, int deletingprograse) {
 		this.dim = dimID;
 		this.pos = postion;
 		this.items = Item;
 		this.pitch = Pitch;
 		this.yaw = Yaw;
-		this.selectedfile = selectedfile;
+		this.selectedfolder = foldername;
+		this.selectfile = filename;
 		this.playerstager = playerstager;
 		this.recordingPrograse = recordingPrograse;
 		this.lisnFinishedPlayers = finishedplayes;
@@ -47,7 +50,8 @@ public class CassetteDeckSyncMessage {
 		ItemStackHelper.loadAllItems(buffer.readCompoundTag(), itemsa);
 		return new CassetteDeckSyncMessage(buffer.readInt(),
 				new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()),
-				itemsa, buffer.readInt(), buffer.readInt(), buffer.readString(32767), readMap(buffer),
+				itemsa, buffer.readInt(), buffer.readInt(), buffer.readString(32767), buffer.readString(32767),
+				readMap(buffer),
 				buffer.readInt(), readSet(buffer), buffer.readInt(), buffer.readInt());
 	}
 
@@ -81,7 +85,9 @@ public class CassetteDeckSyncMessage {
 		buffer.writeInt(messegeIn.pos.getZ());
 		buffer.writeInt(messegeIn.pitch);
 		buffer.writeInt(messegeIn.yaw);
-		buffer.writeString(messegeIn.selectedfile);
+		buffer.writeString(messegeIn.selectedfolder);
+		buffer.writeString(messegeIn.selectfile);
+
 		CompoundNBT ptmnbt = new CompoundNBT();
 		for (Entry<String, String> ent : messegeIn.playerstager.entrySet()) {
 			ptmnbt.putString(ent.getKey(), ent.getValue());

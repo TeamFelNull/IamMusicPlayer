@@ -72,6 +72,7 @@ public class SoundRinger extends Thread {
 
 		try {
 			player = new AdvancedPlayer(new BufferedInputStream(new FileInputStream(filepath)));
+			setVolume(0);
 			player.play(potisionframe, Integer.MAX_VALUE);
 		} catch (Exception e) {
 			e.printStackTrace();

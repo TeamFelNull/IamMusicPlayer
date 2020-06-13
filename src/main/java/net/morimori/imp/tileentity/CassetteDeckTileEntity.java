@@ -1,6 +1,5 @@
 package net.morimori.imp.tileentity;
 
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -50,11 +49,14 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 	public int copyingPrograse;
 	public int deletingPrograse;
 
-	private String selectedFile;
+	private String foldername;
+	private String filename;
 
 	public CassetteDeckTileEntity() {
 		super(IMPTileEntityTypes.CASSETTE_DECK);
-		selectedFile = "null";
+		foldername = "null";
+		filename = "null";
+
 	}
 
 	public ItemStack getPlayCassette() {
@@ -65,13 +67,19 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		return this.getItems().get(2);
 	}
 
-	public String getFliePath() {
+	public String getFolderName() {
 
-		return this.selectedFile.isEmpty() ? "null" : this.selectedFile;
+		return this.foldername.isEmpty() ? "null" : this.foldername;
 	}
 
-	public void setFliePath(String path) {
-		this.selectedFile = path;
+	public String getFileName() {
+
+		return this.filename.isEmpty() ? "null" : this.filename;
+	}
+
+	public void setFolderNameAndFileName(String folder, String name) {
+		this.foldername = folder;
+		this.filename = name;
 	}
 
 	public void finishRecoding() {
@@ -79,14 +87,14 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		if (SoundHelper.canWriteCassette(this.getWriteCassette())) {
 
 			if (PlayList.getWorldPlaylistNBTDataString(
-					this.getWorld().getServer(), Paths.get(this.selectedFile), "UUID") != null
+					this.getWorld().getServer(), this.foldername, this.filename, "UUID") != null
 					&& PlayList.getWorldPlaylistNBTDataSoundData(
-							this.getWorld().getServer(), Paths.get(this.selectedFile), "SoundData") != null) {
+							this.getWorld().getServer(), this.foldername, this.filename, "SoundData") != null) {
 				setWriteCassette(SoundHelper.writeSoundOnCassette(this.getWriteCassette(),
-						new WorldPlayListSoundData(this.selectedFile, PlayList.getWorldPlaylistNBTDataString(
-								this.getWorld().getServer(), Paths.get(this.selectedFile), "UUID"),
+						new WorldPlayListSoundData(this.filename, this.foldername, PlayList.getWorldPlaylistNBTDataString(
+								this.getWorld().getServer(), this.foldername, this.filename, "UUID"),
 								PlayList.getWorldPlaylistNBTDataSoundData(
-										this.getWorld().getServer(), Paths.get(this.selectedFile), "SoundData"))));
+										this.getWorld().getServer(), this.foldername, this.filename, "SoundData"))));
 			}
 
 		}
@@ -183,7 +191,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 							this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES,
 									CassetteDeckStates.NONE));
 				}
-				if (getAntenna().isEmpty() && this.selectedFile.isEmpty()) {
+				if (getAntenna().isEmpty() && this.foldername.isEmpty() && this.filename.isEmpty()) {
 					world.setBlockState(this.pos,
 							this.getBlockState().with(CassetteDeckBlock.CASSETTE_DECK_STATES,
 									CassetteDeckStates.NONE));
@@ -268,7 +276,9 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		this.rotationPitch = tag.getInt("RotationPitch");
 		this.rotationYaw = tag.getInt("RotationYaw");
 		this.inversionPitch = tag.getBoolean("InversionPitch");
-		this.selectedFile = tag.getString("SelectedFile");
+		this.foldername = tag.getString("SelectedFolder");
+		this.filename = tag.getString("SelectedFile");
+
 		this.recodingPrograse = tag.getInt("RecodingPrograse");
 		this.copyingPrograse = tag.getInt("CopyingPrograse");
 		this.deletingPrograse = tag.getInt("DeletingPrograse");
@@ -293,7 +303,9 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		tag.putInt("RotationPitch", this.rotationPitch);
 		tag.putInt("RotationYaw", this.rotationYaw);
 		tag.putBoolean("InversionPitch", this.inversionPitch);
-		tag.putString("SelectedFile", this.selectedFile);
+		tag.putString("SelectedFolder", this.foldername);
+		tag.putString("SelectedFile", this.filename);
+
 		tag.putInt("RecodingPrograse", this.recodingPrograse);
 		tag.putInt("CopyingPrograse", this.copyingPrograse);
 		tag.putInt("DeletingPrograse", this.deletingPrograse);
@@ -401,15 +413,17 @@ public class CassetteDeckTileEntity extends LockableTileEntity implements ITicka
 		Chunk ch = (Chunk) this.world.getChunk(pos);
 		PacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> ch),
 				new CassetteDeckSyncMessage(this.world.dimension.getDimension().getType().getId(), this.pos,
-						this.items, this.rotationPitch, this.rotationYaw, this.selectedFile, this.playerstager,
-						this.recodingPrograse, this.lisnFinishedPlayers, this.copyingPrograse, this.deletingPrograse));
+						this.items, this.rotationPitch, this.rotationYaw, this.foldername, this.filename,
+						this.playerstager, this.recodingPrograse, this.lisnFinishedPlayers, this.copyingPrograse,
+						this.deletingPrograse));
 	}
 
 	public void clientSync(CassetteDeckSyncMessage message) {
 		this.items = message.items;
 		this.rotationPitch = message.pitch;
 		this.rotationYaw = message.yaw;
-		setFliePath(message.selectedfile);
+		setFolderNameAndFileName(message.selectedfolder, message.selectfile);
+
 		this.playerstager = message.playerstager;
 		this.recodingPrograse = message.recordingPrograse;
 		this.lisnFinishedPlayers = message.lisnFinishedPlayers;

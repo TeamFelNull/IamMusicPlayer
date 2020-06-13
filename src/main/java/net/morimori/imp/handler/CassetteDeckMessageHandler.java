@@ -46,7 +46,7 @@ public class CassetteDeckMessageHandler {
 		} else if (message.state == 7) {
 			CassetteDeckTileEntity sfit = (CassetteDeckTileEntity) SPE.world
 					.getTileEntity(message.pos);
-			sfit.setFliePath(message.string);
+			sfit.setFolderNameAndFileName(message.string.split(":")[0], message.string.split(":")[1]);
 		} else if (message.state == 8) {
 			if (SPE.world.getTileEntity(message.pos) instanceof CassetteDeckTileEntity) {
 				CassetteDeckTileEntity sfit = (CassetteDeckTileEntity) SPE.world
