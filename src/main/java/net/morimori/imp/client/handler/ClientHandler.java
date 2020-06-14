@@ -15,6 +15,7 @@ public class ClientHandler {
 
 	//private static Minecraft mc = Minecraft.getInstance();
 	private static int stringTimer;
+	//private static int soundwaitcheckTimer;
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent e) {
@@ -29,7 +30,20 @@ public class ClientHandler {
 				RenderHandler.expations.remove(exs.getKey());
 			}
 		}
+/*
+		if (soundwaitcheckTimer < 20) {
+			soundwaitcheckTimer++;
+		} else {
+			soundwaitcheckTimer = 0;
+			if (!SoundThread.check) {
+				RenderHandler.waitThreadCrash = 100;
+				SoundThread st = new SoundThread();
+				st.start();
+			}
+			SoundThread.check = false;
 
+		}
+*/
 		if (RenderHandler.waitThreadCrash > 0) {
 			RenderHandler.waitThreadCrash--;
 		}

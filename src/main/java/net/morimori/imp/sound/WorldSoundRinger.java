@@ -11,6 +11,7 @@ import java.util.UUID;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import net.minecraft.client.Minecraft;
 import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.ServerSoundStreamMessage;
 
@@ -19,7 +20,7 @@ public class WorldSoundRinger extends SoundRinger {
 	public static Map<String, List<byte[]>> bytebuf = new HashMap<String, List<byte[]>>();
 	public static Map<String, Integer> leths = new HashMap<String, Integer>();
 	public static Map<String, Boolean> stops = new HashMap<String, Boolean>();
-
+	private static Minecraft mc = Minecraft.getInstance();
 	private WorldSoundKey wsk;
 	private String key;
 	private boolean stop;
@@ -93,7 +94,7 @@ public class WorldSoundRinger extends SoundRinger {
 			srt.start();
 			srt.setVolume(0);
 
-			while (!srt.finish) {
+			while (!srt.finish|| mc.player == null) {
 
 				srt.setVolume(vol);
 

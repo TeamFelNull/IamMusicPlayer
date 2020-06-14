@@ -88,9 +88,9 @@ public class ClientSoundPlayer {
 
 			}
 
-			if (!sr.isRing() && !sr.isFinish())
+			if (!sr.isRing() && !sr.isFinish()) {
 				sr.startRing();
-
+			}
 		}
 	}
 
@@ -132,6 +132,7 @@ public class ClientSoundPlayer {
 				}
 				sr.setPotision(!flag ? rs.getValue().getPosition() : 0);
 				addRingSound(rs.getKey(), sr);
+
 			}
 
 			if (ringSounds.containsKey(rs.getKey()) && rs.getValue().isPlayed()) {
@@ -156,6 +157,7 @@ public class ClientSoundPlayer {
 			if (!rs.getValue().canExistence()) {
 				removespke.add(rs.getKey());
 			}
+
 		}
 
 	}

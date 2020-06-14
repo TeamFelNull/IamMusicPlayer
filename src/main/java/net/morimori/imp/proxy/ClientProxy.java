@@ -35,7 +35,10 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void posInit() {
 		super.posInit();
-	//	SoundWaitThread.startSoundWaiter();
+/*
+		SoundThread st = new SoundThread();
+		st.start();
+*/
 	}
 
 	public Minecraft getMinecraft() {
