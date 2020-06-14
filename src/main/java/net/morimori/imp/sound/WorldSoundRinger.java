@@ -94,11 +94,11 @@ public class WorldSoundRinger extends SoundRinger {
 			srt.start();
 			srt.setVolume(0);
 
-			while (!srt.finish|| mc.player == null) {
+			while (!srt.finish) {
 
 				srt.setVolume(vol);
 
-				if (stops.get(key) || stop) {
+				if (stops.get(key) || stop || mc.player == null) {
 					srt.stopr();
 					finishe();
 					return;

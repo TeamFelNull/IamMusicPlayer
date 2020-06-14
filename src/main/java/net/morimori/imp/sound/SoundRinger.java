@@ -2,6 +2,7 @@ package net.morimori.imp.sound;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
 import com.mpatric.mp3agic.Mp3File;
@@ -71,15 +72,17 @@ public class SoundRinger extends Thread {
 		PlayThread pt = new PlayThread(filepath, potisionframe);
 		pt.start();
 
-		while (!pt.isFinish() || mc.player == null) {
+		while (!pt.isFinish()) {
+
+			pt.setVolume(voli);
+			if (stop || mc.player == null) {
+				pt.stopS();
+			}
 			try {
 				sleep(1);
 			} catch (InterruptedException e) {
 			}
-			pt.setVolume(voli);
-			if (stop) {
-				pt.stopS();
-			}
+
 		}
 
 		finishe();
@@ -95,19 +98,33 @@ class PlayThread extends Thread {
 
 	private boolean finish;
 	protected AdvancedPlayer player;
-	private String path;
 	private int posfalrme;
 	private boolean stop;
+	private BufferedInputStream bis;
+	private FileInputStream fus;
 
 	public PlayThread(String filepath, int flame) {
-		this.path = filepath;
 		this.posfalrme = flame;
+		try {
+			this.fus = new FileInputStream(filepath);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		this.bis = new BufferedInputStream(fus);
+
 	}
 
 	public void stopS() {
 		player.close();
 		finish = true;
 		stop = true;
+		player = null;
+		try {
+			fus.close();
+			bis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void setVolume(float vol) {
@@ -128,13 +145,20 @@ class PlayThread extends Thread {
 		try {
 			sleep(100);
 
-			player = new AdvancedPlayer(new BufferedInputStream(new FileInputStream(path)));
+			player = new AdvancedPlayer(bis);
 			player.play(posfalrme, Integer.MAX_VALUE);
 		} catch (Exception e) {
 		}
 		if (!stop) {
 			player.close();
 			finish = true;
+			player = null;
+			try {
+				fus.close();
+				bis.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
