@@ -104,7 +104,7 @@ public class SoundHelper {
 	}
 
 	public static double getDistanceAndSoundPosFromVolume(float motovol) {
-		return 16 * motovol;
+		return 32 * motovol;
 	}
 	@OnlyIn(Dist.CLIENT)
 	public static float getOptionVolume() {

@@ -107,7 +107,7 @@ public class SoundFileUploaderMessageHandler {
 		} else if (message.state == 17) {
 			ServerFileSender.stopSend(PlayerHelper.getUUID(SPE), Integer.parseInt(message.string));
 		} else if (message.state == 18) {
-			PlayList.deleteWorldPlayListSoundFile(ctx.get().getSender().getServer(), message.string);
+			PlayList.deleteWorldPlayListSoundFile(ctx.get().getSender().getServer(), message.string.split(":")[0], message.string.split(":")[1]);
 		} else if (message.state == 19) {
 			if (SPE.world.getTileEntity(message.pos) instanceof SoundFileUploaderTileEntity) {
 				SoundFileUploaderTileEntity sfit = (SoundFileUploaderTileEntity) SPE.world

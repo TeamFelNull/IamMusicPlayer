@@ -54,6 +54,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 	private String foldername;
 	private String filename;
 
+	private boolean canplay;
+
 	public CassetteDeckTileEntity() {
 		super(IMPTileEntityTypes.CASSETTE_DECK);
 		foldername = "null";
@@ -146,6 +148,11 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 	public void tick() {
 		SoundHelper.soundPlayerTick(this, this.world);
 		if (!world.isRemote) {
+
+			WorldSoundKey wsk = new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getPlayCassette()));
+			boolean flag = wsk.isServerExistence(this.getWorld().getServer());
+
+			this.canplay = SoundHelper.canPlay(getPlayCassette()) && flag;
 
 			if (this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) == CassetteDeckStates.DELETE) {
 
@@ -298,6 +305,9 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 		for (String key : pfmnbt.keySet()) {
 			lisnFinishedPlayers.add(pfmnbt.getString(key));
 		}
+
+		this.canplay = tag.getBoolean("CanPlay");
+
 	}
 
 	@Override
@@ -332,6 +342,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 			cont++;
 		}
 		tag.put("LisnFinishedPlayers", ptamnbt);
+
+		tag.putBoolean("CanPlay", this.canplay);
 
 		return tag2;
 	}
@@ -422,7 +434,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 				new CassetteDeckSyncMessage(this.world.dimension.getDimension().getType().getId(), this.pos,
 						this.items, this.rotationPitch, this.rotationYaw, this.foldername, this.filename,
 						this.playerstager, this.recodingPrograse, this.lisnFinishedPlayers, this.copyingPrograse,
-						this.deletingPrograse, this.position, this.lasttime, this.volume));
+						this.deletingPrograse, this.position, this.lasttime, this.volume, this.canplay));
 	}
 
 	public void clientSync(CassetteDeckSyncMessage message) {
@@ -440,6 +452,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 		this.position = message.position;
 		this.lasttime = message.lasttime;
 		this.volume = message.volume;
+		this.canplay = message.canplay;
 
 	}
 
@@ -456,9 +469,8 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 
 	@Override
 	public boolean canPlayed() {
-		WorldSoundKey wsk = new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getPlayCassette()));
-		boolean flag = wsk.isServerExistence(this.getWorld().getServer());
-		return SoundHelper.canPlay(getPlayCassette()) && flag;
+
+		return this.canplay;
 	}
 
 	@Override

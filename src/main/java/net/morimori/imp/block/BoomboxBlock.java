@@ -104,14 +104,8 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 				}
 			}
 
-			boolean canplflag = true;
-
-			if (!worldIn.isRemote) {
-				canplflag = tileentity.canPlayed();
-			}
-
 			if (!player.isCrouching() && !stateIn.get(OPEN) && SoundHelper.canPlay(tileentity.getCassette())
-					&& tileentity.openProgress == 0 && !worldIn.isBlockPowered(pos) && canplflag) {
+					&& tileentity.openProgress == 0 && !worldIn.isBlockPowered(pos) && tileentity.canPlayed()) {
 				stateIn = stateIn.cycle(ON);
 				worldIn.setBlockState(pos, stateIn, 2);
 				return ActionResultType.SUCCESS;

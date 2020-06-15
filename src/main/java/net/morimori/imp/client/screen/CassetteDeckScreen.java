@@ -114,7 +114,7 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
 				}, I18n.format("narrator.recording")));
 		this.addButton(new ImageButton(xs + 117 + 22, ys + 60, 22,
 				17, 22, 166, 17, CD_GUI_TEXTURE, 256, 256, (p_213096_1_) -> {
-					if (SoundHelper.canPlay(getWriteCassette())) {
+					if (sfit.canPlayed()) {
 						sendCDPacket(1);
 					}
 				}, I18n.format("narrator.playing")));

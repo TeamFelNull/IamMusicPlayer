@@ -257,7 +257,7 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 
 		editremove = new StringImageButton(xs + 17 + 180 - 60, ys + 99, 60,
 				12, 181, 132, 12, SFU_GUI_TEXTURE2, 256, 256, (p_213096_1_) -> {
-					sendSFUPacket(18, this.selectFile.toString());
+					sendSFUPacket(18, this.selectFile.getParentFile().getName() + ":" + this.selectFile.getName());
 					serverFilelistUpdate();
 					sendSFUPacket(9);
 				}, I18n.format("selectWorld.delete"), -17, false);

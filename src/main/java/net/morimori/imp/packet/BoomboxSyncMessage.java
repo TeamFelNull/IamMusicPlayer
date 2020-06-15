@@ -13,9 +13,10 @@ public class BoomboxSyncMessage {
 	public long position;
 	public long lasttime;
 	public float volume;
+	public boolean canplay;
 
 	public BoomboxSyncMessage(int dimID, BlockPos postion, ItemStack cassetteItem, int opProgress,
-			long position, long lasttime, float volume) {
+			long position, long lasttime, float volume, boolean canplay) {
 		this.dim = dimID;
 		this.pos = postion;
 		this.cassette = cassetteItem;
@@ -23,13 +24,14 @@ public class BoomboxSyncMessage {
 		this.position = position;
 		this.lasttime = lasttime;
 		this.volume = volume;
+		this.canplay = canplay;
 	}
 
 	public static BoomboxSyncMessage decodeMessege(PacketBuffer buffer) {
 		return new BoomboxSyncMessage(buffer.readInt(),
 				new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt()),
 				ItemStack.read(buffer.readCompoundTag()), buffer.readInt(), buffer.readLong(), buffer.readLong(),
-				buffer.readFloat());
+				buffer.readFloat(), buffer.readBoolean());
 	}
 
 	public static void encodeMessege(BoomboxSyncMessage messegeIn, PacketBuffer buffer) {
@@ -42,5 +44,6 @@ public class BoomboxSyncMessage {
 		buffer.writeLong(messegeIn.position);
 		buffer.writeLong(messegeIn.lasttime);
 		buffer.writeFloat(messegeIn.volume);
+		buffer.writeBoolean(messegeIn.canplay);
 	}
 }

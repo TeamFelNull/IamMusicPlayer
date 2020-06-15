@@ -3,7 +3,6 @@ package net.morimori.imp.file;
 import java.io.File;
 import java.io.FileFilter;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -326,10 +325,10 @@ public class PlayList {
 
 	}
 
-	public static void deleteWorldPlayListSoundFile(MinecraftServer ms, String path) {
+	public static void deleteWorldPlayListSoundFile(MinecraftServer ms, String folder, String name) {
 
-		FileLoader.deleteFile(Paths.get(path).toFile());
-		deletePlayeyListFileNBT(ms, Paths.get(path).getParent().toFile().getName(), Paths.get(path).toFile().getName());
+		FileLoader.deleteFile(FileHelper.getWorldPlayerPlayListDataPath(ms, folder).resolve(name).toFile());
+		deletePlayeyListFileNBT(ms, folder, name);
 	}
 
 	public static void checkWorldPlayListNBT(MinecraftServer ms, String playlistname) {

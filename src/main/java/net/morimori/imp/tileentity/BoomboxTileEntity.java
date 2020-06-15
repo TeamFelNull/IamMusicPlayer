@@ -27,6 +27,8 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	private long position;
 	private float volume;
 
+	private boolean canplay;
+
 	public BoomboxTileEntity() {
 		super(IMPTileEntityTypes.BOOMBOX);
 	}
@@ -49,6 +51,8 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		this.position = tag.getLong("Position");
 		this.volume = tag.getFloat("Volume");
 
+		this.canplay = tag.getBoolean("CanPlay");
+
 	}
 
 	@Override
@@ -62,6 +66,8 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		tag.putLong("Position", this.position);
 		tag.putLong("LastTime", this.lasttime);
 		tag.putFloat("Volume", this.volume);
+
+		tag.putBoolean("CanPlay", this.canplay);
 
 		return tag;
 	}
@@ -80,6 +86,12 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		SoundHelper.soundPlayerTick(this, this.world);
 		if (!world.isRemote) {
 			sendClientSyncPacket();
+
+			WorldSoundKey wsk = new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getCassette()));
+			boolean flagca = wsk.isServerExistence(this.getWorld().getServer());
+
+			this.canplay = SoundHelper.canPlay(getCassette()) && flagca;
+
 			if (this.getBlockState().get(BoomboxBlock.OPEN)) {
 				if (this.openProgress < 30)
 					this.openProgress++;
@@ -108,7 +120,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 
 		PacketHandler.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> ch),
 				new BoomboxSyncMessage(this.world.dimension.getDimension().getType().getId(), this.pos,
-						getCassette(), this.openProgress, this.position, this.lasttime, this.volume));
+						getCassette(), this.openProgress, this.position, this.lasttime, this.volume, this.canplay));
 
 	}
 
@@ -118,6 +130,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		this.position = message.position;
 		this.lasttime = message.lasttime;
 		this.volume = message.volume;
+		this.canplay = message.canplay;
 	}
 
 	@Override
@@ -134,9 +147,8 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 
 	@Override
 	public boolean canPlayed() {
-		WorldSoundKey wsk = new WorldSoundKey(WorldPlayListSoundData.getWorldPlayListData(this.getCassette()));
-		boolean flag = wsk.isServerExistence(this.getWorld().getServer());
-		return SoundHelper.canPlay(getCassette()) && flag;
+
+		return this.canplay;
 	}
 
 	@Override
