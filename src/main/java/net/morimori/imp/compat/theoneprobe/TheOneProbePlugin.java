@@ -54,25 +54,27 @@ public class TheOneProbePlugin implements Function<ITheOneProbe, Void> {
 						ItemStack cas = ((BoomboxTileEntity) te).getCassette();
 						if (!cas.isEmpty()) {
 							WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(cas);
+							if (worldIn.isRemote) {
 
-							ResourceLocation location = wplsd.getAlbumImage();
+								ResourceLocation location = wplsd.getAlbumImage();
 
-							int pxsize = 0;
-							int pysize = 0;
-							if (TextureHelper.isImageNotExists(wplsd.getSoundData().album_image_uuid)) {
-								pxsize = 128;
-								pysize = 128;
-							} else {
-								pxsize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth();
-								pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight();
+								int pxsize = 0;
+								int pysize = 0;
+								if (TextureHelper.isImageNotExists(wplsd.getSoundData().album_image_uuid)) {
+									pxsize = 128;
+									pysize = 128;
+								} else {
+									pxsize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getWidth();
+									pysize = PictuerUtil.getImage(wplsd.getSoundData().album_image_uuid).getHeight();
+								}
+								pxsize /= 8;
+								pysize /= 8;
+
+								IIconStyle iconStyle = intfo.defaultIconStyle().width(pxsize + 4).height(pysize)
+										.textureWidth(pxsize).textureHeight(pysize);
+								horizontal.icon(location, 0, 0, pxsize, pysize, iconStyle)
+										.text(TextStyleClass.OK + SoundHelper.getSoundName(cas));
 							}
-							pxsize /= 8;
-							pysize /= 8;
-
-							IIconStyle iconStyle = intfo.defaultIconStyle().width(pxsize + 4).height(pysize)
-									.textureWidth(pxsize).textureHeight(pysize);
-							horizontal.icon(location, 0, 0, pxsize, pysize, iconStyle)
-									.text(TextStyleClass.OK + SoundHelper.getSoundName(cas));
 						}
 
 					}

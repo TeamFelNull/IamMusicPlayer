@@ -51,7 +51,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 	public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
 	public static final BooleanProperty ON = IMPBooleanProperties.ON;
 	public static final BooleanProperty WALL = IMPBooleanProperties.WALL;
-	public static final IntegerProperty VOLUME = IMPBooleanProperties.VOLUME_0_32;
+	public static final IntegerProperty VOLUME = IMPBooleanProperties.VOLUME_0_64;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	public BoomboxBlock(Properties properties) {
@@ -123,7 +123,7 @@ public class BoomboxBlock extends Block implements IWaterLoggable {
 					return ActionResultType.SUCCESS;
 				}
 			} else {
-				if (vol < 32) {
+				if (vol < 64) {
 					worldIn.setBlockState(pos, stateIn.with(VOLUME, vol + 1));
 					player.sendStatusMessage(new TranslationTextComponent("message.volume.set", vol + 1), true);
 					return ActionResultType.SUCCESS;

@@ -60,10 +60,15 @@ public class WorldSoundKey {
 			return false;
 		}
 
-		boolean flag1 = getServerPath(ms).toFile().exists();
-		boolean flag2 = PlayList.getWorldPlaylistNBTDataString(ms, getServerPath(ms), "UUID").equals(getUUID());
+		try {
+			boolean flag1 = getServerPath(ms).toFile().exists();
+			boolean flag2 = PlayList.getWorldPlaylistNBTDataString(ms, getServerPath(ms), "UUID").equals(getUUID());
 
-		return flag1 && flag2;
+			return flag1 && flag2;
+		} catch (Exception e) {
+			return false;
+		}
+
 	}
 
 	public Path getServerPath(MinecraftServer ms) {

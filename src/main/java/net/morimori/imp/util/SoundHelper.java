@@ -94,18 +94,32 @@ public class SoundHelper {
 		}
 		return false;
 	}
+
 	@OnlyIn(Dist.CLIENT)
 	public static float getVolumeFromSoundPos(SoundPos pos, float motovol) {
 		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
-		float v = (16f * motovol - (float) (pos.distance(mc.player.func_226277_ct_(), mc.player.func_226278_cu_() + 1,
-				mc.player.func_226281_cx_()))) / 16f * motovol;
 
-		return v <= 0 ? 0 : v;
+		double kyori = pos.distance(mc.player.func_226277_ct_(), mc.player.func_226278_cu_() + 1,
+				mc.player.func_226281_cx_());
+
+		double mot = getDistanceAndSoundPosFromVolume(motovol);
+
+		if (kyori <= mot) {
+			return motovol;
+		} else if (kyori >= mot * 2) {
+			return 0;
+		}
+
+		double v1 = kyori - mot;
+		float v2 = 1 - (float) (v1 / mot);
+
+		return v2 * motovol;
 	}
 
 	public static double getDistanceAndSoundPosFromVolume(float motovol) {
-		return 32 * motovol;
+		return 16 * motovol;
 	}
+
 	@OnlyIn(Dist.CLIENT)
 	public static float getOptionVolume() {
 		Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
