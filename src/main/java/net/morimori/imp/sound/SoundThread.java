@@ -17,7 +17,7 @@ public class SoundThread extends Thread {
 
 			ClientSoundPlayer.INSTANS.tick();
 			try {
-				sleep(1);
+				sleep(50);
 			} catch (InterruptedException e) {
 			}
 

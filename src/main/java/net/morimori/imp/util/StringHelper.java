@@ -143,38 +143,31 @@ public class StringHelper {
 	public static String getTimeDisplay(long milisec) {
 
 		long byou = milisec / 1000;
-
-		if (byou < 60) {
-			return String.valueOf(byou);
-		}
-
 		long hun = byou / 60;
-		long amabyou = byou - hun * 60;
+
 		if (hun < 60) {
 
-			if (amabyou == 0) {
-				return String.valueOf(hun);
-			}
-
-			return hun + ":" + amabyou;
+			return hun + ":" + getZeroOnNumber(2, (int) (byou - hun * 60));
 		}
 
 		long zikan = hun / 60;
-		long amahun = hun - zikan * 60;
 
-		if (amabyou == 0 && amahun == 0) {
-			return String.valueOf(zikan);
+		return zikan + ":" + getZeroOnNumber(2, (int) (hun - zikan * 60)) + ":"
+				+ getZeroOnNumber(2, (int) (byou - hun * 60));
+	}
+
+	public static String getZeroOnNumber(int zerocont, int num) {
+
+		String out = "";
+
+		String numst = String.valueOf(num);
+
+		for (int c = 0; c < zerocont - numst.length(); c++) {
+			out += "0";
 		}
 
-		if (amabyou == 0) {
-			return zikan + ":" + amahun;
-		}
+		out += numst;
 
-		if (amahun == 0) {
-			return zikan + ":" + amabyou;
-		}
-
-		return zikan + ":" + amahun + ":" + amabyou;
-
+		return out;
 	}
 }

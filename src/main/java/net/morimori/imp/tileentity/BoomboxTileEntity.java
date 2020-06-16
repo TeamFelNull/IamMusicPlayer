@@ -27,6 +27,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	private long position;
 	private float volume;
 
+	private boolean redstone;
 	private boolean canplay;
 
 	public BoomboxTileEntity() {
@@ -52,6 +53,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		this.volume = tag.getFloat("Volume");
 
 		this.canplay = tag.getBoolean("CanPlay");
+		this.redstone = tag.getBoolean("RedStone");
 
 	}
 
@@ -68,6 +70,7 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 		tag.putFloat("Volume", this.volume);
 
 		tag.putBoolean("CanPlay", this.canplay);
+		tag.putBoolean("RedStone", this.redstone);
 
 		return tag;
 	}
@@ -100,14 +103,21 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 					this.openProgress--;
 			}
 
-			if (this.openProgress == 0) {
-				if (!this.getBlockState().get(BoomboxBlock.OPEN) && SoundHelper.canPlay(this.getCassette())
-						&& this.openProgress == 0) {
-					boolean flag = this.world.isBlockPowered(pos);
-					if (flag) {
-						this.world.setBlockState(pos, this.getBlockState().with(BoomboxBlock.ON, true));
-					}
+			if (this.openProgress == 0 && !this.getBlockState().get(BoomboxBlock.OPEN) && this.canPlayed()
+					&& this.openProgress == 0) {
+				boolean flag = this.world.isBlockPowered(pos);
+				if (flag) {
+					this.world.setBlockState(pos, this.getBlockState().with(BoomboxBlock.ON, true));
+					redstone = true;
 				}
+
+				if (!flag && redstone) {
+					this.world.setBlockState(pos, this.getBlockState().with(BoomboxBlock.ON, false));
+					redstone = false;
+				}
+
+			} else {
+				redstone = false;
 			}
 
 		}

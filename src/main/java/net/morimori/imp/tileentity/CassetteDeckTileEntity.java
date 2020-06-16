@@ -493,7 +493,7 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 
 	@Override
 	public float getVolume() {
-		return 1;
+		return 0.7f;
 	}
 
 	@Override

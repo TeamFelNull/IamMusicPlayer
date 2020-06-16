@@ -9,18 +9,18 @@ import net.morimori.imp.client.file.ClientSoundFileSender;
 import net.morimori.imp.client.screen.CassetteDeckScreen;
 import net.morimori.imp.client.screen.CassetteStoringScreen;
 import net.morimori.imp.file.ClientFileReceiver;
-import net.morimori.imp.sound.ClientSoundPlayer;
+import net.morimori.imp.sound.SoundThread;
 
 public class ClientHandler {
 
 	//private static Minecraft mc = Minecraft.getInstance();
 	private static int stringTimer;
-	//private static int soundwaitcheckTimer;
+	private static int soundwaitcheckTimer;
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent e) {
 
-		ClientSoundPlayer.INSTANS.tick();
+	//	ClientSoundPlayer.INSTANS.tick();
 		ClientSoundFileSender.tick();
 
 		for (Entry<String, Integer> exs : RenderHandler.expations.entrySet()) {
@@ -30,7 +30,7 @@ public class ClientHandler {
 				RenderHandler.expations.remove(exs.getKey());
 			}
 		}
-/*
+
 		if (soundwaitcheckTimer < 20) {
 			soundwaitcheckTimer++;
 		} else {
@@ -43,7 +43,7 @@ public class ClientHandler {
 			SoundThread.check = false;
 
 		}
-*/
+
 		if (RenderHandler.waitThreadCrash > 0) {
 			RenderHandler.waitThreadCrash--;
 		}

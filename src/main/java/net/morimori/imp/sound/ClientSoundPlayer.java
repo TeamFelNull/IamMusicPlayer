@@ -66,7 +66,11 @@ public class ClientSoundPlayer {
 				rs.getValue().stopRing();
 			}
 			ringSounds.clear();
-
+			try {
+				SoundRinger.players.entrySet().forEach(n -> n.getValue().close());
+			} catch (Exception e) {
+			}
+			SoundRinger.players.clear();
 		}
 
 		remringmaps.forEach(n -> ringSounds.remove(n));
@@ -140,7 +144,7 @@ public class ClientSoundPlayer {
 				float vold = SoundHelper.getVolumeFromSoundPos(rs.getValue().getSoundPos(),
 						rs.getValue().getVolume() * SoundHelper.getOptionVolume());
 
-				getRingSound(rs.getKey()).setVolume(vold);
+				getRingSound(rs.getKey()).setVolume(vold >= 1 ? 1 : vold);
 
 			}
 

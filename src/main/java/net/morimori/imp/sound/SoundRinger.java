@@ -2,8 +2,10 @@ package net.morimori.imp.sound;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import com.mpatric.mp3agic.Mp3File;
 
@@ -14,6 +16,7 @@ import net.minecraft.client.Minecraft;
 
 public class SoundRinger extends Thread {
 	private static Minecraft mc = Minecraft.getInstance();
+	public static Map<String, AdvancedPlayer> players = new HashMap<String, AdvancedPlayer>();
 	protected AdvancedPlayer player;
 	protected boolean ringd;
 	protected boolean finished;
@@ -96,40 +99,33 @@ public class SoundRinger extends Thread {
 
 class PlayThread extends Thread {
 
+	private String uuid;
 	private boolean finish;
-	protected AdvancedPlayer player;
 	private int posfalrme;
 	private boolean stop;
-	private BufferedInputStream bis;
-	private FileInputStream fus;
+	private String path;
 
 	public PlayThread(String filepath, int flame) {
 		this.posfalrme = flame;
-		try {
-			this.fus = new FileInputStream(filepath);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		this.bis = new BufferedInputStream(fus);
-
+		this.path = filepath;
+		this.uuid = UUID.randomUUID().toString();
 	}
 
 	public void stopS() {
-		player.close();
+
+		if (SoundRinger.players.containsKey(uuid)) {
+			SoundRinger.players.get(uuid).close();
+			SoundRinger.players.remove(uuid);
+		}
+
 		finish = true;
 		stop = true;
-		player = null;
-		try {
-			fus.close();
-			bis.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	public void setVolume(float vol) {
-		if (player != null) {
-			AudioDevice dev = player.audio;
+		if (SoundRinger.players.containsKey(uuid)) {
+			AudioDevice dev = SoundRinger.players.get(uuid).audio;
 			if (dev instanceof JavaSoundAudioDevice) {
 				float v = -60 + 60 * vol;
 				((JavaSoundAudioDevice) dev).setVolume(v);
@@ -145,20 +141,18 @@ class PlayThread extends Thread {
 		try {
 			sleep(100);
 
-			player = new AdvancedPlayer(bis);
-			player.play(posfalrme, Integer.MAX_VALUE);
+			SoundRinger.players.put(uuid, new AdvancedPlayer(new BufferedInputStream(new FileInputStream(path))));
+
+			SoundRinger.players.get(uuid).play(posfalrme, Integer.MAX_VALUE);
 		} catch (Exception e) {
 		}
 		if (!stop) {
-			player.close();
-			finish = true;
-			player = null;
-			try {
-				fus.close();
-				bis.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (SoundRinger.players.containsKey(uuid)) {
+				SoundRinger.players.get(uuid).close();
+				SoundRinger.players.remove(uuid);
 			}
+			finish = true;
+
 		}
 	}
 }
