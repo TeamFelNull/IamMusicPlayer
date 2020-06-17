@@ -1,5 +1,7 @@
 package net.morimori.imp.tileentity;
 
+import java.util.UUID;
+
 import net.minecraft.inventory.IClearable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -30,8 +32,11 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	private boolean redstone;
 	private boolean canplay;
 
+	private String uuid;
+
 	public BoomboxTileEntity() {
 		super(IMPTileEntityTypes.BOOMBOX);
+		uuid = UUID.randomUUID().toString();
 	}
 
 	@Override
@@ -225,6 +230,12 @@ public class BoomboxTileEntity extends TileEntity implements IClearable, ITickab
 	public boolean isReset() {
 
 		return this.getBlockState().get(BoomboxBlock.OPEN);
+	}
+
+	@Override
+	public String getUuid() {
+
+		return uuid;
 	}
 
 }

@@ -2,7 +2,7 @@
 
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/iammusicplayer",
   "1.15.2": {
-    "1.2": "The Test",
+    "1.2": "-Resume music when boombox is stopped or broken\n-Simultaneously proceed downloading and listening\n-The One Probe is supported\n-Fix crash when Cassette Deck finishes recording on Mac or Linux",
     "1.1": "Name Change(Ikisugi Music Player -> Iam Music Player)\nOther change iroiro.",
     "1.0": "The Frist Release."
   },

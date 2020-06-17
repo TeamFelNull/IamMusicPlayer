@@ -22,7 +22,8 @@ public class ClientSoundPlayer {
 
 	private Map<String, SoundRinger> ringSounds = new HashMap<String, SoundRinger>();
 	public Map<String, INewSoundPlayer> playdSounds = new HashMap<String, INewSoundPlayer>();
-	private Map<String, Boolean> nooneSound = new HashMap<String, Boolean>();
+	private Map<String, Boolean> loopSound = new HashMap<String, Boolean>();
+	public Map<String, Boolean> caplSound = new HashMap<String, Boolean>();
 	private Set<WorldSoundKey> dwonloadwait = new HashSet<WorldSoundKey>();
 
 	private static Minecraft mc = Minecraft.getInstance();
@@ -81,18 +82,23 @@ public class ClientSoundPlayer {
 
 			if (sr.isFinish()) {
 				if (playdSounds.get(rs.getKey()).isLoop()) {
-					nooneSound.put(rs.getKey(), true);
+					loopSound.put(rs.getKey(), true);
 					removeRingSound(rs.getKey());
 				} else {
-					if (nooneSound.containsKey(rs.getKey())) {
-						nooneSound.remove(rs.getKey());
-					}
+					caplSound.put(rs.getKey(), false);
 					removeRingSound(rs.getKey());
 				}
 
 			}
 
 			if (!sr.isRing() && !sr.isFinish()) {
+
+				boolean flag = false;
+				if (caplSound.containsKey(rs.getKey())) {
+					flag = caplSound.get(rs.getKey());
+				}
+
+				if(flag)
 				sr.startRing();
 			}
 		}
@@ -131,8 +137,8 @@ public class ClientSoundPlayer {
 					sr = new StreamSoundRinger(rs.getValue().getSound().url);
 				}
 				boolean flag = false;
-				if (nooneSound.containsKey(rs.getKey())) {
-					flag = nooneSound.get(rs.getKey());
+				if (loopSound.containsKey(rs.getKey())) {
+					flag = loopSound.get(rs.getKey());
 				}
 				sr.setPotision(!flag ? rs.getValue().getPosition() : 0);
 				addRingSound(rs.getKey(), sr);

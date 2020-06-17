@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -56,11 +57,13 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 
 	private boolean canplay;
 
+	private String uuid;
+
 	public CassetteDeckTileEntity() {
 		super(IMPTileEntityTypes.CASSETTE_DECK);
 		foldername = "null";
 		filename = "null";
-
+		uuid = UUID.randomUUID().toString();
 	}
 
 	public ItemStack getPlayCassette() {
@@ -539,5 +542,11 @@ public class CassetteDeckTileEntity extends LockableTileEntity
 	public boolean isReset() {
 
 		return this.getBlockState().get(CassetteDeckBlock.CASSETTE_DECK_STATES) != CassetteDeckStates.PLAY;
+	}
+
+	@Override
+	public String getUuid() {
+
+		return uuid;
 	}
 }

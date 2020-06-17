@@ -1,7 +1,6 @@
 package net.morimori.imp.util;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.Mp3File;
@@ -155,6 +154,10 @@ public class SoundHelper {
 
 	public static void soundPlayerTick(INewSoundPlayer isp, World worldIn) {
 
+		if (!isp.canExistence()) {
+			return;
+		}
+
 		if (!worldIn.isRemote) {
 			long leth = getSoundLength(isp.getSound(), worldIn.getServer());
 			long nowtime = System.currentTimeMillis();
@@ -202,8 +205,9 @@ public class SoundHelper {
 
 		} else {
 			if (!ClientSoundPlayer.INSTANS.playdSounds.containsValue(isp)) {
-				ClientSoundPlayer.INSTANS.playdSounds.put(UUID.randomUUID().toString(), isp);
+				ClientSoundPlayer.INSTANS.playdSounds.put(isp.getUuid(), isp);
 			}
+			ClientSoundPlayer.INSTANS.caplSound.put(isp.getUuid(), true);
 		}
 
 	}
