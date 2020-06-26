@@ -1,5 +1,5 @@
 package net.morimori.imp.compat.theoneprobe;
-
+/*
 import java.util.function.Function;
 
 import mcjty.theoneprobe.api.IProbeHitData;
@@ -60,4 +60,4 @@ public class TheOneProbePlugin implements Function<ITheOneProbe, Void> {
 		return null;
 	}
 
-}
+}*/

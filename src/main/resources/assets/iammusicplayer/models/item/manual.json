@@ -1,6 +1,6 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "iammusicplayer:item/manual"
-    }
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "iammusicplayer:item/manual"
+  }
 }

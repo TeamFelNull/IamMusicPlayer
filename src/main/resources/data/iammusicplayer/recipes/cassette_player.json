@@ -13,7 +13,7 @@
       "tag": "forge:dusts/redstone"
     },
     "C": {
-    "item": "minecraft:jukebox"
+      "item": "minecraft:jukebox"
     },
     "D": {
       "tag": "forge:dyes/gray"

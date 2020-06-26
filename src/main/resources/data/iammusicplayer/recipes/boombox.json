@@ -10,16 +10,16 @@
       "tag": "forge:rods/iron"
     },
     "B": {
-    "item": "iammusicplayer:speaker"
+      "item": "iammusicplayer:speaker"
     },
     "C": {
-    "item": "iammusicplayer:acoustic_amplifier"
+      "item": "iammusicplayer:acoustic_amplifier"
     },
     "D": {
       "tag": "forge:ingots/iron"
     },
     "E": {
-    "item": "iammusicplayer:cassette_player"
+      "item": "iammusicplayer:cassette_player"
     }
   },
   "result": {

@@ -17,7 +17,6 @@
   "item.iammusicplayer.overwritable_cassette_tape": "上書き可能なカセットテープ",
   "item.iammusicplayer.cassette_tape.written": "%s のテープ",
   "item.iammusicplayer.manual": "イキすぎた音楽マニュアル",
-
   "soundata.title": "タイトル : %s",
   "soundata.artist": "アーティスト : %s",
   "soundata.album": "アルバム : %s",
@@ -33,17 +32,13 @@
   "soundata.bitrate": "ビッドレート : %s kbps",
   "soundata.layer": "レイヤー : %s",
   "soundata.emphasis": "強調 : %s",
-  
   "_comment": "Block",
   "block.iammusicplayer.boombox": "ラジカセ",
   "block.iammusicplayer.soundfile_uploader": "音楽ファイルアップローダー",
   "block.iammusicplayer.cassette_deck": "カセットデッキ",
   "block.iammusicplayer.cassette_storing": "カセット収納ケース",
-  
-  
   "_comment": "CreativeTab",
   "itemGroup.iammusicplayer": "私的音楽プレーヤー",
-  
   "_comment": "Screen",
   "narrator.button.power": "電源",
   "narrator.button.exit": "閉じる",
@@ -76,9 +71,7 @@
   "sfu.selectfileupdate.updloadby": "%s がアップロードした",
   "sfu.everyone": "共有",
   "sfu.main": "自分",
-  
   "soundCategory.iammusicplayer": "私的音楽プレーヤー",
-  
   "cd.recording": "記録中",
   "cd.playing": "再生中",
   "cd.deliting": "削除中",
@@ -90,9 +83,7 @@
   "narrator.deliting": "削除",
   "narrator.copying": "コピー",
   "narrator.waiting": "停止",
-  
   "message.volume.set": "ボリュームを %s にしました",
-
   "overlay.sending.world": "%s をワールドにアップロード中",
   "overlay.sending.server": "%s をサーバーにアップロード中",
   "overlay.receiver.world": "%s をワールドからダウンロード中",
@@ -101,13 +92,9 @@
   "overlay.soundwaitthread.crash": "申し訳ないがサウンドスレッドがクラッシュしました！ 再起動中です...",
   "overlay.sender.othertask": "その他 %s 個のアップロードタスク...",
   "overlay.sender.reservation": "%s 件のアップロード予約",
-  
   "soundplayer.time.sec": "秒",
   "soundplayer.time.min": "分",
   "soundplayer.time.hor": "時間",
-  
   "iammusicplayer.command.plreload": "ワールドのプレイリストを再読み込みしました",
-  
   "_comment": "Last"
-  
 }

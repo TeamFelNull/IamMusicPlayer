@@ -10,7 +10,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.fluid.IFluidState;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
@@ -34,150 +33,150 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.morimori.imp.tileentity.CassetteStoringTileEntity;
 
 public class CassetteStoringBlock extends Block implements IWaterLoggable {
-	public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
-	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-	public static final BooleanProperty WALL = IMPBooleanProperties.WALL;
+    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty WALL = IMPBooleanProperties.WALL;
 
-	public CassetteStoringBlock(Properties properties) {
-		super(properties);
-		this.setDefaultState(
-				this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED,
-						Boolean.valueOf(false)).with(WALL, Boolean.valueOf(false)));
-	}
+    public CassetteStoringBlock(Properties properties) {
+        super(properties);
+        this.setDefaultState(
+                this.stateContainer.getBaseState().with(FACING, Direction.NORTH).with(WATERLOGGED,
+                        Boolean.valueOf(false)).with(WALL, Boolean.valueOf(false)));
+    }
 
-	@Nullable
-	@Override
-	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-		return new CassetteStoringTileEntity();
-	}
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
+        return new CassetteStoringTileEntity();
+    }
 
-	public void dropItem(World worldIn, BlockPos pos) {
-		if (worldIn.isRemote)
-			return;
-		TileEntity tileentity = worldIn.getTileEntity(pos);
+    public void dropItem(World worldIn, BlockPos pos) {
+        if (worldIn.isRemote)
+            return;
+        TileEntity tileentity = worldIn.getTileEntity(pos);
 
-		if (!(tileentity instanceof CassetteStoringTileEntity))
-			return;
-		int cont = 0;
-		for (ItemStack its : ((CassetteStoringTileEntity) tileentity).getItems()) {
-			if (!its.isEmpty()) {
-				worldIn.playEvent(1010, pos, 0);
-				ItemStack dropCassette = its.copy();
+        if (!(tileentity instanceof CassetteStoringTileEntity))
+            return;
+        int cont = 0;
+        for (ItemStack its : ((CassetteStoringTileEntity) tileentity).getItems()) {
+            if (!its.isEmpty()) {
+                worldIn.playEvent(1010, pos, 0);
+                ItemStack dropCassette = its.copy();
 
-				ItemEntity dropItem = new ItemEntity(worldIn, pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d,
-						dropCassette);
+                ItemEntity dropItem = new ItemEntity(worldIn, pos.getX() + 0.5d, pos.getY() + 0.5d, pos.getZ() + 0.5d,
+                        dropCassette);
 
-				dropItem.setDefaultPickupDelay();
-				worldIn.addEntity(dropItem);
-				((CassetteStoringTileEntity) tileentity).setItem(cont, its);
-			}
-			cont++;
-		}
-	}
+                dropItem.setDefaultPickupDelay();
+                worldIn.addEntity(dropItem);
+                ((CassetteStoringTileEntity) tileentity).setItem(cont, its);
+            }
+            cont++;
+        }
+    }
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onReplaced(BlockState before, World worldIn, BlockPos pos, BlockState after,
-			boolean isMoving) {
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onReplaced(BlockState before, World worldIn, BlockPos pos, BlockState after,
+                           boolean isMoving) {
 
-		if (before.getBlock() != after.getBlock()) {
-			dropItem(worldIn, pos);
-		}
-		super.onReplaced(before, worldIn, pos, after, isMoving);
-	}
+        if (before.getBlock() != after.getBlock()) {
+            dropItem(worldIn, pos);
+        }
+        super.onReplaced(before, worldIn, pos, after, isMoving);
+    }
 
-	@SuppressWarnings("deprecation")
-	public IFluidState getFluidState(BlockState state) {
-		return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
-	}
+    /*
+        @SuppressWarnings("deprecation")
+        public IFluidState getFluidState(BlockState state) {
+            return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+        }
+    */
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context) {
+        //	IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
+        return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().rotateY());
 
-	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context) {
-		IFluidState ifluidstate = context.getWorld().getFluidState(context.getPos());
-		return this.getDefaultState().with(FACING, context.getPlacementHorizontalFacing().rotateY()).with(WATERLOGGED,
-				Boolean.valueOf(ifluidstate.getFluid() == Fluids.WATER));
+    }
 
-	}
+    @Override
+    public final boolean hasTileEntity(BlockState state) {
+        return true;
+    }
 
-	@Override
-	public final boolean hasTileEntity(BlockState state) {
-		return true;
-	}
+    public ActionResultType func_225533_a_(BlockState p_225533_1_, World worldIn, BlockPos pos,
+                                           PlayerEntity playerIn, Hand p_225533_5_, BlockRayTraceResult p_225533_6_) {
+        if (!worldIn.isRemote) {
 
-	public ActionResultType func_225533_a_(BlockState p_225533_1_, World worldIn, BlockPos pos,
-			PlayerEntity playerIn, Hand p_225533_5_, BlockRayTraceResult p_225533_6_) {
-		if (!worldIn.isRemote) {
+            TileEntity tileentity = worldIn.getTileEntity(pos);
 
-			TileEntity tileentity = worldIn.getTileEntity(pos);
+            if (!(tileentity instanceof CassetteStoringTileEntity))
+                return ActionResultType.SUCCESS;
 
-			if (!(tileentity instanceof CassetteStoringTileEntity))
-				return ActionResultType.SUCCESS;
+            NetworkHooks.openGui((ServerPlayerEntity) playerIn, (INamedContainerProvider) tileentity, pos);
+        }
+        return ActionResultType.SUCCESS;
 
-			NetworkHooks.openGui((ServerPlayerEntity) playerIn, (INamedContainerProvider) tileentity, pos);
-		}
-		return ActionResultType.SUCCESS;
+    }
 
-	}
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return !state.get(WATERLOGGED);
+    }
 
-	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
-		return !state.get(WATERLOGGED);
-	}
+    @SuppressWarnings("deprecation")
+    @Override
+    public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
+                                          BlockPos currentPos, BlockPos facingPos) {
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
-			BlockPos currentPos, BlockPos facingPos) {
+        if (stateIn.get(WATERLOGGED)) {
+            worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
+        }
 
-		if (stateIn.get(WATERLOGGED)) {
-			worldIn.getPendingFluidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickRate(worldIn));
-		}
+        return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+    }
 
-		return super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+        Direction direction = state.get(FACING);
 
-	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
-		Direction direction = state.get(FACING);
+        if (state.get(WALL)) {
+            switch (direction) {
+                case NORTH:
+                    return CassetteStoringVoxelShape.NORTH_WALL_AXIS_AABB;
+                case SOUTH:
+                    return CassetteStoringVoxelShape.SOUTH_WALL_AXIS_AABB;
+                case EAST:
+                    return CassetteStoringVoxelShape.EAST_WALL_AXIS_AABB;
+                case WEST:
+                    return CassetteStoringVoxelShape.WEST_WALL_AXIS_AABB;
+                default:
+                    return CassetteStoringVoxelShape.NORTH_WALL_AXIS_AABB;
+            }
+        } else {
+            switch (direction) {
+                case NORTH:
+                    return CassetteStoringVoxelShape.NORTH_AXIS_AABB;
+                case SOUTH:
+                    return CassetteStoringVoxelShape.SOUTH_AXIS_AABB;
+                case EAST:
+                    return CassetteStoringVoxelShape.EAST_AXIS_AABB;
+                case WEST:
+                    return CassetteStoringVoxelShape.WEST_AXIS_AABB;
+                default:
+                    return CassetteStoringVoxelShape.EAST_AXIS_AABB;
+            }
+        }
 
-		if (state.get(WALL)) {
-			switch (direction) {
-			case NORTH:
-				return CassetteStoringVoxelShape.NORTH_WALL_AXIS_AABB;
-			case SOUTH:
-				return CassetteStoringVoxelShape.SOUTH_WALL_AXIS_AABB;
-			case EAST:
-				return CassetteStoringVoxelShape.EAST_WALL_AXIS_AABB;
-			case WEST:
-				return CassetteStoringVoxelShape.WEST_WALL_AXIS_AABB;
-			default:
-				return CassetteStoringVoxelShape.NORTH_WALL_AXIS_AABB;
-			}
-		} else {
-			switch (direction) {
-			case NORTH:
-				return CassetteStoringVoxelShape.NORTH_AXIS_AABB;
-			case SOUTH:
-				return CassetteStoringVoxelShape.SOUTH_AXIS_AABB;
-			case EAST:
-				return CassetteStoringVoxelShape.EAST_AXIS_AABB;
-			case WEST:
-				return CassetteStoringVoxelShape.WEST_AXIS_AABB;
-			default:
-				return CassetteStoringVoxelShape.EAST_AXIS_AABB;
-			}
-		}
+    }
 
-	}
+    @Override
+    public BlockState rotate(BlockState state, Rotation rot) {
+        return state.with(FACING, rot.rotate(state.get(FACING)));
 
-	@Override
-	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.with(FACING, rot.rotate(state.get(FACING)));
+    }
 
-	}
-
-	@Override
-	public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-		builder.add(FACING, WATERLOGGED, WALL);
-	}
+    @Override
+    public void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+        builder.add(FACING, WATERLOGGED, WALL);
+    }
 }

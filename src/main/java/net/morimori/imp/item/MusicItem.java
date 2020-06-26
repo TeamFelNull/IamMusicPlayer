@@ -9,14 +9,14 @@ import net.minecraft.world.World;
 
 public class MusicItem extends Item {
 
-	public MusicItem(Properties properties) {
-		super(properties);
+    public MusicItem(Properties properties) {
+        super(properties);
 
-	}
+    }
 
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
-		ItemStack item = playerIn.getHeldItem(hand);
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
+        ItemStack item = playerIn.getHeldItem(hand);
 
-		return ActionResult.func_226248_a_(item);
-	}
+        return ActionResult.func_226248_a_(item);
+    }
 }

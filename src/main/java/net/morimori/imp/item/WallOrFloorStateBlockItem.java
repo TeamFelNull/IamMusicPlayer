@@ -14,33 +14,33 @@ import net.morimori.imp.block.IMPBooleanProperties;
 
 public class WallOrFloorStateBlockItem extends BlockItem {
 
-	public WallOrFloorStateBlockItem(Block floorBlock, Properties propertiesIn) {
-		super(floorBlock, propertiesIn);
-	}
+    public WallOrFloorStateBlockItem(Block floorBlock, Properties propertiesIn) {
+        super(floorBlock, propertiesIn);
+    }
 
-	@Nullable
-	@Override
-	protected BlockState getStateForPlacement(BlockItemUseContext context) {
-		BlockState blockstate = this.getBlock().getStateForPlacement(context).with(IMPBooleanProperties.WALL,
-				Boolean.valueOf(true));
-		BlockState blockstate1 = null;
-		IWorldReader iworldreader = context.getWorld();
-		BlockPos blockpos = context.getPos();
+    @Nullable
+    @Override
+    protected BlockState getStateForPlacement(BlockItemUseContext context) {
+        BlockState blockstate = this.getBlock().getStateForPlacement(context).with(IMPBooleanProperties.WALL,
+                Boolean.valueOf(true));
+        BlockState blockstate1 = null;
+        IWorldReader iworldreader = context.getWorld();
+        BlockPos blockpos = context.getPos();
 
-		for (Direction direction : context.getNearestLookingDirections()) {
-			if (direction != Direction.UP) {
-				BlockState blockstate2 = direction == Direction.DOWN ? this.getBlock().getStateForPlacement(context)
-						: blockstate;
-				if (blockstate2 != null && blockstate2.isValidPosition(iworldreader, blockpos)) {
-					blockstate1 = blockstate2;
-					break;
-				}
-			}
-		}
+        for (Direction direction : context.getNearestLookingDirections()) {
+            if (direction != Direction.UP) {
+                BlockState blockstate2 = direction == Direction.DOWN ? this.getBlock().getStateForPlacement(context)
+                        : blockstate;
+                if (blockstate2 != null && blockstate2.isValidPosition(iworldreader, blockpos)) {
+                    blockstate1 = blockstate2;
+                    break;
+                }
+            }
+        }
 
-		return blockstate1 != null && iworldreader.func_226663_a_(blockstate1, blockpos, ISelectionContext.dummy())
-				? blockstate1
-				: null;
-	}
+        return blockstate1 != null && iworldreader.func_226663_a_(blockstate1, blockpos, ISelectionContext.dummy())
+                ? blockstate1
+                : null;
+    }
 
 }

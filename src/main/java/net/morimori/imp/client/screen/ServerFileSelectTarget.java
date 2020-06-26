@@ -3,22 +3,22 @@ package net.morimori.imp.client.screen;
 import net.minecraft.util.IStringSerializable;
 
 public enum ServerFileSelectTarget implements IStringSerializable {
-	MAIN("main"), EVERYONE("everyone");
+    MAIN("main"), EVERYONE("everyone");
 
-	private final String name;
+    private final String name;
 
-	ServerFileSelectTarget(String string) {
-		this.name = string;
-	}
+    ServerFileSelectTarget(String string) {
+        this.name = string;
+    }
 
-	@Override
-	public String getName() {
+    @Override
+    public String getName() {
 
-		return this.name;
-	}
+        return this.name;
+    }
 
-	public String toString() {
-		return this.name;
-	}
+    public String toString() {
+        return this.name;
+    }
 
 }

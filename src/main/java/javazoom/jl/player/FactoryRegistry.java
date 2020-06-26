@@ -31,103 +31,86 @@ import javazoom.jl.decoder.JavaLayerException;
  * <p>
  * Instances of this class are thread-safe.
  *
- * @since 0.0.8
  * @author Mat McGowan
+ * @since 0.0.8
  */
 
-public class FactoryRegistry extends AudioDeviceFactory
-{
-	static private FactoryRegistry instance = null;
+public class FactoryRegistry extends AudioDeviceFactory {
+    static private FactoryRegistry instance = null;
 
-	static synchronized public FactoryRegistry systemRegistry()
-	{
-		if (instance==null)
-		{
-			instance = new FactoryRegistry();
-			instance.registerDefaultFactories();
-		}
-		return instance;
-	}
+    static synchronized public FactoryRegistry systemRegistry() {
+        if (instance == null) {
+            instance = new FactoryRegistry();
+            instance.registerDefaultFactories();
+        }
+        return instance;
+    }
 
 
-	@SuppressWarnings("rawtypes")
-	protected Hashtable factories = new Hashtable();
+    @SuppressWarnings("rawtypes")
+    protected Hashtable factories = new Hashtable();
 
-	/**
-	 * Registers an <code>AudioDeviceFactory</code> instance
-	 * with this registry.
-	 */
-	@SuppressWarnings("unchecked")
-	public void addFactory(AudioDeviceFactory factory)
-	{
-		factories.put(factory.getClass(), factory);
-	}
+    /**
+     * Registers an <code>AudioDeviceFactory</code> instance
+     * with this registry.
+     */
+    @SuppressWarnings("unchecked")
+    public void addFactory(AudioDeviceFactory factory) {
+        factories.put(factory.getClass(), factory);
+    }
 
-	@SuppressWarnings("rawtypes")
-	public void removeFactoryType(Class cls)
-	{
-		factories.remove(cls);
-	}
+    @SuppressWarnings("rawtypes")
+    public void removeFactoryType(Class cls) {
+        factories.remove(cls);
+    }
 
-	public void removeFactory(AudioDeviceFactory factory)
-	{
-		factories.remove(factory.getClass());
-	}
+    public void removeFactory(AudioDeviceFactory factory) {
+        factories.remove(factory.getClass());
+    }
 
-	public AudioDevice createAudioDevice() throws JavaLayerException
-	{
-		AudioDevice device = null;
-		AudioDeviceFactory[] factories = getFactoriesPriority();
+    public AudioDevice createAudioDevice() throws JavaLayerException {
+        AudioDevice device = null;
+        AudioDeviceFactory[] factories = getFactoriesPriority();
 
-		if (factories==null)
-			throw new JavaLayerException(this+": no factories registered");
+        if (factories == null)
+            throw new JavaLayerException(this + ": no factories registered");
 
-		JavaLayerException lastEx = null;
-		for (int i=0; (device==null) && (i<factories.length); i++)
-		{
-			try
-			{
-				device = factories[i].createAudioDevice();
-			}
-			catch (JavaLayerException ex)
-			{
-				lastEx = ex;
-			}
-		}
+        JavaLayerException lastEx = null;
+        for (int i = 0; (device == null) && (i < factories.length); i++) {
+            try {
+                device = factories[i].createAudioDevice();
+            } catch (JavaLayerException ex) {
+                lastEx = ex;
+            }
+        }
 
-		if (device==null && lastEx!=null)
-		{
-			throw new JavaLayerException("Cannot create AudioDevice", lastEx);
-		}
+        if (device == null && lastEx != null) {
+            throw new JavaLayerException("Cannot create AudioDevice", lastEx);
+        }
 
-		return device;
-	}
+        return device;
+    }
 
 
-	@SuppressWarnings("rawtypes")
-	protected AudioDeviceFactory[] getFactoriesPriority()
-	{
-		AudioDeviceFactory[] fa = null;
-		synchronized (factories)
-		{
-			int size = factories.size();
-			if (size!=0)
-			{
-				fa = new AudioDeviceFactory[size];
-				int idx = 0;
-				Enumeration e = factories.elements();
-				while (e.hasMoreElements())
-				{
-					AudioDeviceFactory factory = (AudioDeviceFactory)e.nextElement();
-					fa[idx++] = factory;
-				}
-			}
-		}
-		return fa;
-	}
+    @SuppressWarnings("rawtypes")
+    protected AudioDeviceFactory[] getFactoriesPriority() {
+        AudioDeviceFactory[] fa = null;
+        synchronized (factories) {
+            int size = factories.size();
+            if (size != 0) {
+                fa = new AudioDeviceFactory[size];
+                int idx = 0;
+                Enumeration e = factories.elements();
+                while (e.hasMoreElements()) {
+                    AudioDeviceFactory factory = (AudioDeviceFactory) e.nextElement();
+                    fa[idx++] = factory;
+                }
+            }
+        }
+        return fa;
+    }
 
-	protected void registerDefaultFactories()
-	{
-		addFactory(new JavaSoundAudioDeviceFactory());
-	}
+    protected void registerDefaultFactories() {
+        addFactory(new JavaSoundAudioDeviceFactory());
+    }
 }

@@ -14,46 +14,46 @@ import net.morimori.imp.util.RenderHelper;
 
 public class SoundFileUploaderTileEntityRenderer extends TileEntityRenderer<SoundFileUploaderTileEntity> {
 
-	public SoundFileUploaderTileEntityRenderer(TileEntityRendererDispatcher p_i226006_1_) {
-		super(p_i226006_1_);
+    public SoundFileUploaderTileEntityRenderer(TileEntityRendererDispatcher p_i226006_1_) {
+        super(p_i226006_1_);
 
-	}
+    }
 
-	@Override
-	public void func_225616_a_(SoundFileUploaderTileEntity tile, float partialTicks, MatrixStack matrix,
-			IRenderTypeBuffer buff, int light, int overlay) {
+    @Override
+    public void func_225616_a_(SoundFileUploaderTileEntity tile, float partialTicks, MatrixStack matrix,
+                               IRenderTypeBuffer buff, int light, int overlay) {
 
-		if (!tile.getAntenna().isEmpty()) {
-			Direction direction = tile.getBlockState().get(SoundfileUploaderBlock.FACING);
+        if (!tile.getAntenna().isEmpty()) {
+            Direction direction = tile.getBlockState().get(SoundfileUploaderBlock.FACING);
 
-			RenderHelper.matrixPush(matrix);
+            RenderHelper.matrixPush(matrix);
 
-			if (direction == Direction.NORTH) {
-				RenderHelper.matrixTranslatef(matrix, 0.5f, 0.85f, 0.1225f);
-			} else if (direction == Direction.SOUTH) {
-				RenderHelper.matrixTranslatef(matrix, 0.5f, 0.85f, 0.8725f);
-			} else if (direction == Direction.EAST) {
-				RenderHelper.matrixTranslatef(matrix, 0.8725f, 0.85f, 0.5f);
-			} else if (direction == Direction.WEST) {
-				RenderHelper.matrixTranslatef(matrix, 0.1225f, 0.85f, 0.5f);
-			}
-			RenderHelper.matrixRotateDegreefY(matrix, tile.rotationYaw);
+            if (direction == Direction.NORTH) {
+                RenderHelper.matrixTranslatef(matrix, 0.5f, 0.85f, 0.1225f);
+            } else if (direction == Direction.SOUTH) {
+                RenderHelper.matrixTranslatef(matrix, 0.5f, 0.85f, 0.8725f);
+            } else if (direction == Direction.EAST) {
+                RenderHelper.matrixTranslatef(matrix, 0.8725f, 0.85f, 0.5f);
+            } else if (direction == Direction.WEST) {
+                RenderHelper.matrixTranslatef(matrix, 0.1225f, 0.85f, 0.5f);
+            }
+            RenderHelper.matrixRotateDegreefY(matrix, tile.rotationYaw);
 
-			RenderHelper.matrixRotateDegreefZ(matrix, tile.rotationPitch);
+            RenderHelper.matrixRotateDegreefZ(matrix, tile.rotationPitch);
 
-			if (tile.rotationPitch >= 0) {
-				float parpich = tile.rotationPitch / 90f;
-				RenderHelper.matrixTranslatef(matrix, 0.13f * parpich, -0.1f * parpich, 0);
-			} else {
-				float parpich = tile.rotationPitch / -90f;
-				RenderHelper.matrixTranslatef(matrix, -0.13f * parpich, -0.1f * parpich, 0);
-			}
+            if (tile.rotationPitch >= 0) {
+                float parpich = tile.rotationPitch / 90f;
+                RenderHelper.matrixTranslatef(matrix, 0.13f * parpich, -0.1f * parpich, 0);
+            } else {
+                float parpich = tile.rotationPitch / -90f;
+                RenderHelper.matrixTranslatef(matrix, -0.13f * parpich, -0.1f * parpich, 0);
+            }
 
-			Minecraft.getInstance().getItemRenderer().func_229110_a_(tile.getAntenna(),
-					TransformType.GROUND, light, overlay, matrix, buff);
-			RenderHelper.matrixPop(matrix);
+            Minecraft.getInstance().getItemRenderer().func_229110_a_(tile.getAntenna(),
+                    TransformType.GROUND, light, overlay, matrix, buff);
+            RenderHelper.matrixPop(matrix);
 
-		}
-	}
+        }
+    }
 
 }

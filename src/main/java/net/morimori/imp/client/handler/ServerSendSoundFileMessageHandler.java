@@ -9,17 +9,17 @@ import net.morimori.imp.packet.PacketHandler;
 import net.morimori.imp.packet.ServerSendSoundFileMessage;
 
 public class ServerSendSoundFileMessageHandler {
-	public static void reversiveMessage(ServerSendSoundFileMessage message, Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().setPacketHandled(true);
+    public static void reversiveMessage(ServerSendSoundFileMessage message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
 
-		if (message.isFrist) {
-			ClientFileReceiver CFR = new ClientFileReceiver(message.id, message.bytecont, message.name,
-					message.isDownload, message.souuid);
-			CFR.start();
-		}
-		ClientFileReceiver.addBufferBytes(message.id, message.soundbyte);
+        if (message.isFrist) {
+            ClientFileReceiver CFR = new ClientFileReceiver(message.id, message.bytecont, message.name,
+                    message.isDownload, message.souuid);
+            CFR.start();
+        }
+        ClientFileReceiver.addBufferBytes(message.id, message.soundbyte);
 
-		PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(0, message.id, "null"));
+        PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(0, message.id, "null"));
 
-	}
+    }
 }

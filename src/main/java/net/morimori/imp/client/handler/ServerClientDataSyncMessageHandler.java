@@ -19,31 +19,31 @@ import net.morimori.imp.util.TextureHelper;
 
 public class ServerClientDataSyncMessageHandler {
 
-	public static void reversiveMessage(ServerClientDataSyncMessage message, Supplier<NetworkEvent.Context> ctx) {
-		ctx.get().setPacketHandled(true);
-		setTextuer(message, ctx);
-	}
+    public static void reversiveMessage(ServerClientDataSyncMessage message, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().setPacketHandled(true);
+        setTextuer(message, ctx);
+    }
 
-	@OnlyIn(Dist.CLIENT)
-	public static void setTextuer(ServerClientDataSyncMessage message, Supplier<NetworkEvent.Context> ctx) {
+    @OnlyIn(Dist.CLIENT)
+    public static void setTextuer(ServerClientDataSyncMessage message, Supplier<NetworkEvent.Context> ctx) {
 
-		if (message.data != null) {
-			if (message.id == 0) {
-				FileLoader.fileBytesWriter(message.data,
-						FileHelper.getClientPictuerCashPath().resolve(message.st + ".png"));
+        if (message.data != null) {
+            if (message.id == 0) {
+                FileLoader.fileBytesWriter(message.data,
+                        FileHelper.getClientPictuerCashPath().resolve(message.st + ".png"));
 
-				ResourceLocation imagelocation = new ResourceLocation(IamMusicPlayer.MODID,
-						"pictuer/" + message.st);
-				try {
-					ByteArrayInputStream bis = new ByteArrayInputStream(message.data);
-					NativeImage NI = NativeImage.read(bis);
-					Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
-					mc.textureManager.func_229263_a_(imagelocation, new DynamicTexture(NI));
-					TextureHelper.pictuers.put(message.st, imagelocation);
-				} catch (IOException e) {
+                ResourceLocation imagelocation = new ResourceLocation(IamMusicPlayer.MODID,
+                        "pictuer/" + message.st);
+                try {
+                    ByteArrayInputStream bis = new ByteArrayInputStream(message.data);
+                    NativeImage NI = NativeImage.read(bis);
+                    Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
+                    mc.textureManager.func_229263_a_(imagelocation, new DynamicTexture(NI));
+                    TextureHelper.pictuers.put(message.st, imagelocation);
+                } catch (IOException e) {
 
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
 }

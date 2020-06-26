@@ -6,12 +6,12 @@ import net.morimori.imp.client.renderer.item.ParabolicAntennaRenderer;
 import net.morimori.imp.client.renderer.model.ParabolicAntennaBakedModel;
 
 public class ParabolicAntennaItem extends Item {
-	public ParabolicAntennaItem(Properties properties) {
-		super(properties.setISTER(() -> ParabolicAntennaRenderer::new));
-	}
+    public ParabolicAntennaItem(Properties properties) {
+        super(properties.setISTER(() -> ParabolicAntennaRenderer::new));
+    }
 
-	public ParabolicAntennaBakedModel getModel(IBakedModel moto, boolean kamed) {
+    public ParabolicAntennaBakedModel getModel(IBakedModel moto, boolean kamed) {
 
-		return new ParabolicAntennaBakedModel(moto, kamed);
-	}
+        return new ParabolicAntennaBakedModel(moto, kamed);
+    }
 }
