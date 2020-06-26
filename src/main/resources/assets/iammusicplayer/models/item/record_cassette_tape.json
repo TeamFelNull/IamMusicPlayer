@@ -1,6 +1,6 @@
 {
-  "parent": "iammusicplayer:item/cassette",
-  "textures": {
-    "0": "iammusicplayer:item/record_cassette_tape"
-  }
+    "parent": "iammusicplayer:item/cassette",
+	"textures": {
+		"0": "iammusicplayer:item/record_cassette_tape"
+	}
 }

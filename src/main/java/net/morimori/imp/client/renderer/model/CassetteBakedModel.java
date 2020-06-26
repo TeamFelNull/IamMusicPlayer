@@ -24,72 +24,72 @@ import net.morimori.imp.item.CassetteTapeItem;
 @SuppressWarnings("deprecation")
 public class CassetteBakedModel implements IBakedModel {
 
-    private IBakedModel tmodel;
-    private CassetteTapeItem cassette;
+	private IBakedModel tmodel;
+	private CassetteTapeItem cassette;
 
-    public TransformType cameraTransformType;
+	public TransformType cameraTransformType;
 
-    public CassetteBakedModel(IBakedModel motomodel, CassetteTapeItem item) {
-        this.tmodel = motomodel;
-        this.cassette = item;
-    }
+	public CassetteBakedModel(IBakedModel motomodel, CassetteTapeItem item) {
+		this.tmodel = motomodel;
+		this.cassette = item;
+	}
 
-    @Override
-    public boolean isAmbientOcclusion() {
+	@Override
+	public boolean isAmbientOcclusion() {
 
-        return tmodel.isAmbientOcclusion();
-    }
+		return tmodel.isAmbientOcclusion();
+	}
 
-    @Override
-    public boolean isGui3d() {
+	@Override
+	public boolean isGui3d() {
 
-        return tmodel.isGui3d();
-    }
+		return tmodel.isGui3d();
+	}
 
-    @Override
-    public boolean func_230044_c_() {
+	@Override
+	public boolean func_230044_c_() {
 
-        return tmodel.func_230044_c_();
-    }
+		return tmodel.func_230044_c_();
+	}
 
-    @Override
-    public boolean isBuiltInRenderer() {
+	@Override
+	public boolean isBuiltInRenderer() {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public TextureAtlasSprite getParticleTexture() {
+	@Override
+	public TextureAtlasSprite getParticleTexture() {
 
-        return tmodel.getParticleTexture();
-    }
+		return tmodel.getParticleTexture();
+	}
 
-    @Override
-    public ItemOverrideList getOverrides() {
+	@Override
+	public ItemOverrideList getOverrides() {
 
-        return tmodel.getOverrides();
-    }
+		return tmodel.getOverrides();
+	}
 
-    @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
+	@Override
+	public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
 
-        return tmodel.getQuads(state, side, rand);
-    }
+		return tmodel.getQuads(state, side, rand);
+	}
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                                    @Nonnull IModelData extraData) {
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+			@Nonnull IModelData extraData) {
 
-        return tmodel.getQuads(state, side, rand, extraData);
-    }
+		return tmodel.getQuads(state, side, rand, extraData);
+	}
 
-    public ResourceLocation getLocation() {
+	public ResourceLocation getLocation() {
 
-        return new ResourceLocation(IamMusicPlayer.MODID, "item/" + cassette.getRegistryName().getPath());
-    }
+		return new ResourceLocation(IamMusicPlayer.MODID, "item/" + cassette.getRegistryName().getPath());
+	}
 
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
-        this.cameraTransformType = cameraTransformType;
-        return net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(), cameraTransformType, mat);
-    }
+	public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+		this.cameraTransformType = cameraTransformType;
+		return net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(), cameraTransformType, mat);
+	}
 }

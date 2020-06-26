@@ -1,5 +1,7 @@
 {
+
   "_comment": "Thank you matcha98!",
+
   "_comment": "Item",
   "item.iammusicplayer.test_cassette_tape": "Test Casset Tape",
   "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
@@ -18,6 +20,7 @@
   "item.iammusicplayer.overwritable_cassette_tape": "Overwritable Cassette Tape",
   "item.iammusicplayer.cassette_tape.written": "%s Tape",
   "item.iammusicplayer.manual": "Iam Music Manual",
+  
   "soundata.title": "Title : %s",
   "soundata.artist": "Artist : %s",
   "soundata.album": "Album : %s",
@@ -33,15 +36,20 @@
   "soundata.bitrate": "Bit Rate : %s kbps",
   "soundata.layer": "Layer : %s",
   "soundata.emphasis": "Emphasis : %s",
+
   "_comment": "Block",
   "block.iammusicplayer.boombox": "Boombox",
   "block.iammusicplayer.soundfile_uploader": "Sound File Uploader",
   "block.iammusicplayer.cassette_deck": "Cassette Deck",
   "block.iammusicplayer.cassette_storing": "Cassette Storing",
+  
+  
   "_comment": "CreativeTab",
   "itemGroup.iammusicplayer": "Iam Music Player",
+
   "_comment": "CreativeTab",
   "itemGroup.iammusicplayer": "Iam Music Player",
+
   "_comment": "Screen",
   "narrator.button.power": "Power",
   "narrator.button.exit": "Exit",
@@ -66,7 +74,9 @@
   "sfu.selectfileupdate.updloadby": "Uploaded by %s",
   "sfu.everyone": "Everyone",
   "sfu.main": "Main",
+
   "soundCategory.iammusicplayer": "Iam Music Player",
+
   "cd.recording": "Recording",
   "cd.playing": "Playing",
   "cd.deliting": "Deleting",
@@ -78,7 +88,9 @@
   "narrator.deliting": "Delet",
   "narrator.copying": "Copy",
   "narrator.waiting": "Wait",
+  
   "message.volume.set": "Volume set to %s",
+  
   "overlay.sending.world": "Uploading %s to World",
   "overlay.sending.server": "Uploading %s to Server",
   "overlay.receiver.world": "Downloading %s from World",
@@ -87,9 +99,13 @@
   "overlay.soundwaitthread.crash": "Sound Thread Crash! Restarting...",
   "overlay.sender.othertask": "Other %s Upload Tasks...",
   "overlay.sender.reservation": "%s Upload reservations...",
+
   "soundplayer.time.sec": "s",
   "soundplayer.time.min": "m",
   "soundplayer.time.hor": "h",
+
   "iammusicplayer.command.plreload": "Reload World Playlist",
+  
   "_comment": "Last"
+  
 }

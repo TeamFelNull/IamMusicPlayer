@@ -21,61 +21,61 @@ import net.morimori.imp.packet.ClientResponseMessage;
 import net.morimori.imp.packet.PacketHandler;
 
 public class TextureHelper {
-    private static Minecraft mc = Minecraft.getInstance();
-    private static ResourceLocation lodinglocation = new ResourceLocation(IamMusicPlayer.MODID,
-            "textures/gui/loading_image.png");
+	private static Minecraft mc = Minecraft.getInstance();
+	private static ResourceLocation lodinglocation = new ResourceLocation(IamMusicPlayer.MODID,
+			"textures/gui/loading_image.png");
 
-    public static Map<String, ResourceLocation> pictuers = new HashMap<String, ResourceLocation>();
+	public static Map<String, ResourceLocation> pictuers = new HashMap<String, ResourceLocation>();
 
-    public static ResourceLocation getPlayerSkinTexture(String name) {
+	public static ResourceLocation getPlayerSkinTexture(String name) {
 
-        if (name.equals(mc.player.getName().getString())) {
-            return mc.player.getLocationSkin();
-        }
+		if (name.equals(mc.player.getName().getString())) {
+			return mc.player.getLocationSkin();
+		}
 
-        ResourceLocation faselocation;
-        GameProfile GP = PlayerHelper.getPlayerTextuerProfile(name);
-        Map<Type, MinecraftProfileTexture> map = mc.getSkinManager().loadSkinFromCache(GP);
-        faselocation = map.containsKey(Type.SKIN)
-                ? mc.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN)
-                : DefaultPlayerSkin.getDefaultSkin(PlayerEntity.getUUID(GP));
-        return faselocation;
-    }
+		ResourceLocation faselocation;
+		GameProfile GP = PlayerHelper.getPlayerTextuerProfile(name);
+		Map<Type, MinecraftProfileTexture> map = mc.getSkinManager().loadSkinFromCache(GP);
+		faselocation = map.containsKey(Type.SKIN)
+				? mc.getSkinManager().loadSkin(map.get(Type.SKIN), Type.SKIN)
+				: DefaultPlayerSkin.getDefaultSkin(PlayerEntity.getUUID(GP));
+		return faselocation;
+	}
 
-    public static ResourceLocation getPictueLocation(String uuid) {
+	public static ResourceLocation getPictueLocation(String uuid) {
 
-        if (pictuers.containsKey(uuid)) {
-            return pictuers.get(uuid);
-        }
+		if (pictuers.containsKey(uuid)) {
+			return pictuers.get(uuid);
+		}
 
-        ResourceLocation imagelocation = new ResourceLocation(IamMusicPlayer.MODID,
-                "pictuer/" + uuid);
+		ResourceLocation imagelocation = new ResourceLocation(IamMusicPlayer.MODID,
+				"pictuer/" + uuid);
 
-        File picfile = FileHelper.getClientPictuerCashPath().resolve(uuid + ".png").toFile();
+		File picfile = FileHelper.getClientPictuerCashPath().resolve(uuid + ".png").toFile();
 
-        if (picfile.exists() && picfile != null) {
-            try {
-                byte[] pibyte = FileLoader.fileBytesReader(picfile.toPath());
-                ByteArrayInputStream bis = new ByteArrayInputStream(pibyte);
-                NativeImage NI = NativeImage.read(bis);
-                mc.textureManager.func_229263_a_(imagelocation, new DynamicTexture(NI));
-                pictuers.put(uuid, imagelocation);
-                return imagelocation;
+		if (picfile.exists() && picfile != null) {
+			try {
+				byte[] pibyte = FileLoader.fileBytesReader(picfile.toPath());
+				ByteArrayInputStream bis = new ByteArrayInputStream(pibyte);
+				NativeImage NI = NativeImage.read(bis);
+				mc.textureManager.func_229263_a_(imagelocation, new DynamicTexture(NI));
+				pictuers.put(uuid, imagelocation);
+				return imagelocation;
 
-            } catch (IOException e) {
+			} catch (IOException e) {
 
-            }
+			}
 
-        } else {
-            PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(3, 0, uuid));
-            pictuers.put(uuid, lodinglocation);
-        }
-        return lodinglocation;
-    }
+		} else {
+			PacketHandler.INSTANCE.sendToServer(new ClientResponseMessage(3, 0, uuid));
+			pictuers.put(uuid, lodinglocation);
+		}
+		return lodinglocation;
+	}
 
-    public static boolean isImageNotExists(String uuid) {
+	public static boolean isImageNotExists(String uuid) {
 
-        return uuid.equals("null") || (!pictuers.containsKey(uuid) || pictuers.get(uuid).equals(lodinglocation));
-    }
+		return uuid.equals("null") || (!pictuers.containsKey(uuid) || pictuers.get(uuid).equals(lodinglocation));
+	}
 
 }

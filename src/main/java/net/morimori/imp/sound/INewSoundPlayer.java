@@ -2,34 +2,34 @@ package net.morimori.imp.sound;
 
 public interface INewSoundPlayer {
 
-    PlayData getSound();
+	PlayData getSound();
 
-    SoundPos getSoundPos();
+	SoundPos getSoundPos();
 
-    boolean canPlayed();
+	boolean canPlayed();
 
-    boolean isPlayed();
+	boolean isPlayed();
 
-    void setPlayed(boolean play);
+	void setPlayed(boolean play);
 
-    float getVolume();
+	float getVolume();
 
-    void setVolume(float volume);
+	void setVolume(float volume);
 
-    long getPosition();
+	long getPosition();
 
-    void setPosition(long position);
+	void setPosition(long position);
 
-    long getLastTime();
+	long getLastTime();
 
-    void setLastTime(long position);
+	void setLastTime(long position);
 
-    boolean canExistence();
+	boolean canExistence();
 
-    boolean isLoop();
+	boolean isLoop();
 
-    boolean isReset();
+	boolean isReset();
 
-    String getUuid();
+	String getUuid();
 
 }

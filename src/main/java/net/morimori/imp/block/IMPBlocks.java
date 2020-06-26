@@ -41,6 +41,7 @@ public class IMPBlocks {
                 .setRegistryName(BOOMBOX.getRegistryName()));
     }
 
+
     private static void registryBlock(IForgeRegistry<Block> r, Block b) {
         r.register(b);
     }

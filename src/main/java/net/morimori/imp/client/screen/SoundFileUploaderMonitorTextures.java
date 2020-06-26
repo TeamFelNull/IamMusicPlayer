@@ -5,31 +5,31 @@ import net.minecraft.util.ResourceLocation;
 import net.morimori.imp.IamMusicPlayer;
 
 public enum SoundFileUploaderMonitorTextures implements IStringSerializable {
-    OFF("off", new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/sfu_monitor_off.png")),
-    ON("on", new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/sfu_monitor_on.png")),
-    YJ("yj", new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/sfu_monitor_yj.png")),
-    GABADADDY("gabadaddy", new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/sfu_monitor_gabadaddy.png"));
+	OFF("off", new ResourceLocation(IamMusicPlayer.MODID,"textures/gui/container/sfu_monitor_off.png")),
+	ON("on",new ResourceLocation(IamMusicPlayer.MODID,"textures/gui/container/sfu_monitor_on.png")),
+	YJ("yj",new ResourceLocation(IamMusicPlayer.MODID,"textures/gui/container/sfu_monitor_yj.png")),
+	GABADADDY("gabadaddy",new ResourceLocation(IamMusicPlayer.MODID,"textures/gui/container/sfu_monitor_gabadaddy.png"));
 
 
-    private final String name;
-    private final ResourceLocation texture;
+	private final String name;
+	private final ResourceLocation texture;
 
-    SoundFileUploaderMonitorTextures(String string, ResourceLocation texture) {
-        this.name = string;
-        this.texture = texture;
-    }
+	SoundFileUploaderMonitorTextures(String string, ResourceLocation texture) {
+		this.name = string;
+		this.texture = texture;
+	}
 
-    public String toString() {
-        return this.name;
-    }
+	public String toString() {
+		return this.name;
+	}
 
-    public ResourceLocation getResourceLocation() {
-        return this.texture;
-    }
+	public ResourceLocation getResourceLocation() {
+		return this.texture;
+	}
 
-    @Override
-    public String getName() {
+	@Override
+	public String getName() {
 
-        return this.name;
-    }
+		return this.name;
+	}
 }

@@ -7,10 +7,10 @@ import net.morimori.imp.file.ClientFileReceiver;
 import net.morimori.imp.packet.ClientStopRequestMessage;
 
 public class ClientStopRequestMessageHandler {
-    public static void reversiveMessage(ClientStopRequestMessage message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().setPacketHandled(true);
+	public static void reversiveMessage(ClientStopRequestMessage message, Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().setPacketHandled(true);
 
-        ClientFileReceiver.stopReceiver(message.id);
+		ClientFileReceiver.stopReceiver(message.id);
 
-    }
+	}
 }

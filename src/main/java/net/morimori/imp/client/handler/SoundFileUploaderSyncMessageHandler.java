@@ -9,17 +9,17 @@ import net.morimori.imp.packet.SoundFileUploaderSyncMessage;
 import net.morimori.imp.tileentity.SoundFileUploaderTileEntity;
 
 public class SoundFileUploaderSyncMessageHandler {
-    private static Minecraft mc = Minecraft.getInstance();
+	private static Minecraft mc = Minecraft.getInstance();
 
-    public static void reversiveMessage(SoundFileUploaderSyncMessage message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().setPacketHandled(true);
-        if (mc.world.dimension.getType().getId() != message.dim)
-            return;
+	public static void reversiveMessage(SoundFileUploaderSyncMessage message, Supplier<NetworkEvent.Context> ctx) {
+		ctx.get().setPacketHandled(true);
+		if (mc.world.dimension.getType().getId() != message.dim)
+			return;
 
-        TileEntity tileentity = mc.world.getTileEntity(message.pos);
+		TileEntity tileentity = mc.world.getTileEntity(message.pos);
 
-        if (tileentity instanceof SoundFileUploaderTileEntity) {
-            ((SoundFileUploaderTileEntity) tileentity).clientSync(message);
-        }
-    }
+		if (tileentity instanceof SoundFileUploaderTileEntity) {
+			((SoundFileUploaderTileEntity) tileentity).clientSync(message);
+		}
+	}
 }

@@ -8,11 +8,11 @@ import net.morimori.imp.IamMusicPlayer;
 import net.morimori.imp.block.IMPBlocks;
 
 public class IMPItemGroup {
-    public static final ItemGroup MOD_TAB = new ItemGroup(IamMusicPlayer.MODID) {
-        @OnlyIn(Dist.CLIENT)
-        public ItemStack createIcon() {
-            return new ItemStack(IMPBlocks.BOOMBOX);
-        }
-    };
+	public static final ItemGroup MOD_TAB = new ItemGroup(IamMusicPlayer.MODID) {
+		@OnlyIn(Dist.CLIENT)
+		public ItemStack createIcon() {
+			return new ItemStack(IMPBlocks.BOOMBOX);
+		}
+	};
 
 }

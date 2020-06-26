@@ -7,21 +7,21 @@ import net.morimori.imp.packet.PacketHandler;
 
 public class CommonProxy {
 
-    public void preInit() {
-        PacketHandler.init();
-        MinecraftForge.EVENT_BUS.register(ServerHandler.class);
+	public void preInit() {
+		PacketHandler.init();
+		MinecraftForge.EVENT_BUS.register(ServerHandler.class);
 
-    }
+	}
 
-    public void init() {
+	public void init() {
 
-    }
+	}
 
-    public void posInit() {
+	public void posInit() {
 
-    }
+	}
 
-    public Minecraft getMinecraft() {
-        return null;
-    }
+	public Minecraft getMinecraft() {
+		return null;
+	}
 }

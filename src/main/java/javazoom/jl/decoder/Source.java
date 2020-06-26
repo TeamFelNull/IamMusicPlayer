@@ -1,5 +1,5 @@
 /*
- * 11/19/04		1.0 moved to LGPL.
+ * 11/19/04		1.0 moved to LGPL. 
  *-----------------------------------------------------------------------
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -23,25 +23,27 @@ import java.io.IOException;
 
 /**
  * Work in progress.
- * <p>
- * Class to describe a seekable data source.
+ * 
+ * Class to describe a seekable data source. 
+ *  
  */
-public interface Source {
-
-    public static final long LENGTH_UNKNOWN = -1;
-
-    public int read(byte[] b, int offs, int len)
-            throws IOException;
-
-
-    public boolean willReadBlock();
-
-    public boolean isSeekable();
-
-    public long length();
-
-    public long tell();
-
-    public long seek(long pos);
-
+public interface Source
+{
+	
+	public static final long	LENGTH_UNKNOWN = -1;
+	
+	public int read(byte[] b, int offs, int len)
+		throws IOException;
+	
+	
+	public boolean	willReadBlock();
+			
+	public boolean	isSeekable();
+		
+	public long		length();
+	
+	public long		tell();
+	
+	public long		seek(long pos);
+	
 }

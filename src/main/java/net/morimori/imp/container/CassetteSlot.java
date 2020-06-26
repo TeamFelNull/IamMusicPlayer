@@ -7,12 +7,12 @@ import net.morimori.imp.util.ItemHelper;
 
 public class CassetteSlot extends Slot {
 
-    public CassetteSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
-        super(inventoryIn, index, xPosition, yPosition);
-    }
+	public CassetteSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+		super(inventoryIn, index, xPosition, yPosition);
+	}
 
-    public boolean isItemValid(ItemStack stack) {
-        return ItemHelper.isCassette(stack);
-    }
+	public boolean isItemValid(ItemStack stack) {
+		return ItemHelper.isCassette(stack);
+	}
 
 }

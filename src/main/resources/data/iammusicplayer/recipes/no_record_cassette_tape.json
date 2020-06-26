@@ -10,10 +10,10 @@
       "tag": "forge:nuggets/iron"
     },
     "B": {
-      "item": "iammusicplayer:magnetic_tape"
+    "item": "iammusicplayer:magnetic_tape"
     },
     "C": {
-      "item": "minecraft:paper"
+    "item": "minecraft:paper"
     }
   },
   "result": {

@@ -5,149 +5,149 @@ import java.util.Map;
 
 public interface ID3v2 extends ID3v1 {
 
-    boolean getPadding();
+	boolean getPadding();
 
-    void setPadding(boolean padding);
+	void setPadding(boolean padding);
 
-    boolean hasFooter();
+	boolean hasFooter();
 
-    void setFooter(boolean footer);
+	void setFooter(boolean footer);
 
-    boolean hasUnsynchronisation();
+	boolean hasUnsynchronisation();
 
-    void setUnsynchronisation(boolean unsynchronisation);
+	void setUnsynchronisation(boolean unsynchronisation);
 
-    int getBPM();
+	int getBPM();
 
-    void setBPM(int bpm);
+	void setBPM(int bpm);
 
-    String getGrouping();
+	String getGrouping();
 
-    void setGrouping(String grouping);
+	void setGrouping(String grouping);
 
-    String getKey();
+	String getKey();
 
-    void setKey(String key);
+	void setKey(String key);
 
-    String getDate();
+	String getDate();
 
-    void setDate(String date);
+	void setDate(String date);
 
-    String getComposer();
+	String getComposer();
 
-    void setComposer(String composer);
+	void setComposer(String composer);
 
-    String getPublisher();
+	String getPublisher();
 
-    void setPublisher(String publisher);
+	void setPublisher(String publisher);
 
-    String getOriginalArtist();
+	String getOriginalArtist();
 
-    void setOriginalArtist(String originalArtist);
+	void setOriginalArtist(String originalArtist);
 
-    String getAlbumArtist();
+	String getAlbumArtist();
 
-    void setAlbumArtist(String albumArtist);
+	void setAlbumArtist(String albumArtist);
 
-    String getCopyright();
+	String getCopyright();
 
-    void setCopyright(String copyright);
+	void setCopyright(String copyright);
 
-    String getArtistUrl();
+	String getArtistUrl();
 
-    void setArtistUrl(String url);
+	void setArtistUrl(String url);
 
-    String getCommercialUrl();
+	String getCommercialUrl();
 
-    void setCommercialUrl(String url);
+	void setCommercialUrl(String url);
 
-    String getCopyrightUrl();
+	String getCopyrightUrl();
 
-    void setCopyrightUrl(String url);
+	void setCopyrightUrl(String url);
 
-    String getAudiofileUrl();
+	String getAudiofileUrl();
 
-    void setAudiofileUrl(String url);
+	void setAudiofileUrl(String url);
 
-    String getAudioSourceUrl();
+	String getAudioSourceUrl();
 
-    void setAudioSourceUrl(String url);
+	void setAudioSourceUrl(String url);
 
-    String getRadiostationUrl();
+	String getRadiostationUrl();
 
-    void setRadiostationUrl(String url);
+	void setRadiostationUrl(String url);
 
-    String getPaymentUrl();
+	String getPaymentUrl();
 
-    void setPaymentUrl(String url);
+	void setPaymentUrl(String url);
 
-    String getPublisherUrl();
+	String getPublisherUrl();
 
-    void setPublisherUrl(String url);
+	void setPublisherUrl(String url);
 
-    String getUrl();
+	String getUrl();
 
-    void setUrl(String url);
+	void setUrl(String url);
 
-    String getPartOfSet();
+	String getPartOfSet();
 
-    void setPartOfSet(String partOfSet);
+	void setPartOfSet(String partOfSet);
 
-    boolean isCompilation();
+	boolean isCompilation();
 
-    void setCompilation(boolean compilation);
+	void setCompilation(boolean compilation);
 
-    ArrayList<ID3v2ChapterFrameData> getChapters();
+	ArrayList<ID3v2ChapterFrameData> getChapters();
 
-    void setChapters(ArrayList<ID3v2ChapterFrameData> chapters);
+	void setChapters(ArrayList<ID3v2ChapterFrameData> chapters);
 
-    ArrayList<ID3v2ChapterTOCFrameData> getChapterTOC();
+	ArrayList<ID3v2ChapterTOCFrameData> getChapterTOC();
 
-    void setChapterTOC(ArrayList<ID3v2ChapterTOCFrameData> ctoc);
+	void setChapterTOC(ArrayList<ID3v2ChapterTOCFrameData> ctoc);
 
-    String getEncoder();
+	String getEncoder();
 
-    void setEncoder(String encoder);
+	void setEncoder(String encoder);
 
-    byte[] getAlbumImage();
+	byte[] getAlbumImage();
 
-    void setAlbumImage(byte[] albumImage, String mimeType);
+	void setAlbumImage(byte[] albumImage, String mimeType);
 
-    void setAlbumImage(byte[] albumImage, String mimeType, byte imageType, String imageDescription);
+	void setAlbumImage(byte[] albumImage, String mimeType, byte imageType, String imageDescription);
 
-    void clearAlbumImage();
+	void clearAlbumImage();
 
-    String getAlbumImageMimeType();
+	String getAlbumImageMimeType();
 
-    int getWmpRating();
+	int getWmpRating();
 
-    void setWmpRating(int rating);
+	void setWmpRating(int rating);
 
-    String getItunesComment();
+	String getItunesComment();
 
-    void setItunesComment(String itunesComment);
+	void setItunesComment(String itunesComment);
 
-    String getLyrics();
+	String getLyrics();
 
-    void setLyrics(String lyrics);
+	void setLyrics(String lyrics);
 
-    /**
-     * Set genre from text.
-     * This method behaves different depending on the ID3 version.
-     * Prior to ID3v2.4, the provided text must match a id3v1 genre description.
-     * With ID3v2.4, the genre is written as free text.
-     *
-     * @param text genre string
-     */
-    public void setGenreDescription(String text);
+	/**
+	 * Set genre from text.
+	 * This method behaves different depending on the ID3 version.
+	 * Prior to ID3v2.4, the provided text must match a id3v1 genre description.
+	 * With ID3v2.4, the genre is written as free text.
+	 *
+	 * @param text genre string
+	 */
+	public void setGenreDescription(String text);
 
-    int getDataLength();
+	int getDataLength();
 
-    int getLength();
+	int getLength();
 
-    boolean getObseleteFormat();
+	boolean getObseleteFormat();
 
-    Map<String, ID3v2FrameSet> getFrameSets();
+	Map<String, ID3v2FrameSet> getFrameSets();
 
-    void clearFrameSet(String id);
+	void clearFrameSet(String id);
 }

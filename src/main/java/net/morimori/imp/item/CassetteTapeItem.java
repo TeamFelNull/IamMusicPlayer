@@ -11,42 +11,42 @@ import net.morimori.imp.util.SoundHelper;
 
 public class CassetteTapeItem extends Item {
 
-    public CassetteTapeItem(Properties properties) {
-        super(properties.setISTER(() -> CassetteItemRenderer::new));
+	public CassetteTapeItem(Properties properties) {
+		super(properties.setISTER(() -> CassetteItemRenderer::new));
 
-    }
+	}
 
-    public boolean canWrite(ItemStack stack) {
-        return true;
-    }
+	public boolean canWrite(ItemStack stack) {
+		return true;
+	}
 
-    public boolean canOverwrite() {
+	public boolean canOverwrite() {
 
-        return true;
-    }
+		return true;
+	}
 
-    public ItemStack afterWriting(ItemStack befre) {
-        return befre;
-    }
+	public ItemStack afterWriting(ItemStack befre) {
+		return befre;
+	}
 
-    /*
-        @OnlyIn(Dist.CLIENT)
-        public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip,
-                ITooltipFlag flagIn) {
-            SoundData.addSoundDataTooltip(stack, tooltip);
-        }
-    */
-    public ITextComponent getDisplayName(ItemStack stack) {
-        return SoundHelper.isWritedSound(stack)
-                ? new TranslationTextComponent("item.iammusicplayer.cassette_tape.written",
-                SoundHelper.getSoundName(
-                        stack))
-                : super.getDisplayName(stack);
-    }
+	/*
+		@OnlyIn(Dist.CLIENT)
+		public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip,
+				ITooltipFlag flagIn) {
+			SoundData.addSoundDataTooltip(stack, tooltip);
+		}
+	*/
+	public ITextComponent getDisplayName(ItemStack stack) {
+		return SoundHelper.isWritedSound(stack)
+				? new TranslationTextComponent("item.iammusicplayer.cassette_tape.written",
+						SoundHelper.getSoundName(
+								stack))
+				: super.getDisplayName(stack);
+	}
 
-    public CassetteBakedModel getModel(IBakedModel moto) {
+	public CassetteBakedModel getModel(IBakedModel moto) {
 
-        return new CassetteBakedModel(moto, this);
-    }
+		return new CassetteBakedModel(moto, this);
+	}
 
 }

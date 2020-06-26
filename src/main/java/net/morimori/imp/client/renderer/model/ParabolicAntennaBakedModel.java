@@ -24,77 +24,77 @@ import net.morimori.imp.item.IMPItems;
 @SuppressWarnings("deprecation")
 public class ParabolicAntennaBakedModel implements IBakedModel {
 
-    private IBakedModel tmodel;
-    private boolean kame;
-    public TransformType cameraTransformType;
+	private IBakedModel tmodel;
+	private boolean kame;
+	public TransformType cameraTransformType;
 
-    public ParabolicAntennaBakedModel(IBakedModel motomodel, boolean kamed) {
-        this.tmodel = motomodel;
-        this.kame = kamed;
-    }
+	public ParabolicAntennaBakedModel(IBakedModel motomodel, boolean kamed) {
+		this.tmodel = motomodel;
+		this.kame = kamed;
+	}
 
-    @Override
-    public boolean isAmbientOcclusion() {
+	@Override
+	public boolean isAmbientOcclusion() {
 
-        return tmodel.isAmbientOcclusion();
-    }
+		return tmodel.isAmbientOcclusion();
+	}
 
-    @Override
-    public boolean isGui3d() {
+	@Override
+	public boolean isGui3d() {
 
-        return tmodel.isGui3d();
-    }
+		return tmodel.isGui3d();
+	}
 
-    @Override
-    public boolean func_230044_c_() {
+	@Override
+	public boolean func_230044_c_() {
 
-        return tmodel.func_230044_c_();
-    }
+		return tmodel.func_230044_c_();
+	}
 
-    @Override
-    public boolean isBuiltInRenderer() {
+	@Override
+	public boolean isBuiltInRenderer() {
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public TextureAtlasSprite getParticleTexture() {
+	@Override
+	public TextureAtlasSprite getParticleTexture() {
 
-        return tmodel.getParticleTexture();
-    }
+		return tmodel.getParticleTexture();
+	}
 
-    @Override
-    public ItemOverrideList getOverrides() {
+	@Override
+	public ItemOverrideList getOverrides() {
 
-        return tmodel.getOverrides();
-    }
+		return tmodel.getOverrides();
+	}
 
-    @Override
-    public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
+	@Override
+	public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
 
-        return tmodel.getQuads(state, side, rand);
-    }
+		return tmodel.getQuads(state, side, rand);
+	}
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
-                                    @Nonnull IModelData extraData) {
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand,
+			@Nonnull IModelData extraData) {
 
-        return tmodel.getQuads(state, side, rand, extraData);
-    }
+		return tmodel.getQuads(state, side, rand, extraData);
+	}
 
-    public ResourceLocation getLocation() {
+	public ResourceLocation getLocation() {
 
-        if (kame) {
-            return new ResourceLocation(IamMusicPlayer.MODID,
-                    "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName().getPath() + "_kame");
-        }
+		if (kame) {
+			return new ResourceLocation(IamMusicPlayer.MODID,
+					"item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName().getPath() + "_kame");
+		}
 
-        return new ResourceLocation(IamMusicPlayer.MODID,
-                "item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName().getPath());
-    }
+		return new ResourceLocation(IamMusicPlayer.MODID,
+				"item/" + IMPItems.PARABOLIC_ANTENNA.getRegistryName().getPath());
+	}
 
-    public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
-        this.cameraTransformType = cameraTransformType;
-        return net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(), cameraTransformType, mat);
-    }
+	public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
+		this.cameraTransformType = cameraTransformType;
+		return net.minecraftforge.client.ForgeHooksClient.handlePerspective(getBakedModel(), cameraTransformType, mat);
+	}
 }

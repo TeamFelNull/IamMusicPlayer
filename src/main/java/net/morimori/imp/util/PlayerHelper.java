@@ -12,40 +12,40 @@ import net.minecraft.tileentity.SkullTileEntity;
 import net.morimori.imp.file.PlayList;
 
 public class PlayerHelper {
-    public static Map<String, GameProfile> PlayerTextuerProfies = new HashMap<String, GameProfile>();
+	public static Map<String, GameProfile> PlayerTextuerProfies = new HashMap<String, GameProfile>();
 
-    public static String getUUID(MinecraftServer ms, String name) {
-        return getUUID(ms.getPlayerList().getPlayerByUsername(name));
-    }
+	public static String getUUID(MinecraftServer ms, String name) {
+		return getUUID(ms.getPlayerList().getPlayerByUsername(name));
+	}
 
-    public static String getUUID(PlayerEntity pl) {
-        return PlayerEntity.getUUID(pl.getGameProfile()).toString();
-    }
+	public static String getUUID(PlayerEntity pl) {
+		return PlayerEntity.getUUID(pl.getGameProfile()).toString();
+	}
 
-    public static GameProfile getPlayerTextuerProfile(String name) {
+	public static GameProfile getPlayerTextuerProfile(String name) {
 
-        if (PlayerTextuerProfies.containsKey(name))
-            return PlayerTextuerProfies.get(name);
+		if (PlayerTextuerProfies.containsKey(name))
+			return PlayerTextuerProfies.get(name);
 
-        GameProfile gp = new GameProfile(UUID.fromString(PlayList.FakeUUID), name);
-        PlayerTextuerProfies.put(name, gp);
+		GameProfile gp = new GameProfile(UUID.fromString(PlayList.FakeUUID), name);
+		PlayerTextuerProfies.put(name, gp);
 
-        GameProfileLoader GPL = new GameProfileLoader(name);
-        GPL.start();
+		GameProfileLoader GPL = new GameProfileLoader(name);
+		GPL.start();
 
-        return gp;
-    }
+		return gp;
+	}
 }
 
 class GameProfileLoader extends Thread {
-    private String name;
+	private String name;
 
-    public GameProfileLoader(String name) {
-        this.name = name;
-    }
+	public GameProfileLoader(String name) {
+		this.name = name;
+	}
 
-    public void run() {
-        GameProfile gp = PlayerHelper.PlayerTextuerProfies.get(name);
-        PlayerHelper.PlayerTextuerProfies.put(name, SkullTileEntity.updateGameProfile(gp));
-    }
+	public void run() {
+		GameProfile gp = PlayerHelper.PlayerTextuerProfies.get(name);
+		PlayerHelper.PlayerTextuerProfies.put(name, SkullTileEntity.updateGameProfile(gp));
+	}
 }

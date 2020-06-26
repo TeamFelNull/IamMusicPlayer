@@ -10,16 +10,16 @@
       "tag": "forge:ingots/iron"
     },
     "B": {
-      "item": "iammusicplayer:speaker"
+    "item": "iammusicplayer:speaker"
     },
     "C": {
-      "item": "iammusicplayer:acoustic_amplifier"
+    "item": "iammusicplayer:acoustic_amplifier"
     },
     "D": {
-      "item": "iammusicplayer:computer"
+    "item": "iammusicplayer:computer"
     },
     "E": {
-      "item": "iammusicplayer:cassette_player"
+    "item": "iammusicplayer:cassette_player"
     }
   },
   "result": {
