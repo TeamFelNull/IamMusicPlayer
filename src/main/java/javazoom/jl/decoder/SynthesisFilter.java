@@ -1,10 +1,10 @@
 /*
  * 11/19/04 1.0 moved to LGPL.
- *
+ * 
  * 04/01/00 Fixes for running under build 23xx Microsoft JVM. mdm.
- *
- * 19/12/99 Performance improvements to compute_pcm_samples().
- *			Mat McGowan. mdm@techie.com.
+ * 
+ * 19/12/99 Performance improvements to compute_pcm_samples().  
+ *			Mat McGowan. mdm@techie.com. 
  *
  * 16/02/99 Java Conversion by E.B , javalayer@javazoom.net
  *
@@ -47,49 +47,49 @@ final class SynthesisFilter
   private int				 channel;
   private float 			 scalefactor;
   private float[]			 eq;
-
+	
 	/**
-	 * Quality value for controlling CPU usage/quality tradeoff.
+	 * Quality value for controlling CPU usage/quality tradeoff. 
 	 */
 	/*
 	private int				quality;
-
+	
 	private int				v_inc;
-
-
-
+	
+	
+	
 	public static final int	HIGH_QUALITY = 1;
 	public static final int MEDIUM_QUALITY = 2;
 	public static final int LOW_QUALITY = 4;
 	*/
-
+	
   /**
    * Contructor.
    * The scalefactor scales the calculated float pcm samples to short values
    * (raw pcm samples are in [-1.0, 1.0], if no violations occur).
    */
   public SynthesisFilter(int channelnumber, float factor, float[] eq0)
-  {
+  {  	 
 	  if (d==null)
 	  {
 			d = load_d();
 			d16 = splitArray(d, 16);
 	  }
-
+	  
 	  v1 = new float[512];
 	 v2 = new float[512];
 	 samples = new float[32];
      channel = channelnumber;
 	 scalefactor = factor;
-	 setEQ(eq);
+	 setEQ(eq);	 
 	 //setQuality(HIGH_QUALITY);
-
+	 
      reset();
   }
-
+  
   public void setEQ(float[] eq0)
   {
-	 this.eq = eq0;
+	 this.eq = eq0;	 
 	 if (eq==null)
 	 {
 		 eq = new float[32];
@@ -98,33 +98,33 @@ final class SynthesisFilter
 	 }
 	 if (eq.length<32)
 	 {
-		throw new IllegalArgumentException("eq0");
+		throw new IllegalArgumentException("eq0");	 
 	 }
-
+	  
   }
-
+  
 	/*
 	private void setQuality(int quality0)
 	{
 	  	switch (quality0)
-	  	{
+	  	{		
 		case HIGH_QUALITY:
 		case MEDIUM_QUALITY:
-		case LOW_QUALITY:
-			v_inc = 16 * quality0;
+		case LOW_QUALITY:						  
+			v_inc = 16 * quality0;			
 			quality = quality0;
-			break;
+			break;	
 		default :
 			throw new IllegalArgumentException("Unknown quality value");
-	  	}
+	  	}				
 	}
-
+	
 	public int getQuality()
 	{
-		return quality;
+		return quality;	
 	}
 	*/
-
+  
   /**
    * Reset the synthesis filter.
    */
@@ -136,13 +136,13 @@ final class SynthesisFilter
      // initialize v1[] and v2[]:
      //for (floatp = v1 + 512, floatp2 = v2 + 512; floatp > v1; )
 	 //   *--floatp = *--floatp2 = 0.0;
-	 for (int p=0;p<512;p++)
+	 for (int p=0;p<512;p++) 
 		 v1[p] = v2[p] = 0.0f;
 
      // initialize samples[]:
      //for (floatp = samples + 32; floatp > samples; )
 	 //  *--floatp = 0.0;
-	 for (int p2=0;p2<32;p2++)
+	 for (int p2=0;p2<32;p2++) 
 		 samples[p2] = 0.0f;
 
      actual_v = v1;
@@ -154,18 +154,18 @@ final class SynthesisFilter
    * Inject Sample.
    */
   public void input_sample(float sample, int subbandnumber)
-  {
+  {	 	 		  
 	  samples[subbandnumber] = eq[subbandnumber]*sample;
   }
 
   public void input_samples(float[] s)
   {
 	  for (int i=31; i>=0; i--)
-	  {
+	  {		
 		 samples[i] = s[i]*eq[i];
 	  }
   }
-
+  
   /**
    * Compute new values via a fast cosine transform.
    */
@@ -174,38 +174,38 @@ final class SynthesisFilter
 	// p is fully initialized from x1
 	 //float[] p = _p;
 	 // pp is fully initialized from p
-	 //float[] pp = _pp;
-
+	 //float[] pp = _pp; 
+	  
 	 //float[] new_v = _new_v;
-
+	  
   	//float[] new_v = new float[32]; // new V[0-15] and V[33-48] of Figure 3-A.2 in ISO DIS 11172-3
 	//float[] p = new float[16];
 	//float[] pp = new float[16];
-
+	  
 	 /*
 	 for (int i=31; i>=0; i--)
 	 {
 		 new_v[i] = 0.0f;
 	 }
 	  */
-
+	  
 	float new_v0, new_v1, new_v2, new_v3, new_v4, new_v5, new_v6, new_v7, new_v8, new_v9;
 	float new_v10, new_v11, new_v12, new_v13, new_v14, new_v15, new_v16, new_v17, new_v18, new_v19;
 	float new_v20, new_v21, new_v22, new_v23, new_v24, new_v25, new_v26, new_v27, new_v28, new_v29;
 	float new_v30, new_v31;
-
-	new_v0 = new_v1 = new_v2 = new_v3 = new_v4 = new_v5 = new_v6 = new_v7 = new_v8 = new_v9 =
-	new_v10 = new_v11 = new_v12 = new_v13 = new_v14 = new_v15 = new_v16 = new_v17 = new_v18 = new_v19 =
-	new_v20 = new_v21 = new_v22 = new_v23 = new_v24 = new_v25 = new_v26 = new_v27 = new_v28 = new_v29 =
+	  
+	new_v0 = new_v1 = new_v2 = new_v3 = new_v4 = new_v5 = new_v6 = new_v7 = new_v8 = new_v9 = 
+	new_v10 = new_v11 = new_v12 = new_v13 = new_v14 = new_v15 = new_v16 = new_v17 = new_v18 = new_v19 = 
+	new_v20 = new_v21 = new_v22 = new_v23 = new_v24 = new_v25 = new_v26 = new_v27 = new_v28 = new_v29 = 
 	new_v30 = new_v31 = 0.0f;
-
-
+	
+	
 //	float[] new_v = new float[32]; // new V[0-15] and V[33-48] of Figure 3-A.2 in ISO DIS 11172-3
 //	float[] p = new float[16];
 //	float[] pp = new float[16];
 
     float[] s = samples;
-
+	
 	float s0 = s[0];
 	float s1 = s[1];
 	float s2 = s[2];
@@ -216,7 +216,7 @@ final class SynthesisFilter
 	float s7 = s[7];
 	float s8 = s[8];
 	float s9 = s[9];
-	float s10 = s[10];
+	float s10 = s[10];	
 	float s11 = s[11];
 	float s12 = s[12];
 	float s13 = s[13];
@@ -226,7 +226,7 @@ final class SynthesisFilter
 	float s17 = s[17];
 	float s18 = s[18];
 	float s19 = s[19];
-	float s20 = s[20];
+	float s20 = s[20];	
 	float s21 = s[21];
 	float s22 = s[22];
 	float s23 = s[23];
@@ -236,9 +236,9 @@ final class SynthesisFilter
 	float s27 = s[27];
 	float s28 = s[28];
 	float s29 = s[29];
-	float s30 = s[30];
+	float s30 = s[30];	
 	float s31 = s[31];
-
+		
 	float p0 = s0 + s31;
 	float p1 = s1 + s30;
 	float p2 = s2 + s29;
@@ -255,7 +255,7 @@ final class SynthesisFilter
 	float p13 = s13 + s18;
 	float p14 = s14 + s17;
 	float p15 = s15 + s16;
-
+	
 	float pp0 = p0 + p15;
 	float pp1 = p1 + p14;
 	float pp2 = p2 + p13;
@@ -289,7 +289,7 @@ final class SynthesisFilter
 	p13 = (pp9 - pp14) * cos3_16;
 	p14 = (pp10 - pp13) * cos5_16;
 	p15 = (pp11 - pp12) * cos7_16;
-
+	
 
 	pp0 = p0 + p3;
 	pp1 = p1 + p2;
@@ -337,7 +337,7 @@ final class SynthesisFilter
 	new_v31/*48-17*/ = -p0;
 	new_v0 = p1;
 	new_v23/*40-17*/ = -(new_v8 = p3) - p2;
-
+	
 	p0 = (s0 - s31) * cos1_64;
 	p1 = (s1 - s30) * cos3_64;
 	p2 = (s2 - s29) * cos5_64;
@@ -355,7 +355,7 @@ final class SynthesisFilter
 	p14 = (s14 - s17) * cos29_64;
 	p15 = (s15 - s16) * cos31_64;
 
-
+	
 	pp0 = p0 + p15;
 	pp1 = p1 + p14;
 	pp2 = p2 + p13;
@@ -372,7 +372,7 @@ final class SynthesisFilter
 	pp13 = (p5 - p10) * cos11_32;
 	pp14 = (p6 - p9) * cos13_32;
 	pp15 = (p7 - p8) * cos15_32;
-
+	
 
 	p0 = pp0 + pp7;
 	p1 = pp1 + pp6;
@@ -409,7 +409,7 @@ final class SynthesisFilter
 	pp14 = (p12 - p15) * cos1_8;
 	pp15 = (p13 - p14) * cos3_8;
 
-
+	
 	p0 = pp0 + pp1;
 	p1 = (pp0 - pp1) * cos1_4;
 	p2 = pp2 + pp3;
@@ -426,7 +426,7 @@ final class SynthesisFilter
 	p13 = (pp12 - pp13) * cos1_4;
 	p14 = pp14 + pp15;
 	p15 = (pp14 - pp15) * cos1_4;
-
+	
 
 	// manually doing something that a compiler should handle sucks
 	// coding like this is hard to read
@@ -445,12 +445,12 @@ final class SynthesisFilter
 	new_v30/*47-17*/ = (tmp1 = -p8 - p12 - p14 - p15) - p0;
 	new_v28/*45-17*/ = tmp1 - tmp2;
 
-	// insert V[0-15] (== new_v[0-15]) into actual v:
+	// insert V[0-15] (== new_v[0-15]) into actual v:	
 	// float[] x2 = actual_v + actual_write_pos;
 	float dest[] = actual_v;
-
+	
 	int pos = actual_write_pos;
-
+	
 	dest[0 + pos] = new_v0;
 	dest[16 + pos] = new_v1;
 	dest[32 + pos] = new_v2;
@@ -490,7 +490,7 @@ final class SynthesisFilter
 
 	// insert V[32] (== -new_v[0]) into other v:
 	dest = (actual_v==v1) ? v2 : v1;
-
+	
 	dest[0 + pos] = -new_v0;
 	// insert V[33-48] (== new_v[16-31]) into other v:
 	dest[16 + pos] = new_v16;
@@ -509,7 +509,7 @@ final class SynthesisFilter
 	dest[224 + pos] = new_v29;
 	dest[240 + pos] = new_v30;
 	dest[256 + pos] = new_v31;
-
+	
 	// insert V[49-63] (== new_v[30-16]) into other v:
 	dest[272 + pos] = new_v30;
 	dest[288 + pos] = new_v29;
@@ -525,7 +525,7 @@ final class SynthesisFilter
 	dest[448 + pos] = new_v19;
 	dest[464 + pos] = new_v18;
 	dest[480 + pos] = new_v17;
-	dest[496 + pos] = new_v16;
+	dest[496 + pos] = new_v16; 			
 /*
 	}
 	else
@@ -564,40 +564,39 @@ final class SynthesisFilter
 		v1[448 + actual_write_pos] = new_v19;
 		v1[464 + actual_write_pos] = new_v18;
 		v1[480 + actual_write_pos] = new_v17;
-		v1[496 + actual_write_pos] = new_v16;
+		v1[496 + actual_write_pos] = new_v16;	
 	}
-*/
+*/	
   }
-
+	
   /**
    * Compute new values via a fast cosine transform.
    */
-  @SuppressWarnings("unused")
-private void compute_new_v_old()
+  private void compute_new_v_old()
   {
 	// p is fully initialized from x1
 	 //float[] p = _p;
 	 // pp is fully initialized from p
-	 //float[] pp = _pp;
-
+	 //float[] pp = _pp; 
+	  
 	 //float[] new_v = _new_v;
-
+	  
   	float[] new_v = new float[32]; // new V[0-15] and V[33-48] of Figure 3-A.2 in ISO DIS 11172-3
 	float[] p = new float[16];
 	float[] pp = new float[16];
-
-
+	  
+	  
 	 for (int i=31; i>=0; i--)
 	 {
 		 new_v[i] = 0.0f;
 	 }
-
+	 
 //	float[] new_v = new float[32]; // new V[0-15] and V[33-48] of Figure 3-A.2 in ISO DIS 11172-3
 //	float[] p = new float[16];
 //	float[] pp = new float[16];
 
     float[] x1 = samples;
-
+	
 	p[0] = x1[0] + x1[31];
 	p[1] = x1[1] + x1[30];
 	p[2] = x1[2] + x1[29];
@@ -614,7 +613,7 @@ private void compute_new_v_old()
 	p[13] = x1[13] + x1[18];
 	p[14] = x1[14] + x1[17];
 	p[15] = x1[15] + x1[16];
-
+	
 	pp[0] = p[0] + p[15];
 	pp[1] = p[1] + p[14];
 	pp[2] = p[2] + p[13];
@@ -648,7 +647,7 @@ private void compute_new_v_old()
 	p[13] = (pp[9] - pp[14]) * cos3_16;
 	p[14] = (pp[10] - pp[13]) * cos5_16;
 	p[15] = (pp[11] - pp[12]) * cos7_16;
-
+	
 
 	pp[0] = p[0] + p[3];
 	pp[1] = p[1] + p[2];
@@ -696,7 +695,7 @@ private void compute_new_v_old()
 	new_v[48-17] = -p[0];
 	new_v[0] = p[1];
 	new_v[40-17] = -(new_v[8] = p[3]) - p[2];
-
+	
 	p[0] = (x1[0] - x1[31]) * cos1_64;
 	p[1] = (x1[1] - x1[30]) * cos3_64;
 	p[2] = (x1[2] - x1[29]) * cos5_64;
@@ -714,7 +713,7 @@ private void compute_new_v_old()
 	p[14] = (x1[14] - x1[17]) * cos29_64;
 	p[15] = (x1[15] - x1[16]) * cos31_64;
 
-
+	
 	pp[0] = p[0] + p[15];
 	pp[1] = p[1] + p[14];
 	pp[2] = p[2] + p[13];
@@ -731,7 +730,7 @@ private void compute_new_v_old()
 	pp[13] = (p[5] - p[10]) * cos11_32;
 	pp[14] = (p[6] - p[9]) * cos13_32;
 	pp[15] = (p[7] - p[8]) * cos15_32;
-
+	
 
 	p[0] = pp[0] + pp[7];
 	p[1] = pp[1] + pp[6];
@@ -768,7 +767,7 @@ private void compute_new_v_old()
 	pp[14] = (p[12] - p[15]) * cos1_8;
 	pp[15] = (p[13] - p[14]) * cos3_8;
 
-
+	
 	p[0] = pp[0] + pp[1];
 	p[1] = (pp[0] - pp[1]) * cos1_4;
 	p[2] = pp[2] + pp[3];
@@ -785,7 +784,7 @@ private void compute_new_v_old()
 	p[13] = (pp[12] - pp[13]) * cos1_4;
 	p[14] = pp[14] + pp[15];
 	p[15] = (pp[14] - pp[15]) * cos1_4;
-
+	
 
 	// manually doing something that a compiler should handle sucks
 	// coding like this is hard to read
@@ -808,7 +807,7 @@ private void compute_new_v_old()
 	x1 = new_v;
 	// float[] x2 = actual_v + actual_write_pos;
 	float[] dest = actual_v;
-
+	
 	dest[0 + actual_write_pos] = x1[0];
 	dest[16 + actual_write_pos] = x1[1];
 	dest[32 + actual_write_pos] = x1[2];
@@ -847,23 +846,23 @@ private void compute_new_v_old()
 	dest[496 + actual_write_pos] = -x1[1];
 
 	// insert V[32] (== -new_v[0]) into other v:
-
+	
   }
 
   /**
    * Compute PCM Samples.
    */
-
+  
   private float[] _tmpOut = new float[32];
-
-
+  
+  
   private void compute_pcm_samples0(Obuffer buffer)
   {
-	final float[] vp = actual_v;
+	final float[] vp = actual_v;	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -888,18 +887,18 @@ private void compute_new_v_old()
 			) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 	} // for
   }
-
+  
   private void compute_pcm_samples1(Obuffer buffer)
   {
-	final float[] vp = actual_v;
+	final float[] vp = actual_v;	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -925,18 +924,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
          } // for
   }
     private void compute_pcm_samples2(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -962,21 +961,20 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
 	}
-
-	  @SuppressWarnings("unused")
-	private void compute_pcm_samples3(Obuffer buffer)
+	
+	  private void compute_pcm_samples3(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	int idx = 0;
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1002,19 +1000,19 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
 	  }
-
+			
   private void compute_pcm_samples4(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1040,19 +1038,19 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
-
+  
   private void compute_pcm_samples5(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1078,18 +1076,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
-
+  
   private void compute_pcm_samples6(Obuffer buffer)
   {
-	final float[] vp = actual_v;
+	final float[] vp = actual_v;	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1115,19 +1113,19 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
-
+  
     private void compute_pcm_samples7(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1153,18 +1151,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
 	}
   private void compute_pcm_samples8(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1190,19 +1188,19 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
-
+  
   private void compute_pcm_samples9(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1228,18 +1226,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
-
+  
   private void compute_pcm_samples10(Obuffer buffer)
   {
-	final float[] vp = actual_v;
+	final float[] vp = actual_v;	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1265,18 +1263,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
   private void compute_pcm_samples11(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1302,17 +1300,17 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
     private void compute_pcm_samples12(Obuffer buffer)
   {
-	final float[] vp = actual_v;
+	final float[] vp = actual_v;	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1338,18 +1336,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
 	}
   private void compute_pcm_samples13(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1375,18 +1373,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
   private void compute_pcm_samples14(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+	
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1412,18 +1410,18 @@ private void compute_new_v_old()
 					) * scalefactor);
 
             tmpOut[i] = pcm_sample;
-
+			
 			dvp += 16;
 			} // for
   }
   private void compute_pcm_samples15(Obuffer buffer)
   {
 	final float[] vp = actual_v;
-
+		
 	//int inc = v_inc;
 	final float[] tmpOut = _tmpOut;
 	 int dvp =0;
-
+	
 			// fat chance of having this loop unroll
 			for( int i=0; i<32; i++)
 			{
@@ -1447,124 +1445,124 @@ private void compute_new_v_old()
 					(vp[0 + dvp] * dp[15])
 					) * scalefactor);
 
-            tmpOut[i] = pcm_sample;
+            tmpOut[i] = pcm_sample;			
 			dvp += 16;
 			} // for
 		}
-
+	 	 	 	 
 private void compute_pcm_samples(Obuffer buffer)
 {
-
+	
 	switch (actual_write_pos)
 	{
-	case 0:
+	case 0: 
 		compute_pcm_samples0(buffer);
 		break;
-	case 1:
+	case 1: 
 		compute_pcm_samples1(buffer);
 		break;
-	case 2:
+	case 2: 
 		compute_pcm_samples2(buffer);
 		break;
-	case 3:
+	case 3: 
 		compute_pcm_samples3(buffer);
 		break;
-	case 4:
+	case 4: 
 		compute_pcm_samples4(buffer);
 		break;
-	case 5:
+	case 5: 
 		compute_pcm_samples5(buffer);
 		break;
-	case 6:
+	case 6: 
 		compute_pcm_samples6(buffer);
 		break;
-	case 7:
+	case 7: 
 		compute_pcm_samples7(buffer);
 		break;
-	case 8:
+	case 8: 
 		compute_pcm_samples8(buffer);
 		break;
-	case 9:
+	case 9: 
 		compute_pcm_samples9(buffer);
 		break;
-	case 10:
+	case 10: 
 		compute_pcm_samples10(buffer);
 		break;
-	case 11:
+	case 11: 
 		compute_pcm_samples11(buffer);
 		break;
-	case 12:
+	case 12: 
 		compute_pcm_samples12(buffer);
 		break;
-	case 13:
+	case 13: 
 		compute_pcm_samples13(buffer);
 		break;
-	case 14:
+	case 14: 
 		compute_pcm_samples14(buffer);
 		break;
-	case 15:
+	case 15: 
 		compute_pcm_samples15(buffer);
 		break;
 	}
-
+		
 	if (buffer!=null)
-	{
+	{		
 		buffer.appendSamples(channel, _tmpOut);
 	}
-
+	 
 /*
 	 // MDM: I was considering putting in quality control for
-	 // low-spec CPUs, but the performance gain (about 10-15%)
+	 // low-spec CPUs, but the performance gain (about 10-15%) 
 	 // did not justify the considerable drop in audio quality.
 		switch (inc)
 		{
-		case 16:
+		case 16:		 
 		    buffer.appendSamples(channel, tmpOut);
 		    break;
 		case 32:
 			for (int i=0; i<16; i++)
 			{
 				buffer.append(channel, (short)tmpOut[i]);
-				buffer.append(channel, (short)tmpOut[i]);
+				buffer.append(channel, (short)tmpOut[i]); 
 			}
-			break;
+			break;			
 		case 64:
 			for (int i=0; i<8; i++)
 			{
 				buffer.append(channel, (short)tmpOut[i]);
 				buffer.append(channel, (short)tmpOut[i]);
 				buffer.append(channel, (short)tmpOut[i]);
-				buffer.append(channel, (short)tmpOut[i]);
+				buffer.append(channel, (short)tmpOut[i]); 
 			}
-			break;
-
+			break;			
+	
 		}
-*/
+*/	 
   }
 
   /**
    * Calculate 32 PCM samples and put the into the Obuffer-object.
    */
-
+	
   public void calculate_pcm_samples(Obuffer buffer)
   {
-	compute_new_v();
+	compute_new_v();	
 	compute_pcm_samples(buffer);
-
+    
 	actual_write_pos = (actual_write_pos + 1) & 0xf;
 	actual_v = (actual_v == v1) ? v2 : v1;
 
-	// initialize samples[]:
+	// initialize samples[]:	
     //for (register float *floatp = samples + 32; floatp > samples; )
-	// *--floatp = 0.0f;
-
+	// *--floatp = 0.0f;  
+	
 	// MDM: this may not be necessary. The Layer III decoder always
 	// outputs 32 subband samples, but I haven't checked layer I & II.
-	for (int p=0;p<32;p++)
+	for (int p=0;p<32;p++) 
 		samples[p] = 0.0f;
   }
-
-
+  
+  
   private static final double MY_PI = 3.14159265358979323846;
   private static final float cos1_64  =(float) (1.0 / (2.0 * Math.cos(MY_PI        / 64.0)));
   private static final float cos3_64  =(float) (1.0 / (2.0 * Math.cos(MY_PI * 3.0  / 64.0)));
@@ -1597,25 +1595,24 @@ private void compute_pcm_samples(Obuffer buffer)
   private static final float cos1_8   =(float) (1.0 / (2.0 * Math.cos(MY_PI        / 8.0)));
   private static final float cos3_8   =(float) (1.0 / (2.0 * Math.cos(MY_PI * 3.0  / 8.0)));
   private static final float cos1_4   =(float) (1.0 / (2.0 * Math.cos(MY_PI / 4.0)));
-
+  
   // Note: These values are not in the same order
-  // as in Annex 3-B.3 of the ISO/IEC DIS 11172-3
+  // as in Annex 3-B.3 of the ISO/IEC DIS 11172-3 
   // private float d[] = {0.000000000, -4.000442505};
-
+  
   private static float d[] = null;
-
-  /**
+  
+  /** 
    * d[] split into subarrays of length 16. This provides for
    * more faster access by allowing a block of 16 to be addressed
-   * with constant offset.
+   * with constant offset. 
    **/
-  private static float d16[][] = null;
-
+  private static float d16[][] = null;	
+  
   /**
-   * Loads the data for the d[] from the resource SFd.ser.
+   * Loads the data for the d[] from the resource SFd.ser. 
    * @return the loaded values for d[].
    */
-	@SuppressWarnings("rawtypes")
 	static private float[] load_d()
 	{
 		try
@@ -1627,19 +1624,19 @@ private void compute_pcm_samples(Obuffer buffer)
 		catch (IOException ex)
 		{
 			throw new ExceptionInInitializerError(ex);
-		}
+		}		
 	}
-
+	
 	/**
 	 * Converts a 1D array into a number of smaller arrays. This is used
 	 * to achieve offset + constant indexing into an array. Each sub-array
-	 * represents a block of values of the original array.
+	 * represents a block of values of the original array. 
 	 * @param array			The array to split up into blocks.
 	 * @param blockSize		The size of the blocks to split the array
 	 *						into. This must be an exact divisor of
 	 *						the length of the array, or some data
 	 *						will be lost from the main array.
-	 *
+	 * 
 	 * @return	An array of arrays in which each element in the returned
 	 *			array will be of length <code>blockSize</code>.
 	 */
@@ -1653,10 +1650,10 @@ private void compute_pcm_samples(Obuffer buffer)
 		}
 		return split;
 	}
-
+	
 	/**
 	 * Returns a subarray of an existing array.
-	 *
+	 * 
 	 * @param array	The array to retrieve a subarra from.
 	 * @param offs	The offset in the array that corresponds to
 	 *				the first index of the subarray.
@@ -1669,22 +1666,22 @@ private void compute_pcm_samples(Obuffer buffer)
 		{
 			len = array.length-offs;
 		}
-
+		
 		if (len < 0)
 			len = 0;
-
+		
 		float[] subarray = new float[len];
 		for (int i=0; i<len; i++)
 		{
 			subarray[i] = array[offs+i];
 		}
-
+		
 		return subarray;
 	}
-
+	
 	// The original data for d[]. This data is loaded from a file
-	// to reduce the overall package size and to improve performance.
-/*
+	// to reduce the overall package size and to improve performance. 
+/*  
   static final float d_data[] = {
   	0.000000000f, -0.000442505f,  0.003250122f, -0.007003784f,
   	0.031082153f, -0.078628540f,  0.100311279f, -0.572036743f,
@@ -1816,5 +1813,5 @@ private void compute_pcm_samples(Obuffer buffer)
 	0.007919312f, -0.003326416f,  0.000473022f,  0.000015259f
 	};
   */
-
+  
 }

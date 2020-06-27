@@ -15,7 +15,7 @@ apply plugin: 'maven-publish'
 version = "${mod_version}"
 group = "red.felnull.${mod_id}" 
 if (is_pre_version.toBoolean()) {
-archivesBaseName = "${mod_name}-${mc_version}-${pre_version}"
+archivesBaseName = "${mod_name}-${mc_version}-pre${pre_version}"
 }else{
 archivesBaseName = "${mod_name}-${mc_version}"
 }

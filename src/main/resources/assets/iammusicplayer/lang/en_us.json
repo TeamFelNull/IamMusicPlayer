@@ -75,7 +75,7 @@
   "sfu.everyone": "Everyone",
   "sfu.main": "Main",
 
-  "soundCategory.iammusicplayer": "Iam Music Player",
+  "soundCategory.iammusicplayer": "Iam Music Player: %s",
 
   "cd.recording": "Recording",
   "cd.playing": "Playing",

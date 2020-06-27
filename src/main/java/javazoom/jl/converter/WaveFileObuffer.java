@@ -1,11 +1,11 @@
 /*
  * 11/19/04  1.0 moved to LGPL.
- *
- * 12/12/99	 0.0.7 Renamed class, additional constructor arguments
+ * 
+ * 12/12/99	 0.0.7 Renamed class, additional constructor arguments 
  *			 and larger write buffers. mdm@techie.com.
  *
  * 15/02/99  Java Conversion by E.B ,javalayer@javazoom.net
- *
+ *  
  *-----------------------------------------------------------------------
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -29,8 +29,8 @@ import javazoom.jl.decoder.Obuffer;
 
 /**
  * Implements an Obuffer by writing the data to
- * a file in RIFF WAVE format.
- *
+ * a file in RIFF WAVE format. 
+ *  
  * @since 0.0
  */
 
@@ -43,32 +43,31 @@ public class WaveFileObuffer extends Obuffer
   private WaveFile      outWave;
 
   /**
-   * Creates a new WareFileObuffer instance.
-   *
-   * @param number_of_channels
+   * Creates a new WareFileObuffer instance. 
+   * 
+   * @param number_of_channels	
    *				The number of channels of audio data
-   *				this buffer will receive.
-   *
+   *				this buffer will receive. 
+   * 
    * @param freq	The sample frequency of the samples in the buffer.
-   *
+   * 
    * @param fileName	The filename to write the data to.
    */
   public WaveFileObuffer(int number_of_channels, int freq, String FileName)
   {
   	if (FileName==null)
 		throw new NullPointerException("FileName");
-
+	
 	buffer = new short[OBUFFERSIZE];
 	bufferp = new short[MAXCHANNELS];
 	channels = number_of_channels;
-
-	for (int i = 0; i < number_of_channels; ++i)
+	
+	for (int i = 0; i < number_of_channels; ++i) 
 		bufferp[i] = (short)i;
-
+	
 	outWave = new WaveFile();
-
-    @SuppressWarnings("unused")
-	int rc = outWave.OpenForWrite (FileName,freq,(short)16,(short)channels);
+	
+    int rc = outWave.OpenForWrite (FileName,freq,(short)16,(short)channels);
   }
 
   /**
@@ -84,19 +83,18 @@ public class WaveFileObuffer extends Obuffer
    * Write the samples to the file (Random Acces).
    */
   short[] myBuffer = new short[2];
-  @SuppressWarnings("unused")
-public void write_buffer(int val)
+  public void write_buffer(int val)
   {
-
+	  
     int k = 0;
     int rc = 0;
-
+    
 	rc = outWave.WriteData(buffer, bufferp[0]);
-	// REVIEW: handle RiffFile errors.
+	// REVIEW: handle RiffFile errors. 
 	/*
     for (int j=0;j<bufferp[0];j=j+2)
     {
-
+        
         //myBuffer[0] = (short)(((buffer[j]>>8)&0x000000FF) | ((buffer[j]<<8)&0x0000FF00));
         //myBuffer[1] = (short) (((buffer[j+1]>>8)&0x000000FF) | ((buffer[j+1]<<8)&0x0000FF00));
         myBuffer[0] = buffer[j];
@@ -109,9 +107,9 @@ public void write_buffer(int val)
 
   public void close()
   {
-    outWave.Close();
+    outWave.Close(); 
   }
-
+  
   /**
    *
    */

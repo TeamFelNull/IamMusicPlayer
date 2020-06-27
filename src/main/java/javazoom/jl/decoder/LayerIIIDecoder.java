@@ -1,19 +1,19 @@
 /*
  * 11/19/04	 1.0 moved to LGPL.
- *
+ * 
  * 18/06/01  Michael Scheerer,  Fixed bugs which causes
- *           negative indexes in method huffmann_decode and in method
+ *           negative indexes in method huffmann_decode and in method 
  *           dequanisize_sample.
  *
  * 16/07/01  Michael Scheerer, Catched a bug in method
  *           huffmann_decode, which causes an outOfIndexException.
  *           Cause : Indexnumber of 24 at SfBandIndex,
- *           which has only a length of 22. I have simply and dirty
+ *           which has only a length of 22. I have simply and dirty 
  *           fixed the index to <= 22, because I'm not really be able
- *           to fix the bug. The Indexnumber is taken from the MP3
- *           file and the origin Ma-Player with the same code works
- *           well.
- *
+ *           to fix the bug. The Indexnumber is taken from the MP3 
+ *           file and the origin Ma-Player with the same code works 
+ *           well.      
+ * 
  * 02/19/99  Java Conversion by E.B, javalayer@javazoom.net
  *-----------------------------------------------------------------------
  *   This program is free software; you can redistribute it and/or modify
@@ -42,7 +42,7 @@ package javazoom.jl.decoder;
 final class LayerIIIDecoder implements FrameDecoder
 {
 	final double d43 = (4.0/3.0);
-
+	
 	public int[]				scalefac_buffer;
 
 	// MDM: removed, as this wasn't being used.
@@ -791,10 +791,10 @@ final class LayerIIIDecoder implements FrameDecoder
 
 			huffcodetab.huffman_decoder(h, x, y, v, w, br);
 		  //if (index >= is_1d.length) System.out.println("i0="+i+"/"+(si.ch[ch].gr[gr].big_values<<1)+" Index="+index+" is_1d="+is_1d.length);
-
+	      
 	      is_1d[index++] = x[0];
 	      is_1d[index++] = y[0];
-
+	      
 	      CheckSumHuff = CheckSumHuff + x[0] + y[0];
 	      // System.out.println("x = "+x[0]+" y = "+y[0]);
 		}
@@ -907,13 +907,13 @@ final class LayerIIIDecoder implements FrameDecoder
 				else
 				{
 					if (-abv < t_43.length) xr_1d[quotien][reste] = -g_gain * t_43[-abv];
-					else xr_1d[quotien][reste] = -g_gain * (float)Math.pow(-abv, d43);
-				}
+					else xr_1d[quotien][reste] = -g_gain * (float)Math.pow(-abv, d43);	
+				} 
 	         }
 	         else
 	         {
 				if (is_1d[j] > 0) xr_1d[quotien][reste] = g_gain * (float)Math.pow(abv, d43);
-				else xr_1d[quotien][reste] = -g_gain * (float)Math.pow(-abv, d43);
+				else xr_1d[quotien][reste] = -g_gain * (float)Math.pow(-abv, d43);	         	
 	         }
 	        }
 	   }
@@ -1051,9 +1051,9 @@ final class LayerIIIDecoder implements FrameDecoder
 					 sfb_lines=sfBandIndex[sfreq].s[4] - sfb_start;
 					 sfb < 13; sfb++,sfb_start = sfBandIndex[sfreq].s[sfb],
 					 sfb_lines = sfBandIndex[sfreq].s[sfb+1] - sfb_start )
-					 {*/
+					 {*/						   
 		 		for( sfb=3; sfb < 13; sfb++)
-	            	 {
+	            	 {						   
 							//System.out.println("sfreq="+sfreq+" sfb="+sfb+" sfBandIndex="+sfBandIndex.length+" sfBandIndex[sfreq].s="+sfBandIndex[sfreq].s.length);
 							sfb_start = sfBandIndex[sfreq].s[sfb];
 							sfb_lines = sfBandIndex[sfreq].s[sfb+1] - sfb_start;
@@ -1813,8 +1813,7 @@ final class LayerIIIDecoder implements FrameDecoder
 		}
 	}
 
-    @SuppressWarnings("unused")
-	private int counter = 0;
+    private int counter = 0;
 	private static final int		SSLIMIT=18;
 	private static final int		SBLIMIT=32;
     // Size of the table of whole numbers raised to 4/3 power.

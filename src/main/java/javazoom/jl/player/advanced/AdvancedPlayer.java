@@ -1,5 +1,5 @@
 /*
- * 11/19/04		1.0 moved to LGPL.
+ * 11/19/04		1.0 moved to LGPL. 
  *-----------------------------------------------------------------------
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -45,9 +45,7 @@ public class AdvancedPlayer
 	/** Has the player been closed? */
 	private boolean closed = false;
 	/** Has the player played back all frames from the stream? */
-	@SuppressWarnings("unused")
 	private boolean complete = false;
-	@SuppressWarnings("unused")
 	private int lastPosition = 0;
 	/** Listener for the playback process */
 	private PlaybackListener listener;

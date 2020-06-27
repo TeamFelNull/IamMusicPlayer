@@ -77,7 +77,7 @@
   "sfu.everyone": "共有",
   "sfu.main": "自分",
   
-  "soundCategory.iammusicplayer": "私的音楽プレーヤー",
+  "soundCategory.iammusicplayer": "私的音楽プレーヤー: %s",
   
   "cd.recording": "記録中",
   "cd.playing": "再生中",

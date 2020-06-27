@@ -1,9 +1,9 @@
 /*
  * 11/19/04  1.0 moved to LGPL.
+ * 
+ * 11/17/04	 Uncomplete frames discarded. E.B, javalayer@javazoom.net 
  *
- * 11/17/04	 Uncomplete frames discarded. E.B, javalayer@javazoom.net
- *
- * 12/05/03	 ID3v2 tag returned. E.B, javalayer@javazoom.net
+ * 12/05/03	 ID3v2 tag returned. E.B, javalayer@javazoom.net 
  *
  * 12/12/99	 Based on Ibitstream. Exceptions thrown on errors,
  *			 Temporary removed seek functionality. mdm@techie.com
@@ -100,7 +100,7 @@ public final class Bitstream implements BitstreamErrors
 	 * The current specified syncword
 	 */
 	private int				syncword;
-
+	
 	/**
 	 * Audio header position in stream.
 	 */
@@ -142,12 +142,12 @@ public final class Bitstream implements BitstreamErrors
 	public Bitstream(InputStream in)
 	{
 		if (in==null) throw new NullPointerException("in");
-		in = new BufferedInputStream(in);
+		in = new BufferedInputStream(in);		
 		loadID3v2(in);
 		firstframe = true;
 		//source = new PushbackInputStream(in, 1024);
 		source = new PushbackInputStream(in, BUFFER_INT_SIZE*4);
-
+		
 		closeFrame();
 		//current_frame_number = -1;
 		//last_frame_number = -1;
@@ -161,21 +161,21 @@ public final class Bitstream implements BitstreamErrors
 	{
 		return header_pos;
 	}
-
+	
 	/**
 	 * Load ID3v2 frames.
 	 * @param in MP3 InputStream.
 	 * @author JavaZOOM
 	 */
 	private void loadID3v2(InputStream in)
-	{
+	{		
 		int size = -1;
 		try
 		{
 			// Read ID3v2 header (10 bytes).
-			in.mark(10);
+			in.mark(10);			
 			size = readID3v2Header(in);
-			header_pos = size;
+			header_pos = size;			
 		}
 		catch (IOException e)
 		{}
@@ -196,22 +196,21 @@ public final class Bitstream implements BitstreamErrors
 			{
 				rawid3v2 = new byte[size];
 				in.read(rawid3v2,0,rawid3v2.length);
-			}
+			}			
 		}
 		catch (IOException e)
 		{}
 	}
-
+	
 	/**
-	 * Parse ID3v2 tag header to find out size of ID3v2 frames.
+	 * Parse ID3v2 tag header to find out size of ID3v2 frames. 
 	 * @param in MP3 InputStream
 	 * @return size of ID3v2 frames + header
 	 * @throws IOException
 	 * @author JavaZOOM
 	 */
-	@SuppressWarnings("unused")
 	private int readID3v2Header(InputStream in) throws IOException
-	{
+	{		
 		byte[] id3header = new byte[4];
 		int size = -10;
 		in.read(id3header,0,3);
@@ -226,7 +225,7 @@ public final class Bitstream implements BitstreamErrors
 		}
 		return (size+10);
 	}
-
+	
 	/**
 	 * Return raw ID3v2 frames + header.
 	 * @return ID3v2 InputStream or null if ID3v2 frames are not available.
@@ -236,7 +235,7 @@ public final class Bitstream implements BitstreamErrors
 		if (rawid3v2 == null) return null;
 		else
 		{
-			ByteArrayInputStream bain = new ByteArrayInputStream(rawid3v2);
+			ByteArrayInputStream bain = new ByteArrayInputStream(rawid3v2);		
 			return bain;
 		}
 	}
@@ -273,7 +272,7 @@ public final class Bitstream implements BitstreamErrors
 			{
 				result.parseVBR(frame_bytes);
 				firstframe = false;
-			}
+			}			
 		}
 		catch (BitstreamException ex)
 		{
@@ -496,8 +495,7 @@ public final class Bitstream implements BitstreamErrors
   /**
    * Parses the data previously read with read_frame_data().
    */
-  @SuppressWarnings("unused")
-void parse_frame() throws BitstreamException
+  void parse_frame() throws BitstreamException
   {
 	// Convert Bytes read to int
 	int	b=0;
@@ -511,9 +509,9 @@ void parse_frame() throws BitstreamException
 	//	{
 	//		System.out.println("ID3v1 detected at offset "+t);
 	//		throw newBitstreamException(INVALIDFRAME, null);
-	//	}
+	//	} 	
 	//}
-
+	
 	for (int k=0;k<bytesize;k=k+4)
 	{
 		int convert = 0;
@@ -598,7 +596,7 @@ void parse_frame() throws BitstreamException
 	 */
 	private int readFully(byte[] b, int offs, int len)
 		throws BitstreamException
-	{
+	{		
 		int nRead = 0;
 		try
 		{

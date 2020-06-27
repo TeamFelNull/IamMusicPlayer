@@ -5,7 +5,7 @@
  * RIFF file format classes.
  * See Chapter 8 of "Multimedia Programmer's Reference" in
  * the Microsoft Windows SDK.
- *
+ *  
  *-----------------------------------------------------------------------
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU Library General Public License as published
@@ -41,8 +41,8 @@ public class RiffFile
     	public RiffChunkHeader()
     	{}
    }
-
-
+ 
+ 
    // DDCRET
    public static final int	DDC_SUCCESS = 0;           // The operation succeded
    public static final int	DDC_FAILURE = 1;           // The operation failed for unspecified reasons
@@ -51,7 +51,7 @@ public class RiffFile
    public static final int	DDC_INVALID_CALL = 4;      // Operation was called with invalid parameters
    public static final int	DDC_USER_ABORT = 5;        // Operation was aborted by the user
    public static final int	DDC_INVALID_FILE = 6;      // File format does not match
-
+   
    // RiffFileMode
    public static final int	RFM_UNKNOWN = 0;      	   // undefined type (can use to mean "N/A" or "not open")
    public static final int	RFM_WRITE = 1;        	   // open for write
@@ -69,38 +69,38 @@ public class RiffFile
       file = null;
       fmode = RFM_UNKNOWN;
       riff_header = new RiffChunkHeader();
-
+   
       riff_header.ckID = FourCC("RIFF");
    	  riff_header.ckSize = 0;
    }
-
+ 
    /**
     * Return File Mode.
 	*/
    public int CurrentFileMode()
    {return fmode;}
-
+   
    /**
     * Open a RIFF file.
 	*/
    public int Open(String Filename, int NewMode)
    {
       int retcode = DDC_SUCCESS;
-
+   
       if ( fmode != RFM_UNKNOWN )
       {
    	  	retcode = Close();
       }
-
+   
       if ( retcode == DDC_SUCCESS )
       {
    	  	switch ( NewMode )
    	  	{
    		 case RFM_WRITE:
 			try
-			{
+			{	
 				file = new RandomAccessFile(Filename,"rw");
-
+				
 			    try
 				{
    				   // Write the RIFF header...
@@ -110,17 +110,17 @@ public class RiffFile
 				   br[1] = (byte) ((riff_header.ckID >>> 16) & 0x000000FF);
 				   br[2] = (byte) ((riff_header.ckID >>> 8) & 0x000000FF);
 				   br[3] = (byte) (riff_header.ckID & 0x000000FF);
-
+				  
 			       byte br4 = (byte) ((riff_header.ckSize >>> 24)& 0x000000FF);
 				   byte br5 = (byte) ((riff_header.ckSize >>> 16)& 0x000000FF);
 				   byte br6 = (byte) ((riff_header.ckSize >>> 8)& 0x000000FF);
 				   byte br7 = (byte) (riff_header.ckSize & 0x000000FF);
-
+				   
 				   br[4] = br7;
 				   br[5] = br6;
 				   br[6] = br5;
 				   br[7] = br4;
-
+				   
 					file.write(br,0,8);
 				   fmode = RFM_WRITE;
 				} catch (IOException ioe)
@@ -134,14 +134,14 @@ public class RiffFile
    				 retcode = DDC_FILE_ERROR;
 			  }
    			  break;
-
+   
    		 case RFM_READ:
 			try
-			{
+			{	
 				file = new RandomAccessFile(Filename,"r");
 			    try
 				{
-   				   // Try to read the RIFF header...
+   				   // Try to read the RIFF header...   				   
 				   byte[] br = new byte[8];
 				   file.read(br,0,8);
 				   fmode = RFM_READ;
@@ -164,7 +164,7 @@ public class RiffFile
       }
    	 return retcode;
    }
-
+   
    /**
     * Write NumBytes data.
 	*/
@@ -175,10 +175,10 @@ public class RiffFile
    	  	return DDC_INVALID_CALL;
       }
 	  try
-  	  {
+  	  {   	
 		file.write(Data,0,NumBytes);
 	    fmode = RFM_WRITE;
- 	  }
+ 	  } 
 	  catch (IOException ioe)
 	  {
 			return DDC_FILE_ERROR;
@@ -186,12 +186,12 @@ public class RiffFile
       riff_header.ckSize += NumBytes;
    	  return DDC_SUCCESS;
    }
-
+   
 
 
    /**
     * Write NumBytes data.
-	*/
+	*/     
    public int Write(short[] Data, int NumBytes )
    {
       byte[] theData = new byte[NumBytes];
@@ -206,10 +206,10 @@ public class RiffFile
    	  	return DDC_INVALID_CALL;
       }
 	  try
-  	  {
+  	  {   	
 		file.write(theData,0,NumBytes);
 	    fmode = RFM_WRITE;
- 	  }
+ 	  } 
 	  catch (IOException ioe)
 	   {
 	  	return DDC_FILE_ERROR;
@@ -233,18 +233,18 @@ public class RiffFile
 	  byte br5 = (byte) ((Triff_header.ckSize >>> 16)& 0x000000FF);
 	  byte br6 = (byte) ((Triff_header.ckSize >>> 8)& 0x000000FF);
 	  byte br7 = (byte) (Triff_header.ckSize & 0x000000FF);
-
+	  
 	  br[4] = br7;
 	  br[5] = br6;
 	  br[6] = br5;
-	  br[7] = br4;
-
+	  br[7] = br4;	  
+	  
       if ( fmode != RFM_WRITE )
       {
    	  	return DDC_INVALID_CALL;
       }
 	  try
-  	  {
+  	  {   	
 		file.write(br,0,NumBytes);
 	    fmode = RFM_WRITE;
  	  } catch (IOException ioe)
@@ -266,7 +266,7 @@ public class RiffFile
    	  	return DDC_INVALID_CALL;
       }
 	  try
-  	  {
+  	  {   	
 		file.writeShort(theData);
 	    fmode = RFM_WRITE;
  	  } catch (IOException ioe)
@@ -291,7 +291,7 @@ public class RiffFile
    	  	return DDC_INVALID_CALL;
       }
 	  try
-  	  {
+  	  {   	
 		file.writeInt(theData);
 	    fmode = RFM_WRITE;
  	  } catch (IOException ioe)
@@ -306,7 +306,7 @@ public class RiffFile
 
    /**
     * Read NumBytes data.
-	*/
+	*/   
    public int Read (byte[] Data, int NumBytes)
    {
       int retcode = DDC_SUCCESS;
@@ -316,10 +316,10 @@ public class RiffFile
       } catch (IOException ioe)
 		    {
 			   retcode = DDC_FILE_ERROR;
-			}
+			}   
       return retcode;
    }
-
+   
    /**
     * Expect NumBytes data.
 	*/
@@ -333,14 +333,14 @@ public class RiffFile
       	   {
     	 		target = file.readByte();
 				if (target != Data.charAt(cnt++)) return DDC_FILE_ERROR;
-		   }
+		   }			
       } catch (IOException ioe)
  		 {
  		   return DDC_FILE_ERROR;
-		 }
+		 }   
    		return DDC_SUCCESS;
    }
-
+   
    /**
     * Close Riff File.
 	* Length is written too.
@@ -348,7 +348,7 @@ public class RiffFile
    public int Close()
    {
      int retcode = DDC_SUCCESS;
-
+   
       switch ( fmode )
       {
    	  	case RFM_WRITE:
@@ -362,12 +362,12 @@ public class RiffFile
 				br[1] = (byte) ((riff_header.ckID >>> 16) & 0x000000FF);
 				br[2] = (byte) ((riff_header.ckID >>> 8) & 0x000000FF);
 				br[3] = (byte) (riff_header.ckID & 0x000000FF);
-
+			    
 				br[7] = (byte) ((riff_header.ckSize >>> 24)& 0x000000FF);
 				br[6] = (byte) ((riff_header.ckSize >>> 16)& 0x000000FF);
 				br[5] = (byte) ((riff_header.ckSize >>> 8)& 0x000000FF);
 				br[4] = (byte) (riff_header.ckSize & 0x000000FF);
-				file.write(br,0,8);
+				file.write(br,0,8);	
 				file.close();
 			} catch (IOException ioe)
 			    {
@@ -378,7 +378,7 @@ public class RiffFile
 			   retcode = DDC_FILE_ERROR;
 			}
    		   break;
-
+   
    	  	case RFM_READ:
    	  	   try
 		   {
@@ -389,7 +389,7 @@ public class RiffFile
 			}
    		   break;
       }
-      file = null;
+      file = null;   
       fmode = RFM_UNKNOWN;
    	  return retcode;
    }
@@ -425,7 +425,7 @@ public class RiffFile
    	  } catch (IOException ioe)
 	    {
 	      return DDC_FILE_ERROR;
-	    }
+	    }   
    	  return Write ( Data, NumBytes );
    }
 
@@ -441,7 +441,7 @@ public class RiffFile
    	  } catch (IOException ioe)
 	    {
 	      return DDC_FILE_ERROR;
-	    }
+	    }   
    	  return Write ( Data, NumBytes );
    }
 
@@ -466,7 +466,6 @@ public class RiffFile
    /**
     * Error Messages.
 	*/
-	@SuppressWarnings("unused")
    private String DDCRET_String(int retcode)
    {
    	 switch ( retcode )
@@ -479,13 +478,12 @@ public class RiffFile
 	  case DDC_USER_ABORT:       return "DDC_USER_ABORT";
 	  case DDC_INVALID_FILE:     return "DDC_INVALID_FILE";
      }
-     return "Unknown Error";
+     return "Unknown Error";   
    }
 
    /**
     * Fill the header.
 	*/
-	@SuppressWarnings("deprecation")
    public static int FourCC(String ChunkName)
    {
       byte[] p = {0x20,0x20,0x20,0x20};
