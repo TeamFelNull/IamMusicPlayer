@@ -1,19 +1,15 @@
 package red.felnull.imp.block;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
-import com.sun.javafx.geom.Vec3d;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.IWaterLoggable;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.particles.ParticleTypes;
@@ -44,13 +40,18 @@ import red.felnull.imp.tileentity.BoomboxTileEntity;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.imp.util.SoundHelper;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
+
+
 public class BoomboxBlock extends Block implements IWaterLoggable {
-    public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     public static final BooleanProperty ON = IMPBooleanProperties.ON;
     public static final BooleanProperty WALL = IMPBooleanProperties.WALL;
     public static final IntegerProperty VOLUME = IMPBooleanProperties.VOLUME_0_64;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public BoomboxBlock(Properties properties) {
         super(properties.func_235838_a_((sr) -> {

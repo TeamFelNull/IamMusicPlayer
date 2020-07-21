@@ -1,15 +1,13 @@
 package red.felnull.imp.handler;
 
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.Set;
-
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import red.felnull.imp.block.BoomboxBlock;
 import red.felnull.imp.command.IMPCommands;
 import red.felnull.imp.file.DwonloadMusic;
 import red.felnull.imp.file.PlayList;
@@ -19,6 +17,10 @@ import red.felnull.imp.sound.WorldSoundKey;
 import red.felnull.imp.util.FileHelper;
 import red.felnull.imp.util.FileLoader;
 import red.felnull.imp.util.PlayerHelper;
+
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class ServerHandler {
     @SubscribeEvent
@@ -38,7 +40,12 @@ public class ServerHandler {
         FileLoader.createFolder(FileHelper.getWorldPictuerPath(e.getServer()));
         PlayList.checkWorldPlayLists(e.getServer(), false);
         DwonloadMusic.dwonloadSoundFromWorldPlayLists(e.getServer());
-        IMPCommands.registerCommand(e.getCommandDispatcher());
+
+    }
+
+    @SubscribeEvent
+    public static void onCommandRegister(RegisterCommandsEvent e) {
+        IMPCommands.registerCommand(e.getDispatcher());
     }
 
     @SubscribeEvent
