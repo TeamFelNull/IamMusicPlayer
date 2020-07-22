@@ -42,9 +42,7 @@ public class FileLoader {
             FileOutputStream stream = new FileOutputStream(path.toFile());
             nbt.putString("Timestamp", StringHelper.getTimeStamp());
             CompressedStreamTools.writeCompressed(nbt, stream);
-        } catch (FileNotFoundException e) {
-            IamMusicPlayer.LOGGER.error("Failed to Write the NBT File : " + e.getLocalizedMessage());
-        } catch (IOException e) {
+        } catch (Exception e) {
             IamMusicPlayer.LOGGER.error("Failed to Write the NBT File : " + e.getLocalizedMessage());
         }
     }
@@ -58,9 +56,7 @@ public class FileLoader {
         try {
             stream = new FileInputStream(path.toFile());
             return CompressedStreamTools.readCompressed(stream);
-        } catch (FileNotFoundException e) {
-            IamMusicPlayer.LOGGER.error("Failed to Read the NBT File : " + e.getLocalizedMessage());
-        } catch (IOException e) {
+        } catch (Exception e) {
             IamMusicPlayer.LOGGER.error("Failed to Read the NBT File : " + e.getLocalizedMessage());
         }
         return null;
