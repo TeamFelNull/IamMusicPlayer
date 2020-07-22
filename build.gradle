@@ -6,14 +6,13 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.4'
     }
-}
-plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
 }
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = "${mod_version}"
 group = "net.morimori.${mod_id}" 
@@ -22,7 +21,7 @@ archivesBaseName = "${mod_name}-${mc_version}"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' 
 
 minecraft {
- mappings channel: 'snapshot', version: '20200514-1.16'
+  mappings channel: 'snapshot', version: '20200514-1.16'
 
     runs {
         client {
@@ -82,25 +81,22 @@ repositories {
   }
 }
 configurations {
-    embed
-    compile.extendsFrom(embed)
-}
-shadowJar {
- classifier  = "${mc_version}"
- configurations = [project.configurations.embed]
- relocate 'javazoom', 'red.felnull.imp.shadow.javazoom'
- relocate 'com', 'red.felnull.imp.shadow.com'
+    shadow
+    compile.extendsFrom(shadow)
 }
 dependencies {
   minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
   compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
   runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-  embed files("libs/jl1.0.1.jar")
-  embed 'com.mpatric:mp3agic:0.9.1' 
+  shadow files("libs/jl1.0.1.jar")
+  shadow 'com.mpatric:mp3agic:0.9.1' 
 }
-
-jar {
-    manifest {
+   afterEvaluate {
+    reobf {
+    shadowJar { mappings = tasks.reobfJar.mappings }
+  }
+ }
+ext.allmanifest = {
         attributes([
             "Specification-Title": "${mod_id}",
             "Specification-Vendor": "MORIMORI0317",
@@ -110,28 +106,30 @@ jar {
             "Implementation-Vendor" :"TeamFelNull",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
-    }
 }
+shadowJar.configurations = [project.configurations.shadow]
+shadowJar {
+    project.configurations.shadow.setTransitive(true);
+    classifier ''
+    relocate 'javazoom', 'red.felnull.imp.shadow.javazoom'
+    relocate 'com.mpatric', 'red.felnull.imp.shadow.com.mpatric'
+}
+jar {
+	classifier 'onry'
+	manifest allmanifest
+}
+tasks.jar.dependsOn 'shadowJar'
 task devJar(type: Jar) {
     from sourceSets.main.output
     from sourceSets.main.allJava
     classifier = 'dev'
-    manifest {
-        attributes(["Specification-Title": "${mod_id}",
-                    "Specification-Vendor": "MORIMORI0317",
-                    "Specification-Version": "1", 
-                    "Implementation-Title": "${mod_name}",
-                    "Implementation-Version": "${version}",
-                    "Implementation-Vendor" :"TeamFelNull",
-                    "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
-    }
+	manifest allmanifest
 }
 artifacts {
-    archives devJar
+	archives shadowJar
+	archives devJar
 }
-
 jar.finalizedBy('reobfJar') 
-
 
 publishing {
     publications {

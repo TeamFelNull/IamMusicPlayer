@@ -1,10 +1,13 @@
 package red.felnull.imp.item;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraftforge.registries.IForgeRegistry;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.handler.RenderHandler;
 
 public class IMPItems {
+
     public static final Item SOUNDTEST = new MusicTestItem(new Item.Properties().group(IMPItemGroup.MOD_TAB))
             .setRegistryName(IamMusicPlayer.MODID, "soundtest");
     public static final Item TEST_CASSETTE_TAPE = new CassetteTapeItem(
@@ -50,7 +53,7 @@ public class IMPItems {
         registryItem(r, CASSETTE_PLAYER);
         registryItem(r, MAGNETIC_TAPE);
 
-        registryItem(r, SOUNDTEST);
+     //   registryItem(r, SOUNDTEST);
 
     }
 

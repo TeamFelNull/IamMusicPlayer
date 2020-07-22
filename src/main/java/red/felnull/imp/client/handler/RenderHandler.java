@@ -1,22 +1,12 @@
 package red.felnull.imp.client.handler;
 
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.function.Function;
 
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.MainMenuScreen;
 import net.minecraft.client.gui.screen.OptionsSoundsScreen;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
@@ -33,7 +23,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.event.TickEvent.RenderTickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import red.felnull.imp.IamMusicPlayer;
@@ -50,10 +40,14 @@ import red.felnull.imp.sound.SoundData;
 import red.felnull.imp.sound.WorldPlayListSoundData;
 import red.felnull.imp.util.*;
 
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Function;
+
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 
 public class RenderHandler {
-    private static Minecraft mc = Minecraft.getInstance();
+    //   private static Minecraft mc = Minecraft.getInstance();
     public static int waitThreadCrash;
     private static ResourceLocation tootiplaction = new ResourceLocation(IamMusicPlayer.MODID,
             "textures/gui/cassette_tooltip.png");
@@ -63,22 +57,22 @@ public class RenderHandler {
     public static Map<String, Integer> expations = new HashMap<String, Integer>();
 
     @SubscribeEvent
-    public static void onRender(RenderTickEvent e) {
-
+    public static void onRender(TickEvent.RenderTickEvent e) {
+        Minecraft mc = Minecraft.getInstance();
         if (!mc.gameSettings.showDebugInfo) {
             drawStrings(new MatrixStack());
         }
     }
 
     private static void drawStrings(MatrixStack matx) {
-
+        Minecraft mc = Minecraft.getInstance();
         List<String> stlist = new ArrayList<String>();
 
         stlist.addAll(addUpLoadPrograse());
 
         stlist.addAll(addDownloadPrograse());
 
-        for (Entry<String, Integer> exs : RenderHandler.expations.entrySet()) {
+        for (Map.Entry<String, Integer> exs : RenderHandler.expations.entrySet()) {
             stlist.add(exs.getKey());
         }
 
@@ -101,8 +95,8 @@ public class RenderHandler {
 
     private static List<String> addUpLoadPrograse() {
         List<String> stlist = new ArrayList<String>();
-
-        for (Entry<String, ClientSoundFileSender> en : ClientSoundFileSender.getSender().entrySet()) {
+        Minecraft mc = Minecraft.getInstance();
+        for (Map.Entry<String, ClientSoundFileSender> en : ClientSoundFileSender.getSender().entrySet()) {
             stlist.add(I18n.format("overlay.sending." + (mc.isSingleplayer() ? "world" : "server"),
                     en.getKey(),
                     stlist.add(StringHelper.fileCapacityNotation(ClientSoundFileSender.getPrograses(en.getKey()))
@@ -121,11 +115,11 @@ public class RenderHandler {
 
     private static List<String> addDownloadPrograse() {
         List<String> stlist = new ArrayList<String>();
-
+        Minecraft mc = Minecraft.getInstance();
         int cont = 0;
         try {
 
-            for (Entry<Integer, FileReceiverBuffer> en : ClientFileReceiver.receiverBufer.entrySet()) {
+            for (Map.Entry<Integer, FileReceiverBuffer> en : ClientFileReceiver.receiverBufer.entrySet()) {
                 stlist.add(I18n.format("overlay.receiver." + (mc.isSingleplayer() ? "world" : "server"),
                         Paths.get(en.getValue().filepath).toFile().getName()));
                 stlist.add(StringHelper.fileCapacityNotation(en.getValue().getCont()) + " / "
@@ -180,8 +174,7 @@ public class RenderHandler {
                 ModelRotation.X0_Y0);
 
         for (CassetteTapeItem tape : tapes) {
-            bakaItemModel(map, tape,
-                    md -> (tape).getModel(md));
+            bakaItemModel(map, tape, md -> (tape).getModel(md));
             CassetteItemRenderer.casettomodels.put(tape, e.getModelLoader().bake(
                     new ResourceLocation(IamMusicPlayer.MODID, "item/" + tape.getRegistryName()
                             .getPath()),
@@ -209,8 +202,7 @@ public class RenderHandler {
 
     }
 
-    private static <T extends IBakedModel> void bakaItemModel(Map<ResourceLocation, IBakedModel> map, Item item,
-                                                              Function<IBakedModel, T> factory) {
+    private static <T extends IBakedModel> void bakaItemModel(Map<ResourceLocation, IBakedModel> map, Item item, Function<IBakedModel, T> factory) {
         map.put(new ModelResourceLocation(item.getRegistryName(), "inventory"),
                 factory.apply(map.get(new ModelResourceLocation(item.getRegistryName(), "inventory"))));
     }
@@ -232,7 +224,7 @@ public class RenderHandler {
     public static void drawSoundDataTooltip(MatrixStack matx, int x, int y, ItemStack stack) {
 
         WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
-
+        Minecraft mc = Minecraft.getInstance();
         String imageuuid = wplsd.getSoundData().album_image_uuid;
 
         TextureManager tm = mc.getTextureManager();
@@ -304,6 +296,7 @@ public class RenderHandler {
 
     public static int getSoundDataTooltipWidth(ItemStack stack) {
         int size = 0;
+        Minecraft mc = Minecraft.getInstance();
         FontRenderer fr = mc.fontRenderer;
         WorldPlayListSoundData wplsd = WorldPlayListSoundData.getWorldPlayListData(stack);
 
@@ -334,6 +327,7 @@ public class RenderHandler {
     }
 
     public static void drawSoundDataBaggrand(MatrixStack matx, int x, int y, int w, int h, float r, float g, float b) {
+        Minecraft mc = Minecraft.getInstance();
         TextureManager tm = mc.getTextureManager();
 
         RenderSystem.pushMatrix();
