@@ -126,7 +126,7 @@ public class CassetteDeckBlock extends Block implements IWaterLoggable {
             TileEntity tileentity = worldIn.getTileEntity(pos);
 
             if (!(tileentity instanceof CassetteDeckTileEntity))
-                return ActionResultType.SUCCESS;
+                return ActionResultType.PASS;
 
             NetworkHooks.openGui((ServerPlayerEntity) playerIn, (INamedContainerProvider) tileentity, pos);
         }

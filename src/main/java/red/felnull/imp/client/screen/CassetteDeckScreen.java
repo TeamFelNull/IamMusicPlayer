@@ -1,15 +1,8 @@
 package red.felnull.imp.client.screen;
 
-import java.io.File;
-import java.nio.file.Path;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.HopperScreen;
-import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.gui.screen.inventory.ChestScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
@@ -24,6 +17,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.CassetteDeckBlock;
 import red.felnull.imp.block.CassetteDeckStates;
 import red.felnull.imp.block.IMPBlocks;
+import red.felnull.imp.block.SoundfileUploaderBlock;
 import red.felnull.imp.container.CassetteDeckContainer;
 import red.felnull.imp.file.PlayList;
 import red.felnull.imp.packet.CassetteDeckMessage;
@@ -33,6 +27,9 @@ import red.felnull.imp.tileentity.CassetteDeckTileEntity;
 import red.felnull.imp.util.PlayerHelper;
 import red.felnull.imp.util.SoundHelper;
 import red.felnull.imp.util.StringHelper;
+
+import java.io.File;
+import java.nio.file.Path;
 
 public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
     protected static final ResourceLocation CD_GUI_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID,
@@ -626,19 +623,20 @@ public class CassetteDeckScreen extends ContainerScreen<CassetteDeckContainer> {
         updateSoundSelecter();
     }
 
-    /*
-        @Override
-        public boolean mouseScrolled(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double p_mouseScrolled_5_) {
 
-            if (!(getMaxPage(PlayList.worldPlayList) == 0 || getMaxPage(PlayList.worldPlayList) == 1)) {
-                this.page = page - (int) p_mouseScrolled_5_;
-                this.page = MathHelper.clamp(page, 1, getMaxPage(PlayList.worldPlayList));
-            }
+    @Override
+    public boolean func_231043_a_(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double p_mouseScrolled_5_) {
 
-            return false;
-
+        if (!(getMaxPage(PlayList.worldPlayList) == 0 || getMaxPage(PlayList.worldPlayList) == 1)) {
+            this.page = page - (int) p_mouseScrolled_5_;
+            this.page = MathHelper.clamp(page, 1, getMaxPage(PlayList.worldPlayList));
         }
-    */
+
+        return false;
+
+    }
+
+
     @Override
     public void func_230430_a_(MatrixStack maxt, int p_render_1_, int p_render_2_, float p_render_3_) {
         this.func_230446_a_(maxt);

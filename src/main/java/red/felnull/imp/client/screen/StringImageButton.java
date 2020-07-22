@@ -2,10 +2,7 @@ package red.felnull.imp.client.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.MainMenuScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -32,6 +29,7 @@ public class StringImageButton extends ImageButton {
         this.lethi = leth;
         this.dredclos = redclos;
         this.cloer = 0;
+
     }
 
     @Override
@@ -48,8 +46,7 @@ public class StringImageButton extends ImageButton {
     public void stringRenderButton(MatrixStack matx, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
-        fontrenderer.func_238405_a_(matx, this.func_230458_i_().getString(), this.field_230690_l_ + this.field_230688_j_ / 2 + lethi,
-                this.field_230691_m_ + (this.field_230689_k_ - 8) / 2, cloer);
+        fontrenderer.func_238422_b_(matx, this.func_230458_i_(), this.field_230690_l_ + this.field_230688_j_ / 2 + lethi, this.field_230691_m_ + (this.field_230689_k_ - 8) / 2, cloer);
 
         if (dredclos) {
             mc.getTextureManager().bindTexture(SoundFileUploaderScreen.SFU_GUI_TEXTURE2);

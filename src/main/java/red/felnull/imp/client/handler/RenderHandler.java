@@ -4,6 +4,7 @@ package red.felnull.imp.client.handler;
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.sun.javafx.css.CascadingStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -17,6 +18,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -30,6 +32,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.file.ClientSoundFileSender;
 import red.felnull.imp.client.renderer.item.CassetteItemRenderer;
 import red.felnull.imp.client.renderer.item.ParabolicAntennaRenderer;
+import red.felnull.imp.client.screen.CassetteDeckScreen;
 import red.felnull.imp.client.screen.IMPSoundSlider;
 import red.felnull.imp.file.ClientFileReceiver;
 import red.felnull.imp.file.FileReceiverBuffer;
@@ -88,7 +91,7 @@ public class RenderHandler {
                 int l = 2;
                 int i1 = 2 + j * i;
                 AbstractGui.func_238467_a_(matx, 1, i1 - 1, 2 + k + 1, i1 + j - 1, -1873784752);
-                mc.fontRenderer.func_238405_a_(matx, s, (float) l, (float) i1, 14737632);
+                mc.fontRenderer.func_238422_b_(matx, new StringTextComponent(s), (float) l, (float) i1, 14737632);
             }
         }
     }
@@ -258,13 +261,13 @@ public class RenderHandler {
 
         RenderSystem.pushMatrix();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        fr.func_238405_a_(matx, SoundHelper.getSoundName(stack), x + 2 + pxsize / 4 + 3, y + 2, 0);
+        fr.func_238422_b_(matx, new StringTextComponent(SoundHelper.getSoundName(stack)), x + 2 + pxsize / 4 + 3, y + 2, 0);
 
         List<ITextComponent> itc = new ArrayList<ITextComponent>();
         SoundData.addSoundDataTooltip(stack, itc);
 
         for (int i = 0; i < itc.size(); i++) {
-            fr.func_238405_a_(matx, itc.get(i).getString(), x + 2 + pxsize / 4 + 3, y + 2 + 9 + 9 * i, 0);
+            fr.func_238422_b_(matx, new StringTextComponent(itc.get(i).getString()), x + 2 + pxsize / 4 + 3, y + 2 + 9 + 9 * i, 0);
         }
 
         RenderSystem.popMatrix();

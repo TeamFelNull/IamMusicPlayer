@@ -12,7 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.registries.IMPRegistries;
+import red.felnull.imp.api.registries.IMPRegistries;
 import red.felnull.imp.sound.SoundData;
 import red.felnull.imp.util.FileHelper;
 import red.felnull.imp.util.FileLoader;

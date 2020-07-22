@@ -1,4 +1,4 @@
-package red.felnull.imp.registries;
+package red.felnull.imp.api.registries;
 
 import java.util.HashMap;
 import java.util.Map;

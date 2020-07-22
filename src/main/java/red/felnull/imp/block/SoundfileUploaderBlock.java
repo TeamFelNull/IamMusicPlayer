@@ -1,12 +1,6 @@
 package red.felnull.imp.block;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.*;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -37,6 +31,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import red.felnull.imp.client.screen.SoundFileUploaderMonitorTextures;
 import red.felnull.imp.client.screen.SoundFileUploaderWindwos;
 import red.felnull.imp.tileentity.SoundFileUploaderTileEntity;
+
+import javax.annotation.Nullable;
 
 public class SoundfileUploaderBlock extends Block implements IWaterLoggable {
     public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
@@ -112,19 +108,22 @@ public class SoundfileUploaderBlock extends Block implements IWaterLoggable {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState stateIn, World worldIn, BlockPos pos,
-                                             PlayerEntity playerIn, Hand hand, BlockRayTraceResult brtr) {
+    public ActionResultType onBlockActivated(BlockState stateIn, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand hand, BlockRayTraceResult brtr) {
         if (!worldIn.isRemote) {
             if (brtr.getFace() == stateIn.get(FACING).rotateY()) {
                 TileEntity tileentity = worldIn.getTileEntity(pos);
 
                 if (!(tileentity instanceof SoundFileUploaderTileEntity))
-                    return ActionResultType.SUCCESS;
+                    return ActionResultType.PASS;
 
                 NetworkHooks.openGui((ServerPlayerEntity) playerIn, (INamedContainerProvider) tileentity, pos);
+
+            } else {
+                return ActionResultType.PASS;
             }
+
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
 
     }
 

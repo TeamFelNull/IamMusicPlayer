@@ -1,11 +1,7 @@
 package red.felnull.imp.client.screen;
 
-import java.io.File;
-import java.nio.file.Paths;
-
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -32,6 +28,9 @@ import red.felnull.imp.tileentity.SoundFileUploaderTileEntity;
 import red.felnull.imp.util.FileHelper;
 import red.felnull.imp.util.PlayerHelper;
 import red.felnull.imp.util.StringHelper;
+
+import java.io.File;
+import java.nio.file.Paths;
 
 public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderContainer> {
     protected static final ResourceLocation SFU_GUI_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID,
@@ -193,24 +192,24 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
         this.func_230459_a_(maxt, p_render_1_, p_render_2_);
     }
 
-    /*
-        @Override
-        public boolean mouseScrolled(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double p_mouseScrolled_5_) {
-            if (hasWindows(SoundFileUploaderWindwos.CLIENT_FILESELECT)) {
-                if (!(getMaxPage(files) == 0 || getMaxPage(files) == 1)) {
-                    this.page = page - (int) p_mouseScrolled_5_;
-                    this.page = MathHelper.clamp(page, 1, getMaxPage(files));
-                }
-            } else if (hasWindows(SoundFileUploaderWindwos.SERVER_FILESELECT)) {
-                if (!(getMaxPage(PlayList.worldPlayList) == 0 || getMaxPage(PlayList.worldPlayList) == 1)) {
-                    this.page = page - (int) p_mouseScrolled_5_;
-                    this.page = MathHelper.clamp(page, 1, getMaxPage(PlayList.worldPlayList));
-                }
-            }
-            return false;
 
+    @Override
+    public boolean func_231043_a_(double p_mouseScrolled_1_, double p_mouseScrolled_3_, double p_mouseScrolled_5_) {
+        if (hasWindows(SoundFileUploaderWindwos.CLIENT_FILESELECT)) {
+            if (!(getMaxPage(files) == 0 || getMaxPage(files) == 1)) {
+                this.page = page - (int) p_mouseScrolled_5_;
+                this.page = MathHelper.clamp(page, 1, getMaxPage(files));
+            }
+        } else if (hasWindows(SoundFileUploaderWindwos.SERVER_FILESELECT)) {
+            if (!(getMaxPage(PlayList.worldPlayList) == 0 || getMaxPage(PlayList.worldPlayList) == 1)) {
+                this.page = page - (int) p_mouseScrolled_5_;
+                this.page = MathHelper.clamp(page, 1, getMaxPage(PlayList.worldPlayList));
+            }
         }
-    */
+        return false;
+
+    }
+
     @Override
     protected void func_230450_a_(MatrixStack maxt, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.pushMatrix();
@@ -349,38 +348,41 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
         SoundFileUploaderTileEntity sfit = (SoundFileUploaderTileEntity) mc.world
                 .getTileEntity(this.container.pos);
 
+
         if (sfit.getUsePlayerUUID().equals(PlayerHelper.getUUID(mc.player))) {
             if (selectFile != null && PlayList.isExistsWorldPlaylistFile(selectFile)) {
-                this.field_230712_o_.func_238405_a_(maxt, selectFile.getName(),
-                        this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
+                this.drawCenterStrig(maxt, new StringTextComponent(selectFile.getName()), this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
 
                 if (serverSelectTargetR == ServerFileSelectTarget.EVERYONE
                         && PlayList.worldPlayListNamesMap.containsKey(selectFile)
                         && !PlayList.worldPlayListNamesMap.get(selectFile).equals(PlayList.FakePlayerName)) {
-                    this.field_230712_o_.func_238405_a_(maxt,
-                            I18n.format("sfu.selectfileupdate.updloadby",
-                                    PlayList.worldPlayListNamesMap.get(selectFile)),
+                    this.drawCenterStrig(maxt,
+                            new StringTextComponent(I18n.format("sfu.selectfileupdate.updloadby", PlayList.worldPlayListNamesMap.get(selectFile))),
                             this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
                 }
 
             } else if (selectFile != null && !PlayList.isExistsWorldPlaylistFile(selectFile)) {
 
-                this.field_230712_o_.func_238405_a_(maxt,
-                        I18n.format("sfu.selectfileupdate.nofile"),
+                this.drawCenterStrig(maxt,
+                        new StringTextComponent(I18n.format("sfu.selectfileupdate.nofile")),
                         this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
 
-                this.field_230712_o_.func_238405_a_(maxt, selectFile.getName(),
+                this.drawCenterStrig(maxt, new StringTextComponent(selectFile.getName()),
                         this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
 
             } else {
-                this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.error"), this.field_230708_k_ / 2,
+                this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.error")), this.field_230708_k_ / 2,
                         ys + 27 + 20, 11797508);
             }
         } else {
-            this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.anotherplater"),
+            this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.anotherplater")),
                     this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
         }
 
+    }
+
+    private void drawCenterStrig(MatrixStack maxt, StringTextComponent stringTextComponent, int i, int i1, int i2) {
+        this.func_238472_a_(maxt, this.field_230712_o_, stringTextComponent, i, i1, i2);
     }
 
     public void fritstUploadCofin() {
@@ -453,14 +455,14 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 
         if (sfit.getUsePlayerUUID().equals(PlayerHelper.getUUID(mc.player))) {
             if (selectFile != null && selectFile.exists()) {
-                this.field_230712_o_.func_238405_a_(maxt, StringHelper.characterLimit(mc, selectFile.getName(), 177), xs + 20,
+                this.field_230712_o_.func_238422_b_(maxt, new StringTextComponent(StringHelper.characterLimit(mc, selectFile.getName(), 177)), xs + 20,
                         ys + 37, 0);
-                this.field_230712_o_.func_238405_a_(maxt,
-                        StringHelper.fileCapacityNotation((selectFile.length())),
+                this.field_230712_o_.func_238422_b_(maxt,
+                        new StringTextComponent(StringHelper.fileCapacityNotation((selectFile.length()))),
                         xs + 20,
                         ys + 47, 0);
             } else if (!selectFile.exists()) {
-                this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.nofile"), xs + 20, ys + 37, 0);
+                this.field_230712_o_.func_238422_b_(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.nofile")), xs + 20, ys + 37, 0);
             }
 
             RenderSystem.pushMatrix();
@@ -480,9 +482,8 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
                     mc.getTextureManager().bindTexture(SFU_GUI_TEXTURE2);
                     AbstractGui.func_238463_a_(maxt, xs + 20, ys + 25 + 30, 0, 149, 12, b, 256, 256);
                     RenderSystem.popMatrix();
-                    this.field_230712_o_.func_238405_a_(maxt,
-                            StringHelper.getPercentage(ClientSoundFileSender.getLength(this.selectFile.getName()),
-                                    ClientSoundFileSender.getPrograses(this.selectFile.getName())),
+                    this.field_230712_o_.func_238422_b_(maxt, new StringTextComponent(StringHelper.getPercentage(ClientSoundFileSender.getLength(this.selectFile.getName()),
+                            ClientSoundFileSender.getPrograses(this.selectFile.getName()))),
                             xs + 20 + 15,
                             ys + 25 + 32,
                             0);
@@ -492,23 +493,23 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 
             }
             if (PlayList.isExistsWorldPlaylistFile(selectFile)) {
-                this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.overwrite"), xs + 20 + 71, ys + 25 + 46,
+                this.field_230712_o_.func_238422_b_(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.overwrite")), xs + 20 + 71, ys + 25 + 46,
                         0);
-                this.field_230712_o_.func_238405_a_(maxt,
-                        I18n.format("sfu.selectfileupdate.samenameexists"), xs + 20, ys + 25 + 65, 0);
+                this.field_230712_o_.func_238422_b_(maxt,
+                        new StringTextComponent(I18n.format("sfu.selectfileupdate.samenameexists")), xs + 20, ys + 25 + 65, 0);
             } else {
-                this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.forupload"), xs + 20 + 71, ys + 25 + 46,
+                this.field_230712_o_.func_238422_b_(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.forupload")), xs + 20 + 71, ys + 25 + 46,
                         0);
             }
 
             if (PlayList.worldPlayList != null) {
-                this.field_230712_o_.func_238405_a_(maxt,
-                        I18n.format("sfu.selectfileupdate.worldfilecont", PlayList.worldPlayList.length,
-                                StringHelper.fileCapacityNotation(PlayList.worldPlayListSize)),
+                this.field_230712_o_.func_238422_b_(maxt,
+                        new StringTextComponent(I18n.format("sfu.selectfileupdate.worldfilecont", PlayList.worldPlayList.length,
+                                StringHelper.fileCapacityNotation(PlayList.worldPlayListSize))),
                         xs + 20, ys + 25 + 57, 0);
             }
         } else {
-            this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.anotherplater"),
+            this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.anotherplater")),
                     this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
         }
     }
@@ -530,13 +531,13 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
 
         if (PlayList.worldPlayList != null) {
             if (PlayList.worldPlayList.length == 0) {
-                this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.nofile"),
+                this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.nofile")),
                         this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
             }
 
             if (!(getMaxPage(PlayList.worldPlayList) == 0 || getMaxPage(PlayList.worldPlayList) == 1)) {
                 RenderSystem.pushMatrix();
-                this.field_230712_o_.func_238405_a_(maxt, this.page + "/" + this.getMaxPage(PlayList.worldPlayList), xs + 18 + 96,
+                this.drawCenterStrig(maxt, new StringTextComponent(this.page + "/" + this.getMaxPage(PlayList.worldPlayList)), xs + 18 + 96,
                         ys + 101, 0);
                 RenderSystem.popMatrix();
             }
@@ -551,10 +552,10 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
         int ys = (this.field_230709_l_ - this.ySize) / 2;
         this.func_238474_b_(maxt, xs + 17, ys + 27, 0, 0, 181, 85);
         RenderSystem.popMatrix();
-        this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.error"), this.field_230708_k_ / 2,
+        this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.error")), this.field_230708_k_ / 2,
                 ys + 27 + 20, 11797508);
-        this.field_230712_o_.func_238405_a_(maxt,
-                I18n.format("sfu.selectfileupdate.noantena"),
+        this.drawCenterStrig(maxt,
+                new StringTextComponent(I18n.format("sfu.selectfileupdate.noantena")),
                 this.field_230708_k_ / 2, ys + 27 + 28, 16777215);
 
     }
@@ -696,45 +697,45 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
         if (sfit.getUsePlayerUUID().equals(PlayerHelper.getUUID(mc.player))) {
             if (!ClientSoundFileSender.isReservationOrSending(this.selectFile.getName())) {
                 if (selectFile != null && selectFile.exists()) {
-                    this.field_230712_o_.func_238405_a_(maxt,
-                            I18n.format("sfu.selectfileupdate." + (mc.isSingleplayer() ? "world" : "server")),
+                    this.drawCenterStrig(maxt,
+                            new StringTextComponent(I18n.format("sfu.selectfileupdate." + (mc.isSingleplayer() ? "world" : "server"))),
                             this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
-                    this.field_230712_o_.func_238405_a_(maxt, selectFile.getName(),
+                    this.drawCenterStrig(maxt, new StringTextComponent(selectFile.getName()),
                             this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
                 } else if (selectFile != null && !selectFile.exists()) {
-                    this.field_230712_o_.func_238405_a_(maxt,
-                            I18n.format("sfu.selectfileupdate.nofile"),
+                    this.drawCenterStrig(maxt,
+                            new StringTextComponent(I18n.format("sfu.selectfileupdate.nofile")),
                             this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
 
-                    this.field_230712_o_.func_238405_a_(maxt, selectFile.getName(),
+                    this.drawCenterStrig(maxt, new StringTextComponent(selectFile.getName()),
                             this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
 
                 } else {
-                    this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.error"), this.field_230708_k_ / 2,
+                    this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.error")), this.field_230708_k_ / 2,
                             ys + 27 + 20, 11797508);
                 }
 
             } else {
                 if (ClientSoundFileSender.getSender(this.selectFile.getName()) == null || selectFile.getName() == null
                         || !selectFile.exists()) {
-                    this.field_230712_o_.func_238405_a_(maxt, "Error", this.field_230708_k_ / 2, ys + 27 + 20, 11797508);
+                    this.drawCenterStrig(maxt, new StringTextComponent("Error"), this.field_230708_k_ / 2, ys + 27 + 20, 11797508);
 
                 } else {
 
-                    this.field_230712_o_.func_238405_a_(maxt,
-                            I18n.format("sfu.selectfileupding." + (mc.isSingleplayer() ? "world" : "server")),
+                    this.drawCenterStrig(maxt,
+                            new StringTextComponent(I18n.format("sfu.selectfileupding." + (mc.isSingleplayer() ? "world" : "server"))),
                             this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
-                    this.field_230712_o_.func_238405_a_(maxt, selectFile.getName(),
+                    this.drawCenterStrig(maxt, new StringTextComponent(selectFile.getName()),
                             this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
-                    this.field_230712_o_.func_238405_a_(maxt,
-                            StringHelper.getPercentage(ClientSoundFileSender.getLength(this.selectFile.getName()),
-                                    ClientSoundFileSender.getPrograses(this.selectFile.getName())),
+                    this.drawCenterStrig(maxt,
+                            new StringTextComponent(StringHelper.getPercentage(ClientSoundFileSender.getLength(this.selectFile.getName()),
+                                    ClientSoundFileSender.getPrograses(this.selectFile.getName()))),
                             this.field_230708_k_ / 2, ys + 27 + 28, 16777215);
 
                 }
             }
         } else {
-            this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.anotherplater"),
+            this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.anotherplater")),
                     this.field_230708_k_ / 2, ys + 27 + 20, 16777215);
         }
 
@@ -1224,13 +1225,13 @@ public class SoundFileUploaderScreen extends ContainerScreen<SoundFileUploaderCo
         RenderSystem.popMatrix();
 
         if (files.length == 0) {
-            this.field_230712_o_.func_238405_a_(maxt, I18n.format("sfu.selectfileupdate.nofile"),
+            this.drawCenterStrig(maxt, new StringTextComponent(I18n.format("sfu.selectfileupdate.nofile")),
                     this.field_230708_k_ / 2, ys + 27 + 12, 16777215);
         }
 
         if (!(getMaxPage(files) == 0 || getMaxPage(files) == 1)) {
             RenderSystem.pushMatrix();
-            this.field_230712_o_.func_238405_a_(maxt, this.page + "/" + this.getMaxPage(files),
+            this.field_230712_o_.func_238422_b_(maxt, new StringTextComponent(this.page + "/" + this.getMaxPage(files)),
                     xs + 18 + 96,
                     ys + 101, 0);
             RenderSystem.popMatrix();

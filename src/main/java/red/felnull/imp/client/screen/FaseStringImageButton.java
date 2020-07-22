@@ -85,7 +85,7 @@ public class FaseStringImageButton extends StringImageButton {
                         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
                     RenderHelper.drawPlayerFase(matx,
-                            faseplayername, this.field_230690_l_ + (fileselectbuton ? 0 : 2), this.field_230691_m_ + (this.field_230691_m_ - 8) / 2);
+                            faseplayername, this.field_230690_l_ + (fileselectbuton ? 0 : 2), this.field_230691_m_ + (this.field_230689_k_ - 8) / 2);
 
                     RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                     RenderSystem.popMatrix();
