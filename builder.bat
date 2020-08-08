@@ -1,1 +1,1 @@
-shadow
+gradlew build

@@ -4,7 +4,6 @@ package red.felnull.imp.client.handler;
 import com.google.common.base.Strings;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.sun.javafx.css.CascadingStyle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -32,7 +31,6 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.file.ClientSoundFileSender;
 import red.felnull.imp.client.renderer.item.CassetteItemRenderer;
 import red.felnull.imp.client.renderer.item.ParabolicAntennaRenderer;
-import red.felnull.imp.client.screen.CassetteDeckScreen;
 import red.felnull.imp.client.screen.IMPSoundSlider;
 import red.felnull.imp.file.ClientFileReceiver;
 import red.felnull.imp.file.FileReceiverBuffer;
@@ -47,8 +45,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.Function;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-
+//@Mod.EventBusSubscriber(modid = IamMusicPlayer.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RenderHandler {
     //   private static Minecraft mc = Minecraft.getInstance();
     public static int waitThreadCrash;
@@ -143,16 +140,15 @@ public class RenderHandler {
         return stlist;
     }
 
+
     @SubscribeEvent
     public static void onGui(GuiScreenEvent.InitGuiEvent.Post e) {
         if (e.getGui() instanceof OptionsSoundsScreen) {
-            e.addWidget(
-                    new IMPSoundSlider(e.getGui().field_230708_k_ / 2 - 155 + 160, e.getGui().field_230709_l_ / 6 - 12 + 24 * 5, 150, 20));
+            e.addWidget(new IMPSoundSlider(e.getGui().field_230708_k_ / 2 - 155 + 160, e.getGui().field_230709_l_ / 6 - 12 + 24 * 5, 150, 20));
         }
 
     }
 
-    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void onModelBaked(ModelBakeEvent e) {
 
@@ -186,6 +182,7 @@ public class RenderHandler {
 
     }
 
+    @SubscribeEvent
     public static void onModelRegistry(ModelRegistryEvent e) {
 
         List<CassetteTapeItem> tapes = new ArrayList<CassetteTapeItem>();
@@ -209,6 +206,7 @@ public class RenderHandler {
         map.put(new ModelResourceLocation(item.getRegistryName(), "inventory"),
                 factory.apply(map.get(new ModelResourceLocation(item.getRegistryName(), "inventory"))));
     }
+
 
     @SubscribeEvent
     public static void onToolTipRender(RenderTooltipEvent.PostBackground e) {
