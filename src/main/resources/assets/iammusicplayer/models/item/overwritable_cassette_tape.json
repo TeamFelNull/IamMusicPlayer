@@ -1,6 +1,0 @@
-{
-    "parent": "iammusicplayer:item/cassette",
-	"textures": {
-		"0": "iammusicplayer:item/overwritable_cassette_tape"
-	}
-}
