@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[32,)" 
+loaderVersion="[33,)" 
 issueTrackerURL="https://github.com/TeamFelnull/IamMusicPlayer/issues"
 logoFile="logo.png" 
 license="LGPL v3"
@@ -16,6 +16,6 @@ description="Thank you for downloading!\nThis mod is The Ikisugi Music Player MO
 [[dependencies.iammusicplayer]]
     modId="otyacraftengine"
     mandatory=true
-    versionRange="[1.3,)"
+    versionRange="[1.6,)"
     ordering="NONE"
     side="BOTH"
