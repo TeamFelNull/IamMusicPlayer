@@ -1,6 +1,8 @@
 package red.felnull.imp.client.gui.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -9,6 +11,7 @@ import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.gui.widget.ChangeableImageButton;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
+import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
 public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device.png");
@@ -30,6 +33,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.field_238745_s_ = this.ySize - 94;
 
         this.powerButton = this.addWidgetByIKSG(new ChangeableImageButton(xs + 181, ys + 202, 20, 20, 215, 0, 20, MSD_GUI_TEXTURES, 256, 256, (p_213096_1_) -> {
+            insPower(!this.isStateOn());
         }, new TranslationTextComponent("narrator.button.power")));
 
         if (isStateOn()) {
@@ -38,6 +42,16 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             powerButton.setTextuer(215, 0, 20, 256, 256);
         }
 
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayerByIKSG(MatrixStack matx, float partTick, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayerByIKSG(matx, partTick, mouseX, mouseY);
+        IKSGRenderUtil.matrixPush(matx);
+        int xs = (this.getWidthByIKSG() - this.xSize) / 2;
+        int ys = (this.getHeightByIKSG() - this.ySize) / 2;
+        IKSGRenderUtil.guiBindAndBlit(Monitor.OFF.getTextuer(), matx, xs + 8, ys + 20, 0, 0, 199, 122, 199, 122);
+        IKSGRenderUtil.matrixPop(matx);
     }
 
     @Override
@@ -55,7 +69,27 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     public boolean isStateOn() {
-        return IamMusicPlayer.proxy.getMinecraft().world.getBlockState(this.container.getPos()).get(MusicSharingDeviceBlock.ON);
+        return getTileEntity().getBlockState().get(MusicSharingDeviceBlock.ON);
     }
 
+
+    public void insPower(boolean on) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putBoolean("on", on);
+        this.instruction("power", tag);
+    }
+
+    private enum Monitor {
+        OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_on.png")),
+        PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_list.png"));
+        private final ResourceLocation location;
+
+        Monitor(ResourceLocation location) {
+            this.location = location;
+        }
+
+        public ResourceLocation getTextuer() {
+            return this.location;
+        }
+    }
 }

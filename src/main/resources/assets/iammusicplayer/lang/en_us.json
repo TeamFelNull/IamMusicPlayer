@@ -1,0 +1,11 @@
+{
+  "_comment.i": "item",
+  "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
+  "item.iammusicplayer.kamesuta_antenna": "Kamesuta Antenna",
+  "_comment.b": "block",
+  "block.iammusicplayer.music_sharing_device": "Music Sharing Device",
+  "_comment.s": "gui",
+  "container.music_sharing_device": "Music Sharing Device",
+  "narrator.button.power": "Power",
+  "_comment.l": "last"
+}
