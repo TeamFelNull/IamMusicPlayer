@@ -1,11 +1,11 @@
 package red.felnull.imp.client.gui.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
@@ -13,28 +13,38 @@ import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.util.IKSGDokataUtil;
+import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device.png");
+    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
+    private static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private ChangeableImageButton powerButton;
-    private MonitorTextures MonitorTexture;
+    private Monitors Monitorsa;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
         this.xSize = 215;
         this.ySize = 242;
-        setMonitorTexture();
+        setMonitorsa();
+    }
+
+    protected int getTexturStartX() {
+        return (this.getWidthByIKSG() - this.xSize) / 2;
+    }
+
+    protected int getTexturStartY() {
+        return (this.getHeightByIKSG() - this.ySize) / 2;
     }
 
     @Override
     public void initByIKSG() {
         super.initByIKSG();
         instruction("opengui", new CompoundNBT());
-        int xs = (this.getWidthByIKSG() - this.xSize) / 2;
-        int ys = (this.getHeightByIKSG() - this.ySize) / 2;
         this.field_238745_s_ = this.ySize - 94;
-        this.powerButton = this.addWidgetByIKSG(new ChangeableImageButton(xs + 181, ys + 202, 20, 20, 215, 0, 20, MSD_GUI_TEXTURES, 256, 256, (p_213096_1_) -> {
+        this.powerButton = this.addWidgetByIKSG(new ChangeableImageButton(getTexturStartX() + 181, getTexturStartY() + 202, 20, 20, 215, 0, 20, MSD_GUI_TEXTURES, 256, 256, (p_213096_1_) -> {
             insPower(!this.isStateOn());
         }, new TranslationTextComponent("narrator.button.power")));
         if (isStateOn()) {
@@ -44,19 +54,23 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
     }
 
+
     @Override
     protected void drawGuiContainerBackgroundLayerByIKSG(MatrixStack matx, float partTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayerByIKSG(matx, partTick, mouseX, mouseY);
         IKSGRenderUtil.matrixPush(matx);
-        int xs = (this.getWidthByIKSG() - this.xSize) / 2;
-        int ys = (this.getHeightByIKSG() - this.ySize) / 2;
-        IKSGRenderUtil.guiBindAndBlit(MonitorTexture.getTextuer(), matx, xs + 8, ys + 20, 0, 0, 199, 122, 199, 122);
+        IKSGRenderUtil.guiBindAndBlit(Monitorsa.getTextuer(), matx, getTexturStartX() + 8, getTexturStartY() + 20, 0, 0, 199, 122, 199, 122);
         IKSGRenderUtil.matrixPop(matx);
+        switch (Monitorsa) {
+            case NOANTENNA:
+                drawNoAntenna(matx);
+                break;
+        }
     }
 
     @Override
     public void tickByIKSG() {
-        setMonitorTexture();
+        setMonitorsa();
         if (isStateOn()) {
             powerButton.setTextuer(235, 0, 20, 256, 256);
         } else {
@@ -83,28 +97,45 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.instruction("power", tag);
     }
 
-    private void setMonitorTexture() {
+    private void setMonitorsa() {
         if (!isStateOn()) {
-            MonitorTexture = MonitorTextures.OFF;
+            Monitorsa = Monitors.OFF;
         } else if (getMode() == null) {
-            MonitorTexture = MonitorTextures.OFF;
+            Monitorsa = Monitors.OFF;
         } else if (getMode().equals("noantenna")) {
-            MonitorTexture = MonitorTextures.NOANTENNA;
+            Monitorsa = Monitors.NOANTENNA;
         } else if (getMode().equals("playlist")) {
-            MonitorTexture = MonitorTextures.PLAYLIST;
+            Monitorsa = Monitors.PLAYLIST;
         } else {
-            MonitorTexture = MonitorTextures.ON;
+            Monitorsa = Monitors.ON;
         }
     }
 
-    private enum MonitorTextures {
+    protected void drawNoAntenna(MatrixStack matrx) {
+        drawFontString(matrx, new StringTextComponent(IKSGDokataUtil.getYattaze()), getTexturStartX() + getXSize() / 2, getTexturStartY() + getYSize() / 2);
+    }
+
+    protected void drawFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
+        drawCenterString(this.field_230712_o_, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
+    }
+
+    public static void drawCenterString(FontRenderer fr, MatrixStack matrix, ITextComponent text, int x, int y, int color) {
+        int size = fr.func_238414_a_(text);
+        drawString(fr, matrix, text, x - size / 2, y, color);
+    }
+
+    public static void drawString(FontRenderer fr, MatrixStack matrix, ITextComponent text, int x, int y, int color) {
+        fr.func_243248_b(matrix, text, x, y, color);
+    }
+
+    private enum Monitors {
         OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_off.png")),
         ON(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_on.png")),
         PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_list.png")),
         NOANTENNA(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_noantenna.png"));
         private final ResourceLocation location;
 
-        MonitorTextures(ResourceLocation location) {
+        Monitors(ResourceLocation location) {
             this.location = location;
         }
 

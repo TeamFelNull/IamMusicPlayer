@@ -8,21 +8,22 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
+import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.tileentity.IkisugiLockableTileEntity;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
+import red.felnull.otyacraftengine.util.IKSGStyles;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity implements ITickableTileEntity {
@@ -49,26 +50,9 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         this.rotationYaw = tag.getInt("RotationYaw");
         this.inversionPitch = tag.getBoolean("InversionPitch");
         this.plpagemodes = IKSGNBTUtil.readStringMap(tag.getCompound("playerpagemodes"));
-        loadAllItemsByIKSG(tag, items);
+        IKSGNBTUtil.loadAllItemsByIKSG(tag, items);
     }
 
-    public static void loadAllItemsByIKSG(CompoundNBT tag, NonNullList<ItemStack> list) {
-        ListNBT listnbt = tag.getList("Items", 10);
-        List<Integer> ints = new ArrayList<>();
-        for (int i = 0; i < listnbt.size(); ++i) {
-            CompoundNBT compoundnbt = listnbt.getCompound(i);
-            int j = compoundnbt.getByte("Slot") & 255;
-            if (j >= 0 && j < list.size()) {
-                list.set(j, ItemStack.read(compoundnbt));
-                ints.add(j);
-            }
-        }
-        for (int i = 0; i < list.size(); i++) {
-            if (!ints.contains(i)) {
-                list.set(i, ItemStack.EMPTY);
-            }
-        }
-    }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
@@ -79,8 +63,8 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         CompoundNBT plmtag = new CompoundNBT();
         IKSGNBTUtil.writeStringMap(plmtag, this.plpagemodes);
         tag.put("playerpagemodes", plmtag);
-        CompoundNBT tag2 = ItemStackHelper.saveAllItems(tag, items);
-        return tag2;
+        IKSGNBTUtil.saveAllItemsByIKSG(tag, items);
+        return tag;
     }
 
     @Override

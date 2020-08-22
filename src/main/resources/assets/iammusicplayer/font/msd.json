@@ -1,0 +1,12 @@
+{
+    "providers": [
+        {
+            "type": "ttf",
+            "file": "iammusicplayer:kosugimaru.ttf",
+			"shift": [-0.4, 1.4],
+			"size": 10.0,
+			"oversample": 6.0,
+			"skip": ""
+        }
+	]
+}
