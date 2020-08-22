@@ -15,7 +15,7 @@ public class MusicSharingDeviceContainer extends IkisugiContainer {
 
     @Override
     protected void setSlot() {
-        this.addSlot(new Slot(inventory, 0, 183, 178));
+        this.addSlot(new AntennaSlot(inventory, 0, 183, 178));
     }
 
 

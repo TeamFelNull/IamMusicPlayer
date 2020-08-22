@@ -39,31 +39,33 @@ public class MusicSharingDeviceTileEntityRenderer extends TileEntityRenderer<Mus
             IKSGRenderUtil.matrixRotateDegreefY(matrix, 270);
             IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
         }
-        if (tileEntityIn.getAntenna().getItem() instanceof ParabolicAntennaItem) {
-            IBakedModel parabolic_antenna = IKSGRenderUtil.getBakedModel(((ParabolicAntennaItem) tileEntityIn.getAntenna().getItem()).getAntennaTextuer());
-            IKSGRenderUtil.matrixPush(matrix);
-            IKSGRenderUtil.matrixRotateDegreefY(matrix, -90f);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 4.5f, 0f);
-            IKSGRenderUtil.matrixTranslatef(matrix, pix * 10.5f, pix * 4.3f, pix * 13.5f);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * -4.5f, 0f);
-            IKSGRenderUtil.matrixRotateDegreefY(matrix, tileEntityIn.rotationYaw);
-            IKSGRenderUtil.matrixRotateDegreefZ(matrix, tileEntityIn.rotationPitch);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 4.5f, 0f);
-            IKSGRenderUtil.matrixScalf(matrix, 0.1f);
-            IKSGRenderUtil.renderBlockBakedModel(parabolic_antenna, matrix, ivb, combinedOverlayIn, tileEntityIn);
-            IKSGRenderUtil.matrixPop(matrix);
-        } else {
-            IKSGRenderUtil.matrixPush(matrix);
-            IKSGRenderUtil.matrixRotateDegreefY(matrix, -90f);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
-            IKSGRenderUtil.matrixTranslatef(matrix, pix * 10.5f, pix * 6f, pix * 13.5f);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * -1f, 0f);
-            IKSGRenderUtil.matrixRotateDegreefY(matrix, tileEntityIn.rotationYaw);
-            IKSGRenderUtil.matrixRotateDegreefZ(matrix, tileEntityIn.rotationPitch);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 1f, 0f);
-            Minecraft.getInstance().getItemRenderer().renderItem(tileEntityIn.getAntenna(), ItemCameraTransforms.TransformType.GROUND, combinedLightIn, combinedOverlayIn, matrix, bufferIn);
-            IKSGRenderUtil.matrixPop(matrix);
+        if (!tileEntityIn.getAntenna().isEmpty()) {
+            if (tileEntityIn.getAntenna().getItem() instanceof ParabolicAntennaItem) {
+                IBakedModel parabolic_antenna = IKSGRenderUtil.getBakedModel(((ParabolicAntennaItem) tileEntityIn.getAntenna().getItem()).getAntennaTextuer());
+                IKSGRenderUtil.matrixPush(matrix);
+                IKSGRenderUtil.matrixRotateDegreefY(matrix, -90f);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 4.5f, 0f);
+                IKSGRenderUtil.matrixTranslatef(matrix, pix * 10.5f, pix * 4.3f, pix * 13.5f);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * -4.5f, 0f);
+                IKSGRenderUtil.matrixRotateDegreefY(matrix, tileEntityIn.rotationYaw);
+                IKSGRenderUtil.matrixRotateDegreefZ(matrix, tileEntityIn.rotationPitch);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 4.5f, 0f);
+                IKSGRenderUtil.matrixScalf(matrix, 0.1f);
+                IKSGRenderUtil.renderBlockBakedModel(parabolic_antenna, matrix, ivb, combinedOverlayIn, tileEntityIn);
+                IKSGRenderUtil.matrixPop(matrix);
+            } else {
+                IKSGRenderUtil.matrixPush(matrix);
+                IKSGRenderUtil.matrixRotateDegreefY(matrix, -90f);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
+                IKSGRenderUtil.matrixTranslatef(matrix, pix * 10.5f, pix * 6f, pix * 13.5f);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * -1f, 0f);
+                IKSGRenderUtil.matrixRotateDegreefY(matrix, tileEntityIn.rotationYaw);
+                IKSGRenderUtil.matrixRotateDegreefZ(matrix, tileEntityIn.rotationPitch);
+                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 1f, 0f);
+                Minecraft.getInstance().getItemRenderer().renderItem(tileEntityIn.getAntenna(), ItemCameraTransforms.TransformType.GROUND, combinedLightIn, combinedOverlayIn, matrix, bufferIn);
+                IKSGRenderUtil.matrixPop(matrix);
+            }
         }
         IKSGRenderUtil.matrixPop(matrix);
     }

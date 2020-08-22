@@ -8,13 +8,22 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
+import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.tileentity.IkisugiLockableTileEntity;
+import red.felnull.otyacraftengine.util.IKSGNBTUtil;
+import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity implements ITickableTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
@@ -22,6 +31,7 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
     public int rotationPitch;//縦方向最大90度
     public int rotationYaw;//横方向最大360度
     private boolean inversionPitch;
+    private Map<String, String> plpagemodes = new HashMap<>();
 
     public MusicSharingDeviceTileEntity() {
         super(IMPTileEntityTypes.MUSIC_SHARING_DEVICE);
@@ -38,7 +48,26 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         this.rotationPitch = tag.getInt("RotationPitch");
         this.rotationYaw = tag.getInt("RotationYaw");
         this.inversionPitch = tag.getBoolean("InversionPitch");
-        ItemStackHelper.loadAllItems(tag, items);
+        this.plpagemodes = IKSGNBTUtil.readStringMap(tag.getCompound("playerpagemodes"));
+        loadAllItemsByIKSG(tag, items);
+    }
+
+    public static void loadAllItemsByIKSG(CompoundNBT tag, NonNullList<ItemStack> list) {
+        ListNBT listnbt = tag.getList("Items", 10);
+        List<Integer> ints = new ArrayList<>();
+        for (int i = 0; i < listnbt.size(); ++i) {
+            CompoundNBT compoundnbt = listnbt.getCompound(i);
+            int j = compoundnbt.getByte("Slot") & 255;
+            if (j >= 0 && j < list.size()) {
+                list.set(j, ItemStack.read(compoundnbt));
+                ints.add(j);
+            }
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if (!ints.contains(i)) {
+                list.set(i, ItemStack.EMPTY);
+            }
+        }
     }
 
     @Override
@@ -47,6 +76,9 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         tag.putInt("RotationPitch", this.rotationPitch);
         tag.putInt("RotationYaw", this.rotationYaw);
         tag.putBoolean("InversionPitch", this.inversionPitch);
+        CompoundNBT plmtag = new CompoundNBT();
+        IKSGNBTUtil.writeStringMap(plmtag, this.plpagemodes);
+        tag.put("playerpagemodes", plmtag);
         CompoundNBT tag2 = ItemStackHelper.saveAllItems(tag, items);
         return tag2;
     }
@@ -87,6 +119,14 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
     }
 
     @Override
+    public boolean isItemValidForSlot(int index, ItemStack stack) {
+        if (index == 0)
+            return ItemHelper.isAntenna(stack);
+
+        return false;
+    }
+
+    @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         ItemStack itemstack = this.items.get(index);
         boolean flag = !stack.isEmpty() && stack.isItemEqual(itemstack) && ItemStack.areItemStackTagsEqual(stack, itemstack);
@@ -115,17 +155,26 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
 
     @Override
     public CompoundNBT instructionFromClient(ServerPlayerEntity serverPlayerEntity, String s, CompoundNBT tag) {
+        String uuid = IKSGPlayerUtil.getUUID(serverPlayerEntity);
         if (s.equals("power")) {
             setBlockState(getBlockState().with(MusicSharingDeviceBlock.ON, tag.getBoolean("on")));
+        } else if (s.equals("opengui")) {
+            if (!plpagemodes.containsKey(uuid)) {
+                plpagemodes.put(uuid, "playlist");
+            }
         }
-
-
         return null;
     }
 
     @Override
     public void tick() {
         if (!world.isRemote) {
+            if (!ItemHelper.isAntenna(getAntenna())) {
+                plpagemodes.entrySet().stream().filter(n -> !n.getValue().equals("noantenna")).forEach(n -> plpagemodes.put(n.getKey(), "noantenna"));
+            } else {
+                plpagemodes.entrySet().stream().filter(n -> n.getValue().equals("noantenna")).forEach(n -> plpagemodes.put(n.getKey(), "playlist"));
+            }
+
             if (isOn()) {
                 this.rotationYaw += 2;
                 while (this.rotationYaw > 360) {
@@ -160,6 +209,18 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
 
     public ItemStack getAntenna() {
         return getStackInSlot(0);
+    }
+
+    public Map<String, String> getPlayerModeMap() {
+        return plpagemodes;
+    }
+
+    public String getMode(PlayerEntity pl) {
+        String uuid = IKSGPlayerUtil.getUUID(pl);
+        if (getPlayerModeMap().containsKey(uuid)) {
+            return getPlayerModeMap().get(uuid);
+        }
+        return null;
     }
 
 }
