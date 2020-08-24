@@ -13,6 +13,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.gui.widget.IkisugiImageButton;
 import red.felnull.imp.client.gui.widget.MSDScrollBarSlider;
+import red.felnull.imp.client.gui.widget.ScrollListButton;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
@@ -23,7 +24,9 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
 
@@ -38,6 +41,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ImageButton addGuildButton;
     private ScrollBarSlider guildlistbar;
     private ScrollBarSlider playlistbar;
+    private ScrollListButton guildButtons;
+    private ScrollListButton playlistButtons;
 
     private String listname;
 
@@ -90,9 +95,22 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.guildlistbar = this.addWidgetByIKSG(new MSDScrollBarSlider(getMonitorStartX() + 20, getMonitorStartY() + 20, 101, 100, 0, -20));
         IKSGScreenUtil.setVisible(this.guildlistbar, false);
 
-        this.playlistbar = this.addWidgetByIKSG(new MSDScrollBarSlider(getMonitorStartX() + 190, getMonitorStartY() + 20, 101, 100, 0, -160));
+        this.playlistbar = this.addWidgetByIKSG(new MSDScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -159));
         IKSGScreenUtil.setVisible(this.playlistbar, false);
 
+        List<ResourceLocation> locations = new ArrayList<>();
+        for (int i = 0; i < 30; i++) {
+            locations.add(MSD_GUI_TEXTURES);
+        }
+        this.guildButtons = this.addWidgetByIKSG(new ScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 18, 101, 18, 30, guildlistbar, locations, (n, m) -> {
+
+        }));
+        IKSGScreenUtil.setVisible(this.guildButtons, false);
+
+        this.playlistButtons = this.addWidgetByIKSG(new ScrollListButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, 30, playlistbar, locations, (n, m) -> {
+
+        }));
+        IKSGScreenUtil.setVisible(this.playlistButtons, false);
     }
 
     @Override
@@ -130,6 +148,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addGuildButton, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.guildlistbar, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.playlistbar, isMonitor(Monitors.PLAYLIST));
+        IKSGScreenUtil.setVisible(this.guildButtons, isMonitor(Monitors.PLAYLIST));
+        IKSGScreenUtil.setVisible(this.playlistButtons, isMonitor(Monitors.PLAYLIST));
     }
 
     private boolean isMonitor(Monitors... mo) {

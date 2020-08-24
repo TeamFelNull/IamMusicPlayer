@@ -15,9 +15,5 @@ public class MSDScrollBarSlider extends ScrollBarSlider {
         return MSD_SCROLL;
     }
 
-    @Override
-    protected void onDragByIKSG(double mouseX, double mouseY, double p_230983_5_, double p_230983_7_) {
-        super.onDragByIKSG(mouseX, mouseY, p_230983_5_, p_230983_7_);
-        System.out.println("test");
-    }
+
 }
