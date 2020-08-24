@@ -28,8 +28,9 @@ public class TestSoundItem extends Item {
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
+        playerIn.sendStatusMessage(IKSGStyles.withStyle(new StringTextComponent(IKSGDokataUtil.getKurashikiMukaiyamaRoshutsuZukiAll()), fontStyle), false);
 
-        playerIn.sendStatusMessage(IKSGStyles.withStyle(new StringTextComponent(IKSGDokataUtil.getYattaze()), fontStyle), false);
+        playerIn.getHeldItem(Hand.OFF_HAND).setDisplayName(IKSGStyles.withStyle(new StringTextComponent(IKSGDokataUtil.getYattaze()), fontStyle));
 
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }

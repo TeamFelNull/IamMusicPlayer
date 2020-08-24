@@ -6,6 +6,7 @@
   "block.iammusicplayer.music_sharing_device": "Music Sharing Device",
   "_comment.s": "gui",
   "container.music_sharing_device": "Music Sharing Device",
-  "narrator.button.power": "Power",
+  "msd.noantenna": "No antenna",
+  "msd.all": "All",
   "_comment.l": "last"
 }

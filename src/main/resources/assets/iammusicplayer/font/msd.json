@@ -2,9 +2,9 @@
     "providers": [
         {
             "type": "ttf",
-            "file": "iammusicplayer:kosugimaru.ttf",
+            "file": "iammusicplayer:flopdesignfont.ttf",
 			"shift": [-0.4, 1.4],
-			"size": 10.0,
+			"size": 8.0,
 			"oversample": 6.0,
 			"skip": ""
         }
