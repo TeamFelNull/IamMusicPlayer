@@ -11,15 +11,15 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
-import red.felnull.imp.client.gui.widget.IkisugiImageButton;
 import red.felnull.imp.client.gui.widget.MSDScrollBarSlider;
-import red.felnull.imp.client.gui.widget.ScrollListButton;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
+import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
+import red.felnull.otyacraftengine.client.gui.widget.StringImageButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
@@ -37,7 +37,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private ChangeableImageButton powerButton;
-    private IkisugiImageButton allbutton;
+    private StringImageButton allbutton;
     private ImageButton addGuildButton;
     private ScrollBarSlider guildlistbar;
     private ScrollBarSlider playlistbar;
@@ -78,10 +78,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         } else {
             powerButton.setTextuer(215, 0, 20, 256, 256);
         }
-        this.allbutton = this.addWidgetByIKSG(new IkisugiImageButton(getMonitorStartX() + 1, getMonitorStartY() + 1, 18, 18, 215, 60, 18, MSD_GUI_TEXTURES, n -> {
+        this.allbutton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 1, 18, 18, 215, 60, 18, MSD_GUI_TEXTURES, n -> {
 
         }, IKSGStyles.withStyle(new TranslationTextComponent("msd.all"), fontStyle)));
-        this.allbutton.setShowString(true);
         this.allbutton.setSizeAdjustment(true);
         this.allbutton.setShadwString(false);
         this.allbutton.setStringColor(0);
@@ -103,20 +102,21 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             locations.add(MSD_GUI_TEXTURES);
         }
         this.guildButtons = this.addWidgetByIKSG(new ScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 18, 101, 18, 30, guildlistbar, locations, (n, m) -> {
-
+            System.out.println(m);
         }));
         IKSGScreenUtil.setVisible(this.guildButtons, false);
 
         this.playlistButtons = this.addWidgetByIKSG(new ScrollListButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, 30, playlistbar, locations, (n, m) -> {
-
+            System.out.println(m);
         }));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
     }
 
     @Override
     public boolean func_231045_a_(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {
-        super.func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
-        return this.func_241217_q_() != null && this.func_231041_ay__() && p_231045_5_ == 0 ? this.func_241217_q_().func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_) : false;
+        boolean flag1 = super.func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
+        boolean flag2 = this.func_241217_q_() != null && this.func_231041_ay__() && p_231045_5_ == 0 ? this.func_241217_q_().func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_) : false;
+        return flag1 & flag2;
     }
 
 
