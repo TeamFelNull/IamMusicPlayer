@@ -10,18 +10,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
-import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.tileentity.IkisugiLockableTileEntity;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
+import red.felnull.otyacraftengine.util.IKSGServerUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +29,9 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
     public int rotationPitch;//縦方向最大90度
     public int rotationYaw;//横方向最大360度
     private boolean inversionPitch;
-    private Map<String, String> plpagemodes = new HashMap<>();
+    private Map<String, String> plpageModes = new HashMap<>();
+    private Map<String, CompoundNBT> plyerDatas = new HashMap<>();
+
 
     public MusicSharingDeviceTileEntity() {
         super(IMPTileEntityTypes.MUSIC_SHARING_DEVICE);
@@ -49,7 +48,8 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         this.rotationPitch = tag.getInt("RotationPitch");
         this.rotationYaw = tag.getInt("RotationYaw");
         this.inversionPitch = tag.getBoolean("InversionPitch");
-        this.plpagemodes = IKSGNBTUtil.readStringMap(tag.getCompound("playerpagemodes"));
+        this.plpageModes = IKSGNBTUtil.readStringMap(tag.getCompound("playerpageModes"));
+        this.plyerDatas = readNBTMap(tag.getCompound("plyerDatas"));
         IKSGNBTUtil.loadAllItemsByIKSG(tag, items);
     }
 
@@ -60,12 +60,24 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         tag.putInt("RotationPitch", this.rotationPitch);
         tag.putInt("RotationYaw", this.rotationYaw);
         tag.putBoolean("InversionPitch", this.inversionPitch);
-        CompoundNBT plmtag = new CompoundNBT();
-        IKSGNBTUtil.writeStringMap(plmtag, this.plpagemodes);
-        tag.put("playerpagemodes", plmtag);
+        tag.put("playerpageModes", IKSGNBTUtil.writeStringMap(new CompoundNBT(), this.plpageModes));
+        tag.put("plyerDatas", writeNBTMap(new CompoundNBT(), this.plyerDatas));
         IKSGNBTUtil.saveAllItemsByIKSG(tag, items);
         return tag;
     }
+
+
+    public static Map<String, CompoundNBT> readNBTMap(CompoundNBT tag) {
+        Map<String, CompoundNBT> map = new HashMap<>();
+        tag.keySet().forEach(n -> map.put(n, tag.getCompound(n)));
+        return map;
+    }
+
+    public static CompoundNBT writeNBTMap(CompoundNBT tag, Map<String, CompoundNBT> map) {
+        map.forEach((n, m) -> tag.put(n, m));
+        return tag;
+    }
+
 
     @Override
     protected ITextComponent getDefaultName() {
@@ -142,23 +154,49 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         String uuid = IKSGPlayerUtil.getUUID(serverPlayerEntity);
         if (s.equals("power")) {
             setBlockState(getBlockState().with(MusicSharingDeviceBlock.ON, tag.getBoolean("on")));
+        } else if (s.equals("mode")) {
+            plpageModes.put(uuid, tag.getString("name"));
         } else if (s.equals("opengui")) {
-            if (!plpagemodes.containsKey(uuid)) {
-                plpagemodes.put(uuid, "playlist");
+            if (!plpageModes.containsKey(uuid)) {
+                plpageModes.put(uuid, "playlist");
             }
+        } else if (s.equals("pathset")) {
+            if (!tag.isEmpty()) {
+                CompoundNBT taga = new CompoundNBT();
+                taga.putString("path", tag.getString("path"));
+                setPlayerData(uuid, taga);
+            } else {
+                CompoundNBT taga = new CompoundNBT();
+                taga.putString("path", "null");
+                setPlayerData(uuid, taga);
+            }
+
         }
+
         return null;
+    }
+
+    private void setPlayerData(String uuid, CompoundNBT tag) {
+        if (!plyerDatas.containsKey(uuid)) {
+            plyerDatas.put(uuid, tag);
+        }
+        tag.keySet().forEach(n -> plyerDatas.get(uuid).put(n, tag.get(n)));
     }
 
     @Override
     public void tick() {
         if (!world.isRemote) {
             if (!ItemHelper.isAntenna(getAntenna())) {
-                plpagemodes.entrySet().stream().filter(n -> !n.getValue().equals("noantenna")).forEach(n -> plpagemodes.put(n.getKey(), "noantenna"));
+                plpageModes.entrySet().stream().filter(n -> !n.getValue().equals("noantenna")).forEach(n -> plpageModes.put(n.getKey(), "noantenna"));
             } else {
-                plpagemodes.entrySet().stream().filter(n -> n.getValue().equals("noantenna")).forEach(n -> plpagemodes.put(n.getKey(), "playlist"));
+                plpageModes.entrySet().stream().filter(n -> n.getValue().equals("noantenna")).forEach(n -> plpageModes.put(n.getKey(), "playlist"));
             }
 
+            plyerDatas.entrySet().stream().filter(n -> !IKSGServerUtil.isOnlinePlayer(n.getKey())).forEach(n -> {
+                CompoundNBT tagaa = new CompoundNBT();
+                tagaa.putString("path", "null");
+                setPlayerData(n.getKey(), tagaa);
+            });
             if (isOn()) {
                 this.rotationYaw += 2;
                 while (this.rotationYaw > 360) {
@@ -177,6 +215,8 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
                         this.inversionPitch = false;
                     }
                 }
+            } else {
+                plpageModes.entrySet().stream().filter(n -> !n.getValue().equals("playlist") && !n.getValue().equals("noantenna")).forEach(n -> plpageModes.put(n.getKey(), "playlist"));
             }
         }
         this.syncble(this);
@@ -196,8 +236,17 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
     }
 
     public Map<String, String> getPlayerModeMap() {
-        return plpagemodes;
+        return plpageModes;
     }
+
+    public String getPlayerPath(String uuid) {
+
+        if (!plyerDatas.containsKey(uuid) || !plyerDatas.get(uuid).contains("path") || plyerDatas.get(uuid).getString("path").equals("null"))
+            return null;
+
+        return plyerDatas.get(uuid).getString("path");
+    }
+
 
     public String getMode(PlayerEntity pl) {
         String uuid = IKSGPlayerUtil.getUUID(pl);

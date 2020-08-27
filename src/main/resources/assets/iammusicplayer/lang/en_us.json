@@ -8,5 +8,10 @@
   "container.music_sharing_device": "Music Sharing Device",
   "msd.noantenna": "No antenna",
   "msd.all": "All",
+  "msd.addplaylist": "Add PlayList",
+  "msd.imagedropInfo": "Drag and drop to set image",
+  "msd.imageloading": "Loading image...",
+  "msd.image": "Image",
+  "msd.name": "Name",
   "_comment.l": "last"
 }
