@@ -40,8 +40,8 @@ import java.util.List;
 public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
 
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device.png");
-    //   private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
-    private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
+    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
+    //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
     private static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private byte[] picturImage;
