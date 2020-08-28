@@ -15,8 +15,10 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.gui.widget.MSDScrollBarSlider;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
+import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
+import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
@@ -39,9 +41,10 @@ import java.util.List;
 
 public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
 
-    public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device.png");
-    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
-    //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
+    public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_1.png");
+    public static final ResourceLocation MSD_GUI_TEXTURES2 = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_2.png");
+    //  private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
+    private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
     private static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private byte[] picturImage;
@@ -57,6 +60,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ScrollListButton guildButtons;
     private ScrollListButton playlistButtons;
     private TextFieldWidget addGuildNameField;
+    private StringImageButton backGuid;
+    private StringImageButton createGuid;
 
     private String listname;
 
@@ -101,7 +106,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             powerButton.setTextuer(215, 0, 20, 256, 256);
         }
         this.allbutton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 1, 18, 18, 215, 60, 18, MSD_GUI_TEXTURES, n -> {
-
         }, IKSGStyles.withStyle(new TranslationTextComponent("msd.all"), fontStyle)));
         this.allbutton.setSizeAdjustment(true);
         this.allbutton.setShadwString(false);
@@ -132,6 +136,18 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             System.out.println(m);
         }));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
+
+        this.backGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 92, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            insMode("playlist");
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        IKSGScreenUtil.setVisible(this.backGuid, false);
+
+        this.createGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            PlayListGuildManeger.instance().createPlayListRequest(addGuildNameField.getText(), picturImage);
+            insMode("playlist");
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
+        IKSGScreenUtil.setVisible(this.createGuid, false);
+
 
         this.addGuildNameField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 95, getMonitorStartY() + 29, 96, 12, new StringTextComponent("test")));
         this.addGuildNameField.setEnableBackgroundDrawing(false);
@@ -170,13 +186,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGRenderUtil.matrixPop(matx);
         switch (Monitorsa) {
             case NOANTENNA:
-                drawNoAntenna(matx);
+                drawNoAntenna(matx, partTick, mouseX, mouseY);
                 break;
             case PLAYLIST:
-                drawPlayList(matx);
+                drawPlayList(matx, partTick, mouseX, mouseY);
                 break;
             case ADDPLAYLIST:
-                drawAddPlayList(matx);
+                drawAddPlayList(matx, partTick, mouseX, mouseY);
                 break;
         }
     }
@@ -192,6 +208,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (!isMonitor(Monitors.ADDPLAYLIST) && picturImage != null) {
             picturImage = null;
         }
+        if (!isMonitor(Monitors.ADDPLAYLIST)) {
+            addGuildNameField.setText("");
+        } else {
+            addGuildNameField.tick();
+        }
         IKSGScreenUtil.setVisible(this.allbutton, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.addGuildButton, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.guildlistbar, isMonitor(Monitors.PLAYLIST));
@@ -199,6 +220,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.guildButtons, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.playlistButtons, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.addGuildNameField, isMonitor(Monitors.ADDPLAYLIST));
+        IKSGScreenUtil.setVisible(this.backGuid, isMonitor(Monitors.ADDPLAYLIST));
+        IKSGScreenUtil.setVisible(this.createGuid, isMonitor(Monitors.ADDPLAYLIST));
+
     }
 
     private boolean isMonitor(Monitors... mo) {
@@ -252,7 +276,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     }
 
-    protected void drawAddPlayList(MatrixStack matrx) {
+    protected void drawAddPlayList(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.addplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 17);
         drawFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 92, getMonitorStartY() + 17);
@@ -274,13 +298,17 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPictureImageTexture(picturImage), matrx, getMonitorStartX() + 7 + x, getMonitorStartY() + 27 + y, 0, 0, xsize, ysize, xsize, ysize);
         }
 
+        IKSGRenderUtil.matrixPush(matrx);
+        addGuildNameField.func_230430_a_(matrx, mouseX, mouseY, partTick);
+        RenderSystem.color4f(1f, 1f, 1f, 1f);
+        IKSGRenderUtil.matrixPop(matrx);
     }
 
-    protected void drawPlayList(MatrixStack matrx) {
+    protected void drawPlayList(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new StringTextComponent(listname), getMonitorStartX() + 31, getMonitorStartY() + 2);
     }
 
-    protected void drawNoAntenna(MatrixStack matrx) {
+    protected void drawNoAntenna(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawCenterFontString(matrx, new TranslationTextComponent("msd.noantenna"), getMonitorStartX() + getMonitorXsize() / 2, getTexturStartY() + 70);
         ItemRenderer ir = getMinecraft().getItemRenderer();
         ir.zLevel = 100.0F;
