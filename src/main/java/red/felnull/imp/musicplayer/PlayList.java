@@ -2,6 +2,7 @@ package red.felnull.imp.musicplayer;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.StringNBT;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.otyacraftengine.data.WorldDataManager;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -55,7 +56,8 @@ public class PlayList implements INBTReadWriter {
         } else {
             plutag = pltag.getCompound(pluuid);
         }
-        plutag.lis
+
+        plutag.getList("playlist", 8).add(StringNBT.valueOf(list.getUUID()));
         pltag.put(pluuid, plutag);
     }
 
