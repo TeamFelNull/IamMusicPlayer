@@ -59,9 +59,12 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ScrollBarSlider playlistbar;
     private ScrollListButton guildButtons;
     private ScrollListButton playlistButtons;
-    private TextFieldWidget addGuildNameField;
+    private TextFieldWidget createGuildNameField;
     private StringImageButton backGuid;
     private StringImageButton createGuid;
+    private StringImageButton createJoinGuid;
+    private StringImageButton addJoinGuid;
+    private StringImageButton backJoinGuid;
 
     private String listname;
 
@@ -140,23 +143,52 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.backGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 92, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode("playlist");
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        this.backGuid.setSizeAdjustment(true);
+        this.backGuid.setShadwString(false);
+        this.backGuid.setStringColor(0);
         IKSGScreenUtil.setVisible(this.backGuid, false);
 
         this.createGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            PlayListGuildManeger.instance().createPlayListRequest(addGuildNameField.getText(), picturImage);
+            PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), picturImage);
             insMode("playlist");
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
+        this.createGuid.setSizeAdjustment(true);
+        this.createGuid.setShadwString(false);
+        this.createGuid.setStringColor(0);
         IKSGScreenUtil.setVisible(this.createGuid, false);
 
+        this.createGuildNameField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 95, getMonitorStartY() + 29, 96, 12, new StringTextComponent("test")));
+        this.createGuildNameField.setEnableBackgroundDrawing(false);
+        this.createGuildNameField.setMaxStringLength(30);
+        this.createGuildNameField.setTextColor(-1);
+        this.createGuildNameField.setDisabledTextColour(-1);
+        IKSGScreenUtil.setVisible(this.createGuildNameField, false);
 
-        this.addGuildNameField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 95, getMonitorStartY() + 29, 96, 12, new StringTextComponent("test")));
-        this.addGuildNameField.setEnableBackgroundDrawing(false);
-        this.addGuildNameField.setMaxStringLength(30);
-        this.addGuildNameField.setTextColor(-1);
-        this.addGuildNameField.setDisabledTextColour(-1);
-        IKSGScreenUtil.setVisible(this.addGuildNameField, false);
+        this.createJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            insMode("createplaylist");
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
+        this.createJoinGuid.setSizeAdjustment(true);
+        this.createJoinGuid.setShadwString(false);
+        this.createJoinGuid.setStringColor(0);
+        IKSGScreenUtil.setVisible(this.createJoinGuid, false);
 
-        if (isMonitor(Monitors.ADDPLAYLIST)) {
+        this.addJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            insMode("createplaylist");
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CANCEL, fontStyle)));
+        this.addJoinGuid.setSizeAdjustment(true);
+        this.addJoinGuid.setShadwString(false);
+        this.addJoinGuid.setStringColor(0);
+        IKSGScreenUtil.setVisible(this.addJoinGuid, false);
+
+        this.backJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 24, getMonitorStartY() + getMonitorYsize() / 2 + 18, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            insMode("playlist");
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        this.backJoinGuid.setSizeAdjustment(true);
+        this.backJoinGuid.setShadwString(false);
+        this.backJoinGuid.setStringColor(0);
+        IKSGScreenUtil.setVisible(this.backJoinGuid, false);
+
+        if (isMonitor(Monitors.CREATEPLAYLIST)) {
             Path picPath = getPicturPath();
             if (picPath != null) {
                 PictureLoadThread plt = new PictureLoadThread(this, picPath);
@@ -191,8 +223,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             case PLAYLIST:
                 drawPlayList(matx, partTick, mouseX, mouseY);
                 break;
+            case CREATEPLAYLIST:
+                drawCreatePlaylist(matx, partTick, mouseX, mouseY);
+                break;
             case ADDPLAYLIST:
-                drawAddPlayList(matx, partTick, mouseX, mouseY);
+                drawAddPlaylist(matx, partTick, mouseX, mouseY);
                 break;
         }
     }
@@ -205,13 +240,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         } else {
             powerButton.setTextuer(215, 0, 20, 256, 256);
         }
-        if (!isMonitor(Monitors.ADDPLAYLIST) && picturImage != null) {
+        if (!isMonitor(Monitors.CREATEPLAYLIST) && picturImage != null) {
             picturImage = null;
         }
-        if (!isMonitor(Monitors.ADDPLAYLIST)) {
-            addGuildNameField.setText("");
+        if (!isMonitor(Monitors.CREATEPLAYLIST)) {
+            createGuildNameField.setText("");
         } else {
-            addGuildNameField.tick();
+            createGuildNameField.tick();
         }
         IKSGScreenUtil.setVisible(this.allbutton, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.addGuildButton, isMonitor(Monitors.PLAYLIST));
@@ -219,9 +254,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.playlistbar, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.guildButtons, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.playlistButtons, isMonitor(Monitors.PLAYLIST));
-        IKSGScreenUtil.setVisible(this.addGuildNameField, isMonitor(Monitors.ADDPLAYLIST));
-        IKSGScreenUtil.setVisible(this.backGuid, isMonitor(Monitors.ADDPLAYLIST));
-        IKSGScreenUtil.setVisible(this.createGuid, isMonitor(Monitors.ADDPLAYLIST));
+        IKSGScreenUtil.setVisible(this.createGuildNameField, isMonitor(Monitors.CREATEPLAYLIST));
+        IKSGScreenUtil.setVisible(this.backGuid, isMonitor(Monitors.CREATEPLAYLIST));
+        IKSGScreenUtil.setVisible(this.createGuid, isMonitor(Monitors.CREATEPLAYLIST));
+        this.createGuid.field_230693_o_ = picturImage != null && !createGuildNameField.getText().isEmpty();
+        IKSGScreenUtil.setVisible(this.createJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
+        IKSGScreenUtil.setVisible(this.addJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
+        IKSGScreenUtil.setVisible(this.backJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
 
     }
 
@@ -256,19 +295,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
 
     private void setMonitorsa() {
-        if (!isStateOn()) {
+        if (!isStateOn())
             Monitorsa = Monitors.OFF;
-        } else if (getMode() == null) {
-            Monitorsa = Monitors.OFF;
-        } else if (getMode().equals("noantenna")) {
-            Monitorsa = Monitors.NOANTENNA;
-        } else if (getMode().equals("playlist")) {
-            Monitorsa = Monitors.PLAYLIST;
-        } else if (getMode().equals("addplaylist")) {
-            Monitorsa = Monitors.ADDPLAYLIST;
-        } else {
-            Monitorsa = Monitors.ON;
-        }
+        else
+            Monitorsa = Monitors.getValueOf(getMode());
     }
 
     private void setListName() {
@@ -276,8 +306,14 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     }
 
-    protected void drawAddPlayList(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+    protected void drawAddPlaylist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.addplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        drawCenterFontString(matrx, new TranslationTextComponent("msd.addplaylistInfo"), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + getMonitorYsize() / 2 - 25);
+
+    }
+
+    protected void drawCreatePlaylist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawFontString(matrx, new TranslationTextComponent("msd.createplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 17);
         drawFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 92, getMonitorStartY() + 17);
         if (loading) {
@@ -299,7 +335,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
 
         IKSGRenderUtil.matrixPush(matrx);
-        addGuildNameField.func_230430_a_(matrx, mouseX, mouseY, partTick);
+        createGuildNameField.func_230430_a_(matrx, mouseX, mouseY, partTick);
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         IKSGRenderUtil.matrixPop(matrx);
     }
@@ -329,19 +365,33 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     private static enum Monitors {
-        OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_off.png")),
-        ON(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_on.png")),
-        PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_list.png")),
-        NOANTENNA(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_noantenna.png")),
-        ADDPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_addplaylist.png"));
-        private final ResourceLocation location;
+        OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_off.png"), "off"),
+        ON(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_on.png"), "on"),
+        PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_list.png"), "playlist"),
+        NOANTENNA(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_noantenna.png"), "noantenna"),
+        CREATEPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_createplaylist.png"), "createplaylist"),
+        ADDPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/msd_monitor_addplaylist.png"), "addplaylist");
 
-        Monitors(ResourceLocation location) {
+        private final ResourceLocation location;
+        private final String name;
+
+        Monitors(ResourceLocation location, String name) {
             this.location = location;
+            this.name = name;
         }
 
         public ResourceLocation getTextuer() {
             return this.location;
+        }
+
+        public static Monitors getValueOf(String name) {
+            if (name == null)
+                return OFF;
+            for (Monitors m : Monitors.values()) {
+                if (m.name.equals(name))
+                    return m;
+            }
+            return OFF;
         }
     }
 
@@ -360,7 +410,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     @Override
     public void dropAndDragByIKSG(List<Path> dragFiles) {
-        if (isMonitor(Monitors.ADDPLAYLIST)) {
+        if (isMonitor(Monitors.CREATEPLAYLIST)) {
             if (dragFiles.size() == 1 && !loading) {
                 PictureLoadThread lt = new PictureLoadThread(this, dragFiles.get(0));
                 lt.start();

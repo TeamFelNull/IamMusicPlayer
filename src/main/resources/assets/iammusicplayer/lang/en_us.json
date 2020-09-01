@@ -8,10 +8,12 @@
   "container.music_sharing_device": "Music Sharing Device",
   "msd.noantenna": "No antenna",
   "msd.all": "All",
-  "msd.addplaylist": "Add PlayList",
+  "msd.createplaylist": "Create PlayList",
   "msd.imagedropInfo": "Drag and drop to set image",
   "msd.imageloading": "Loading image...",
   "msd.image": "Image",
   "msd.name": "Name",
+  "msd.addplaylist": "Add PlayList",
+  "msd.addplaylistInfo": "Create or add a playlist",
   "_comment.l": "last"
 }
