@@ -14,6 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
+import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.tileentity.IkisugiLockableTileEntity;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
@@ -171,6 +172,11 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
                 setPlayerData(uuid, taga);
             }
 
+        } else if (s.equals("playlistupdate")) {
+            String type = tag.getString("type");
+            if (type.equals("joinplaylist")) {
+                return PlayListGuildManeger.instance().getAllPlayListNBT(false);
+            }
         }
 
         return null;
