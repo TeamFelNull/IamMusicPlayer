@@ -10,6 +10,8 @@ import red.felnull.imp.packet.PlayListCreateRequestMessage;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.data.WorldDataManager;
 import red.felnull.otyacraftengine.util.IKSGPictuerUtil;
+import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
+import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
 import java.awt.image.BufferedImage;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public class PlayListGuildManeger {
 
     public void createPlayList(ServerPlayerEntity player, String name, String imageID, int w, int h) {
         String plUUID = UUID.randomUUID().toString();
-        PlayList playList = new PlayList(plUUID, name, imageID, w, h);
+        PlayList playList = new PlayList(plUUID, name, imageID, w, h, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp());
         PlayList.addPlayList(playList);
         playList.addPlayer(player);
     }

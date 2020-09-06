@@ -14,18 +14,25 @@ public class PlayList implements INBTReadWriter {
     private String imageUUID;
     private int imageWidth;
     private int imageHeight;
+    private String createPlayerName;
+    private String createPlayerUUID;
+    private String timeStamp;
+    private boolean Anyone;
 
     public PlayList(String UUID, CompoundNBT tag) {
         this.UUID = UUID;
         read(tag);
     }
 
-    public PlayList(String UUID, String name, String imageUUID, int width, int height) {
+    public PlayList(String UUID, String name, String imageUUID, int width, int height, String createPlayerName, String createPlayerUUID, String timeStamp) {
         this.UUID = UUID;
         this.name = name;
         this.imageUUID = imageUUID;
         this.imageWidth = width;
         this.imageHeight = height;
+        this.createPlayerName = createPlayerName;
+        this.createPlayerUUID = createPlayerUUID;
+        this.timeStamp = timeStamp;
     }
 
     @Override
@@ -34,14 +41,20 @@ public class PlayList implements INBTReadWriter {
         this.imageUUID = tag.getString("ImageUUID");
         this.imageWidth = tag.getInt("ImageWidth");
         this.imageHeight = tag.getInt("ImageHeight");
+        this.createPlayerName = tag.getString("CreatePlayerName");
+        this.createPlayerUUID = tag.getString("CreatePlayerUUID");
+        this.timeStamp = tag.getString("TimeStamp");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putString("Name", this.name);
         tag.putString("ImageUUID", this.imageUUID);
-        tag.putInt("ImageWidth", imageWidth);
-        tag.putInt("ImageHeight", imageHeight);
+        tag.putInt("ImageWidth", this.imageWidth);
+        tag.putInt("ImageHeight", this.imageHeight);
+        tag.putString("CreatePlayerName", this.createPlayerName);
+        tag.putString("CreatePlayerUUID", this.createPlayerUUID);
+        tag.putString("TimeStamp", this.timeStamp);
         return tag;
     }
 
@@ -67,6 +80,18 @@ public class PlayList implements INBTReadWriter {
 
     public boolean isAnyone() {
         return true;
+    }
+
+    public String getCreatePlayerName() {
+        return createPlayerName;
+    }
+
+    public String getCreatePlayerUUID() {
+        return createPlayerUUID;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
     }
 
     public static void addPlayList(PlayList plst) {

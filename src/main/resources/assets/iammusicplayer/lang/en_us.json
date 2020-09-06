@@ -14,6 +14,7 @@
   "msd.image": "Image",
   "msd.name": "Name",
   "msd.addplaylist": "Add PlayList",
-  "msd.addplaylistInfo": "Create or add a playlist",
+  "msd.addplaylistInfo": "Create or Join a playlist",
+  "msd.joinplaylist": "Join PlayList",
   "_comment.l": "last"
 }
