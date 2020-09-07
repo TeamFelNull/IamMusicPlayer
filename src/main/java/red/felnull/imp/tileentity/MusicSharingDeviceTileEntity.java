@@ -174,9 +174,14 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
 
         } else if (s.equals("playlistupdate")) {
             String type = tag.getString("type");
+            CompoundNBT taga = new CompoundNBT();
+            taga.putString("type", type);
             if (type.equals("joinplaylist")) {
-                return PlayListGuildManeger.instance().getAllPlayListNBT(false);
+                taga.put("list", PlayListGuildManeger.instance().getAllPlayListNBT(serverPlayerEntity, false));
+            } else if (type.equals("playlist")) {
+                taga.put("list", PlayListGuildManeger.instance().getJoinedPlayListsNBT(serverPlayerEntity));
             }
+            return taga;
         }
 
         return null;

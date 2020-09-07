@@ -7,6 +7,7 @@ import red.felnull.otyacraftengine.api.registries.OERegistries;
 public class IMPWorldData {
     public static final ResourceLocation PLAYLIST_DATA = new ResourceLocation(IamMusicPlayer.MODID, "playlist_data");
     public static final ResourceLocation PLAYLIST_IMAGE = new ResourceLocation(IamMusicPlayer.MODID, "playlist_image");
+    public static final ResourceLocation PLAYLIST_REQUEST = new ResourceLocation(IamMusicPlayer.MODID, "playlist_request");
 
     public static void register() {
         OERegistries.registrierWorldData(PLAYLIST_DATA, new PlayListWorldData());

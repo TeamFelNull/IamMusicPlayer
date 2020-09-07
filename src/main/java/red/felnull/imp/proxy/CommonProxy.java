@@ -1,8 +1,10 @@
 package red.felnull.imp.proxy;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.handler.ServerHandler;
 import red.felnull.imp.packet.PacketHandler;
 
 public class CommonProxy {
@@ -10,6 +12,7 @@ public class CommonProxy {
         PacketHandler.init();
         PlayListGuildManeger.init();
         IMPWorldData.register();
+        MinecraftForge.EVENT_BUS.register(ServerHandler.class);
     }
 
     public void init() {

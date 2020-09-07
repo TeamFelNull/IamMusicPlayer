@@ -3,7 +3,6 @@ package red.felnull.imp.client.gui.screen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.resources.I18n;
@@ -14,9 +13,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
+import red.felnull.imp.client.gui.widget.GuildPlayListButton;
 import red.felnull.imp.client.gui.widget.JoinPlayListButton;
-import red.felnull.imp.client.gui.widget.MSDCheckboxButton;
-import red.felnull.imp.client.gui.widget.MSDScrollBarSlider;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.item.IMPItems;
@@ -24,10 +22,8 @@ import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
-import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
-import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
-import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
-import red.felnull.otyacraftengine.client.gui.widget.StringImageButton;
+import red.felnull.otyacraftengine.client.gui.widget.Checkbox;
+import red.felnull.otyacraftengine.client.gui.widget.*;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
@@ -52,6 +48,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private List<PlayList> jonPlaylists = new ArrayList<>();
+    private List<PlayList> jonedAllPlaylists = new ArrayList<>();
+
 
     private byte[] picturImage;
     private boolean loading;
@@ -66,14 +64,14 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ScrollListButton guildButtons;
     private ScrollListButton playlistButtons;
     private TextFieldWidget createGuildNameField;
-    private MSDCheckboxButton createAnyoneCheckbox;
+    private Checkbox createAnyoneCheckbox;
     private StringImageButton backGuid;
     private StringImageButton createGuid;
     private StringImageButton createJoinGuid;
     private StringImageButton addJoinGuid;
     private StringImageButton backJoinGuid;
     private ScrollBarSlider joinplaylistbar;
-    private ScrollListButton joinplaylistButtons;
+    private JoinPlayListButton joinplaylistButtons;
     private StringImageButton joinplaylistbackButton;
 
     private String listname;
@@ -131,17 +129,17 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }));
         IKSGScreenUtil.setVisible(this.addGuildButton, false);
 
-        this.guildlistbar = this.addWidgetByIKSG(new MSDScrollBarSlider(getMonitorStartX() + 20, getMonitorStartY() + 20, 101, 100, 0, -20));
+        this.guildlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 20, getMonitorStartY() + 20, 101, 100, 0, -20, 215, 126, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.guildlistbar, false);
 
-        this.playlistbar = this.addWidgetByIKSG(new MSDScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -159));
+        this.playlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -159, 215, 126, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.playlistbar, false);
 
         List<ResourceLocation> locations = new ArrayList<>();
         for (int i = 0; i < 30; i++) {
             locations.add(MSD_GUI_TEXTURES);
         }
-        this.guildButtons = this.addWidgetByIKSG(new ScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 18, 101, 18, 30, guildlistbar, locations, (n, m) -> {
+        this.guildButtons = this.addWidgetByIKSG(new GuildPlayListButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 18, 101, 18, guildlistbar, jonedAllPlaylists, (n, m) -> {
             System.out.println(m);
         }));
         IKSGScreenUtil.setVisible(this.guildButtons, false);
@@ -160,7 +158,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.backGuid, false);
 
         this.createGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), picturImage);
+            PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), picturImage, createAnyoneCheckbox.isCheck());
             insMode("playlist");
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
         this.createGuid.setSizeAdjustment(true);
@@ -175,7 +173,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.createGuildNameField.setDisabledTextColour(-1);
         IKSGScreenUtil.setVisible(this.createGuildNameField, false);
 
-        this.createAnyoneCheckbox = this.addWidgetByIKSG(new MSDCheckboxButton(getMonitorStartX() + 92, getMonitorStartY() + 56, 150, 20, new TranslationTextComponent("selectWorld.backupEraseCache"), false));
+        this.createAnyoneCheckbox = this.addWidgetByIKSG(new Checkbox(getMonitorStartX() + 92, getMonitorStartY() + 56, 15, 15, 215, 96, 256, 256, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.createAnyoneCheckbox, false);
 
         this.createJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
@@ -202,11 +200,12 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.backJoinGuid.setStringColor(0);
         IKSGScreenUtil.setVisible(this.backJoinGuid, false);
 
-        this.joinplaylistbar = this.addWidgetByIKSG(new MSDScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -187));
+        this.joinplaylistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -187, 215, 126, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.joinplaylistbar, false);
 
         this.joinplaylistButtons = this.addWidgetByIKSG(new JoinPlayListButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 187, 101, 40, joinplaylistbar, jonPlaylists, (n, m) -> {
-            System.out.println(m);
+            PlayListGuildManeger.instance().joinPlayListRequest(jonPlaylists.get(m).getUUID());
+            insMode("playlist");
         }));
         IKSGScreenUtil.setVisible(this.joinplaylistButtons, false);
 
@@ -326,7 +325,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     private void updatePlayList() {
-        if (!isMonitor(Monitors.JOINPLAYLIST))
+        if (!isMonitor(Monitors.JOINPLAYLIST, Monitors.PLAYLIST))
             return;
         CompoundNBT tag = new CompoundNBT();
         tag.putString("type", Monitorsa.name);
@@ -336,9 +335,21 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     @Override
     public void instructionReturn(String name, CompoundNBT data) {
         if (name.equals("playlistupdate")) {
-            jonPlaylists.clear();
-            for (String pltagst : data.keySet()) {
-                jonPlaylists.add(new PlayList(pltagst, data.getCompound(pltagst)));
+            CompoundNBT taga = data.getCompound("list");
+            String type = data.getString("type");
+            Monitors mtype = Monitors.getValueOf(type);
+
+            if (mtype == Monitors.JOINPLAYLIST) {
+                jonPlaylists.clear();
+                for (String pltagst : taga.keySet()) {
+                    jonPlaylists.add(new PlayList(pltagst, taga.getCompound(pltagst)));
+                }
+            } else if (mtype == Monitors.PLAYLIST) {
+                jonedAllPlaylists.clear();
+                for (String pltagst : taga.keySet()) {
+                    jonedAllPlaylists.add(new PlayList(pltagst, taga.getCompound(pltagst)));
+                }
+                System.out.println(jonedAllPlaylists);
             }
         }
     }
@@ -371,13 +382,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     protected void drawAddPlaylist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.addplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawCenterFontString(matrx, new TranslationTextComponent("msd.addplaylistInfo"), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + getMonitorYsize() / 2 - 25);
-
     }
 
     protected void drawCreatePlaylist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.createplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 17);
         drawFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 92, getMonitorStartY() + 17);
+        drawFontString(matrx, new TranslationTextComponent("msd.anyonecheck"), getMonitorStartX() + 92 + 17, getMonitorStartY() + 59);
         if (loading) {
             IKSGRenderUtil.matrixPush(matrx);
             RenderSystem.enableBlend();
