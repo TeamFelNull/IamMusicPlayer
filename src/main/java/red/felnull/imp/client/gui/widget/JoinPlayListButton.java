@@ -42,10 +42,10 @@ public class JoinPlayListButton extends ScrollListButton {
             aw = (int) ((float) size * (w / h));
             ah = size;
         }
-        int tatezure = 2 + (36 - ah) / 2;
+        int tatezure = 2 + (size - ah) / 2;
         int upzure = tatezure < upOver ? upOver - tatezure : 0;
         int downzure = tatezure < downOver ? downOver - tatezure : 0;
-        IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getReceiveTexture(IMPWorldData.PLAYLIST_IMAGE, pl.getImageUUID()), matrix, x + 2 + (36 - aw) / 2, y + tatezure + upzure, 0, upzure, aw, ah - upzure - downzure, aw, ah);
+        IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getReceiveTexture(IMPWorldData.PLAYLIST_IMAGE, pl.getImageUUID()), matrix, x + 2 + (size - aw) / 2, y + tatezure + upzure, 0, upzure, aw, ah - upzure - downzure, aw, ah);
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         if (upOver < 12 && downOver <= 38) {

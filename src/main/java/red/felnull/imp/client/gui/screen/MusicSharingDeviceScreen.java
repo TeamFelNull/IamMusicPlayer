@@ -61,7 +61,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ImageButton addGuildButton;
     private ScrollBarSlider guildlistbar;
     private ScrollBarSlider playlistbar;
-    private ScrollListButton guildButtons;
+    private GuildPlayListButton guildButtons;
     private ScrollListButton playlistButtons;
     private TextFieldWidget createGuildNameField;
     private Checkbox createAnyoneCheckbox;
@@ -349,7 +349,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 for (String pltagst : taga.keySet()) {
                     jonedAllPlaylists.add(new PlayList(pltagst, taga.getCompound(pltagst)));
                 }
-                System.out.println(jonedAllPlaylists);
             }
         }
     }
