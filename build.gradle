@@ -94,12 +94,15 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
     shadow 'com.mpatric:mp3agic:0.9.1'
+    shadow 'ws.schild:jave-all-deps:3.0.1'
 }
 shadowJar.configurations = [project.configurations.shadow]
 shadowJar {
     project.configurations.shadow.setTransitive(true);
     classifier ''
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
 }
 afterEvaluate {
     reobf {

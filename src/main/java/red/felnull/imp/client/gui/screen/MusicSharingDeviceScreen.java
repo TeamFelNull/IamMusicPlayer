@@ -27,6 +27,7 @@ import red.felnull.otyacraftengine.client.gui.widget.*;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
+import red.felnull.otyacraftengine.util.ClockTimer;
 import red.felnull.otyacraftengine.util.IKSGPictuerUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
@@ -78,6 +79,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     private Monitors Monitorsa;
 
+    protected ClockTimer timer;
+
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
         this.xSize = 215;
@@ -106,6 +109,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     public void initByIKSG() {
         super.initByIKSG();
         updatePlayList();
+        timerSet();
         instruction("opengui", new CompoundNBT());
         this.loading = false;
         this.field_238745_s_ = this.ySize - 94;
@@ -297,8 +301,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.joinplaylistbar, isMonitor(Monitors.JOINPLAYLIST));
         IKSGScreenUtil.setVisible(this.joinplaylistButtons, isMonitor(Monitors.JOINPLAYLIST));
         IKSGScreenUtil.setVisible(this.joinplaylistbackButton, isMonitor(Monitors.JOINPLAYLIST));
-
-        updatePlayList();
     }
 
     private boolean isMonitor(Monitors... mo) {
@@ -332,9 +334,31 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         instruction("playlistupdate", tag);
     }
 
+    private void timerSet() {
+        this.timer = new ClockTimer(n -> this.isOpend());
+        this.timer.addTask("updateplaylist", new ClockTimer.ITask() {
+            @Override
+            public boolean isStop(ClockTimer clockTimer) {
+                return false;
+            }
+
+            @Override
+            public void run(ClockTimer clockTimer) {
+                updatePlayList();
+            }
+
+            @Override
+            public long time(ClockTimer clockTimer) {
+                return 3000;
+            }
+        });
+
+
+    }
+
     @Override
     public void instructionReturn(String name, CompoundNBT data) {
-        if (name.equals("playlistupdate")) {
+        if (name.equals("playlistupdate") || name.equals("mode")) {
             CompoundNBT taga = data.getCompound("list");
             String type = data.getString("type");
             Monitors mtype = Monitors.getValueOf(type);

@@ -42,9 +42,9 @@ public class PlayListGuildManeger {
         PacketHandler.INSTANCE.sendToServer(new PlayListCreateRequestMessage(name, imageUUID, images.getWidth(), images.getHeight(), anyone));
     }
 
-    public void createPlayList(ServerPlayerEntity player, String name, String imageID, int w, int h, boolean anyone) {
+    public void createPlayList(ServerPlayerEntity player, String name, String imageUUID, int w, int h, boolean anyone) {
         String plUUID = UUID.randomUUID().toString();
-        PlayList playList = new PlayList(plUUID, name, imageID, w, h, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone);
+        PlayList playList = new PlayList(plUUID, name, imageUUID, w, h, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone);
         PlayList.addPlayList(playList);
         playList.addPlayer(player);
     }

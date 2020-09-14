@@ -6,15 +6,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.otyacraftengine.util.IKSGDokataUtil;
+import red.felnull.imp.client.data.MusicUploader;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TestSoundItem extends Item {
     public TestSoundItem(Properties properties) {
@@ -28,10 +29,11 @@ public class TestSoundItem extends Item {
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
-        playerIn.sendStatusMessage(IKSGStyles.withStyle(new StringTextComponent(IKSGDokataUtil.getKurashikiMukaiyamaRoshutsuZukiAll()), fontStyle), false);
-
-        playerIn.getHeldItem(Hand.OFF_HAND).setDisplayName(IKSGStyles.withStyle(new StringTextComponent(IKSGDokataUtil.getYattaze()), fontStyle));
-
+        Object iku = new Object();
+        if (worldIn.isRemote) {
+            //   UploadMusicToast.add("ikisugi.net");
+            MusicUploader.instance().startUpload(Paths.get("C:\\Users\\MORI\\Music\\playlist\\01 茜空.mp3"), UUID.randomUUID().toString());
+        }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
 }

@@ -157,6 +157,7 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
             setBlockState(getBlockState().with(MusicSharingDeviceBlock.ON, tag.getBoolean("on")));
         } else if (s.equals("mode")) {
             plpageModes.put(uuid, tag.getString("name"));
+            return updatePlaylist(serverPlayerEntity,tag.getString("name"));
         } else if (s.equals("opengui")) {
             if (!plpageModes.containsKey(uuid)) {
                 plpageModes.put(uuid, "playlist");
@@ -173,18 +174,21 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
             }
 
         } else if (s.equals("playlistupdate")) {
-            String type = tag.getString("type");
-            CompoundNBT taga = new CompoundNBT();
-            taga.putString("type", type);
-            if (type.equals("joinplaylist")) {
-                taga.put("list", PlayListGuildManeger.instance().getAllPlayListNBT(serverPlayerEntity, false));
-            } else if (type.equals("playlist")) {
-                taga.put("list", PlayListGuildManeger.instance().getJoinedPlayListsNBT(serverPlayerEntity));
-            }
-            return taga;
+            return updatePlaylist(serverPlayerEntity, tag.getString("type"));
         }
 
         return null;
+    }
+
+    protected CompoundNBT updatePlaylist(ServerPlayerEntity serverPlayerEntity, String type) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("type", type);
+        if (type.equals("joinplaylist")) {
+            tag.put("list", PlayListGuildManeger.instance().getAllPlayListNBT(serverPlayerEntity, false));
+        } else if (type.equals("playlist")) {
+            tag.put("list", PlayListGuildManeger.instance().getJoinedPlayListsNBT(serverPlayerEntity));
+        }
+        return tag;
     }
 
     private void setPlayerData(String uuid, CompoundNBT tag) {

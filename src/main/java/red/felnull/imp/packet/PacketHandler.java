@@ -5,6 +5,7 @@ import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.handler.PlayListCreateRequestMessageHandler;
+import red.felnull.imp.handler.PlayMusicCreateRequestMessageHandler;
 
 public class PacketHandler {
     public static final String PROTOCOL_VERSION = "1";
@@ -19,5 +20,7 @@ public class PacketHandler {
     public static void init() {
         //プレイリスト作成リクエスト
         INSTANCE.registerMessage(next(), PlayListCreateRequestMessage.class, PlayListCreateRequestMessage::encodeMessege, PlayListCreateRequestMessage::decodeMessege, PlayListCreateRequestMessageHandler::reversiveMessage);
+        //音楽作成リクエスト
+        INSTANCE.registerMessage(next(), PlayMusicCreateRequestMessage.class, PlayMusicCreateRequestMessage::encodeMessege, PlayMusicCreateRequestMessage::decodeMessege, PlayMusicCreateRequestMessageHandler::reversiveMessage);
     }
 }

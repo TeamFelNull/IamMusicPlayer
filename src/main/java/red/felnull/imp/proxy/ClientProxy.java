@@ -1,7 +1,7 @@
 package red.felnull.imp.proxy;
 
 import net.minecraft.client.Minecraft;
-import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.data.MusicUploader;
 import red.felnull.imp.client.gui.IMPScrennContainerRegister;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 
@@ -14,6 +14,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void preInit() {
         super.preInit();
+        MusicUploader.init();
     }
 
     @Override
