@@ -4,7 +4,10 @@ import com.mpatric.mp3agic.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.client.gui.toasts.MusicUploadToast;
+import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.util.PathUtil;
+import red.felnull.otyacraftengine.api.DataSendReceiverManager;
+import red.felnull.otyacraftengine.util.IKSGDataUtil;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.EncoderException;
@@ -48,9 +51,9 @@ public class MusicUploader {
             conversion(path, uuid, 128);
             setState(uuid, MusicUploadData.UploadState.COMPRESSING);
             byte[] compdata = compressing(uuid);
-            setState(uuid, MusicUploadData.UploadState.COMPLETION);
-            IKSGFileLoadUtil.fileBytesWriter(compdata, PathUtil.getTmpFolder().resolve(uuid + ".gz"));
-
+            setState(uuid, MusicUploadData.UploadState.SENDING);
+            setProgress(uuid, 0f);
+            DataSendReceiverManager.instance().sendToServer(IMPWorldData.SERVER_TMP_DATA, uuid, compdata);
         } catch (Exception ex) {
             ex.printStackTrace();
             setState(uuid, MusicUploadData.UploadState.ERROR);
@@ -61,11 +64,19 @@ public class MusicUploader {
         return stateDatas.containsKey(uuid);
     }
 
-    protected void setState(String uuid, MusicUploadData.UploadState state) {
+    public void setState(String uuid, MusicUploadData.UploadState state) {
+
+        if (!stateDatas.containsKey(uuid))
+            return;
+
         stateDatas.get(uuid).setState(state);
     }
 
-    protected void setProgress(String uuid, float parsent) {
+    public void setProgress(String uuid, float parsent) {
+
+        if (!stateDatas.containsKey(uuid))
+            return;
+
         stateDatas.get(uuid).setProgress(parsent);
     }
 
@@ -74,21 +85,16 @@ public class MusicUploader {
     }
 
     private byte[] compressing(String uuid) throws IOException {
-        File file = PathUtil.getTmpFolder().resolve(uuid).toFile();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        File file = PathUtil.getClientTmpFolder().resolve(uuid).toFile();
         byte[] bytes = IKSGFileLoadUtil.fileBytesReader(file.toPath());
-        GZIPOutputStream gzip_out = new GZIPOutputStream(out);
-        gzip_out.write(bytes);
-        gzip_out.close();
-        out.close();
-        byte[] ret = out.toByteArray();
         IKSGFileLoadUtil.deleteFile(file);
-        return ret;
+        return IKSGDataUtil.gzZipping(bytes);
     }
 
 
+
     private void conversion(Path path, String uuid, int bitrate) throws EncoderException, InvalidDataException, IOException, UnsupportedTagException, NotSupportedException {
-        IKSGFileLoadUtil.createFolder(PathUtil.getTmpFolder());
+        IKSGFileLoadUtil.createFolder(PathUtil.getClientTmpFolder());
         File mf = path.toFile();
         MultimediaObject mo = new MultimediaObject(mf);
         AudioAttributes aa = new AudioAttributes();
@@ -100,7 +106,7 @@ public class MusicUploader {
         ea.setOutputFormat("mp3");
         ea.setAudioAttributes(aa);
         Encoder encoder = new Encoder();
-        encoder.encode(mo, PathUtil.getTmpFolder().resolve(uuid + "-tmp").toFile(), ea, new EncoderProgressListener() {
+        encoder.encode(mo, PathUtil.getClientTmpFolder().resolve(uuid + "-tmp").toFile(), ea, new EncoderProgressListener() {
             @Override
             public void sourceInfo(MultimediaInfo info) {
             }
@@ -114,12 +120,12 @@ public class MusicUploader {
             public void message(String message) {
             }
         });
-        Mp3File m3f = new Mp3File(PathUtil.getTmpFolder().resolve(uuid + "-tmp").toFile());
+        Mp3File m3f = new Mp3File(PathUtil.getClientTmpFolder().resolve(uuid + "-tmp").toFile());
         m3f.setId3v1Tag(new ID3v1Tag());
         m3f.setId3v2Tag(new ID3v24Tag());
         m3f.setCustomTag(new byte[0]);
-        m3f.save(PathUtil.getTmpFolder().resolve(uuid).toString());
-        IKSGFileLoadUtil.deleteFile(PathUtil.getTmpFolder().resolve(uuid + "-tmp"));
+        m3f.save(PathUtil.getClientTmpFolder().resolve(uuid).toString());
+        IKSGFileLoadUtil.deleteFile(PathUtil.getClientTmpFolder().resolve(uuid + "-tmp"));
     }
 
     private class UploadThread extends Thread {

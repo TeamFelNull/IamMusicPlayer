@@ -1,8 +1,10 @@
 package red.felnull.imp.proxy;
 
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 import red.felnull.imp.client.data.MusicUploader;
 import red.felnull.imp.client.gui.IMPScrennContainerRegister;
+import red.felnull.imp.client.handler.MusicUploadHandler;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 
 public class ClientProxy extends CommonProxy {
@@ -20,6 +22,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void init() {
         super.init();
+        MinecraftForge.EVENT_BUS.register(MusicUploadHandler.class);
     }
 
     @Override

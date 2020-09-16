@@ -3,7 +3,6 @@ package red.felnull.imp.proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import red.felnull.imp.data.IMPWorldData;
-import red.felnull.imp.client.data.MusicUploader;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
 import red.felnull.imp.handler.ServerHandler;
