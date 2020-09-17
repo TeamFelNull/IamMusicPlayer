@@ -5,6 +5,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.client.gui.toasts.MusicUploadToast;
 import red.felnull.imp.data.IMPWorldData;
+import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.util.PathUtil;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.util.IKSGDataUtil;
@@ -17,13 +18,11 @@ import ws.schild.jave.encode.EncodingAttributes;
 import ws.schild.jave.info.MultimediaInfo;
 import ws.schild.jave.progress.EncoderProgressListener;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPOutputStream;
 
 @OnlyIn(Dist.CLIENT)
 public class MusicUploader {
@@ -38,8 +37,8 @@ public class MusicUploader {
         return INSTANCE;
     }
 
-    public void startUpload(Path path, String uuid) {
-        stateDatas.put(uuid, new MusicUploadData());
+    public void startUpload(Path path, String uuid, PlayImage image) {
+        stateDatas.put(uuid, new MusicUploadData(image));
         MusicUploadToast.add(uuid);
         UploadThread ut = new UploadThread(path, uuid);
         ut.start();
@@ -90,7 +89,6 @@ public class MusicUploader {
         IKSGFileLoadUtil.deleteFile(file);
         return IKSGDataUtil.gzZipping(bytes);
     }
-
 
 
     private void conversion(Path path, String uuid, int bitrate) throws EncoderException, InvalidDataException, IOException, UnsupportedTagException, NotSupportedException {

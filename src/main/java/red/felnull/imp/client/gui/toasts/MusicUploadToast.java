@@ -10,6 +10,7 @@ import net.minecraft.util.text.StringTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicUploadData;
 import red.felnull.imp.client.data.MusicUploader;
+import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
 public class MusicUploadToast implements IToast {
@@ -34,6 +35,8 @@ public class MusicUploadToast implements IToast {
         FontRenderer fr = mc.fontRenderer;
         IKSGRenderUtil.guiBindAndBlit(IMP_TEXTURE_TOASTS, matrix, 0, 0, 0, 0, 160, 32, 256, 256);
         IKSGRenderUtil.drawString(fr, matrix, new StringTextComponent(sd.getState().name()), 35, 3, 0);
+
+        RenderUtil.drwPlayImage(matrix, sd.getImage(), 6, 6, 20, 20);
 
         if (sd.getState().isProgressble())
             IKSGRenderUtil.drawString(fr, matrix, new StringTextComponent(Math.ceil(sd.getProgress() * 100) + "%"), 35, 15, 0);

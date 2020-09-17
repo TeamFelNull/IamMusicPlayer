@@ -10,6 +10,7 @@ import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicUploader;
+import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.nio.file.Paths;
@@ -32,7 +33,7 @@ public class TestSoundItem extends Item {
         Object iku = new Object();
         if (worldIn.isRemote) {
             //   UploadMusicToast.add("ikisugi.net");
-            MusicUploader.instance().startUpload(Paths.get("C:\\Users\\MORI\\Music\\playlist\\01 茜空.mp3"), UUID.randomUUID().toString());
+            MusicUploader.instance().startUpload(Paths.get("C:\\Users\\MORI\\Music\\playlist\\01 茜空.mp3"), UUID.randomUUID().toString(), new PlayImage(PlayImage.ImageType.PLAYERFACE, "test"));
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }

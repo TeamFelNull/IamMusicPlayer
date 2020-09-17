@@ -1,12 +1,16 @@
 package red.felnull.imp.client.data;
 
+import red.felnull.imp.musicplayer.PlayImage;
+
 public class MusicUploadData {
     private UploadState state;
     private float progress;
+    private PlayImage image;
 
-    public MusicUploadData() {
+    public MusicUploadData(PlayImage image) {
         this.state = UploadState.PREPARATION;
         this.progress = 0f;
+        this.image = image;
     }
 
     public float getProgress() {
@@ -23,6 +27,10 @@ public class MusicUploadData {
 
     public void setState(UploadState state) {
         this.state = state;
+    }
+
+    public PlayImage getImage() {
+        return image;
     }
 
     public enum UploadState {
