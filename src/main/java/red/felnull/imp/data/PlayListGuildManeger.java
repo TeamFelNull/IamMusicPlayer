@@ -4,17 +4,16 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.packet.PacketHandler;
 import red.felnull.imp.packet.PlayListCreateRequestMessage;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.api.ResponseSender;
 import red.felnull.otyacraftengine.data.WorldDataManager;
-import red.felnull.otyacraftengine.util.IKSGPictuerUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,16 +34,17 @@ public class PlayListGuildManeger {
 
 
     @OnlyIn(Dist.CLIENT)
-    public void createPlayListRequest(String name, byte[] image, boolean anyone) {
-        String imageUUID = UUID.randomUUID().toString();
-        BufferedImage images = IKSGPictuerUtil.geBfftImage(image);
-        DataSendReceiverManager.instance().sendToServer(IMPWorldData.PLAYLIST_IMAGE, imageUUID, image);
-        PacketHandler.INSTANCE.sendToServer(new PlayListCreateRequestMessage(name, imageUUID, images.getWidth(), images.getHeight(), anyone));
+    public void createPlayListRequest(String name, PlayImage image, byte[] imageData, boolean anyone) {
+
+        if (image.getImageType() == PlayImage.ImageType.IMGAE)
+            DataSendReceiverManager.instance().sendToServer(IMPWorldData.IMAGE, image.getName(), imageData);
+
+        PacketHandler.INSTANCE.sendToServer(new PlayListCreateRequestMessage(name, image, anyone));
     }
 
-    public void createPlayList(ServerPlayerEntity player, String name, String imageUUID, int w, int h, boolean anyone) {
+    public void createPlayList(ServerPlayerEntity player, String name, PlayImage image, boolean anyone) {
         String plUUID = UUID.randomUUID().toString();
-        PlayList playList = new PlayList(plUUID, name, imageUUID, w, h, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone);
+        PlayList playList = new PlayList(plUUID, name, image, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone);
         PlayList.addPlayList(playList);
         playList.addPlayer(player);
     }

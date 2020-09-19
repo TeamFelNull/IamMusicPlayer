@@ -1,12 +1,12 @@
 package red.felnull.imp.packet;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import red.felnull.imp.musicplayer.PlayImage;
 
 public class PlayMusicCreateRequestMessage {
     public String name;
-    public String imageUUID;
-    public int imageW;
-    public int imageH;
+    public PlayImage image;
     public String musicUUID;
     public String artist;
     public String album;
@@ -15,11 +15,9 @@ public class PlayMusicCreateRequestMessage {
     public int bitrate;
     public long lethsec;
 
-    public PlayMusicCreateRequestMessage(String name, String imageUUID, int iw, int ih, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lethsec) {
+    public PlayMusicCreateRequestMessage(String name, PlayImage image, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lethsec) {
         this.name = name;
-        this.imageUUID = imageUUID;
-        this.imageW = iw;
-        this.imageH = ih;
+        this.image = image;
         this.musicUUID = musicUUID;
         this.artist = artist;
         this.album = album;
@@ -30,14 +28,12 @@ public class PlayMusicCreateRequestMessage {
     }
 
     public static PlayMusicCreateRequestMessage decodeMessege(PacketBuffer buffer) {
-        return new PlayMusicCreateRequestMessage(buffer.readString(32767), buffer.readString(32767), buffer.readInt(), buffer.readInt(), buffer.readString(32767), buffer.readString(32767), buffer.readString(32767), buffer.readString(32767), buffer.readString(32767), buffer.readInt(), buffer.readLong());
+        return new PlayMusicCreateRequestMessage(buffer.readString(32767), new PlayImage(buffer.readCompoundTag()), buffer.readString(32767), buffer.readString(32767), buffer.readString(32767), buffer.readString(32767), buffer.readString(32767), buffer.readInt(), buffer.readLong());
     }
 
     public static void encodeMessege(PlayMusicCreateRequestMessage messegeIn, PacketBuffer buffer) {
         buffer.writeString(messegeIn.name);
-        buffer.writeString(messegeIn.imageUUID);
-        buffer.writeInt(messegeIn.imageW);
-        buffer.writeInt(messegeIn.imageH);
+        buffer.writeCompoundTag(messegeIn.image.write(new CompoundNBT()));
         buffer.writeString(messegeIn.musicUUID);
         buffer.writeString(messegeIn.artist);
         buffer.writeString(messegeIn.album);

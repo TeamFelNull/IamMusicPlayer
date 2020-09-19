@@ -1,31 +1,27 @@
 package red.felnull.imp.packet;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import red.felnull.imp.musicplayer.PlayImage;
 
 public class PlayListCreateRequestMessage {
     public String name;
-    public String imageID;
-    public int w;
-    public int h;
+    public PlayImage image;
     public boolean anyone;
 
-    public PlayListCreateRequestMessage(String name, String imageID, int w, int h, boolean anyone) {
+    public PlayListCreateRequestMessage(String name, PlayImage image, boolean anyone) {
         this.name = name;
-        this.imageID = imageID;
-        this.w = w;
-        this.h = h;
         this.anyone = anyone;
+        this.image = image;
     }
 
     public static PlayListCreateRequestMessage decodeMessege(PacketBuffer buffer) {
-        return new PlayListCreateRequestMessage(buffer.readString(32767), buffer.readString(32767), buffer.readInt(), buffer.readInt(), buffer.readBoolean());
+        return new PlayListCreateRequestMessage(buffer.readString(32767), new PlayImage(buffer.readCompoundTag()), buffer.readBoolean());
     }
 
     public static void encodeMessege(PlayListCreateRequestMessage messegeIn, PacketBuffer buffer) {
         buffer.writeString(messegeIn.name);
-        buffer.writeString(messegeIn.imageID);
-        buffer.writeInt(messegeIn.w);
-        buffer.writeInt(messegeIn.h);
+        buffer.writeCompoundTag(messegeIn.image.write(new CompoundNBT()));
         buffer.writeBoolean(messegeIn.anyone);
     }
 }

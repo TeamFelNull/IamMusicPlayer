@@ -15,70 +15,55 @@ import java.util.List;
 public class PlayList implements INBTReadWriter {
     private final String UUID;
     private String name;
-    private String imageUUID;
-    private int imageWidth;
-    private int imageHeight;
     private String createPlayerName;
     private String createPlayerUUID;
     private String timeStamp;
     private boolean Anyone;
+    private PlayImage image;
 
     public PlayList(String UUID, CompoundNBT tag) {
         this.UUID = UUID;
         read(tag);
     }
 
-    public PlayList(String UUID, String name, String imageUUID, int width, int height, String createPlayerName, String createPlayerUUID, String timeStamp, boolean anyone) {
+    public PlayList(String UUID, String name, PlayImage image, String createPlayerName, String createPlayerUUID, String timeStamp, boolean anyone) {
         this.UUID = UUID;
         this.name = name;
-        this.imageUUID = imageUUID;
-        this.imageWidth = width;
-        this.imageHeight = height;
         this.createPlayerName = createPlayerName;
         this.createPlayerUUID = createPlayerUUID;
         this.timeStamp = timeStamp;
         this.Anyone = anyone;
+        this.image = image;
     }
 
     @Override
     public void read(CompoundNBT tag) {
         this.name = tag.getString("Name");
-        this.imageUUID = tag.getString("ImageUUID");
-        this.imageWidth = tag.getInt("ImageWidth");
-        this.imageHeight = tag.getInt("ImageHeight");
         this.createPlayerName = tag.getString("CreatePlayerName");
         this.createPlayerUUID = tag.getString("CreatePlayerUUID");
         this.timeStamp = tag.getString("TimeStamp");
         this.Anyone = tag.getBoolean("Anyone");
+        this.image = new PlayImage(tag.getCompound("Image"));
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putString("Name", this.name);
-        tag.putString("ImageUUID", this.imageUUID);
-        tag.putInt("ImageWidth", this.imageWidth);
-        tag.putInt("ImageHeight", this.imageHeight);
         tag.putString("CreatePlayerName", this.createPlayerName);
         tag.putString("CreatePlayerUUID", this.createPlayerUUID);
         tag.putString("TimeStamp", this.timeStamp);
         tag.putBoolean("Anyone", this.Anyone);
+        tag.put("Image", this.image.write(new CompoundNBT()));
         return tag;
     }
 
-    public int getImageHeight() {
-        return imageHeight;
-    }
-
-    public int getImageWidth() {
-        return imageWidth;
-    }
 
     public String getName() {
         return name;
     }
 
-    public String getImageUUID() {
-        return imageUUID;
+    public PlayImage getImage() {
+        return image;
     }
 
     public String getUUID() {

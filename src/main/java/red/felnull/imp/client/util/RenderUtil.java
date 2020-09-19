@@ -23,10 +23,19 @@ public class RenderUtil {
     private static int maxColor = Integer.valueOf("ffffff", 16);
 
     public static void drwPlayImage(MatrixStack matrix, PlayImage image, int x, int y, int size) {
+        drwPlayImage(matrix, image, x, y, size, 0, 0);
+    }
+
+    public static void drwPlayImage(MatrixStack matrix, PlayImage image, byte[] imageData, int x, int y, int size) {
+        drwPlayImage(matrix, image, imageData, x, y, size, 0, 0);
+    }
+
+
+    public static void drwPlayImage(MatrixStack matrix, PlayImage image, int x, int y, int size, int upOver, int downOver) {
         PlayImage.ImageType ityepe = image.getImageType();
         switch (ityepe) {
             case IMGAE:
-                ResourceLocation location = IKSGTextureUtil.getReceiveTexture(IMPWorldData.PLAYLIST_IMAGE, image.getName());
+                ResourceLocation location = IKSGTextureUtil.getReceiveTexture(IMPWorldData.IMAGE, image.getName());
                 int xsize = (int) (size * ((float) IKSGTextureUtil.getWidth(location, 256) / 256f));
                 int ysize = (int) (size * ((float) IKSGTextureUtil.getHeight(location, 256) / 256f));
                 int xz = (size - xsize) / 2;
@@ -39,7 +48,7 @@ public class RenderUtil {
                 int[] backColor = IKSGColorUtil.convertRGBFromColorCode(r.nextInt(maxColor));
                 RenderSystem.pushMatrix();
                 RenderSystem.color4f((float) backColor[0] / 255f, (float) backColor[1] / 255f, (float) backColor[2] / 255f, 1.0F);
-                IKSGRenderUtil.guiBindAndBlit(STRING_PLAYIMAGE, matrix, x, y, 0, 0, size, size, size, size);
+                IKSGRenderUtil.guiBindAndBlit(STRING_PLAYIMAGE, matrix, x, y + upOver, 0, upOver, size, size - downOver - upOver, size, size);
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderSystem.popMatrix();
                 FontRenderer ft = IamMusicPlayer.proxy.getMinecraft().fontRenderer;
@@ -57,7 +66,7 @@ public class RenderUtil {
         }
     }
 
-    public static void drwPlayImage(MatrixStack matrix, PlayImage image, byte[] imageData, int x, int y, int size) {
+    public static void drwPlayImage(MatrixStack matrix, PlayImage image, byte[] imageData, int x, int y, int size, int upOver, int downOver) {
         PlayImage.ImageType ityepe = image.getImageType();
         switch (ityepe) {
             case IMGAE:

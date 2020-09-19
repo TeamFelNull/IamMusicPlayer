@@ -15,9 +15,11 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.gui.widget.GuildPlayListButton;
 import red.felnull.imp.client.gui.widget.JoinPlayListButton;
+import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.item.IMPItems;
+import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
@@ -39,6 +41,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
 
@@ -51,11 +54,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private List<PlayList> jonPlaylists = new ArrayList<>();
     private List<PlayList> jonedAllPlaylists = new ArrayList<>();
 
+    private PlayImage image;
 
     private byte[] picturImage;
     private boolean loading;
-    private int picturWidth;
-    private int picturHeight;
 
     private ChangeableImageButton powerButton;
     private StringImageButton allbutton;
@@ -162,7 +164,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.backGuid, false);
 
         this.createGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), picturImage, createAnyoneCheckbox.isCheck());
+            PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), image, picturImage, createAnyoneCheckbox.isCheck());
             insMode("playlist");
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
         this.createGuid.setSizeAdjustment(true);
@@ -175,6 +177,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.createGuildNameField.setMaxStringLength(30);
         this.createGuildNameField.setTextColor(-1);
         this.createGuildNameField.setDisabledTextColour(-1);
+        this.createGuildNameField.setResponder(n -> {
+            if (picturImage == null) {
+                this.image = new PlayImage(PlayImage.ImageType.STRING, n);
+            }
+        });
         IKSGScreenUtil.setVisible(this.createGuildNameField, false);
 
         this.createAnyoneCheckbox = this.addWidgetByIKSG(new Checkbox(getMonitorStartX() + 92, getMonitorStartY() + 56, 15, 15, 215, 96, 256, 256, MSD_GUI_TEXTURES));
@@ -233,6 +240,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         } else {
             instruction("pathset", new CompoundNBT());
         }
+
+        if (image == null) {
+            image = new PlayImage(PlayImage.ImageType.STRING, "");
+        }
+
     }
 
     @Override
@@ -294,7 +306,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.backGuid, isMonitor(Monitors.CREATEPLAYLIST));
         IKSGScreenUtil.setVisible(this.createGuid, isMonitor(Monitors.CREATEPLAYLIST));
         IKSGScreenUtil.setVisible(this.createAnyoneCheckbox, isMonitor(Monitors.CREATEPLAYLIST));
-        IKSGScreenUtil.setActive(this.createGuid, picturImage != null && !createGuildNameField.getText().isEmpty());
+        IKSGScreenUtil.setActive(this.createGuid, image != null && !createGuildNameField.getText().isEmpty());
         IKSGScreenUtil.setVisible(this.createJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
         IKSGScreenUtil.setVisible(this.addJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
         IKSGScreenUtil.setVisible(this.backJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
@@ -422,12 +434,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             drawFontString(matrx, new TranslationTextComponent("msd.imagedropInfo"), getMonitorStartX() + 6, getMonitorStartY() + 109);
         }
 
-        if (picturImage != null) {
-            int xsize = (int) (79 * ((float) picturWidth / 256f));
-            int ysize = (int) (79 * ((float) picturHeight / 256f));
-            int x = (79 - xsize) / 2;
-            int y = (79 - ysize) / 2;
-            IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPictureImageTexture(picturImage), matrx, getMonitorStartX() + 7 + x, getMonitorStartY() + 27 + y, 0, 0, xsize, ysize, xsize, ysize);
+        if (image != null) {
+            RenderUtil.drwPlayImage(matrx, image, picturImage, getMonitorStartX() + 7, getMonitorStartY() + 27, 79);
         }
 
         IKSGRenderUtil.matrixPush(matrx);
@@ -520,6 +528,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     public void setPicturImage(byte[] picturImage) {
         this.picturImage = picturImage;
+        if (picturImage != null)
+            this.image = new PlayImage(PlayImage.ImageType.IMGAE, UUID.randomUUID().toString());
+        else
+            this.image = new PlayImage(PlayImage.ImageType.STRING, this.createGuildNameField.getText());
     }
 
     private static class PictureLoadThread extends Thread {
@@ -553,8 +565,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                     }
                     BufferedImage outbfi = new BufferedImage(aw, ah, bfi.getType());
                     outbfi.createGraphics().drawImage(bfi.getScaledInstance(aw, ah, Image.SCALE_AREA_AVERAGING), 0, 0, aw, ah, null);
-                    screen.picturWidth = outbfi.getWidth();
-                    screen.picturHeight = outbfi.getHeight();
                     screen.setPicturImage(IKSGPictuerUtil.geByteImage(outbfi));
                 }
             } catch (Exception ex) {

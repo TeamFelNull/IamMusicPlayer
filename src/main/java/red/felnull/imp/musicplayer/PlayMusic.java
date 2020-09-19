@@ -6,9 +6,6 @@ import red.felnull.otyacraftengine.data.INBTReadWriter;
 public class PlayMusic implements INBTReadWriter {
     private final String UUID;
     private String name;
-    private String imageUUID;
-    private int imageWidth;
-    private int imageHeight;
     private String createPlayerName;
     private String createPlayerUUID;
     private String timeStamp;
@@ -19,13 +16,12 @@ public class PlayMusic implements INBTReadWriter {
     private String genre;
     private int bitrate;
     private long lengthInMilliseconds;
+    private PlayImage image;
 
-    public PlayMusic(String UUID, String name, String imageUUID, int width, int height, String createPlayerName, String createPlayerUUID, String timeStamp, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lengthInMilliseconds) {
+    public PlayMusic(String UUID, String name, PlayImage image, String createPlayerName, String createPlayerUUID, String timeStamp, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lengthInMilliseconds) {
         this.UUID = UUID;
         this.name = name;
-        this.imageUUID = imageUUID;
-        this.imageWidth = width;
-        this.imageHeight = height;
+        this.image = image;
         this.createPlayerName = createPlayerName;
         this.createPlayerUUID = createPlayerUUID;
         this.timeStamp = timeStamp;
@@ -46,9 +42,7 @@ public class PlayMusic implements INBTReadWriter {
     @Override
     public void read(CompoundNBT tag) {
         this.name = tag.getString("Name");
-        this.imageUUID = tag.getString("ImageUUID");
-        this.imageWidth = tag.getInt("ImageWidth");
-        this.imageHeight = tag.getInt("ImageHeight");
+        this.image = new PlayImage(tag.getCompound("Image"));
         this.createPlayerName = tag.getString("CreatePlayerName");
         this.createPlayerUUID = tag.getString("CreatePlayerUUID");
         this.timeStamp = tag.getString("TimeStamp");
@@ -64,9 +58,7 @@ public class PlayMusic implements INBTReadWriter {
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putString("Name", this.name);
-        tag.putString("ImageUUID", this.imageUUID);
-        tag.putInt("ImageWidth", this.imageWidth);
-        tag.putInt("ImageHeight", this.imageHeight);
+        tag.put("Image", this.image.write(new CompoundNBT()));
         tag.putString("CreatePlayerName", this.createPlayerName);
         tag.putString("CreatePlayerUUID", this.createPlayerUUID);
         tag.putString("TimeStamp", this.timeStamp);
@@ -88,16 +80,8 @@ public class PlayMusic implements INBTReadWriter {
         return name;
     }
 
-    public String getImageUUID() {
-        return imageUUID;
-    }
-
-    public int getImageWidth() {
-        return imageWidth;
-    }
-
-    public int getImageHeight() {
-        return imageHeight;
+    public PlayImage getImage() {
+        return image;
     }
 
     public String getCreatePlayerUUID() {

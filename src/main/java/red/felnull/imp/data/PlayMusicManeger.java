@@ -3,6 +3,7 @@ package red.felnull.imp.data;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayMusic;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -26,13 +27,13 @@ public class PlayMusicManeger {
     public void createPlayMusicRequest(String name, Path musicPath, int bitrate, boolean isServerIn, byte[] imageData, String artist, String album, String year, String genre) {
         String imageUUID = UUID.randomUUID().toString();
         String musicUUID = UUID.randomUUID().toString();
-        DataSendReceiverManager.instance().sendToServer(IMPWorldData.PLAYLIST_IMAGE, imageUUID, imageData);
+        DataSendReceiverManager.instance().sendToServer(IMPWorldData.IMAGE, imageUUID, imageData);
 
     }
 
-    public void createPlayMusic(ServerPlayerEntity player, String name, String imageID, int imageWidth, int imageHeight, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lethsec) {
+    public void createPlayMusic(ServerPlayerEntity player, String name, PlayImage image, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lethsec) {
         String plUUID = UUID.randomUUID().toString();
-        PlayMusic pm = new PlayMusic(plUUID, name, imageID, imageWidth, imageHeight, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), musicUUID, artist, album, year, genre, bitrate, lethsec);
+        PlayMusic pm = new PlayMusic(plUUID, name, image, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), musicUUID, artist, album, year, genre, bitrate, lethsec);
 
     }
 }

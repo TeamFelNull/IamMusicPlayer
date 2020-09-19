@@ -55,7 +55,7 @@ public class MusicUploadToast implements IToast {
         if (sd.getState().isProgressble()) {
             IKSGRenderUtil.matrixPush(matrix);
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), (int) (29f / 0.5f), (int) (15f / 0.5f), 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), (int) (29f / 0.5f), (int) (14.5f / 0.5f), 0);
             IKSGRenderUtil.matrixPop(matrix);
         } else {
             IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), 29, 18, 0);
