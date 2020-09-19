@@ -15,7 +15,7 @@ public class PlayImage implements INBTReadWriter {
 
     @Override
     public void read(CompoundNBT tag) {
-        imageType = ImageType.valueOf(tag.getString("ImageType"));
+        this.imageType = ImageType.valueOf(tag.getString("ImageType"));
     }
 
     @Override

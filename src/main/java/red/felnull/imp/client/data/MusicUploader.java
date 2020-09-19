@@ -37,8 +37,8 @@ public class MusicUploader {
         return INSTANCE;
     }
 
-    public void startUpload(Path path, String uuid, PlayImage image) {
-        stateDatas.put(uuid, new MusicUploadData(image));
+    public void startUpload(String name, Path path, String uuid, PlayImage image, byte[] imageData) {
+        stateDatas.put(uuid, new MusicUploadData(name, image, imageData));
         MusicUploadToast.add(uuid);
         UploadThread ut = new UploadThread(path, uuid);
         ut.start();

@@ -17,5 +17,12 @@
   "msd.addplaylistInfo": "Create or Join a playlist",
   "msd.joinplaylist": "Join PlayList",
   "msd.anyonecheck": "Is Anyone",
+  "uploadstate.preparation": "Preparation",
+  "uploadstate.converting": "Converting",
+  "uploadstate.compressing": "Compressing",
+  "uploadstate.sending": "Sending",
+  "uploadstate.unzipping": "Unzipping",
+  "uploadstate.completion": "Completion",
+  "uploadstate.error": "Error",
   "_comment.l": "last"
 }

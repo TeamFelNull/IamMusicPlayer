@@ -6,12 +6,15 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.toasts.IToast;
 import net.minecraft.client.gui.toasts.ToastGui;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicUploadData;
 import red.felnull.imp.client.data.MusicUploader;
+import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public class MusicUploadToast implements IToast {
     private static final ResourceLocation IMP_TEXTURE_TOASTS = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/toasts.png");
@@ -34,13 +37,29 @@ public class MusicUploadToast implements IToast {
         Minecraft mc = toast.getMinecraft();
         FontRenderer fr = mc.fontRenderer;
         IKSGRenderUtil.guiBindAndBlit(IMP_TEXTURE_TOASTS, matrix, 0, 0, 0, 0, 160, 32, 256, 256);
-        IKSGRenderUtil.drawString(fr, matrix, new StringTextComponent(sd.getState().name()), 35, 3, 0);
 
-        RenderUtil.drwPlayImage(matrix, sd.getImage(), 6, 6, 20, 20);
+        RenderUtil.drwPlayImage(matrix, sd.getImage(), sd.getImageData(), 6, 6, 20);
 
-        if (sd.getState().isProgressble())
-            IKSGRenderUtil.drawString(fr, matrix, new StringTextComponent(Math.ceil(sd.getProgress() * 100) + "%"), 35, 15, 0);
+        if (sd.getState().isProgressble()) {
+            IKSGRenderUtil.guiBindAndBlit(IMP_TEXTURE_TOASTS, matrix, 29, 19, 0, 32, 125, 7, 256, 256);
+            IKSGRenderUtil.guiBindAndBlit(IMP_TEXTURE_TOASTS, matrix, 30, 20, 0, 39, (int) (123 * sd.getProgress()), 5, 256, 256);
+            IKSGRenderUtil.matrixPush(matrix);
+            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(sd.getProgress() * 100) + "%"), MusicSharingDeviceScreen.fontStyle);
+            IKSGRenderUtil.matrixScalf(matrix, 0.5f);
+            IKSGRenderUtil.drawCenterString(fr, matrix, tc, (int) (92.5f / 0.5f), (int) (20.5f / 0.5f), 0);
+            IKSGRenderUtil.matrixPop(matrix);
+        }
 
+        IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new StringTextComponent(sd.getName()), MusicSharingDeviceScreen.fontStyle), 29, 6, 0);
+
+        if (sd.getState().isProgressble()) {
+            IKSGRenderUtil.matrixPush(matrix);
+            IKSGRenderUtil.matrixScalf(matrix, 0.5f);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), (int) (29f / 0.5f), (int) (15f / 0.5f), 0);
+            IKSGRenderUtil.matrixPop(matrix);
+        } else {
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), 29, 18, 0);
+        }
 
         if (sd.getState() == MusicUploadData.UploadState.COMPLETION || sd.getState() == MusicUploadData.UploadState.ERROR) {
             if (!completedOrError) {
