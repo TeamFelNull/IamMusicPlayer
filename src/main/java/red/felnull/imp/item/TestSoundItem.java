@@ -33,7 +33,7 @@ public class TestSoundItem extends Item {
         Object iku = new Object();
         if (worldIn.isRemote) {
             //   UploadMusicToast.add("ikisugi.net");
-            MusicUploader.instance().startUpload("Ikisugi of Music", Paths.get("C:\\Users\\MORI\\Music\\playlist\\01 茜空.mp3"), UUID.randomUUID().toString(), new PlayImage(PlayImage.ImageType.STRING, "ikisugi"), null);
+            MusicUploader.instance().startUpload("Ikisugi of Music", Paths.get("C:\\Users\\MORI\\Music\\playlist\\01 茜空.mp3"), UUID.randomUUID().toString(), new PlayImage(PlayImage.ImageType.PLAYERFACE, "ikisugi"), null);
             ;
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());

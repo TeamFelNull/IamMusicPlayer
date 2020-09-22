@@ -1,12 +1,17 @@
 package red.felnull.imp.client.gui.widget;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 
 import java.util.List;
 
@@ -23,25 +28,9 @@ public class JoinPlayListButton extends ScrollListButton {
         IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x, y + upOver, 48, upOver, 187, 40 - downOver, 256, 256);
 
         PlayList pl = playLists.get(num);
-        /*    int size = 36;
-        float w = pl.getImageWidth();
-        float h = pl.getImageHeight();
-        int aw = 0;
-        int ah = 0;
-        if (w == h) {
-            aw = size;
-            ah = size;
-        } else if (w > h) {
-            aw = size;
-            ah = (int) ((float) size * (h / w));
-        } else if (w < h) {
-            aw = (int) ((float) size * (w / h));
-            ah = size;
-        }
-        int tatezure = 2 + (size - ah) / 2;
-        int upzure = tatezure < upOver ? upOver - tatezure : 0;
-        int downzure = tatezure < downOver ? downOver - tatezure : 0;
-        IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getReceiveTexture(IMPWorldData.IMAGE, pl.getImageUUID()), matrix, x + 2 + (size - aw) / 2, y + tatezure + upzure, 0, upzure, aw, ah - upzure - downzure, aw, ah);
+        int upzure = 2 < upOver ? upOver - 2 : 0;
+        int downzure = 2 < downOver ? downOver - 2 : 0;
+        RenderUtil.drwPlayImage(matrix, pl.getImage(), x + 2, y + 2, 36, upzure, downzure);
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         if (upOver < 12 && downOver <= 38) {
@@ -60,8 +49,8 @@ public class JoinPlayListButton extends ScrollListButton {
         IKSGRenderUtil.guiBindAndBlit(plskin, matrix, x + 40, y + 27 + fupzure, 8, 8 + fupzure, 8, 8 - fupzure - fdownzure, 64, 64);
         IKSGRenderUtil.guiBindAndBlit(plskin, matrix, x + 40, y + 27 + fupzure, 40, 8 + fupzure, 8, 8 - fupzure - fdownzure, 64, 64);
         IKSGRenderUtil.matrixPop(matrix);
-      */
-        RenderUtil.drwPlayImage(matrix, pl.getImage(), x + 1, y + 1, 16);
+
+
     }
 
     @Override

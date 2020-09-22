@@ -8,12 +8,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 import red.felnull.otyacraftengine.util.IKSGColorUtil;
 import red.felnull.otyacraftengine.util.IKSGMath;
+import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.util.Random;
 
@@ -34,19 +36,13 @@ public class RenderUtil {
         PlayImage.ImageType ityepe = image.getImageType();
         switch (ityepe) {
             case IMGAE:
-                ResourceLocation location = IKSGTextureUtil.getReceiveTexture(IMPWorldData.IMAGE, image.getName());
-                int xsize = (int) (size * ((float) IKSGTextureUtil.getWidth(location, 256) / 256f));
-                int ysize = (int) (size * ((float) IKSGTextureUtil.getHeight(location, 256) / 256f));
-                int xz = (size - xsize) / 2;
-                int yz = (size - ysize) / 2;
-                IKSGRenderUtil.guiBindAndBlit(location, matrix, x + xz, y + yz, 0, 0, xsize, ysize, xsize, ysize);
+                drwPlayImageImage(matrix, image.getName(), null, x, y, size, upOver, downOver);
                 break;
             case STRING:
                 drwPlayImageString(matrix, image.getName(), x, y, size, upOver, downOver);
                 break;
             case PLAYERFACE:
-                IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTexture(image.getName()), matrix, x, y, size, size, size, size, size * 8, size * 8);
-                IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTexture(image.getName()), matrix, x * 5, y, size, size, size, size, size * 8, size * 8);
+                drwPlayImagePlayerFace(matrix, image.getName(), x, y, size, upOver, downOver);
                 break;
         }
     }
@@ -55,19 +51,13 @@ public class RenderUtil {
         PlayImage.ImageType ityepe = image.getImageType();
         switch (ityepe) {
             case IMGAE:
-                ResourceLocation location = IKSGTextureUtil.getPictureImageTexture(imageData);
-                int xsize = (int) (size * ((float) IKSGTextureUtil.getWidth(location, 256) / 256f));
-                int ysize = (int) (size * ((float) IKSGTextureUtil.getHeight(location, 256) / 256f));
-                int xz = (size - xsize) / 2;
-                int yz = (size - ysize) / 2;
-                IKSGRenderUtil.guiBindAndBlit(location, matrix, x + xz, y + yz, 0, 0, xsize, ysize, xsize, ysize);
+                drwPlayImageImage(matrix, image.getName(), imageData, x, y, size, upOver, downOver);
                 break;
             case STRING:
                 drwPlayImageString(matrix, image.getName(), x, y, size, upOver, downOver);
                 break;
             case PLAYERFACE:
-                IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTexture(image.getName()), matrix, x, y, size, size, size, size, size * 8, size * 8);
-                IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTexture(image.getName()), matrix, x * 5, y, size, size, size, size, size * 8, size * 8);
+                drwPlayImagePlayerFace(matrix, image.getName(), x, y, size, upOver, downOver);
                 break;
         }
     }
@@ -84,16 +74,32 @@ public class RenderUtil {
         Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
         FontRenderer ft = mc.fontRenderer;
 
-        IFormattableTextComponent comp = new StringTextComponent(str);
+        IFormattableTextComponent comp = IKSGStyles.withStyle(new StringTextComponent(str), MusicSharingDeviceScreen.fontStyle);
         int stWidthSize = ft.func_238414_a_(comp);
         float baritu = (float) (size - 3) / (float) stWidthSize;
         float yzure = (size - ft.FONT_HEIGHT * baritu) / 2;
 
-        IKSGRenderUtil.matrixPush(matrix);
-        IKSGRenderUtil.matrixScalf(matrix, baritu);
-        IKSGRenderUtil.drawCenterString(ft, matrix, comp, (int) ((float) (x + size / 2) / baritu), (int) ((float) (y + yzure) / baritu), 0);
-        IKSGRenderUtil.matrixPop(matrix);
-
+        if (upOver < yzure + ft.FONT_HEIGHT * baritu && downOver < yzure + ft.FONT_HEIGHT * baritu) {
+            IKSGRenderUtil.matrixPush(matrix);
+            IKSGRenderUtil.matrixScalf(matrix, baritu);
+            IKSGRenderUtil.drawCenterString(ft, matrix, comp, (int) ((float) (x + size / 2) / baritu), (int) ((float) (y + yzure) / baritu), 0);
+            IKSGRenderUtil.matrixPop(matrix);
+        }
     }
 
+    private static void drwPlayImagePlayerFace(MatrixStack matrix, String str, int x, int y, int size, int upOver, int downOver) {
+        IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTexture(str), matrix, x, y + upOver, size, size + upOver, size, size - downOver - upOver, size * 8, size * 8);
+        IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTexture(str), matrix, x, y + upOver, size * 5, size + upOver, size, size - downOver - upOver, size * 8, size * 8);
+    }
+
+    private static void drwPlayImageImage(MatrixStack matrix, String str, byte[] imageData, int x, int y, int size, int upOver, int downOver) {
+        ResourceLocation location = imageData == null ? IKSGTextureUtil.getReceiveTexture(IMPWorldData.IMAGE, str) : IKSGTextureUtil.getPictureImageTexture(imageData);
+        int xsize = (int) (size * ((float) IKSGTextureUtil.getWidth(location, 256) / 256f));
+        int ysize = (int) (size * ((float) IKSGTextureUtil.getHeight(location, 256) / 256f));
+        int xz = (size - xsize) / 2;
+        int yz = (size - ysize) / 2;
+        int upOverZure = upOver < yz ? 0 : upOver - yz;
+        int downOverZure = downOver < yz ? 0 : downOver - yz;
+        IKSGRenderUtil.guiBindAndBlit(location, matrix, x + xz, y + yz + upOverZure, 0, upOverZure, xsize, ysize - downOverZure - upOverZure, xsize, ysize);
+    }
 }
