@@ -83,6 +83,7 @@ repositories {
         name = "Jei"
         url = "https://modmaven.k-4u.nl"
     }
+    maven { url "https://maven.latmod.com/" }
 }
 configurations {
     shadow
@@ -93,6 +94,7 @@ dependencies {
     compile fg.deobf(files("libs/OtyacraftEngine-${oe_version}-dev.jar"))
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
+    compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${ftb_gui_library_version}")
     shadow 'com.mpatric:mp3agic:0.9.1'
     shadow 'ws.schild:jave-all-deps:3.0.1'
 }

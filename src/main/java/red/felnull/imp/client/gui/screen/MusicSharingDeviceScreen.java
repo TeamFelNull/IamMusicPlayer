@@ -76,6 +76,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ScrollBarSlider joinplaylistbar;
     private JoinPlayListButton joinplaylistButtons;
     private StringImageButton joinplaylistbackButton;
+    private ImageButton addPlayMusicButton;
 
     private String listname;
 
@@ -229,6 +230,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.joinplaylistbackButton.setScale(0.5f);
         IKSGScreenUtil.setVisible(this.joinplaylistbackButton, false);
 
+        this.addPlayMusicButton = this.addWidgetByIKSG(new ImageButton(getMonitorStartX() + 189, getMonitorStartY() + 1, 9, 18, 235, 40, 18, MSD_GUI_TEXTURES, n -> {
+
+        }));
+        IKSGScreenUtil.setVisible(this.addPlayMusicButton, false);
+
         if (isMonitor(Monitors.CREATEPLAYLIST)) {
             Path picPath = getPicturPath();
             if (picPath != null) {
@@ -313,6 +319,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.joinplaylistbar, isMonitor(Monitors.JOINPLAYLIST));
         IKSGScreenUtil.setVisible(this.joinplaylistButtons, isMonitor(Monitors.JOINPLAYLIST));
         IKSGScreenUtil.setVisible(this.joinplaylistbackButton, isMonitor(Monitors.JOINPLAYLIST));
+        IKSGScreenUtil.setVisible(this.addPlayMusicButton, isMonitor(Monitors.PLAYLIST));
     }
 
     private boolean isMonitor(Monitors... mo) {
