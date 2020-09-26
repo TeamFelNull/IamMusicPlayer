@@ -19,7 +19,9 @@
   "msd.anyonecheck": "Is Anyone",
   "msd.addplaymusic": "Add Music",
   "msd.source": "Source",
-
+  "msd.musicloading": "Loading music...",
+  "musicloaderror.nosupportformat": "No Support Format",
+  "musicloaderror.wip": "Wip Error",
   "uploadstate.preparation": "Preparation",
   "uploadstate.converting": "Converting",
   "uploadstate.compressing": "Compressing",
