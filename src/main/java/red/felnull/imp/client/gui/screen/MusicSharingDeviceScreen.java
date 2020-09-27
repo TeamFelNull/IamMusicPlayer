@@ -40,6 +40,7 @@ import ws.schild.jave.MultimediaObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private StringImageButton joinplaylistbackButton;
     private ImageButton addPlayMusicButton;
     private TextFieldWidget addPlayMusicNameField;
-    private TextFieldWidget addPlayMusicSourceField;
+    public TextFieldWidget addPlayMusicSourceField;
     private PlayMusicSourceReferenceButton addPlayMusicSourceReferenceButton;
 
     private String listname;
@@ -699,6 +700,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     }
 
+    public void setMusicLoadError(MusicLoadResult musicLoadError) {
+        this.musicLoadError = musicLoadError;
+    }
 
     private static class DropAndDragFileLoadThread extends Thread {
         private final MusicSharingDeviceScreen screen;
@@ -747,9 +751,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (pictuerOnry)
                 return;
 
-            if (nopicteur)
+            if (nopicteur) {
+                screen.musicLoadError = null;
+                screen.setMusicSourceClientReferencesType(MusicSourceClientReferencesType.LOCAL_FILE);
                 screen.addPlayMusicSourceField.setText(path.toString());
-
+            }
         }
     }
 
@@ -827,6 +833,27 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                             return;
                         }
                     } catch (Exception ex) {
+                        if (!this.stop) {
+                            screen.musicLoadError = MusicLoadResult.NO_SUPPORT_FORMAT;
+                            screen.musicLoading = false;
+                        }
+                        return;
+                    }
+                } catch (Exception ex) {
+                    if (!this.stop) {
+                        screen.musicLoadError = MusicLoadResult.FILE_NOT_EXIST;
+                        screen.musicLoading = false;
+                    }
+                    return;
+                }
+            } else if (screen.getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.URL) {
+                try {
+                    URL url = new URL("https://www.dropbox.com/s/kq54xk0ylxlch9z/%E3%82%AB%E3%82%AA%E3%82%B9%E9%B3%A5128.mp3?dl=1");
+                    MultimediaObject mo = new MultimediaObject(url);
+                    Encoder encoder = new Encoder();
+                    if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(mo.getInfo().getFormat())) {
+
+                    } else {
                         if (!this.stop) {
                             screen.musicLoadError = MusicLoadResult.NO_SUPPORT_FORMAT;
                             screen.musicLoading = false;

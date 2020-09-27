@@ -34,5 +34,7 @@ public class PlayMusicSourceReferenceButton extends ImageButton {
         } else {
             screen.setMusicSourceClientReferencesType(mscrt.get(crnum + 1));
         }
+        screen.setMusicLoadError(null);
+        screen.addPlayMusicSourceField.setText("");
     }
 }
