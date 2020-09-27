@@ -658,6 +658,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         return musicSourceClientReferencesType;
     }
 
+    public void setMusicSourceClientReferencesType(MusicSourceClientReferencesType musicSourceClientReferencesType) {
+        this.musicSourceClientReferencesType = musicSourceClientReferencesType;
+    }
+
     public void setPicturImage(byte[] picturImage, Path path) {
         this.picturImage = picturImage;
         if (picturImage != null) {
@@ -676,7 +680,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     public static enum MusicLoadResult {
-        NO_SUPPORT_FORMAT("nosupportformat");
+        NO_SUPPORT_FORMAT("nosupportformat"),
+        FILE_NOT_EXIST("filenotexist");
 
         private String name;
 
@@ -742,65 +747,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (pictuerOnry)
                 return;
 
-            if (nopicteur) {
-                try {
-                    MultimediaObject mo = new MultimediaObject(path.toFile());
-                    Encoder encoder = new Encoder();
-                    if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(mo.getInfo().getFormat())) {
-                        screen.addPlayMusicSourceField.setText(path.toString());
-                        if (mo.getInfo().getFormat().equals("mp3")) {
-                            Mp3File mp3 = new Mp3File(path);
-                            ID3v2 id3v2 = mp3.getId3v2Tag();
-                            if (id3v2 != null) {
-                                if (screen.addPlayMusicNameField.getText().isEmpty()) {
-                                    if (id3v2.getTitle() != null) {
-                                        screen.addPlayMusicNameField.setText(id3v2.getTitle());
-                                    } else {
-                                        screen.addPlayMusicNameField.setText(path.toFile().getName());
-                                    }
-                                }
-                                if (id3v2.getAlbumImage() != null) {
-                                    screen.musicLoading = true;
-                                    String uuid = UUID.randomUUID().toString();
-                                    IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtil.getClientTmpFolder().resolve(uuid));
-                                    BufferedImage bfi = IKSGPictuerUtil.getBffImage(PathUtil.getClientTmpFolder().resolve(uuid));
-                                    if (bfi != null) {
-                                        int size = 256;
-                                        float w = bfi.getWidth();
-                                        float h = bfi.getHeight();
-                                        int aw = 0;
-                                        int ah = 0;
-                                        if (w == h) {
-                                            aw = size;
-                                            ah = size;
-                                        } else if (w > h) {
-                                            aw = size;
-                                            ah = (int) ((float) size * (h / w));
-                                        } else if (w < h) {
-                                            aw = (int) ((float) size * (w / h));
-                                            ah = size;
-                                        }
-                                        BufferedImage outbfi = new BufferedImage(aw, ah, bfi.getType());
-                                        outbfi.createGraphics().drawImage(bfi.getScaledInstance(aw, ah, Image.SCALE_AREA_AVERAGING), 0, 0, aw, ah, null);
-                                        if (IKSGScreenUtil.isOpendScreen(screen))
-                                            screen.setPicturImage(IKSGPictuerUtil.geByteImage(outbfi), PathUtil.getClientTmpFolder().resolve(uuid));
-                                        screen.musicLoading = false;
-                                    }
-                                }
-                            } else {
-                                if (screen.addPlayMusicNameField.getText().isEmpty())
-                                    screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
-                            }
-                        } else {
-                            if (screen.addPlayMusicNameField.getText().isEmpty())
-                                screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
-                        }
+            if (nopicteur)
+                screen.addPlayMusicSourceField.setText(path.toString());
 
-                    }
-                } catch (Exception ex) {
-                    screen.musicLoadError = MusicLoadResult.NO_SUPPORT_FORMAT;
-                }
-            }
         }
     }
 
@@ -823,17 +772,78 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
 
         public void run() {
-            if (this.stop)
+
+
+            if (this.stop || source.isEmpty())
                 return;
 
             screen.musicLoading = true;
+            screen.musicLoadError = null;
 
-            if (this.stop) {
-                screen.musicLoading = false;
-                return;
+            if (screen.getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.LOCAL_FILE) {
+                try {
+                    Path path = Paths.get(source);
+                    if (!path.toFile().exists()) {
+                        if (!this.stop) {
+                            screen.musicLoadError = MusicLoadResult.FILE_NOT_EXIST;
+                            screen.musicLoading = false;
+                        }
+                        return;
+                    }
+
+                    try {
+                        MultimediaObject mo = new MultimediaObject(path.toFile());
+                        Encoder encoder = new Encoder();
+                        if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(mo.getInfo().getFormat())) {
+                            if (mo.getInfo().getFormat().equals("mp3")) {
+                                Mp3File mp3 = new Mp3File(path);
+                                ID3v2 id3v2 = mp3.getId3v2Tag();
+                                if (id3v2 != null) {
+                                    if (id3v2.getTitle() != null) {
+                                        if (!this.stop)
+                                            screen.addPlayMusicNameField.setText(id3v2.getTitle());
+                                    } else {
+                                        if (!this.stop)
+                                            screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
+                                    }
+                                    if (id3v2.getAlbumImage() != null) {
+                                        String uuid = UUID.randomUUID().toString();
+                                        IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtil.getClientTmpFolder().resolve(uuid));
+                                        if (!this.stop) {
+                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, screen, PathUtil.getClientTmpFolder().resolve(uuid));
+                                            plt.start();
+                                        }
+                                    }
+                                } else {
+                                    if (!this.stop)
+                                        screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
+                                }
+                            }
+                        } else {
+                            if (!this.stop) {
+                                screen.musicLoadError = MusicLoadResult.NO_SUPPORT_FORMAT;
+                                screen.musicLoading = false;
+                            }
+                            return;
+                        }
+                    } catch (Exception ex) {
+                        if (!this.stop) {
+                            screen.musicLoadError = MusicLoadResult.NO_SUPPORT_FORMAT;
+                            screen.musicLoading = false;
+                        }
+                        return;
+                    }
+                } catch (Exception ex) {
+                    if (!this.stop) {
+                        screen.musicLoadError = MusicLoadResult.FILE_NOT_EXIST;
+                        screen.musicLoading = false;
+                    }
+                    return;
+                }
             }
 
-            screen.musicLoading = false;
+            if (!this.stop)
+                screen.musicLoading = false;
         }
     }
 }
