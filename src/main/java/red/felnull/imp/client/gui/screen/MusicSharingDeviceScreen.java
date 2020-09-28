@@ -37,6 +37,7 @@ import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 import red.felnull.otyacraftengine.util.*;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.info.MultimediaInfo;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -682,7 +683,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     public static enum MusicLoadResult {
         NO_SUPPORT_FORMAT("nosupportformat"),
-        FILE_NOT_EXIST("filenotexist");
+        FILE_NOT_EXIST("filenotexist"),
+        INVALID_URL("invalidurl"),
+        STREAM("stream");
 
         private String name;
 
@@ -848,10 +851,19 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 }
             } else if (screen.getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.URL) {
                 try {
-                    URL url = new URL("https://www.dropbox.com/s/kq54xk0ylxlch9z/%E3%82%AB%E3%82%AA%E3%82%B9%E9%B3%A5128.mp3?dl=1");
+                    URL url = new URL(source);
                     MultimediaObject mo = new MultimediaObject(url);
                     Encoder encoder = new Encoder();
                     if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(mo.getInfo().getFormat())) {
+                        MultimediaInfo info = mo.getInfo();
+                        if (info.getDuration() == -1) {
+                            if (!this.stop) {
+                                screen.musicLoadError = MusicLoadResult.STREAM;
+                                screen.musicLoading = false;
+                            }
+                            return;
+                        }
+
 
                     } else {
                         if (!this.stop) {
@@ -862,7 +874,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                     }
                 } catch (Exception ex) {
                     if (!this.stop) {
-                        screen.musicLoadError = MusicLoadResult.FILE_NOT_EXIST;
+                        screen.musicLoadError = MusicLoadResult.INVALID_URL;
                         screen.musicLoading = false;
                     }
                     return;
