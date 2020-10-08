@@ -9,7 +9,7 @@ public class IMPItemGroup {
     public static final ItemGroup MOD_TAB = new ItemGroup(IamMusicPlayer.MODID) {
         @Override
         public ItemStack createIcon() {
-            return IKSGItemStackUtil.createMultiGamerHead();
+            return IKSGItemStackUtil.createNinHead();
         }
     };
 }
