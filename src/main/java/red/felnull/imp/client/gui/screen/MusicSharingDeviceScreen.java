@@ -735,15 +735,15 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     private static enum Monitors {
-        OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_off.png"), "off"),
-        ON(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_on.png"), "on"),
-        PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_list.png"), "playlist"),
-        NOANTENNA(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_noantenna.png"), "noantenna"),
-        CREATEPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_createplaylist.png"), "createplaylist"),
-        ADDPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_addplaylist.png"), "addplaylist"),
-        JOINPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_joinplaylist.png"), "joinplaylist"),
-        ADDPLAYMUSIC1(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_addplaymusic_1.png"), "addplaymusic1"),
-        ADDPLAYMUSIC2(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device/msd_monitor_addplaymusic_2.png"), "addplaymusic2");
+        OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_off.png"), "off"),
+        ON(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_on.png"), "on"),
+        PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_list.png"), "playlist"),
+        NOANTENNA(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_noantenna.png"), "noantenna"),
+        CREATEPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_createplaylist.png"), "createplaylist"),
+        ADDPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaylist.png"), "addplaylist"),
+        JOINPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_joinplaylist.png"), "joinplaylist"),
+        ADDPLAYMUSIC1(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaymusic_1.png"), "addplaymusic1"),
+        ADDPLAYMUSIC2(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaymusic_2.png"), "addplaymusic2");
         private final ResourceLocation location;
         private final String name;
 
@@ -964,18 +964,30 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                                     if (id3v2.getArtist() != null) {
                                         if (!this.stop)
                                             screen.addPlayMusicArtistField.setText(id3v2.getArtist());
+                                    } else {
+                                        if (!this.stop)
+                                            screen.addPlayMusicArtistField.setText("");
                                     }
                                     if (id3v2.getAlbum() != null) {
                                         if (!this.stop)
                                             screen.addPlayMusicAlbumField.setText(id3v2.getAlbum());
+                                    } else {
+                                        if (!this.stop)
+                                            screen.addPlayMusicAlbumField.setText("");
                                     }
                                     if (id3v2.getYear() != null) {
                                         if (!this.stop)
                                             screen.addPlayMusicYearField.setText(id3v2.getYear());
+                                    } else {
+                                        if (!this.stop)
+                                            screen.addPlayMusicYearField.setText("");
                                     }
                                     if (id3v2.getGenreDescription() != null) {
                                         if (!this.stop)
                                             screen.addPlayMusicGenreField.setText(id3v2.getGenreDescription());
+                                    } else {
+                                        if (!this.stop)
+                                            screen.addPlayMusicGenreField.setText("");
                                     }
                                     if (id3v2.getAlbumImage() != null) {
                                         String uuid = UUID.randomUUID().toString();
