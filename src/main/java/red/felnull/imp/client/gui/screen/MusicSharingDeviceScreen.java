@@ -19,6 +19,7 @@ import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.gui.widget.GuildPlayListButton;
 import red.felnull.imp.client.gui.widget.JoinPlayListButton;
 import red.felnull.imp.client.gui.widget.PlayMusicSourceReferenceButton;
+import red.felnull.imp.client.gui.widget.UploadLocationSelectButton;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
@@ -66,10 +67,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private boolean pictuerLoading;
     private boolean musicLoading;
     private MusicLoadResult musicLoadResult;
-
+    protected UploadLocation uploadLocation;
+    private String listname;
+    private Monitors Monitorsa;
+    private MusicSourceClientReferencesType musicSourceClientReferencesType;
 
     private SourceCheckThread sourceCheckThread;
-    private MusicSourceClientReferencesType musicSourceClientReferencesType;
+    protected ClockTimer timer;
 
     private ChangeableImageButton powerButton;
     private StringImageButton allbutton;
@@ -99,12 +103,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private TextFieldWidget addPlayMusicGenreField;
     private StringImageButton addPlayMusic2BackButton;
     private StringImageButton addPlayMusic2CrateButton;
+    private UploadLocationSelectButton addPlayMusic2UploadSelectWorld;
+    private UploadLocationSelectButton addPlayMusic2UploadSelectURL;
+    private UploadLocationSelectButton addPlayMusic2UploadSelectGitHub;
 
-    private String listname;
-
-    private Monitors Monitorsa;
-
-    protected ClockTimer timer;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -304,7 +306,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.nextAddPlayMusic = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
 
             insMode(Monitors.ADDPLAYMUSIC2);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.TRAINING, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.NEXT, fontStyle)));
         this.nextAddPlayMusic.setSizeAdjustment(true);
         this.nextAddPlayMusic.setShadwString(false);
         this.nextAddPlayMusic.setStringColor(0);
@@ -371,7 +373,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         });
         IKSGScreenUtil.setVisible(this.addPlayMusicGenreField, false);
 
-        this.addPlayMusic2BackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusic2BackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC1);
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
         this.addPlayMusic2BackButton.setSizeAdjustment(true);
@@ -379,13 +381,29 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusic2BackButton.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, false);
 
-        this.addPlayMusic2CrateButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusic2CrateButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.PLAYLIST);
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
         this.addPlayMusic2CrateButton.setSizeAdjustment(true);
         this.addPlayMusic2CrateButton.setShadwString(false);
         this.addPlayMusic2CrateButton.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusic2CrateButton, false);
+
+        this.addPlayMusic2UploadSelectWorld = this.addWidgetByIKSG(new UploadLocationSelectButton(getMonitorStartX() + 6, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
+            this.uploadLocation = UploadLocation.WORLD;
+        }, IKSGStyles.withStyle(new TranslationTextComponent("uploadlocation.world"), fontStyle), false));
+        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectWorld, false);
+
+        this.addPlayMusic2UploadSelectURL = this.addWidgetByIKSG(new UploadLocationSelectButton(getMonitorStartX() + 73, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
+            this.uploadLocation = UploadLocation.URL;
+        }, IKSGStyles.withStyle(new TranslationTextComponent("uploadlocation.url"), fontStyle), false));
+        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectURL, false);
+
+        this.addPlayMusic2UploadSelectGitHub = this.addWidgetByIKSG(new UploadLocationSelectButton(getMonitorStartX() + 140, getMonitorStartY() + 78, 53, 15, 0, 104, 15, MSD_GUI_TEXTURES2, n -> {
+            this.uploadLocation = UploadLocation.GITHUB;
+        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.comingsoon"), fontStyle), true));
+        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, false);
+        IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectGitHub, false);
 
         if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
             Path picPath = getPicturPath();
@@ -445,6 +463,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         } else {
             powerButton.setTextuer(215, 0, 20, 256, 256);
         }
+
+        if (!isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2)) {
+            this.uploadLocation = null;
+        }
+
         fieldTick();
         IKSGScreenUtil.setVisible(this.allbutton, isMonitor(Monitors.PLAYLIST));
         IKSGScreenUtil.setVisible(this.addGuildButton, isMonitor(Monitors.PLAYLIST));
@@ -475,6 +498,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicGenreField, isMonitor(Monitors.ADDPLAYMUSIC2));
         IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, isMonitor(Monitors.ADDPLAYMUSIC2));
         IKSGScreenUtil.setVisible(this.addPlayMusic2CrateButton, isMonitor(Monitors.ADDPLAYMUSIC2));
+        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectWorld, isMonitor(Monitors.ADDPLAYMUSIC2));
+        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectURL, isMonitor(Monitors.ADDPLAYMUSIC2));
+        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, isMonitor(Monitors.ADDPLAYMUSIC2));
     }
 
     private void fieldTick() {
@@ -847,6 +873,12 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             return new TranslationTextComponent("musicloadresult." + name);
         }
 
+    }
+
+    public static enum UploadLocation {
+        WORLD,
+        URL,
+        GITHUB;
     }
 
     public void setMusicLoadError(MusicLoadResult musicLoadError) {

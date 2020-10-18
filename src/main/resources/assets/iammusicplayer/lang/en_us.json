@@ -24,6 +24,7 @@
   "msd.addplaymusic": "Add Music",
   "msd.source": "Source",
   "msd.musicloading": "Loading music...",
+  "msd.comingsoon": "Coming Soon",
   "musicloadresult.nosupportformat": "No Support Format",
   "musicloadresult.filenotexist": "File Not Exist",
   "musicloadresult.invalidurl": "Invalid URL",
@@ -36,5 +37,8 @@
   "uploadstate.unzipping": "Unzipping",
   "uploadstate.completion": "Completion",
   "uploadstate.error": "Error",
+  "uploadlocation.world": "World",
+  "uploadlocation.url": "URL",
+  "uploadlocation.github": "github",
   "_comment.l": "last"
 }
