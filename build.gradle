@@ -24,18 +24,13 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-
-    mappings channel: 'snapshot', version: '20200514-1.16'
-
-
+    mappings channel: 'snapshot', version: "${forge_mapping}"
+//accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
-            workingDirectory project.file('run')
-
+            workingDirectory project.file('run\\client')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             property 'forge.logging.console.level', 'debug'
-
             mods {
                 iammusicplayer {
                     source sourceSets.main
@@ -44,12 +39,9 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run')
-
+            workingDirectory project.file('run\\server')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             property 'forge.logging.console.level', 'debug'
-
             mods {
                 iammusicplayer {
                     source sourceSets.main
@@ -58,14 +50,10 @@ minecraft {
         }
 
         data {
-            workingDirectory project.file('run')
-
+            workingDirectory project.file('run\\data')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
             property 'forge.logging.console.level', 'debug'
-
-            args '--mod', "iammusicplayer", '--all', '--output', file('src/generated/resources/')
-
+            args '--mod', 'iammusicplayer', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
                 iammusicplayer {
                     source sourceSets.main
@@ -74,72 +62,209 @@ minecraft {
         }
     }
 }
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
-    maven {
-        name = "Progwml6 maven"
-        url = "https://dvs1.progwml6.com/files/maven/"
-    }
-    maven {
-        name = "Jei"
-        url = "https://modmaven.k-4u.nl"
-    }
-    maven { url "https://maven.latmod.com/" }
+    maven { url = "https://dvs1.progwml6.com/files/maven/" }//JEI
+    maven { url = "https://modmaven.k-4u.nl" }//JEI
+    maven { url "https://maven.latmod.com/" }//FGL
 }
 configurations {
-    shadow
-    compile.extendsFrom(shadow)
+    shadowAll
+    compile.extendsFrom(shadowAll)
+    shadowWin32
+    compile.extendsFrom(shadowWin32)
+    shadowWin64
+    compile.extendsFrom(shadowWin64)
+    shadowLinux32
+    compile.extendsFrom(shadowLinux32)
+    shadowLinux64
+    compile.extendsFrom(shadowLinux64)
+    shadowLinuxArm64
+    compile.extendsFrom(shadowLinuxArm64)
+    shadowOsx64
+    compile.extendsFrom(shadowOsx64)
 }
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    compile fg.deobf(files("libs/OtyacraftEngine-${oe_version}-dev.jar"))
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
     compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${ftb_gui_library_version}")
-    shadow 'com.mpatric:mp3agic:0.9.1'
-    shadow 'ws.schild:jave-all-deps:3.0.1'
+    compile fg.deobf(files("libs/OtyacraftEngine-${oe_version}-dev.jar"))
+    shadowAll 'com.mpatric:mp3agic:0.9.1'
+    shadowAll 'ws.schild:jave-core:3.0.1'
+    shadowWin32 'ws.schild:jave-nativebin-win32:3.0.1'
+    shadowWin64 'ws.schild:jave-nativebin-win64:3.0.1'
+    shadowLinux32 'ws.schild:jave-nativebin-linux32:3.0.1'
+    shadowLinux64 'ws.schild:jave-nativebin-linux64:3.0.1'
+    shadowLinuxArm64 'ws.schild:jave-nativebin-linux-arm64:3.0.1'
+    shadowOsx64 'ws.schild:jave-nativebin-osx64:3.0.1'
 }
-shadowJar.configurations = [project.configurations.shadow]
 shadowJar {
-    project.configurations.shadow.setTransitive(true);
     classifier ''
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowWin32.setTransitive(true);
+    project.configurations.shadowWin64.setTransitive(true);
+    project.configurations.shadowLinux32.setTransitive(true);
+    project.configurations.shadowLinux64.setTransitive(true);
+    project.configurations.shadowLinuxArm64.setTransitive(true);
+    project.configurations.shadowOsx64.setTransitive(true);
+    configurations = [
+            project.configurations.shadowAll,
+            project.configurations.shadowWin32,
+            project.configurations.shadowWin64,
+            project.configurations.shadowLinux32,
+            project.configurations.shadowLinux64,
+            project.configurations.shadowLinuxArm64,
+            project.configurations.shadowOsx64
+    ]
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
 }
+task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'win32'
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowWin32.setTransitive(true);
+    configurations = [project.configurations.shadowAll, project.configurations.shadowWin32]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+}
+task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'win64'
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowWin64.setTransitive(true);
+    configurations = [project.configurations.shadowAll, project.configurations.shadowWin64]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+}
+task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'linux32'
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowLinux32.setTransitive(true);
+    configurations = [project.configurations.shadowAll, project.configurations.shadowLinux32]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+}
+task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'linux64'
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowLinux64.setTransitive(true);
+    configurations = [project.configurations.shadowAll, project.configurations.shadowLinux64]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+}
+task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'linux-arm64'
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowLinuxArm64.setTransitive(true);
+    configurations = [project.configurations.shadowAll, project.configurations.shadowLinuxArm64]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+}
+task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'osx64'
+    project.configurations.shadowAll.setTransitive(true);
+    project.configurations.shadowOsx64.setTransitive(true);
+    configurations = [project.configurations.shadowAll, project.configurations.shadowOsx64]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+}
+
 afterEvaluate {
     reobf {
         shadowJar { mappings = tasks.reobfJar.mappings }
+        shadowJarWin32 { mappings = tasks.reobfJar.mappings }
+        shadowJarWin64 { mappings = tasks.reobfJar.mappings }
+        shadowJarLinux32 { mappings = tasks.reobfJar.mappings }
+        shadowJarLinux64 { mappings = tasks.reobfJar.mappings }
+        shadowJarLinuxArm64 { mappings = tasks.reobfJar.mappings }
+        shadowJarOsx64 { mappings = tasks.reobfJar.mappings }
     }
 }
-ext.allmanifest = {
+ext.themanifest = {
     attributes([
-            "Specification-Title"     : "${mod_id}",
-            "Specification-Vendor"    : "MORIMORI0317",
+            "Specification-Title"     : "${mod_name}",
+            "Specification-Vendor"    : "${mod_vendor}",
             "Specification-Version"   : "1",
             "Implementation-Title"    : project.name,
             "Implementation-Version"  : "${version}",
-            "Implementation-Vendor"   : "TeamFelNull",
+            "Implementation-Vendor"   : "${mod_vendor}",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     ])
 }
 jar {
-    manifest allmanifest
-}
-task devJar(type: Jar) {
-    from sourceSets.main.output
-    from sourceSets.main.allJava
-    classifier = 'dev'
-    manifest allmanifest
-}
-artifacts {
-    archives shadowJar
-    archives devJar
+    manifest themanifest
 }
 jar.finalizedBy('reobfJar')
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    manifest themanifest
+}
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'source'
+    manifest themanifest
+}
+task jarWin32(type: Jar) {
+    classifier = 'win32'
+    manifest themanifest
+}
+task jarWin64(type: Jar) {
+    classifier = 'win64'
+    manifest themanifest
+}
+task jarLinux32(type: Jar) {
+    classifier = 'linux32'
+    manifest themanifest
+}
+task jarLinux64(type: Jar) {
+    classifier = 'linux64'
+    manifest themanifest
+}
+task jarLinuxArm64(type: Jar) {
+    classifier = 'linux-arm64'
+    manifest themanifest
+}
+task jarOsx64(type: Jar) {
+    classifier = 'osx64'
+    manifest themanifest
+}
+artifacts {
+    archives devJar
+    archives sourceJar
+    archives jarWin32
+    archives jarWin64
+    archives jarLinux32
+    archives jarLinux64
+    archives jarLinuxArm64
+    archives jarOsx64
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             artifact jar
+            artifact devJar
+            artifact sourceJar
+            artifact jarWin32
+            artifact jarWin64
+            artifact jarLinux32
+            artifact jarLinux64
+            artifact jarLinuxArm64
+            artifact jarOsx64
         }
     }
     repositories {
@@ -148,13 +273,13 @@ publishing {
         }
     }
 }
-if (System.getenv('curesforgeapikey') != null) {
+if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
     curseforge {
         apiKey = System.getenv('curesforgeapikey')
         project {
             id = "${curesfg_id}"
-            changelog = "${curesfg_changelog}"
-            releaseType = System.getenv('releasetype')
+            changelog = ""
+            releaseType = "${releasetype}"
             addGameVersion "${mc_version}"
             mainArtifact(jar) {
                 displayName = "${mod_name}-${mc_version}-${mod_version}"
@@ -162,6 +287,30 @@ if (System.getenv('curesforgeapikey') != null) {
             addArtifact(devJar) {
                 displayName = "${mod_name}-${mc_version}-${mod_version}-dev"
             }
+            addArtifact(sourceJar) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-source"
+            }
+            addArtifact(jarWin32) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-win32"
+            }
+            addArtifact(jarWin64) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-win64"
+            }
+            addArtifact(jarLinux32) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-linux32"
+            }
+            addArtifact(jarLinux64) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-linux64"
+            }
+            addArtifact(jarLinuxArm64) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-linux-arm64"
+            }
+            addArtifact(jarOsx64) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-osx64"
+            }
+        }
+        options {
+            debug = true
         }
     }
 }
