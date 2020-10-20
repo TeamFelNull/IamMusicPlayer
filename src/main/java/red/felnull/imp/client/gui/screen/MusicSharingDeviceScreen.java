@@ -23,6 +23,7 @@ import red.felnull.imp.client.gui.widget.UploadLocationSelectButton;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.data.PlayMusicManeger;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
@@ -67,7 +68,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private boolean pictuerLoading;
     private boolean musicLoading;
     private MusicLoadResult musicLoadResult;
-    protected UploadLocation uploadLocation;
+    public UploadLocation uploadLocation;
     private String listname;
     private Monitors Monitorsa;
     private MusicSourceClientReferencesType musicSourceClientReferencesType;
@@ -389,19 +390,19 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusic2CrateButton.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusic2CrateButton, false);
 
-        this.addPlayMusic2UploadSelectWorld = this.addWidgetByIKSG(new UploadLocationSelectButton(getMonitorStartX() + 6, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusic2UploadSelectWorld = this.addWidgetByIKSG(new UploadLocationSelectButton(this, UploadLocation.WORLD, getMonitorStartX() + 6, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
             this.uploadLocation = UploadLocation.WORLD;
-        }, IKSGStyles.withStyle(new TranslationTextComponent("uploadlocation.world"), fontStyle), false));
+        }, false));
         IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectWorld, false);
 
-        this.addPlayMusic2UploadSelectURL = this.addWidgetByIKSG(new UploadLocationSelectButton(getMonitorStartX() + 73, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusic2UploadSelectURL = this.addWidgetByIKSG(new UploadLocationSelectButton(this, UploadLocation.URL, getMonitorStartX() + 73, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
             this.uploadLocation = UploadLocation.URL;
-        }, IKSGStyles.withStyle(new TranslationTextComponent("uploadlocation.url"), fontStyle), false));
+        }, false));
         IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectURL, false);
 
-        this.addPlayMusic2UploadSelectGitHub = this.addWidgetByIKSG(new UploadLocationSelectButton(getMonitorStartX() + 140, getMonitorStartY() + 78, 53, 15, 0, 104, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusic2UploadSelectGitHub = this.addWidgetByIKSG(new UploadLocationSelectButton(this, UploadLocation.GITHUB, getMonitorStartX() + 140, getMonitorStartY() + 78, 53, 15, 0, 104, 15, MSD_GUI_TEXTURES2, n -> {
             this.uploadLocation = UploadLocation.GITHUB;
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.comingsoon"), fontStyle), true));
+        }, true));
         IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, false);
         IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectGitHub, false);
 
@@ -500,7 +501,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusic2CrateButton, isMonitor(Monitors.ADDPLAYMUSIC2));
         IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectWorld, isMonitor(Monitors.ADDPLAYMUSIC2));
         IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectURL, isMonitor(Monitors.ADDPLAYMUSIC2));
-        IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, isMonitor(Monitors.ADDPLAYMUSIC2));
+        // IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, isMonitor(Monitors.ADDPLAYMUSIC2));
     }
 
     private void fieldTick() {
@@ -652,6 +653,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         drawFontString(matrx, new TranslationTextComponent("msd.album"), getMonitorStartX() + 107, getMonitorStartY() + 17);
         drawFontString(matrx, new TranslationTextComponent("msd.year"), getMonitorStartX() + 6, getMonitorStartY() + 43);
         drawFontString(matrx, new TranslationTextComponent("msd.genre"), getMonitorStartX() + 107, getMonitorStartY() + 43);
+        drawFontString(matrx, new TranslationTextComponent("msd.uploadlocation"), getMonitorStartX() + 6, getMonitorStartY() + 69);
+
+        if (uploadLocation != null)
+            drawFontString(matrx, new TranslationTextComponent("uploadlocation." + uploadLocation.name().toLowerCase() + ".desc"), getMonitorStartX() + 6, getMonitorStartY() + 95);
 
         IKSGRenderUtil.matrixPush(matrx);
         addPlayMusicArtistField.func_230430_a_(matrx, mouseX, mouseY, partTick);

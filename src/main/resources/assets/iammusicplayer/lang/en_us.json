@@ -25,6 +25,7 @@
   "msd.source": "Source",
   "msd.musicloading": "Loading music...",
   "msd.comingsoon": "Coming Soon",
+  "msd.uploadlocation": "Upload Location",
   "musicloadresult.nosupportformat": "No Support Format",
   "musicloadresult.filenotexist": "File Not Exist",
   "musicloadresult.invalidurl": "Invalid URL",
@@ -38,7 +39,9 @@
   "uploadstate.completion": "Completion",
   "uploadstate.error": "Error",
   "uploadlocation.world": "World",
+  "uploadlocation.world.desc": "Upload to the current world",
   "uploadlocation.url": "URL",
+  "uploadlocation.url.desc": "Specify the URL without uploading",
   "uploadlocation.github": "github",
   "_comment.l": "last"
 }

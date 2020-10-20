@@ -25,7 +25,7 @@ public class PlayImage implements INBTReadWriter {
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        tag.putString("ImageType", imageType.name());
+        tag.putString("ImageType", this.imageType.name());
         tag.putString("Name", this.name);
         return tag;
     }
