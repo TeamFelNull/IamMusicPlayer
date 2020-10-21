@@ -27,6 +27,7 @@ import red.felnull.imp.data.PlayMusicManeger;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
+import red.felnull.imp.musicplayer.PlayLocation;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.imp.util.PathUtil;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
@@ -383,6 +384,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, false);
 
         this.addPlayMusic2CrateButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            PlayLocation location = new PlayLocation(uploadLocation == UploadLocation.WORLD ? PlayLocation.LocationType.WORLD_FILE : PlayLocation.LocationType.URL, UUID.randomUUID().toString());
+            PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
             insMode(Monitors.PLAYLIST);
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
         this.addPlayMusic2CrateButton.setSizeAdjustment(true);

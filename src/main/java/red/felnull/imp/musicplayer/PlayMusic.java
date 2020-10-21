@@ -9,28 +9,26 @@ public class PlayMusic implements INBTReadWriter {
     private String createPlayerName;
     private String createPlayerUUID;
     private String timeStamp;
-    private String musicUUID;
+    private PlayLocation musciLocation;
     private String artist;
     private String album;
     private String year;
     private String genre;
-    private int bitrate;
     private long lengthInMilliseconds;
     private PlayImage image;
 
-    public PlayMusic(String UUID, String name, PlayImage image, String createPlayerName, String createPlayerUUID, String timeStamp, String musicUUID, String artist, String album, String year, String genre, int bitrate, long lengthInMilliseconds) {
+    public PlayMusic(String UUID, String name, PlayImage image, String createPlayerName, String createPlayerUUID, String timeStamp, PlayLocation musciLocation, String artist, String album, String year, String genre, long lengthInMilliseconds) {
         this.UUID = UUID;
         this.name = name;
         this.image = image;
         this.createPlayerName = createPlayerName;
         this.createPlayerUUID = createPlayerUUID;
         this.timeStamp = timeStamp;
-        this.musicUUID = musicUUID;
+        this.musciLocation = musciLocation;
         this.artist = artist;
         this.album = album;
         this.year = year;
         this.genre = genre;
-        this.bitrate = bitrate;
         this.lengthInMilliseconds = lengthInMilliseconds;
     }
 
@@ -46,12 +44,11 @@ public class PlayMusic implements INBTReadWriter {
         this.createPlayerName = tag.getString("CreatePlayerName");
         this.createPlayerUUID = tag.getString("CreatePlayerUUID");
         this.timeStamp = tag.getString("TimeStamp");
-        this.musicUUID = tag.getString("MusicUUID");
+        this.musciLocation = new PlayLocation(tag.getCompound("MusciLocation"));
         this.artist = tag.getString("Artist");
         this.album = tag.getString("Album");
         this.year = tag.getString("Year");
         this.genre = tag.getString("Genre");
-        this.bitrate = tag.getInt("Bitrate");
         this.lengthInMilliseconds = tag.getLong("LengthInMilliseconds");
     }
 
@@ -62,12 +59,11 @@ public class PlayMusic implements INBTReadWriter {
         tag.putString("CreatePlayerName", this.createPlayerName);
         tag.putString("CreatePlayerUUID", this.createPlayerUUID);
         tag.putString("TimeStamp", this.timeStamp);
-        tag.putString("MusicUUID", this.musicUUID);
+        tag.put("MusciLocation", this.musciLocation.write(new CompoundNBT()));
         tag.putString("Artist", this.artist);
         tag.putString("Album", this.album);
         tag.putString("Year", this.year);
         tag.putString("Genre", this.genre);
-        tag.putInt("Bitrate", this.bitrate);
         tag.putLong("LengthInMilliseconds", this.lengthInMilliseconds);
         return tag;
     }
@@ -96,8 +92,8 @@ public class PlayMusic implements INBTReadWriter {
         return timeStamp;
     }
 
-    public String getMusicUUID() {
-        return musicUUID;
+    public PlayLocation getMusciLocation() {
+        return musciLocation;
     }
 
     public String getArtist() {
@@ -116,9 +112,6 @@ public class PlayMusic implements INBTReadWriter {
         return genre;
     }
 
-    public int getBitrate() {
-        return bitrate;
-    }
 
     public long getLengthInMilliseconds() {
         return lengthInMilliseconds;
