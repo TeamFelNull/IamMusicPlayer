@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
+import red.felnull.imp.handler.MusicReceiveHandler;
 import red.felnull.imp.handler.ServerHandler;
 import red.felnull.imp.packet.PacketHandler;
 
@@ -15,6 +16,7 @@ public class CommonProxy {
         PlayMusicManeger.init();
         IMPWorldData.register();
         MinecraftForge.EVENT_BUS.register(ServerHandler.class);
+        MinecraftForge.EVENT_BUS.register(MusicReceiveHandler.class);
     }
 
     public void init() {

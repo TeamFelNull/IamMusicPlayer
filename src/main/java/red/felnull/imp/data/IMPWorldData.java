@@ -9,7 +9,7 @@ public class IMPWorldData {
     public static final ResourceLocation PLAYMUSIC_DATA = new ResourceLocation(IamMusicPlayer.MODID, "playmusic_data");
     public static final ResourceLocation IMAGE = new ResourceLocation(IamMusicPlayer.MODID, "image");
     public static final ResourceLocation PLAYLIST_REQUEST = new ResourceLocation(IamMusicPlayer.MODID, "playlist_request");
-    public static final ResourceLocation SERVER_TMP_DATA = new ResourceLocation(IamMusicPlayer.MODID, "tmp");
+    public static final ResourceLocation SERVER_MUSIC_DATA = new ResourceLocation(IamMusicPlayer.MODID, "server_music_data");
     public static final ResourceLocation SEND_MUSIC_RESPONSE = new ResourceLocation(IamMusicPlayer.MODID, "send_music_response");
 
     public static void register() {
@@ -17,6 +17,6 @@ public class IMPWorldData {
         OERegistries.registrierWorldData(PLAYMUSIC_DATA, new PlayMusicWorldData());
         OERegistries.registrierServerRecevedPath(IMAGE, IamMusicPlayer.MODID + "\\image");
         OERegistries.registrierTextuerSendPath(IMAGE, IamMusicPlayer.MODID + "\\image");
-        OERegistries.registrierServerRecevedPath(SERVER_TMP_DATA, IamMusicPlayer.MODID + "\\tmp");
+        OERegistries.registrierServerRecevedPath(SERVER_MUSIC_DATA, IamMusicPlayer.MODID + "\\tmp");
     }
 }

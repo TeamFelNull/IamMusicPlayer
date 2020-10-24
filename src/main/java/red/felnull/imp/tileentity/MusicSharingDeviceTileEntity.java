@@ -15,6 +15,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.data.PlayMusicManeger;
+import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.tileentity.IkisugiLockableTileEntity;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
@@ -155,9 +157,11 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         String uuid = IKSGPlayerUtil.getUUID(serverPlayerEntity);
         if (s.equals("power")) {
             setBlockState(getBlockState().with(MusicSharingDeviceBlock.ON, tag.getBoolean("on")));
+            if (tag.getBoolean("on"))
+                return updatePlayList(serverPlayerEntity, "playlist");
         } else if (s.equals("mode")) {
             plpageModes.put(uuid, tag.getString("name"));
-            return updatePlaylist(serverPlayerEntity,tag.getString("name"));
+            return updatePlayList(serverPlayerEntity, tag.getString("name"));
         } else if (s.equals("opengui")) {
             if (!plpageModes.containsKey(uuid)) {
                 plpageModes.put(uuid, "playlist");
@@ -172,15 +176,22 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
                 taga.putString("path", "null");
                 setPlayerData(uuid, taga);
             }
-
         } else if (s.equals("playlistupdate")) {
-            return updatePlaylist(serverPlayerEntity, tag.getString("type"));
+            return updatePlayList(serverPlayerEntity, tag.getString("type"));
+        } else if (s.equals("playmusicupdate")) {
+            return updatePlayMusic(serverPlayerEntity, tag.getString("listuuid"));
         }
 
         return null;
     }
 
-    protected CompoundNBT updatePlaylist(ServerPlayerEntity serverPlayerEntity, String type) {
+    protected CompoundNBT updatePlayMusic(ServerPlayerEntity playerEntity, String uuid) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.put("list", PlayMusicManeger.instance().getAllPlayMusicNBT(playerEntity, PlayList.getPlayListByUUID(uuid)));
+        return tag;
+    }
+
+    protected CompoundNBT updatePlayList(ServerPlayerEntity serverPlayerEntity, String type) {
         CompoundNBT tag = new CompoundNBT();
         tag.putString("type", type);
         if (type.equals("joinplaylist")) {

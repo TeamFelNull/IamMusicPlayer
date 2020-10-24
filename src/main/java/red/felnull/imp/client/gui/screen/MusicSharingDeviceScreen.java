@@ -27,6 +27,7 @@ import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.musicplayer.PlayLocation;
+import red.felnull.imp.musicplayer.PlayMusic;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.imp.util.PathUtil;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
@@ -61,6 +62,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     private List<PlayList> jonPlaylists = new ArrayList<>();
     private List<PlayList> jonedAllPlaylists = new ArrayList<>();
+    private List<PlayMusic> currentPlaylistsMusics = new ArrayList<>();
 
     private PlayImage image;
 
@@ -115,6 +117,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         super(screenContainer, playerInventory, titleIn);
         this.xSize = 215;
         this.ySize = 242;
+        this.currentPlayList = PlayList.ALL;
         setMonitorsa();
     }
 
@@ -138,11 +141,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     public void initByIKSG() {
         super.initByIKSG();
         updatePlayList();
+        updatePlayMusic();
         timerSet();
         instruction("opengui", new CompoundNBT());
-
-        if (currentPlayList == null)
-            this.currentPlayList = PlayList.ALL;
 
         this.musicSourceClientReferencesType = MusicSourceClientReferencesType.LOCAL_FILE;
         this.pictuerLoading = false;
@@ -401,8 +402,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, false);
 
         this.addPlayMusic2CrateButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            PlayLocation location = new PlayLocation(uploadLocation == UploadLocation.WORLD ? PlayLocation.LocationType.WORLD_FILE : PlayLocation.LocationType.URL, UUID.randomUUID().toString());
-            PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
+            PlayLocation location = new PlayLocation(uploadLocation == UploadLocation.WORLD ? PlayLocation.LocationType.WORLD_FILE : PlayLocation.LocationType.URL, uploadLocation == UploadLocation.WORLD ? UUID.randomUUID().toString() : this.addPlayMusicSourceField.getText());
+            PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), currentPlayList, this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
             insMode(Monitors.PLAYLIST);
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
         this.addPlayMusic2CrateButton.setSizeAdjustment(true);
@@ -484,6 +485,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     @Override
     public void tickByIKSG() {
         setMonitorsa();
+
 
         if (!isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2)) {
             picturImage = null;
@@ -629,6 +631,14 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         instruction("playlistupdate", tag);
     }
 
+    private void updatePlayMusic() {
+        if (!isMonitor(Monitors.PLAYLIST))
+            return;
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("listuuid", currentPlayList.getUUID());
+        instruction("playmusicupdate", tag);
+    }
+
     private void timerSet() {
         this.timer = new ClockTimer(n -> this.isOpend());
         this.timer.addTask("updateplaylist", new ClockTimer.ITask() {
@@ -640,6 +650,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             @Override
             public void run(ClockTimer clockTimer) {
                 updatePlayList();
+                updatePlayMusic();
             }
 
             @Override
@@ -653,7 +664,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     @Override
     public void instructionReturn(String name, CompoundNBT data) {
-        if (name.equals("playlistupdate") || name.equals("mode")) {
+
+        if (name.equals("playlistupdate") || name.equals("mode") || name.equals("power")) {
             CompoundNBT taga = data.getCompound("list");
             String type = data.getString("type");
             Monitors mtype = Monitors.getValueOf(type);
@@ -670,6 +682,15 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 }
             }
         }
+
+        if (name.equals("playmusicupdate")) {
+            CompoundNBT taga = data.getCompound("list");
+            currentPlaylistsMusics.clear();
+            for (String pmtagst : taga.keySet()) {
+                currentPlaylistsMusics.add(new PlayMusic(pmtagst, taga.getCompound(pmtagst)));
+            }
+        }
+
     }
 
 

@@ -29,7 +29,7 @@ public class ServerHandler {
 
     @SubscribeEvent
     public static void onReceiverPos(ReceiverEvent.Server.Pos e) {
-        if (e.getLocation().equals(IMPWorldData.SERVER_TMP_DATA)) {
+        if (e.getLocation().equals(IMPWorldData.SERVER_MUSIC_DATA)) {
             sendMusicUploadResultState(e.getPlayer(), e.getName(), e.getReceiveResult(), "unziped");
             try {
                 byte[] compdata = IKSGFileLoadUtil.fileBytesReader(PathUtil.getWorldTmpFolder().resolve(e.getName()));
@@ -44,7 +44,7 @@ public class ServerHandler {
         }
     }
 
-    private static void sendMusicUploadResultState(ServerPlayerEntity player, String uuid, SendReceiveLogger.Result result, String state) {
+    private static void sendMusicUploadResultState(ServerPlayerEntity player, String uuid, SendReceiveLogger.SRResult result, String state) {
         CompoundNBT tag = new CompoundNBT();
         tag.putString("result", result.name());
         tag.putString("state", state);

@@ -65,7 +65,7 @@ public class MusicUploader {
             byte[] compdata = compressing(uuid);
             setState(uuid, MusicUploadData.UploadState.SENDING);
             setProgress(uuid, 0f);
-            DataSendReceiverManager.instance().sendToServer(IMPWorldData.SERVER_TMP_DATA, uuid, compdata);
+            DataSendReceiverManager.instance().sendToServer(IMPWorldData.SERVER_MUSIC_DATA, uuid, compdata);
         } catch (Exception ex) {
             setState(uuid, MusicUploadData.UploadState.ERROR);
         }
@@ -82,7 +82,7 @@ public class MusicUploader {
             byte[] compdata = compressing(uuid);
             setState(uuid, MusicUploadData.UploadState.SENDING);
             setProgress(uuid, 0f);
-            DataSendReceiverManager.instance().sendToServer(IMPWorldData.SERVER_TMP_DATA, uuid, compdata);
+            DataSendReceiverManager.instance().sendToServer(IMPWorldData.SERVER_MUSIC_DATA, uuid, compdata);
         } catch (Exception ex) {
             setState(uuid, MusicUploadData.UploadState.ERROR);
         }

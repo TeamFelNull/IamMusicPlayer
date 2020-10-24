@@ -92,7 +92,7 @@ public class PlayList implements INBTReadWriter {
         WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists").put(plst.getUUID(), plst.write(new CompoundNBT()));
     }
 
-    public static void addPlayer(ServerPlayerEntity player, PlayList list) {
+    public static void addPlayerToPlayList(ServerPlayerEntity player, PlayList list) {
         IamMusicPlayer.LOGGER.info(IKSGPlayerUtil.getUserName(player) + " Join PlayList(" + list.getName() + ")");
         String pluuid = IKSGPlayerUtil.getUUID(player);
         CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("players");
@@ -106,8 +106,8 @@ public class PlayList implements INBTReadWriter {
         pltag.put(pluuid, plutag);
     }
 
-    public void addPlayer(ServerPlayerEntity playerEntity) {
-        addPlayer(playerEntity, this);
+    public void addPlayerToPlayList(ServerPlayerEntity playerEntity) {
+        addPlayerToPlayList(playerEntity, this);
     }
 
     public static PlayList getPlayListByUUID(String uuid) {

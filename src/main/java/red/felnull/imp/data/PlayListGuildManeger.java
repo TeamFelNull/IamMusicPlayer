@@ -46,7 +46,7 @@ public class PlayListGuildManeger {
         String plUUID = UUID.randomUUID().toString();
         PlayList playList = new PlayList(plUUID, name, image, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone);
         PlayList.addPlayList(playList);
-        playList.addPlayer(player);
+        playList.addPlayerToPlayList(player);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -61,16 +61,14 @@ public class PlayListGuildManeger {
 
         PlayList pl = PlayList.getPlayListByUUID(uuid);
         if (pl != null) {
-            pl.addPlayer(player);
+            pl.addPlayerToPlayList(player);
         }
     }
 
     public CompoundNBT getAllPlayListNBT(ServerPlayerEntity player, boolean anyone) {
         CompoundNBT tag = new CompoundNBT();
         CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists");
-
         List<PlayList> jpl = PlayList.getJoinedPlayLists(player);
-
         pltag.keySet().forEach(n -> {
             PlayList pl = new PlayList(n, pltag.getCompound(n));
             if (!jpl.contains(pl)) {
