@@ -26,6 +26,7 @@
   "msd.musicloading": "Loading music...",
   "msd.comingsoon": "Coming Soon",
   "msd.uploadlocation": "Upload Location",
+  "msd.formattype": "Format : %s",
   "musicloadresult.nosupportformat": "No Support Format",
   "musicloadresult.filenotexist": "File Not Exist",
   "musicloadresult.invalidurl": "Invalid URL",

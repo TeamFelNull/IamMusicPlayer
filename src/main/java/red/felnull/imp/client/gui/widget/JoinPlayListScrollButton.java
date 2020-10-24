@@ -15,10 +15,10 @@ import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 
 import java.util.List;
 
-public class JoinPlayListButton extends ScrollListButton {
+public class JoinPlayListScrollButton extends ScrollListButton {
     private final List<PlayList> playLists;
 
-    public JoinPlayListButton(int x, int y, int sizeX, int sizeY, int sizeOne, ScrollBarSlider scrollBar, List<PlayList> playlists, IPressable pressed) {
+    public JoinPlayListScrollButton(int x, int y, int sizeX, int sizeY, int sizeOne, ScrollBarSlider scrollBar, List<PlayList> playlists, IPressable pressed) {
         super(x, y, sizeX, sizeY, sizeOne, 0, scrollBar, null, pressed);
         this.playLists = playlists;
     }
