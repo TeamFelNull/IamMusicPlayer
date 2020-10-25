@@ -112,8 +112,10 @@ public class PlayList implements INBTReadWriter {
 
     public static PlayList getPlayListByUUID(String uuid) {
 
-        CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists");
+        if (PlayList.ALL.getUUID().equals(uuid))
+            return PlayList.ALL;
 
+        CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists");
         if (!pltag.contains(uuid))
             return null;
 

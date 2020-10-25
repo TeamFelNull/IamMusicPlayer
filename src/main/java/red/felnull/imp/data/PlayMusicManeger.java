@@ -80,7 +80,6 @@ public class PlayMusicManeger {
 
     public CompoundNBT getAllPlayMusicNBT(ServerPlayerEntity playerEntity, PlayList list) {
         CompoundNBT tag = new CompoundNBT();
-
         if (list.equals(PlayList.ALL)) {
             List<PlayList> plist = PlayList.getJoinedPlayLists(playerEntity);
             plist.forEach(n -> {

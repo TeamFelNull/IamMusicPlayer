@@ -146,7 +146,7 @@ public class PlayMusic implements INBTReadWriter {
     }
 
     public static PlayMusic getPlayMusicByUUID(String uuid) {
-        CompoundNBT pmtag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playmusic");
+        CompoundNBT pmtag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playmusics");
         if (!pmtag.contains(uuid))
             return null;
         return new PlayMusic(uuid, pmtag.getCompound(uuid));

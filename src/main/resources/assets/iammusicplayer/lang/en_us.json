@@ -44,5 +44,15 @@
   "uploadlocation.url": "URL",
   "uploadlocation.url.desc": "Specify the URL without uploading",
   "uploadlocation.github": "github",
+  "playmusic.desc.all.1": "%s",
+  "playmusic.desc.all.2": "%s  %s",
+  "playmusic.desc.all.3": "%s  %s  %s",
+  "playmusic.desc.all.4": "%s  %s  %s  %s",
+  "playmusic.desc.all.5": "%s  %s  %s  %s  %s",
+  "playmusic.desc.artist": "Artist : %s",
+  "playmusic.desc.album": "Album : %s",
+  "playmusic.desc.year": "Year : %s",
+  "playmusic.desc.genre": "Genre : %s",
+  "playmusic.desc.timestamp": "Added time : %s",
   "_comment.l": "last"
 }

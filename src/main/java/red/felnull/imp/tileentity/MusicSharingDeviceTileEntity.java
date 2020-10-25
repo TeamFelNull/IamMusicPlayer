@@ -157,11 +157,19 @@ public class MusicSharingDeviceTileEntity extends IkisugiLockableTileEntity impl
         String uuid = IKSGPlayerUtil.getUUID(serverPlayerEntity);
         if (s.equals("power")) {
             setBlockState(getBlockState().with(MusicSharingDeviceBlock.ON, tag.getBoolean("on")));
-            if (tag.getBoolean("on"))
-                return updatePlayList(serverPlayerEntity, "playlist");
+            if (tag.getBoolean("on")) {
+                CompoundNBT dtag = new CompoundNBT();
+                dtag.put("playlist", updatePlayList(serverPlayerEntity, "playlist"));
+                dtag.put("playmusic", updatePlayMusic(serverPlayerEntity, tag.getString("listuuid")));
+                return dtag;
+            }
         } else if (s.equals("mode")) {
             plpageModes.put(uuid, tag.getString("name"));
-            return updatePlayList(serverPlayerEntity, tag.getString("name"));
+            CompoundNBT dtag = new CompoundNBT();
+            dtag.put("playlist", updatePlayList(serverPlayerEntity, tag.getString("name")));
+            if (tag.contains("listuuid"))
+                dtag.put("playmusic", updatePlayMusic(serverPlayerEntity, tag.getString("listuuid")));
+            return dtag;
         } else if (s.equals("opengui")) {
             if (!plpageModes.containsKey(uuid)) {
                 plpageModes.put(uuid, "playlist");
