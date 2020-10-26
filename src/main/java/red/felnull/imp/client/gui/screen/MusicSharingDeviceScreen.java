@@ -55,8 +55,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_1.png");
     public static final ResourceLocation MSD_GUI_TEXTURES2 = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_2.png");
-    //  private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
-    private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
+    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
+    //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
     public static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private List<PlayList> jonPlaylists = new ArrayList<>();

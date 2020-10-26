@@ -4,9 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.musicplayer.PlayMusic;
@@ -14,9 +12,12 @@ import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
+import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayMusicScrollButton extends ScrollListButton {
     private final List<PlayMusic> playMusic;
@@ -36,7 +37,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         if (upOver < 13 && downOver <= 37) {
-            IKSGRenderUtil.drawString(fontrenderer, matrix, new StringTextComponent(pm.getName()), x + 40, y + 3, 0);
+            drawHorizontalMovementString(matrix, fontrenderer, pm.getName(), "name." + pm.getUUID(), 30, x + 40, y + 3, 115, 30, MusicSharingDeviceScreen.fontStyle);
         }
         if (upOver < 25 && downOver <= 25) {
             List<ITextComponent> descs = new ArrayList<>();
@@ -53,12 +54,11 @@ public class PlayMusicScrollButton extends ScrollListButton {
                 descs.add(new TranslationTextComponent("playmusic.desc.timestamp", pm.getTimeStamp()));
 
             TranslationTextComponent musicdesc = new TranslationTextComponent("playmusic.desc.all." + descs.size(), descs.toArray());
-            
 
-            IKSGRenderUtil.drawString(fontrenderer, matrix, musicdesc, x + 40, y + 16, 0);
+            drawHorizontalMovementString(matrix, fontrenderer, musicdesc.getString(), "desc." + pm.getUUID(), 30, x + 40, y + 16, 115, 30, MusicSharingDeviceScreen.fontStyle);
         }
         if (upOver < 38 && downOver <= 12) {
-            IKSGRenderUtil.drawString(fontrenderer, matrix, new StringTextComponent(pm.getCreatePlayerName()), x + 50, y + 29, 0);
+            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pm.getCreatePlayerName()), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
         }
         int fupzure = 29 < upOver ? upOver - 29 : 0;
         int fdownzure = 3 < downOver ? downOver - 3 : 0;
@@ -69,8 +69,40 @@ public class PlayMusicScrollButton extends ScrollListButton {
         IKSGRenderUtil.matrixPop(matrix);
     }
 
+    public static final Map<String, Integer> MISALIGNEDS = new HashMap<>();
+    public static final Map<String, Long> MISALIGNEDS_LASTTIMES = new HashMap<>();
+
+    public static void drawHorizontalMovementString(MatrixStack matrix, FontRenderer fontRenderer, String text, String id, int blank, int x, int y, int width, int speed, Style... style) {
+        IFormattableTextComponent textc = IKSGStyles.withStyle(new StringTextComponent(text), style);
+        int textSize = fontRenderer.func_238414_a_(textc);
+        if (width >= textSize) {
+            IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x, y, 0);
+            return;
+        }
+        int allsize = textSize + blank;
+        if (!MISALIGNEDS.containsKey(text)) {
+            MISALIGNEDS.put(text, 0);
+            MISALIGNEDS_LASTTIMES.put(text, System.currentTimeMillis());
+        } else {
+            long conttime = System.currentTimeMillis() - MISALIGNEDS_LASTTIMES.get(text);
+            if (conttime >= 1000 / speed) {
+                int zures = MISALIGNEDS.get(text);
+                if (zures >= allsize)
+                    MISALIGNEDS.put(text, 1);
+                else
+                    MISALIGNEDS.put(text, zures + 1);
+                MISALIGNEDS_LASTTIMES.put(text, System.currentTimeMillis());
+            }
+        }
+        int zure = MISALIGNEDS.get(text);
+        IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x - zure, y, 0);
+        IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x + allsize - zure, y, 0);
+    }
+
+
     @Override
     protected int getCont() {
         return this.playMusic.size();
     }
+
 }
