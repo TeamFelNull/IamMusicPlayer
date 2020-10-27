@@ -80,25 +80,46 @@ public class PlayMusicScrollButton extends ScrollListButton {
             return;
         }
         int allsize = textSize + blank;
-        if (!MISALIGNEDS.containsKey(text)) {
-            MISALIGNEDS.put(text, 0);
-            MISALIGNEDS_LASTTIMES.put(text, System.currentTimeMillis());
+        if (!MISALIGNEDS.containsKey(id)) {
+            MISALIGNEDS.put(id, 0);
+            MISALIGNEDS_LASTTIMES.put(id, System.currentTimeMillis());
         } else {
-            long conttime = System.currentTimeMillis() - MISALIGNEDS_LASTTIMES.get(text);
+            long conttime = System.currentTimeMillis() - MISALIGNEDS_LASTTIMES.get(id);
             if (conttime >= 1000 / speed) {
-                int zures = MISALIGNEDS.get(text);
+                int zures = MISALIGNEDS.get(id);
                 if (zures >= allsize)
-                    MISALIGNEDS.put(text, 1);
+                    MISALIGNEDS.put(id, 1);
                 else
-                    MISALIGNEDS.put(text, zures + 1);
-                MISALIGNEDS_LASTTIMES.put(text, System.currentTimeMillis());
+                    MISALIGNEDS.put(id, zures + 1);
+                MISALIGNEDS_LASTTIMES.put(id, System.currentTimeMillis());
             }
         }
-        int zure = MISALIGNEDS.get(text);
-        IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x - zure, y, 0);
-        IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x + allsize - zure, y, 0);
+        int zure = MISALIGNEDS.get(id);
+        // IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x - zure, y, 0);
+
+        String intext = text;
+        if (allsize - zure <= width) {
+            for (int i = 0; i < text.length(); i++) {
+                String cutble = cutForBack(text, i);
+                int cuttoblesize = fontRenderer.func_238414_a_(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
+                if (width - allsize - zure > cuttoblesize)
+                    break;
+                intext = cutble;
+            }
+        } else {
+            intext = "";
+        }
+        IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
+        IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
     }
 
+    public static String cutForBack(String text, int num) {
+        return text.substring(0, text.length() - num);
+    }
+
+    public static String cutForFront(String text, int num) {
+        return text.substring(0, 0);
+    }
 
     @Override
     protected int getCont() {
