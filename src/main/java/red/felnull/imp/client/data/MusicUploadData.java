@@ -7,8 +7,8 @@ public class MusicUploadData {
     private final String name;
     private UploadState state;
     private float progress;
-    private PlayImage image;
-    private byte[] imageData;
+    private final PlayImage image;
+    private final byte[] imageData;
 
     public MusicUploadData(String name, PlayImage image, byte[] imageData) {
         this.name = name;
@@ -55,10 +55,10 @@ public class MusicUploadData {
         COMPLETION(false, new TranslationTextComponent("uploadstate.completion")),
         ERROR(false, new TranslationTextComponent("uploadstate.error"));
 
-        private boolean progressble;
-        private TranslationTextComponent localized;
+        private final boolean progressble;
+        private final TranslationTextComponent localized;
 
-        private UploadState(boolean progressble, TranslationTextComponent localized) {
+        UploadState(boolean progressble, TranslationTextComponent localized) {
             this.localized = localized;
             this.progressble = progressble;
         }

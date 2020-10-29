@@ -8,7 +8,6 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.otyacraftengine.api.event.client.RenderItemOverlayIntoGUIEvent;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientHandler {

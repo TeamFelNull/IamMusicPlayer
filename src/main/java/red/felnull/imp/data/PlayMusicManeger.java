@@ -71,7 +71,7 @@ public class PlayMusicManeger {
         if (musicLocation.getLocationType() == PlayLocation.LocationType.URL || (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE && MusicReceiveHandler.downloadble.containsKey(musicLocation.getIdOrURL()) && MusicReceiveHandler.downloadble.get(musicLocation.getIdOrURL()) == SendReceiveLogger.SRResult.SUCCESS)) {
             PlayMusic.addPlayMusic(playMusic);
             playMusic.addPlayMusicToPlayList(playList);
-            if (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE && MusicReceiveHandler.downloadble.containsKey(musicLocation.getIdOrURL()))
+            if (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE)
                 MusicReceiveHandler.downloadble.remove(musicLocation.getIdOrURL());
         } else if (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE) {
             waitingDownloads.put(musicLocation.getIdOrURL(), new PlayMusicEntry(playMusic, playList));

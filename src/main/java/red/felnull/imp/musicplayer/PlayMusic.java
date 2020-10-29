@@ -168,9 +168,6 @@ public class PlayMusic implements INBTReadWriter {
         if (obj == this)
             return true;
 
-        if (obj instanceof PlayMusic && ((PlayMusic) obj).getUUID().equals(this.getUUID()))
-            return true;
-
-        return false;
+        return obj instanceof PlayMusic && ((PlayMusic) obj).getUUID().equals(this.getUUID());
     }
 }

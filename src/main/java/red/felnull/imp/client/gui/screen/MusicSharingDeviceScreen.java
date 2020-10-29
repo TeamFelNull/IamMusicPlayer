@@ -59,9 +59,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
     public static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
-    private List<PlayList> jonPlaylists = new ArrayList<>();
-    private List<PlayList> jonedAllPlaylists = new ArrayList<>();
-    private List<PlayMusic> currentPlaylistsMusics = new ArrayList<>();
+    private final List<PlayList> jonPlaylists = new ArrayList<>();
+    private final List<PlayList> jonedAllPlaylists = new ArrayList<>();
+    private final List<PlayMusic> currentPlaylistsMusics = new ArrayList<>();
 
     private PlayImage image;
 
@@ -836,7 +836,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGRenderUtil.drawString(this.field_230712_o_, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
     }
 
-    private static enum Monitors {
+    private enum Monitors {
         OFF(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_off.png"), "off"),
         ON(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_on.png"), "on"),
         PLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_list.png"), "playlist"),
@@ -912,7 +912,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     @Override
     public boolean func_231045_a_(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {
         boolean flag1 = super.func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
-        boolean flag2 = this.func_241217_q_() != null && this.func_231041_ay__() && p_231045_5_ == 0 ? this.func_241217_q_().func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_) : false;
+        boolean flag2 = this.func_241217_q_() != null && this.func_231041_ay__() && p_231045_5_ == 0 && this.func_241217_q_().func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
         return flag1 & flag2;
     }
 
@@ -942,16 +942,16 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
     }
 
-    public static enum MusicLoadResult {
+    public enum MusicLoadResult {
         AVAILABLE("available"),
         NO_SUPPORT_FORMAT("nosupportformat"),
         FILE_NOT_EXIST("filenotexist"),
         INVALID_URL("invalidurl"),
         STREAM("stream");
 
-        private String name;
+        private final String name;
 
-        private MusicLoadResult(String name) {
+        MusicLoadResult(String name) {
             this.name = name;
         }
 
@@ -965,10 +965,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     }
 
-    public static enum UploadLocation {
+    public enum UploadLocation {
         WORLD,
         URL,
-        GITHUB;
+        GITHUB
     }
 
     public void setMusicLoadError(MusicLoadResult musicLoadError) {

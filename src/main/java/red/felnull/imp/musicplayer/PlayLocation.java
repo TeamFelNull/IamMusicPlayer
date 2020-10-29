@@ -37,8 +37,8 @@ public class PlayLocation implements INBTReadWriter {
         return idOrURL;
     }
 
-    public static enum LocationType {
+    public enum LocationType {
         WORLD_FILE,
-        URL;
+        URL
     }
 }

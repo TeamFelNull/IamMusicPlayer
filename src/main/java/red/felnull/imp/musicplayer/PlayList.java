@@ -139,10 +139,7 @@ public class PlayList implements INBTReadWriter {
         if (obj == this)
             return true;
 
-        if (obj instanceof PlayList && ((PlayList) obj).getUUID().equals(this.getUUID()))
-            return true;
-
-        return false;
+        return obj instanceof PlayList && ((PlayList) obj).getUUID().equals(this.getUUID());
     }
 
 }

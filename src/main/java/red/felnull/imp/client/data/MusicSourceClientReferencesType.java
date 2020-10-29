@@ -8,7 +8,7 @@ public enum MusicSourceClientReferencesType {
     URL(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_source_references/url.png"));
     private final ResourceLocation textuerLocation;
 
-    private MusicSourceClientReferencesType(ResourceLocation textuerLocation) {
+    MusicSourceClientReferencesType(ResourceLocation textuerLocation) {
         this.textuerLocation = textuerLocation;
     }
 

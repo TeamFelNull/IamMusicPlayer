@@ -52,7 +52,7 @@ public class UploadLocationSelectButton extends ImageButton {
         int stsize = fontrenderer.func_238414_a_(text);
         float size = drsize >= stsize ? 1 : (float) drsize / (float) stsize;
         int x = isComingSoon ? this.field_230690_l_ + this.field_230688_j_ / 2 + 1 : this.field_230690_l_ + 16;
-        int y = (int) (this.field_230691_m_ + (this.field_230689_k_ - fontrenderer.FONT_HEIGHT) / 2) + 1;
+        int y = this.field_230691_m_ + (this.field_230689_k_ - fontrenderer.FONT_HEIGHT) / 2 + 1;
         IKSGRenderUtil.matrixPush(matrix);
         IKSGRenderUtil.matrixScalf(matrix, size);
         if (isComingSoon)

@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PlayMusicSourceReferenceButton extends ImageButton {
-    private MusicSharingDeviceScreen screen;
+    private final MusicSharingDeviceScreen screen;
 
     public PlayMusicSourceReferenceButton(int xIn, int yIn, int widthIn, int heightIn, int xTexStartIn, int yTexStartIn, int yDiffTextIn, ResourceLocation resourceLocationIn, IPressable onPressIn, MusicSharingDeviceScreen screen) {
         super(xIn, yIn, widthIn, heightIn, xTexStartIn, yTexStartIn, yDiffTextIn, resourceLocationIn, onPressIn);

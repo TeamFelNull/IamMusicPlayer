@@ -21,7 +21,7 @@ import java.util.Random;
 
 public class RenderUtil {
     private static final ResourceLocation STRING_PLAYIMAGE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/string_playimage.png");
-    private static int maxColor = Integer.valueOf("ffffff", 16);
+    private static final int maxColor = Integer.valueOf("ffffff", 16);
 
     public static void drwPlayImage(MatrixStack matrix, PlayImage image, int x, int y, int size) {
         drwPlayImage(matrix, image, x, y, size, 0, 0);
@@ -82,7 +82,7 @@ public class RenderUtil {
         if (upOver < yzure + ft.FONT_HEIGHT * baritu && downOver < yzure + ft.FONT_HEIGHT * baritu) {
             IKSGRenderUtil.matrixPush(matrix);
             IKSGRenderUtil.matrixScalf(matrix, baritu);
-            IKSGRenderUtil.drawCenterString(ft, matrix, comp, (int) ((float) (x + size / 2) / baritu), (int) ((float) (y + yzure) / baritu), 0);
+            IKSGRenderUtil.drawCenterString(ft, matrix, comp, (int) ((float) (x + size / 2) / baritu), (int) ((y + yzure) / baritu), 0);
             IKSGRenderUtil.matrixPop(matrix);
         }
     }

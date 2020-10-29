@@ -38,9 +38,9 @@ public class PlayImage implements INBTReadWriter {
         return name;
     }
 
-    public static enum ImageType {
+    public enum ImageType {
         IMGAE,
         STRING,
-        PLAYERFACE;
+        PLAYERFACE
     }
 }
