@@ -99,6 +99,7 @@ dependencies {
     shadowLinuxArm64 'ws.schild:jave-nativebin-linux-arm64:3.0.1'
     shadowOsx64 'ws.schild:jave-nativebin-osx64:3.0.1'
 }
+tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
 shadowJar {
     classifier ''
     project.configurations.shadowAll.setTransitive(true);

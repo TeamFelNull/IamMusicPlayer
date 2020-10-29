@@ -102,14 +102,14 @@ public class PlayMusicScrollButton extends ScrollListButton {
             for (int i = 0; i < text.length(); i++) {
                 String cutble = cutForBack(text, i);
                 int cuttoblesize = fontRenderer.func_238414_a_(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
-                if (width - allsize - zure > cuttoblesize)
+                if (width > cuttoblesize)
                     break;
                 intext = cutble;
             }
         } else {
             intext = "";
         }
-        IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
+        IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext + zure), style);
         IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
     }
 

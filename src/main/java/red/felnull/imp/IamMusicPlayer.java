@@ -17,7 +17,7 @@ public class IamMusicPlayer {
     public static final String MODID = "iammusicplayer";
     public static final Logger LOGGER = LogManager.getLogger();
 
-    public static final CommonProxy proxy = DistExecutor.runForDist(() -> () -> new ClientProxy(), () -> () -> new CommonProxy());
+    public static final CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
 
     public IamMusicPlayer() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
