@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'export JAVA_HOME=/usr/lib/jvm/openjdk-11/ && JAVA_HOME=/usr/lib/jvm/openjdk-11/'
+        sh 'export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ && JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ && export CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib && CLASSPATH=/usr/lib/jvm/java-8-openjdk-amd64/lib'
         sh 'gradle build'
       }
     }
