@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'maven:3.6.3-openjdk-11'
-    }
-
-  }
+  agent none
   stages {
     stage('Build') {
       steps {
