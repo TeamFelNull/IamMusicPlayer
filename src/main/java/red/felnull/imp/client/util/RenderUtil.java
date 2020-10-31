@@ -75,7 +75,7 @@ public class RenderUtil {
         FontRenderer ft = mc.fontRenderer;
 
         IFormattableTextComponent comp = IKSGStyles.withStyle(new StringTextComponent(str), MusicSharingDeviceScreen.fontStyle);
-        int stWidthSize = ft.func_238414_a_(comp);
+        int stWidthSize = ft.getStringPropertyWidth(comp);
         float baritu = (float) (size - 3) / (float) stWidthSize;
         float yzure = (size - ft.FONT_HEIGHT * baritu) / 2;
 

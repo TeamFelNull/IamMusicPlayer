@@ -35,24 +35,25 @@ public class UploadLocationSelectButton extends ImageButton {
         this.resourceLocation = resourceLocationIn;
     }
 
-    public void func_230431_b_(MatrixStack matrix, int mouseX, int mouseY, float parTic) {
+    @Override
+    public void renderButton(MatrixStack matrix, int mouseX, int mouseY, float parTic) {
 
         if (isComingSoon || screen.uploadLocation != locationType) {
-            super.func_230431_b_(matrix, mouseX, mouseY, parTic);
+            super.renderButton(matrix, mouseX, mouseY, parTic);
         } else {
-            int i = this.yTexStart + this.field_230689_k_ * 2;
-            if (this.func_230449_g_()) {
+            int i = this.yTexStart + this.height * 2;
+            if (this.isHovered()) {
                 i += this.yDiffText;
             }
-            IKSGRenderUtil.guiBindAndBlit(resourceLocation, matrix, this.field_230690_l_, this.field_230691_m_, xTexStart, i, this.field_230688_j_, this.field_230689_k_, 256, 256);
+            IKSGRenderUtil.guiBindAndBlit(resourceLocation, matrix, this.x, this.y, xTexStart, i, this.width, this.height, 256, 256);
         }
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
-        int drsize = isComingSoon ? field_230688_j_ - 2 : field_230688_j_ - 15;
-        int stsize = fontrenderer.func_238414_a_(text);
+        int drsize = isComingSoon ? width - 2 : width - 15;
+        int stsize = fontrenderer.getStringPropertyWidth(text);
         float size = drsize >= stsize ? 1 : (float) drsize / (float) stsize;
-        int x = isComingSoon ? this.field_230690_l_ + this.field_230688_j_ / 2 + 1 : this.field_230690_l_ + 16;
-        int y = this.field_230691_m_ + (this.field_230689_k_ - fontrenderer.FONT_HEIGHT) / 2 + 1;
+        int x = isComingSoon ? this.x + this.width / 2 + 1 : this.x + 16;
+        int y = this.y + (this.height - fontrenderer.FONT_HEIGHT) / 2 + 1;
         IKSGRenderUtil.matrixPush(matrix);
         IKSGRenderUtil.matrixScalf(matrix, size);
         if (isComingSoon)
@@ -63,9 +64,9 @@ public class UploadLocationSelectButton extends ImageButton {
 
         if (!isComingSoon) {
             if (locationType == MusicSharingDeviceScreen.UploadLocation.URL) {
-                IKSGRenderUtil.guiBindAndBlit(MusicSourceClientReferencesType.URL.getTextuerLocation(), matrix, this.field_230690_l_ + 2, this.field_230691_m_ + 2, 0, 0, 11, 11, 11, 11);
+                IKSGRenderUtil.guiBindAndBlit(MusicSourceClientReferencesType.URL.getTextuerLocation(), matrix, this.x + 2, this.y + 2, 0, 0, 11, 11, 11, 11);
             } else if (locationType == MusicSharingDeviceScreen.UploadLocation.WORLD) {
-                IKSGRenderUtil.guiBindAndBlit(WorldIcon, matrix, this.field_230690_l_ + 2, this.field_230691_m_ + 2, 0, 0, 11, 11, 11, 11);
+                IKSGRenderUtil.guiBindAndBlit(WorldIcon, matrix, this.x + 2, this.y + 2, 0, 0, 11, 11, 11, 11);
             }
         }
     }

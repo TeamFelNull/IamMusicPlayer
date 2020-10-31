@@ -18,15 +18,16 @@ public class PlayMusicSourceReferenceButton extends ImageButton {
         this.screen = screen;
     }
 
-    public void func_230431_b_(MatrixStack matrix, int mouseX, int mouseY, float partick) {
-        super.func_230431_b_(matrix, mouseX, mouseY, partick);
+    @Override
+    public void renderButton(MatrixStack matrix, int mouseX, int mouseY, float partick) {
+        super.renderButton(matrix, mouseX, mouseY, partick);
         int size = 10;
-        IKSGRenderUtil.guiBindAndBlit(screen.getMusicSourceClientReferencesType().getTextuerLocation(), matrix, this.field_230690_l_ + (9 - size / 2), this.field_230691_m_ + (7 - size / 2), 0, 0, size, size, size, size);
+        IKSGRenderUtil.guiBindAndBlit(screen.getMusicSourceClientReferencesType().getTextuerLocation(), matrix, this.x + (9 - size / 2), this.y + (7 - size / 2), 0, 0, size, size, size, size);
     }
 
     @Override
-    public void func_230982_a_(double x, double y) {
-        super.func_230982_a_(x, y);
+    public void onClick(double x, double y) {
+        super.onClick(x, y);
         List<MusicSourceClientReferencesType> mscrt = Arrays.asList(MusicSourceClientReferencesType.values());
         int crnum = mscrt.indexOf(screen.getMusicSourceClientReferencesType());
         if (mscrt.size() - 1 == crnum) {

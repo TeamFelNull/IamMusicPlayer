@@ -147,7 +147,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.musicSourceClientReferencesType = MusicSourceClientReferencesType.LOCAL_FILE;
         this.pictuerLoading = false;
         this.musicLoading = false;
-        this.field_238745_s_ = this.ySize - 94;
+        this.playerInventoryTitleY = this.ySize - 94;
         this.powerButton = this.addWidgetByIKSG(new ChangeableImageButton(getTexturStartX() + 181, getTexturStartY() + 202, 20, 20, 215, 0, 20, MSD_GUI_TEXTURES, 256, 256, n -> {
             insPower(!this.isStateOn());
         }));
@@ -205,7 +205,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.createGuid.setStringColor(0);
         IKSGScreenUtil.setVisible(this.createGuid, false);
 
-        this.createGuildNameField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 95, getMonitorStartY() + 29, 91, 12, new StringTextComponent("test")));
+        this.createGuildNameField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 95, getMonitorStartY() + 29, 91, 12, new StringTextComponent("test")));
         this.createGuildNameField.setEnableBackgroundDrawing(false);
         this.createGuildNameField.setMaxStringLength(30);
         this.createGuildNameField.setTextColor(-1);
@@ -271,7 +271,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicNameField != null)
             MusicNameField = this.addPlayMusicNameField.getText();
 
-        this.addPlayMusicNameField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 95, getMonitorStartY() + 29, 91, 12, new StringTextComponent("test")));
+        this.addPlayMusicNameField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 95, getMonitorStartY() + 29, 91, 12, new StringTextComponent("test")));
         this.addPlayMusicNameField.setEnableBackgroundDrawing(false);
         this.addPlayMusicNameField.setMaxStringLength(100);
         this.addPlayMusicNameField.setTextColor(-1);
@@ -288,7 +288,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicSourceField != null)
             MusicSourceField = this.addPlayMusicSourceField.getText();
 
-        this.addPlayMusicSourceField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 95, getMonitorStartY() + 55, 73, 12, new StringTextComponent("test")));
+        this.addPlayMusicSourceField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 95, getMonitorStartY() + 55, 73, 12, new StringTextComponent("test")));
         this.addPlayMusicSourceField.setEnableBackgroundDrawing(false);
         this.addPlayMusicSourceField.setMaxStringLength(Integer.MAX_VALUE);
         this.addPlayMusicSourceField.setTextColor(-1);
@@ -335,7 +335,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicArtistField != null)
             MusicArtistField = this.addPlayMusicArtistField.getText();
 
-        this.addPlayMusicArtistField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 9, getMonitorStartY() + 29, 76, 12, new StringTextComponent("test")));
+        this.addPlayMusicArtistField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 9, getMonitorStartY() + 29, 76, 12, new StringTextComponent("test")));
         this.addPlayMusicArtistField.setEnableBackgroundDrawing(false);
         this.addPlayMusicArtistField.setMaxStringLength(300);
         this.addPlayMusicArtistField.setTextColor(-1);
@@ -350,7 +350,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicAlbumField != null)
             MusicAlbumField = this.addPlayMusicAlbumField.getText();
 
-        this.addPlayMusicAlbumField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 110, getMonitorStartY() + 29, 76, 12, new StringTextComponent("test")));
+        this.addPlayMusicAlbumField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 110, getMonitorStartY() + 29, 76, 12, new StringTextComponent("test")));
         this.addPlayMusicAlbumField.setEnableBackgroundDrawing(false);
         this.addPlayMusicAlbumField.setMaxStringLength(300);
         this.addPlayMusicAlbumField.setTextColor(-1);
@@ -365,7 +365,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicYearField != null)
             MusicYearField = this.addPlayMusicYearField.getText();
 
-        this.addPlayMusicYearField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 9, getMonitorStartY() + 55, 76, 12, new StringTextComponent("test")));
+        this.addPlayMusicYearField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 9, getMonitorStartY() + 55, 76, 12, new StringTextComponent("test")));
         this.addPlayMusicYearField.setEnableBackgroundDrawing(false);
         this.addPlayMusicYearField.setMaxStringLength(300);
         this.addPlayMusicYearField.setTextColor(-1);
@@ -380,7 +380,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicGenreField != null)
             MusicGenreField = this.addPlayMusicGenreField.getText();
 
-        this.addPlayMusicGenreField = this.addWidgetByIKSG(new TextFieldWidget(this.field_230712_o_, getMonitorStartX() + 110, getMonitorStartY() + 55, 76, 12, new StringTextComponent("test")));
+        this.addPlayMusicGenreField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 110, getMonitorStartY() + 55, 76, 12, new StringTextComponent("test")));
         this.addPlayMusicGenreField.setEnableBackgroundDrawing(false);
         this.addPlayMusicGenreField.setMaxStringLength(300);
         this.addPlayMusicGenreField.setTextColor(-1);
@@ -728,10 +728,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             drawFontString(matrx, new TranslationTextComponent("uploadlocation." + uploadLocation.name().toLowerCase() + ".desc"), getMonitorStartX() + 6, getMonitorStartY() + 95);
 
         IKSGRenderUtil.matrixPush(matrx);
-        addPlayMusicArtistField.func_230430_a_(matrx, mouseX, mouseY, partTick);
-        addPlayMusicAlbumField.func_230430_a_(matrx, mouseX, mouseY, partTick);
-        addPlayMusicYearField.func_230430_a_(matrx, mouseX, mouseY, partTick);
-        addPlayMusicGenreField.func_230430_a_(matrx, mouseX, mouseY, partTick);
+        addPlayMusicArtistField.render(matrx, mouseX, mouseY, partTick);
+        addPlayMusicAlbumField.render(matrx, mouseX, mouseY, partTick);
+        addPlayMusicYearField.render(matrx, mouseX, mouseY, partTick);
+        addPlayMusicGenreField.render(matrx, mouseX, mouseY, partTick);
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         IKSGRenderUtil.matrixPop(matrx);
     }
@@ -772,8 +772,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
 
         IKSGRenderUtil.matrixPush(matrx);
-        addPlayMusicNameField.func_230430_a_(matrx, mouseX, mouseY, partTick);
-        addPlayMusicSourceField.func_230430_a_(matrx, mouseX, mouseY, partTick);
+        addPlayMusicNameField.render(matrx, mouseX, mouseY, partTick);
+        addPlayMusicSourceField.render(matrx, mouseX, mouseY, partTick);
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         IKSGRenderUtil.matrixPop(matrx);
     }
@@ -807,7 +807,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
 
         IKSGRenderUtil.matrixPush(matrx);
-        createGuildNameField.func_230430_a_(matrx, mouseX, mouseY, partTick);
+        createGuildNameField.render(matrx, mouseX, mouseY, partTick);
         RenderSystem.color4f(1f, 1f, 1f, 1f);
         IKSGRenderUtil.matrixPop(matrx);
     }
@@ -829,11 +829,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     protected void drawCenterFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
-        IKSGRenderUtil.drawCenterString(this.field_230712_o_, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
+        IKSGRenderUtil.drawCenterString(this.font, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
     }
 
     protected void drawFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
-        IKSGRenderUtil.drawString(this.field_230712_o_, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
+        IKSGRenderUtil.drawString(this.font, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
     }
 
     private enum Monitors {
@@ -910,9 +910,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     @Override
-    public boolean func_231045_a_(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {
-        boolean flag1 = super.func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
-        boolean flag2 = this.func_241217_q_() != null && this.func_231041_ay__() && p_231045_5_ == 0 && this.func_241217_q_().func_231045_a_(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
+    public boolean mouseDragged(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {
+        boolean flag1 = super.mouseDragged(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
+        boolean flag2 = this.getListener() != null && this.isDragging() && p_231045_5_ == 0 && this.getListener().mouseDragged(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
         return flag1 & flag2;
     }
 

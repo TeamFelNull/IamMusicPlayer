@@ -8,6 +8,7 @@ import net.minecraft.util.text.*;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.musicplayer.PlayMusic;
+import red.felnull.otyacraftengine.client.gui.screen.IkisugiScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -74,7 +75,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
 
     public static void drawHorizontalMovementString(MatrixStack matrix, FontRenderer fontRenderer, String text, String id, int blank, int x, int y, int width, int speed, Style... style) {
         IFormattableTextComponent textc = IKSGStyles.withStyle(new StringTextComponent(text), style);
-        int textSize = fontRenderer.func_238414_a_(textc);
+        int textSize = fontRenderer.getStringPropertyWidth(textc);
         if (width >= textSize) {
             IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x, y, 0);
             return;
@@ -109,7 +110,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
         } else {
             intext = "";
         }*/
-        IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent("test"), style);
+        IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent("test" + (allsize - zure - width)), style);
         IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
     }
 
