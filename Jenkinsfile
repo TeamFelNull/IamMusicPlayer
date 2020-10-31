@@ -8,7 +8,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'source .bash_profile'
+        sh 'export JAVA_HOME=/usr/lib/jvm/openjdk-11/ && JAVA_HOME=/usr/lib/jvm/openjdk-11/'
         sh 'gradle build'
       }
     }
