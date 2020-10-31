@@ -8,6 +8,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
+        sh 'source .bash_profile'
         sh 'gradle build'
       }
     }
