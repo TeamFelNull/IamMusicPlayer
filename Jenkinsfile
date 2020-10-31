@@ -1,5 +1,10 @@
 pipeline {
-  agent none
+  agent {
+    docker {
+      image 'gradle:4.10.3-jdk11'
+    }
+
+  }
   stages {
     stage('Build') {
       steps {
