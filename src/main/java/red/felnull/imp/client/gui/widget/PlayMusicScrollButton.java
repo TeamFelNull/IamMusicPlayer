@@ -95,7 +95,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
             }
         }
         int zure = MISALIGNEDS.get(id);
-        // IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x - zure, y, 0);
+        IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x - zure, y, 0);
 
         String intext = text;
         if (allsize - zure <= width) {
@@ -111,6 +111,8 @@ public class PlayMusicScrollButton extends ScrollListButton {
         }
         IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext + zure), style);
         IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
+        IKSGRenderUtil.drawString(fontRenderer, matrix, new StringTextComponent("イキスギ"), x + allsize - zure, y, 0);
+
     }
 
     public static String cutForBack(String text, int num) {
