@@ -1,6 +1,5 @@
 package red.felnull.imp.data;
 
-import com.sun.webkit.network.URLs;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,6 +18,7 @@ import red.felnull.otyacraftengine.data.SendReceiveLogger;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +51,7 @@ public class PlayMusicManeger {
                 MusicUploader.instance().startUpload(name, Paths.get(pathOrURL), location.getIdOrURL(), image, imageData);
             } else if (uploadtype == MusicSourceClientReferencesType.URL) {
                 try {
-                    MusicUploader.instance().startUpload(name, URLs.newURL(pathOrURL), location.getIdOrURL(), image, imageData);
+                    MusicUploader.instance().startUpload(name, new URL(pathOrURL), location.getIdOrURL(), image, imageData);
                 } catch (Exception e) {
                     e.printStackTrace();
                     return;

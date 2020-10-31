@@ -8,7 +8,6 @@ import net.minecraft.util.text.*;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.musicplayer.PlayMusic;
-import red.felnull.otyacraftengine.client.gui.screen.IkisugiScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -96,22 +95,40 @@ public class PlayMusicScrollButton extends ScrollListButton {
             }
         }
         int zure = MISALIGNEDS.get(id);
-        IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x - zure, y, 0);
-/*
-        String intext = text;
-        if (allsize - zure <= width) {
+
+        if (zure < textSize) {
+            String intext = text;
+            String hamidasiText = intext;
             for (int i = 0; i < text.length(); i++) {
                 String cutble = cutForBack(text, i);
-                int cuttoblesize = fontRenderer.func_238414_a_(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
-                if (width > cuttoblesize)
+                int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style)) + fontRenderer.getStringPropertyWidth(new StringTextComponent(cutForFront(cutble, cutble.length() - 1)));
+                if (zure > cuttoblesize)
+                    break;
+                hamidasiText = cutble;
+            }
+
+            intext = cutForFront(intext, hamidasiText.length());
+            int intexthamidasiSize = fontRenderer.getStringPropertyWidth(new StringTextComponent(hamidasiText)) + fontRenderer.getStringPropertyWidth(new StringTextComponent(cutForFront(hamidasiText, hamidasiText.length() - 1)));
+
+            IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
+
+            IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x - zure + intexthamidasiSize, y, 0);
+        }
+
+/*
+        if (allsize - zure <= width) {
+            String intext = text;
+            for (int i = 0; i < text.length(); i++) {
+                String cutble = cutForBack(text, i);
+                int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
+                if (-(allsize - zure - width) > cuttoblesize)
                     break;
                 intext = cutble;
             }
-        } else {
-            intext = "";
-        }*/
-        IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent("test" + (allsize - zure - width)), style);
-        IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
+            IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
+            IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
+        }
+        */
     }
 
     public static String cutForBack(String text, int num) {
@@ -119,7 +136,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
     }
 
     public static String cutForFront(String text, int num) {
-        return text.substring(0, 0);
+        return text.substring(num);
     }
 
     @Override
