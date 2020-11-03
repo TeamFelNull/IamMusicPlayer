@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[31,)" 
+issueTrackerURL="https://github.com/TeamFelnull/IamMusicPlayer/issues"
+logoFile="logo.png" 
+[[mods]]
+modId="iammusicplayer"
+version="${file.jarVersion}" 
+displayName="Iam Music Player"
+updateJSONURL="https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/version_check.json" 
+displayURL="https://www.curseforge.com/minecraft/mc-mods/iammusicplayer" 
+credits="nin8995,MultiGamer8853,toranpfan6433,Kamesuta,matcha98,TeamFelNull"
+authors="MORIMORI0317" 
+description="Thank you for downloading!\nThis mod is add Ikisugi Music player."

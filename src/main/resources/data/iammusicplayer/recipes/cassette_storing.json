@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "BCB",
+    "ADA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "tag": "forge:rods/iron"
+    },
+    "C": {
+      "tag": "forge:chests"
+    },
+    "D": {
+    "item": "iammusicplayer:computer"
+    }
+  },
+  "result": {
+    "item": "iammusicplayer:cassette_storing",
+    "count": 1
+  }
+}

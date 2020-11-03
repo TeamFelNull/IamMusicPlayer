@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "ECE",
+    "ADA"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+    "item": "iammusicplayer:speaker"
+    },
+    "C": {
+    "item": "iammusicplayer:acoustic_amplifier"
+    },
+    "D": {
+    "item": "iammusicplayer:computer"
+    },
+    "E": {
+    "item": "iammusicplayer:cassette_player"
+    }
+  },
+  "result": {
+    "item": "iammusicplayer:cassette_deck",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=south,wall=false": { "model": "iammusicplayer:block/cassette_storing", "y": 90 },
+        "facing=west,wall=false": { "model": "iammusicplayer:block/cassette_storing", "y": 180 },
+        "facing=north,wall=false": { "model": "iammusicplayer:block/cassette_storing", "y": 270 },
+        "facing=east,wall=false": { "model": "iammusicplayer:block/cassette_storing", "y": 0 },
+        "facing=south,wall=true": { "model": "iammusicplayer:block/cassette_storing_wall", "y": 90 },
+        "facing=west,wall=true": { "model": "iammusicplayer:block/cassette_storing_wall", "y": 180 },
+        "facing=north,wall=true": { "model": "iammusicplayer:block/cassette_storing_wall", "y": 270 },
+        "facing=east,wall=true": { "model": "iammusicplayer:block/cassette_storing_wall", "y": 0 }
+    }
+}

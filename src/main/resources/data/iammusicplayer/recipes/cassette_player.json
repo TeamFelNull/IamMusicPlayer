@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "BCB",
+    "DED"
+  ],
+  "key": {
+    "A": {
+      "tag": "forge:glass_panes"
+    },
+    "B": {
+      "tag": "forge:dusts/redstone"
+    },
+    "C": {
+    "item": "minecraft:jukebox"
+    },
+    "D": {
+      "tag": "forge:dyes/gray"
+    },
+    "E": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "result": {
+    "item": "iammusicplayer:cassette_player",
+    "count": 1
+  }
+}
