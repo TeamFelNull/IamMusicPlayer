@@ -98,21 +98,16 @@ public class PlayMusicScrollButton extends ScrollListButton {
 
         if (zure < textSize) {
             String intext = text;
-            String hamidasiText = intext;
             for (int i = 0; i < text.length(); i++) {
-                String cutble = cutForBack(text, i);
-                int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style)) + fontRenderer.getStringPropertyWidth(new StringTextComponent(cutForFront(cutble, cutble.length() - 1)));
-                if (zure > cuttoblesize)
+                String cutble = cutForFront(text, i);
+                int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
+                if (textSize - zure > cuttoblesize)
                     break;
-                hamidasiText = cutble;
+                intext = cutble;
             }
-
-            intext = cutForFront(intext, hamidasiText.length());
-            int intexthamidasiSize = fontRenderer.getStringPropertyWidth(new StringTextComponent(hamidasiText)) + fontRenderer.getStringPropertyWidth(new StringTextComponent(cutForFront(hamidasiText, hamidasiText.length() - 1)));
-
+          
             IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
-
-            IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x - zure + intexthamidasiSize, y, 0);
+            drawBackString(fontRenderer, matrix, inextc, x + textSize - zure, y, 0);
         }
 
 /*
@@ -129,6 +124,11 @@ public class PlayMusicScrollButton extends ScrollListButton {
             IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
         }
         */
+    }
+
+    public static void drawBackString(FontRenderer fr, MatrixStack matrix, ITextComponent text, int x, int y, int color) {
+        int size = fr.getStringPropertyWidth(text);
+        IKSGRenderUtil.drawString(fr, matrix, text, x - size, y, color);
     }
 
     public static String cutForBack(String text, int num) {
