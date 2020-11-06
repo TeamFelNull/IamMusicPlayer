@@ -105,12 +105,26 @@ public class PlayMusicScrollButton extends ScrollListButton {
                     break;
                 intext = cutble;
             }
-          
+            int backCont = 0;
+            if (textSize - width > zure) {
+                int tobidasizure = textSize - width > zure ? textSize - width - zure : 0;
+                String aintext = text;
+                for (int i = 0; i < text.length(); i++) {
+                    String cutble = cutForFront(text, text.length() - i);
+                    int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
+                    if (tobidasizure <= cuttoblesize)
+                        break;
+                    aintext = cutble;
+                }
+                backCont = aintext.length();
+            }
+
+            int backContZure = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutForFront(intext, intext.length() - backCont)), style));
+            intext = cutForBack(intext, backCont);
             IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
-            drawBackString(fontRenderer, matrix, inextc, x + textSize - zure, y, 0);
+            drawBackString(fontRenderer, matrix, inextc, x + textSize - zure - backContZure, y, 0);
         }
 
-/*
         if (allsize - zure <= width) {
             String intext = text;
             for (int i = 0; i < text.length(); i++) {
@@ -123,7 +137,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
             IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
             IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
         }
-        */
+
     }
 
     public static void drawBackString(FontRenderer fr, MatrixStack matrix, ITextComponent text, int x, int y, int color) {
