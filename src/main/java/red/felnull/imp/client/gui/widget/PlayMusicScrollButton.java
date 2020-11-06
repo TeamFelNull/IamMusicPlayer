@@ -4,7 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.musicplayer.PlayMusic;
@@ -15,9 +17,7 @@ import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PlayMusicScrollButton extends ScrollListButton {
     private final List<PlayMusic> playMusic;
@@ -37,7 +37,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         if (upOver < 13 && downOver <= 37) {
-            drawHorizontalMovementString(matrix, fontrenderer, pm.getName(), "name." + pm.getUUID(), 30, x + 40, y + 3, 115, 30, MusicSharingDeviceScreen.fontStyle);
+            IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, pm.getName(), "imp.msdpm.name." + pm.getUUID(), 30, x + 40, y + 3, 115, 30, MusicSharingDeviceScreen.fontStyle);
         }
         if (upOver < 25 && downOver <= 25) {
             List<ITextComponent> descs = new ArrayList<>();
@@ -55,7 +55,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
 
             TranslationTextComponent musicdesc = new TranslationTextComponent("playmusic.desc.all." + descs.size(), descs.toArray());
 
-            drawHorizontalMovementString(matrix, fontrenderer, musicdesc.getString(), "desc." + pm.getUUID(), 30, x + 40, y + 16, 115, 30, MusicSharingDeviceScreen.fontStyle);
+            IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, musicdesc.getString(), "imp.msdpm.desc." + pm.getUUID(), 30, x + 40, y + 16, 115, 30, MusicSharingDeviceScreen.fontStyle);
         }
         if (upOver < 38 && downOver <= 12) {
             IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pm.getCreatePlayerName()), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
@@ -69,89 +69,6 @@ public class PlayMusicScrollButton extends ScrollListButton {
         IKSGRenderUtil.matrixPop(matrix);
     }
 
-    public static final Map<String, Integer> MISALIGNEDS = new HashMap<>();
-    public static final Map<String, Long> MISALIGNEDS_LASTTIMES = new HashMap<>();
-
-    public static void drawHorizontalMovementString(MatrixStack matrix, FontRenderer fontRenderer, String text, String id, int blank, int x, int y, int width, int speed, Style... style) {
-        IFormattableTextComponent textc = IKSGStyles.withStyle(new StringTextComponent(text), style);
-        int textSize = fontRenderer.getStringPropertyWidth(textc);
-        if (width >= textSize) {
-            IKSGRenderUtil.drawString(fontRenderer, matrix, textc, x, y, 0);
-            return;
-        }
-        int allsize = textSize + blank;
-        if (!MISALIGNEDS.containsKey(id)) {
-            MISALIGNEDS.put(id, 0);
-            MISALIGNEDS_LASTTIMES.put(id, System.currentTimeMillis());
-        } else {
-            long conttime = System.currentTimeMillis() - MISALIGNEDS_LASTTIMES.get(id);
-            if (conttime >= 1000 / speed) {
-                int zures = MISALIGNEDS.get(id);
-                if (zures >= allsize)
-                    MISALIGNEDS.put(id, 1);
-                else
-                    MISALIGNEDS.put(id, zures + 1);
-                MISALIGNEDS_LASTTIMES.put(id, System.currentTimeMillis());
-            }
-        }
-        int zure = MISALIGNEDS.get(id);
-
-        if (zure < textSize) {
-            String intext = text;
-            for (int i = 0; i < text.length(); i++) {
-                String cutble = cutForFront(text, i);
-                int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
-                if (textSize - zure > cuttoblesize)
-                    break;
-                intext = cutble;
-            }
-            int backCont = 0;
-            if (textSize - width > zure) {
-                int tobidasizure = textSize - width > zure ? textSize - width - zure : 0;
-                String aintext = text;
-                for (int i = 0; i < text.length(); i++) {
-                    String cutble = cutForFront(text, text.length() - i);
-                    int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
-                    if (tobidasizure <= cuttoblesize)
-                        break;
-                    aintext = cutble;
-                }
-                backCont = aintext.length();
-            }
-
-            int backContZure = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutForFront(intext, intext.length() - backCont)), style));
-            intext = cutForBack(intext, backCont);
-            IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
-            drawBackString(fontRenderer, matrix, inextc, x + textSize - zure - backContZure, y, 0);
-        }
-
-        if (allsize - zure <= width) {
-            String intext = text;
-            for (int i = 0; i < text.length(); i++) {
-                String cutble = cutForBack(text, i);
-                int cuttoblesize = fontRenderer.getStringPropertyWidth(IKSGStyles.withStyle(new StringTextComponent(cutble), style));
-                if (-(allsize - zure - width) > cuttoblesize)
-                    break;
-                intext = cutble;
-            }
-            IFormattableTextComponent inextc = IKSGStyles.withStyle(new StringTextComponent(intext), style);
-            IKSGRenderUtil.drawString(fontRenderer, matrix, inextc, x + allsize - zure, y, 0);
-        }
-
-    }
-
-    public static void drawBackString(FontRenderer fr, MatrixStack matrix, ITextComponent text, int x, int y, int color) {
-        int size = fr.getStringPropertyWidth(text);
-        IKSGRenderUtil.drawString(fr, matrix, text, x - size, y, color);
-    }
-
-    public static String cutForBack(String text, int num) {
-        return text.substring(0, text.length() - num);
-    }
-
-    public static String cutForFront(String text, int num) {
-        return text.substring(num);
-    }
 
     @Override
     protected int getCont() {
