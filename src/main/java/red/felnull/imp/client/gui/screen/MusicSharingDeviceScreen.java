@@ -100,6 +100,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private TextFieldWidget addPlayMusicNameField;
     public TextFieldWidget addPlayMusicSourceField;
     private PlayMusicSourceReferenceButton addPlayMusicSourceReferenceButton;
+    private ImageButton addPlayMusicSourceSelectButton;
     private StringImageButton nextAddPlayMusic;
     private TextFieldWidget addPlayMusicArtistField;
     private TextFieldWidget addPlayMusicAlbumField;
@@ -110,7 +111,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private UploadLocationSelectButton addPlayMusic2UploadSelectWorld;
     private UploadLocationSelectButton addPlayMusic2UploadSelectURL;
     private UploadLocationSelectButton addPlayMusic2UploadSelectGitHub;
-
+    private StringImageButton addPlayMusicSourceSelectDoneButton;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -288,7 +289,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (this.addPlayMusicSourceField != null)
             MusicSourceField = this.addPlayMusicSourceField.getText();
 
-        this.addPlayMusicSourceField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 95, getMonitorStartY() + 55, 73, 12, new StringTextComponent("test")));
+        this.addPlayMusicSourceField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 95, getMonitorStartY() + 55, 55, 12, new StringTextComponent("test")));
         this.addPlayMusicSourceField.setEnableBackgroundDrawing(false);
         this.addPlayMusicSourceField.setMaxStringLength(Integer.MAX_VALUE);
         this.addPlayMusicSourceField.setTextColor(-1);
@@ -321,8 +322,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }, this));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceReferenceButton, false);
 
-        this.nextAddPlayMusic = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusicSourceSelectButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 157, getMonitorStartY() + 52, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
+            insMode(Monitors.ADDPLAYMUSICSOURCESELECT);
+        }));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectButton, false);
 
+
+        this.nextAddPlayMusic = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC2);
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.NEXT, fontStyle)));
         this.nextAddPlayMusic.setSizeAdjustment(true);
@@ -426,6 +432,15 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectGitHub, false);
 
 
+        this.addPlayMusicSourceSelectDoneButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 150, getMonitorStartY() + 106, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+            insMode(Monitors.ADDPLAYMUSIC1);
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.DONE, fontStyle)));
+        this.addPlayMusicSourceSelectDoneButton.setSizeAdjustment(true);
+        this.addPlayMusicSourceSelectDoneButton.setShadwString(false);
+        this.addPlayMusicSourceSelectDoneButton.setStringColor(0);
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectDoneButton, false);
+
+
         if (!initFrist) {
             if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
                 Path picPath = getPicturPath();
@@ -485,7 +500,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         setMonitorsa();
 
 
-        if (!isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2)) {
+        if (!isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2, Monitors.ADDPLAYMUSICSOURCESELECT)) {
             picturImage = null;
             this.image = new PlayImage(PlayImage.ImageType.STRING, "");
         }
@@ -500,7 +515,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         else
             addPlayMusicButton.setTextuer(235, 40, 18, 256, 256);
 
-        if (!isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2)) {
+        if (!isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2, Monitors.ADDPLAYMUSICSOURCESELECT)) {
             this.uploadLocation = null;
             this.formattype = "";
         }
@@ -528,6 +543,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicNameField, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceField, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceReferenceButton, isMonitor(Monitors.ADDPLAYMUSIC1));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectButton, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.nextAddPlayMusic, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setActive(this.nextAddPlayMusic, image != null && !addPlayMusicNameField.getText().isEmpty() && musicLoadResult == MusicLoadResult.AVAILABLE);
         IKSGScreenUtil.setVisible(this.addPlayMusicArtistField, isMonitor(Monitors.ADDPLAYMUSIC2));
@@ -542,6 +558,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectURL, isMonitor(Monitors.ADDPLAYMUSIC2));
         IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectURL, this.musicSourceClientReferencesType == MusicSourceClientReferencesType.URL && this.formattype != null && this.formattype.equals("mp3"));
         // IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, isMonitor(Monitors.ADDPLAYMUSIC2));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectDoneButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
     }
 
     private void fieldTick() {
@@ -561,7 +578,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (!isMonitor(Monitors.CREATEPLAYLIST)) {
             createGuildNameField.setText("");
         }
-        if (!isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2)) {
+        if (!isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2, Monitors.ADDPLAYMUSICSOURCESELECT)) {
             addPlayMusicNameField.setText("");
             addPlayMusicSourceField.setText("");
             addPlayMusicArtistField.setText("");
@@ -615,7 +632,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             }
         }
 
-        if (!isSlectedMonitor(moniter, Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2)) {
+        if (!isSlectedMonitor(moniter, Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2, Monitors.ADDPLAYMUSICSOURCESELECT)) {
             if (picturImage != null) {
                 picturImage = null;
                 CompoundNBT ptag = new CompoundNBT();
@@ -845,7 +862,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         ADDPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaylist.png"), "addplaylist"),
         JOINPLAYLIST(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_joinplaylist.png"), "joinplaylist"),
         ADDPLAYMUSIC1(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaymusic_1.png"), "addplaymusic1"),
-        ADDPLAYMUSIC2(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaymusic_2.png"), "addplaymusic2");
+        ADDPLAYMUSIC2(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaymusic_2.png"), "addplaymusic2"),
+        ADDPLAYMUSICSOURCESELECT(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/msd_monitor_addplaymusic_sourceslect.png"), "addplaymusicsourceslect");
         private final ResourceLocation location;
         private final String name;
 
