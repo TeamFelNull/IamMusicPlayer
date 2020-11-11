@@ -112,6 +112,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private UploadLocationSelectButton addPlayMusic2UploadSelectURL;
     private UploadLocationSelectButton addPlayMusic2UploadSelectGitHub;
     private StringImageButton addPlayMusicSourceSelectDoneButton;
+    private PlayMusicSourceReferenceButton addPlayMusicSourceSelectSourceReferenceButton;
+    public TextFieldWidget addPlayMusicSourceSelectSourceField;
+    public TextFieldWidget addPlayMusicSourceSelectSearchField;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -296,7 +299,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusicSourceField.setDisabledTextColour(-1);
         this.addPlayMusicSourceField.setText(MusicSourceField);
         this.addPlayMusicSourceField.setResponder(n -> {
-            if (isMonitor(Monitors.ADDPLAYMUSIC1)) {
+            if (isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSICSOURCESELECT)) {
                 if (this.sourceCheckThread != null)
                     this.sourceCheckThread.setStop(true);
                 this.sourceCheckThread = new SourceCheckThread(this, n);
@@ -308,6 +311,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusicSourceReferenceButton = this.addWidgetByIKSG(new PlayMusicSourceReferenceButton(getMonitorStartX() + 175, getMonitorStartY() + 52, 18, 15, 215, 168, 15, MSD_GUI_TEXTURES, n -> {
             setMusicLoadError(null);
             addPlayMusicSourceField.setText("");
+            addPlayMusicSourceSelectSourceField.setText("");
             addPlayMusicNameField.setText("");
             addPlayMusicGenreField.setText("");
             addPlayMusicYearField.setText("");
@@ -434,11 +438,56 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.addPlayMusicSourceSelectDoneButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 150, getMonitorStartY() + 106, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC1);
+            addPlayMusicSourceField.setText(addPlayMusicSourceSelectSourceField.getText());
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.DONE, fontStyle)));
         this.addPlayMusicSourceSelectDoneButton.setSizeAdjustment(true);
         this.addPlayMusicSourceSelectDoneButton.setShadwString(false);
         this.addPlayMusicSourceSelectDoneButton.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectDoneButton, false);
+
+        this.addPlayMusicSourceSelectSourceReferenceButton = this.addWidgetByIKSG(new PlayMusicSourceReferenceButton(getMonitorStartX() + 180, getMonitorStartY() + 12, 18, 15, 215, 168, 15, MSD_GUI_TEXTURES, n -> {
+            setMusicLoadError(null);
+            addPlayMusicSourceField.setText("");
+            addPlayMusicNameField.setText("");
+            addPlayMusicGenreField.setText("");
+            addPlayMusicYearField.setText("");
+            addPlayMusicNameField.setText("");
+            addPlayMusicAlbumField.setText("");
+            addPlayMusicArtistField.setText("");
+            addPlayMusicSourceSelectSourceField.setText("");
+            uploadLocation = null;
+            formattype = null;
+            image = new PlayImage(PlayImage.ImageType.STRING, "");
+            picturImage = null;
+            instruction("pathset", new CompoundNBT());
+        }, this));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceReferenceButton, false);
+
+        String SelectionMusicSourceField = "";
+        if (this.addPlayMusicSourceSelectSourceField != null)
+            SelectionMusicSourceField = this.addPlayMusicSourceSelectSourceField.getText();
+
+        this.addPlayMusicSourceSelectSourceField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 4, getMonitorStartY() + 109, 139, 12, new StringTextComponent("test")));
+        this.addPlayMusicSourceSelectSourceField.setEnableBackgroundDrawing(false);
+        this.addPlayMusicSourceSelectSourceField.setMaxStringLength(Integer.MAX_VALUE);
+        this.addPlayMusicSourceSelectSourceField.setTextColor(-1);
+        this.addPlayMusicSourceSelectSourceField.setDisabledTextColour(-1);
+        this.addPlayMusicSourceSelectSourceField.setText(SelectionMusicSourceField);
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceField, false);
+
+        String SelectionMusicSearchField = "";
+        if (this.addPlayMusicSourceSelectSearchField != null)
+            SelectionMusicSearchField = this.addPlayMusicSourceSelectSearchField.getText();
+
+        this.addPlayMusicSourceSelectSearchField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 4, getMonitorStartY() + 15, 91, 12, new StringTextComponent("test")));
+        this.addPlayMusicSourceSelectSearchField.setEnableBackgroundDrawing(false);
+        this.addPlayMusicSourceSelectSearchField.setMaxStringLength(Integer.MAX_VALUE);
+        this.addPlayMusicSourceSelectSearchField.setTextColor(-1);
+        this.addPlayMusicSourceSelectSearchField.setDisabledTextColour(-1);
+        this.addPlayMusicSourceSelectSearchField.setText(SelectionMusicSearchField);
+        this.addPlayMusicSourceSelectSearchField.setResponder(n -> {
+        });
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchField, false);
 
 
         if (!initFrist) {
@@ -559,6 +608,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectURL, this.musicSourceClientReferencesType == MusicSourceClientReferencesType.URL && this.formattype != null && this.formattype.equals("mp3"));
         // IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, isMonitor(Monitors.ADDPLAYMUSIC2));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectDoneButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceReferenceButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceField, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchField, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
     }
 
     private void fieldTick() {
@@ -581,6 +633,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (!isMonitor(Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSIC2, Monitors.ADDPLAYMUSICSOURCESELECT)) {
             addPlayMusicNameField.setText("");
             addPlayMusicSourceField.setText("");
+            addPlayMusicSourceSelectSourceField.setText("");
             addPlayMusicArtistField.setText("");
             addPlayMusicAlbumField.setText("");
             addPlayMusicYearField.setText("");
@@ -914,7 +967,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     @Override
     public void dropAndDragByIKSG(List<Path> dragFiles) {
-        if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
+        if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSICSOURCESELECT)) {
             if (dragFiles.size() == 1 && !pictuerLoading) {
                 DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(false, this, dragFiles.get(0));
                 lt.start();
@@ -1043,7 +1096,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (nopicteur) {
                 screen.musicLoadResult = null;
                 screen.setMusicSourceClientReferencesType(MusicSourceClientReferencesType.LOCAL_FILE);
-                screen.addPlayMusicSourceField.setText(path.toString());
+                if (screen.isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT))
+                    screen.addPlayMusicSourceSelectSourceField.setText(path.toString());
+                else
+                    screen.addPlayMusicSourceField.setText(path.toString());
             }
         }
     }
