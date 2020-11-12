@@ -41,6 +41,7 @@ import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -100,7 +101,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private TextFieldWidget addPlayMusicNameField;
     public TextFieldWidget addPlayMusicSourceField;
     private PlayMusicSourceReferenceButton addPlayMusicSourceReferenceButton;
-    private ImageButton addPlayMusicSourceSelectButton;
+    private ChangeableImageButton addPlayMusicSourceSelectButton;
     private StringImageButton nextAddPlayMusic;
     private TextFieldWidget addPlayMusicArtistField;
     private TextFieldWidget addPlayMusicAlbumField;
@@ -115,6 +116,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private PlayMusicSourceReferenceButton addPlayMusicSourceSelectSourceReferenceButton;
     public TextFieldWidget addPlayMusicSourceSelectSourceField;
     public TextFieldWidget addPlayMusicSourceSelectSearchField;
+    private ScrollBarSlider addPlayMusicSourceSelectSearchlistbar;
+    private ChangeableImageButton addPlayMusicSourceSelectSearchButton;
+    private StringImageButton addPlayMusicSourceSelectOpenFile;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -148,7 +152,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         timerSet();
         instruction("opengui", new CompoundNBT());
 
-        this.musicSourceClientReferencesType = MusicSourceClientReferencesType.LOCAL_FILE;
+        if (musicSourceClientReferencesType == null)
+            this.musicSourceClientReferencesType = MusicSourceClientReferencesType.LOCAL_FILE;
+
         this.pictuerLoading = false;
         this.musicLoading = false;
         this.playerInventoryTitleY = this.ySize - 94;
@@ -248,7 +254,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.backJoinGuid.setStringColor(0);
         IKSGScreenUtil.setVisible(this.backJoinGuid, false);
 
-        this.joinplaylistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -187, 215, 126, MSD_GUI_TEXTURES));
+        this.joinplaylistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -189, 215, 126, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.joinplaylistbar, false);
 
         this.JoinPlayListScrollButtons = this.addWidgetByIKSG(new JoinPlayListScrollButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 187, 101, 40, joinplaylistbar, jonPlaylists, (n, m) -> {
@@ -489,6 +495,23 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         });
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchField, false);
 
+        this.addPlayMusicSourceSelectSearchlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 28, 77, 100, 0, -189, 215, 126, MSD_GUI_TEXTURES));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchlistbar, false);
+
+        this.addPlayMusicSourceSelectSearchButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 102, getMonitorStartY() + 12, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
+            System.out.println("test");
+        }));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchButton, false);
+
+        this.addPlayMusicSourceSelectOpenFile = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 120, getMonitorStartY() + 12, 60, 15, 53, 80, 15, MSD_GUI_TEXTURES2, n -> {
+            JFrame frame = new JFrame("test");
+            frame.setVisible(true);
+            System.out.println("test");
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.YES, fontStyle)));
+        this.addPlayMusicSourceSelectOpenFile.setSizeAdjustment(true);
+        this.addPlayMusicSourceSelectOpenFile.setShadwString(false);
+        this.addPlayMusicSourceSelectOpenFile.setStringColor(0);
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectOpenFile, false);
 
         if (!initFrist) {
             if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
@@ -540,6 +563,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 break;
             case ADDPLAYMUSIC2:
                 drawAddPlayMusic2(matx, partTick, mouseX, mouseY);
+                break;
+            case ADDPLAYMUSICSOURCESELECT:
+                drawAddPlayMusicSourceSlect(matx, partTick, mouseX, mouseY);
                 break;
         }
     }
@@ -611,6 +637,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceReferenceButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceField, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchField, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchlistbar, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectOpenFile, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT) && musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE);
     }
 
     private void fieldTick() {
@@ -785,6 +814,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             Monitorsa = Monitors.getValueOf(getMode());
     }
 
+    protected void drawAddPlayMusicSourceSlect(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawFontString(matrx, new TranslationTextComponent("msd.addplaymusicsourceslect"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+
+    }
 
     protected void drawAddPlayMusic2(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.addplaymusic"), getMonitorStartX() + 2, getMonitorStartY() + 2);

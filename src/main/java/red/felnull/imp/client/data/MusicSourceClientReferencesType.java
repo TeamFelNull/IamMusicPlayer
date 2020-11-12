@@ -5,7 +5,8 @@ import red.felnull.imp.IamMusicPlayer;
 
 public enum MusicSourceClientReferencesType {
     LOCAL_FILE(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_source_references/local_file.png")),
-    URL(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_source_references/url.png"));
+    URL(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_source_references/url.png")),
+    YOUTUBE(new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_source_references/youtube.png"));
     private final ResourceLocation textuerLocation;
 
     MusicSourceClientReferencesType(ResourceLocation textuerLocation) {
@@ -15,4 +16,4 @@ public enum MusicSourceClientReferencesType {
     public ResourceLocation getTextuerLocation() {
         return textuerLocation;
     }
-}
+    }
