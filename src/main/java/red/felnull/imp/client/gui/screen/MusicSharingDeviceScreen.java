@@ -70,6 +70,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private final FileChooser SoundFileChooser;
 
     private PlayImage image;
+    public File[] searchFolders;
 
     private byte[] picturImage;
     private boolean pictuerLoading;
@@ -124,6 +125,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private ScrollBarSlider addPlayMusicSourceSelectSearchlistbar;
     private ChangeableImageButton addPlayMusicSourceSelectSearchButton;
     private StringImageButton addPlayMusicSourceSelectOpenFile;
+    private LocalFolderScrollListButton addPlayMusicSourceSelectFileListButton;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -133,8 +135,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         setMonitorsa();
         this.SoundFileChooser = new FileChooser();
         this.SoundFileChooser.setTitle(I18n.format("msd.openSoundFile"));
-        this.SoundFileChooser.setInitialDirectory();
-
     }
 
     protected int getMonitorStartX() {
@@ -470,6 +470,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             addPlayMusicAlbumField.setText("");
             addPlayMusicArtistField.setText("");
             addPlayMusicSourceSelectSourceField.setText("");
+            addPlayMusicSourceSelectSearchField.setText("");
             uploadLocation = null;
             formattype = null;
             image = new PlayImage(PlayImage.ImageType.STRING, "");
@@ -508,32 +509,42 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchlistbar, false);
 
         this.addPlayMusicSourceSelectSearchButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 102, getMonitorStartY() + 12, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
-            System.out.println("test");
+            try {
+                if (getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.LOCAL_FILE) {
+                    searchFolders = new File(addPlayMusicSourceSelectSearchField.getText()).listFiles();
+                }
+            } catch (Exception ex) {
+                IamMusicPlayer.LOGGER.warn("MSD Error");
+                ex.printStackTrace();
+            }
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchButton, false);
 
         this.addPlayMusicSourceSelectOpenFile = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 120, getMonitorStartY() + 12, 60, 15, 53, 80, 15, MSD_GUI_TEXTURES2, n -> {
-            //  FileChooser chooser = new FileChooser();
-            //  chooser.setTitle("test");
-            //      FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter((new TranslationTextComponent("filetype.images")).getString(), new String[]{"*.png", "*.jpg", "*.jpeg"});
-            //       chooser.getExtensionFilters().clear();
-            //        chooser.getExtensionFilters().add(filter);
-            //       chooser.setSelectedExtensionFilter(filter);
-
             PlatformImpl.startup(() -> {
                 File file = SoundFileChooser.showOpenDialog(null);
-                if (file != null) {
-                    System.out.println(file.getName());
-                    System.out.println(this.isOpend());
+                if (file != null && this.isOpend() && isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT)) {
+                    if (file.isDirectory()) {
+                        addPlayMusicSourceSelectSearchField.setText(file.getPath());
+                        searchFolders = file.listFiles();
+                    } else {
+                        addPlayMusicSourceSelectSearchField.setText(file.getParentFile().getPath());
+                        searchFolders = file.getParentFile().listFiles();
+                        addPlayMusicSourceSelectSourceField.setText(file.getPath());
+                    }
+                    SoundFileChooser.setInitialDirectory(file.getParentFile());
                 }
             });
-
-            System.out.println("test");
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.YES, fontStyle)));
         this.addPlayMusicSourceSelectOpenFile.setSizeAdjustment(true);
         this.addPlayMusicSourceSelectOpenFile.setShadwString(false);
         this.addPlayMusicSourceSelectOpenFile.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectOpenFile, false);
+
+        this.addPlayMusicSourceSelectFileListButton = this.addWidgetByIKSG(new LocalFolderScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 28, 187, 77, 40, addPlayMusicSourceSelectSearchlistbar, this, (n, m) -> {
+
+        }));
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectFileListButton, false);
 
         if (!initFrist) {
             if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
@@ -662,6 +673,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchlistbar, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectOpenFile, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT) && musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE);
+        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectFileListButton, isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT) && musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE);
     }
 
     private void fieldTick() {
@@ -677,6 +689,14 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             addPlayMusicAlbumField.tick();
             addPlayMusicYearField.tick();
             addPlayMusicGenreField.tick();
+        }
+        if (isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT)) {
+            addPlayMusicSourceSelectSourceField.tick();
+            addPlayMusicSourceSelectSearchField.tick();
+        }
+        if (!isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT)) {
+            addPlayMusicSourceSelectSourceField.setText("");
+            addPlayMusicSourceSelectSearchField.setText("");
         }
         if (!isMonitor(Monitors.CREATEPLAYLIST)) {
             createGuildNameField.setText("");
@@ -838,7 +858,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     protected void drawAddPlayMusicSourceSlect(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.addplaymusicsourceslect"), getMonitorStartX() + 2, getMonitorStartY() + 2);
-
+        addPlayMusicSourceSelectSearchField.render(matrx, mouseX, mouseY, partTick);
+        addPlayMusicSourceSelectSourceField.render(matrx, mouseX, mouseY, partTick);
     }
 
     protected void drawAddPlayMusic2(MatrixStack matrx, float partTick, int mouseX, int mouseY) {

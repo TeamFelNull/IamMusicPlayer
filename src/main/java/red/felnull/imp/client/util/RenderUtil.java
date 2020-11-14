@@ -94,8 +94,12 @@ public class RenderUtil {
 
     private static void drwPlayImageImage(MatrixStack matrix, String str, byte[] imageData, int x, int y, int size, int upOver, int downOver) {
         ResourceLocation location = imageData == null ? IKSGTextureUtil.getReceiveTexture(IMPWorldData.IMAGE, str) : IKSGTextureUtil.getPictureImageTexture(imageData);
-        int xsize = (int) (size * ((float) IKSGTextureUtil.getWidth(location, 256) / 256f));
-        int ysize = (int) (size * ((float) IKSGTextureUtil.getHeight(location, 256) / 256f));
+
+        int w = IKSGTextureUtil.getWidth(location, 256);
+        int h = IKSGTextureUtil.getHeight(location, 256);
+
+        int xsize = (int) (size * ((float) w / 256f));
+        int ysize = (int) (size * ((float) h / 256f));
         int xz = (size - xsize) / 2;
         int yz = (size - ysize) / 2;
         int upOverZure = upOver < yz ? 0 : upOver - yz;
