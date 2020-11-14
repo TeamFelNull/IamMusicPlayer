@@ -4,9 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
+import com.sun.javafx.application.PlatformImpl;
+import javafx.stage.FileChooser;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,9 +44,9 @@ import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,6 +66,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private final List<PlayList> jonPlaylists = new ArrayList<>();
     private final List<PlayList> jonedAllPlaylists = new ArrayList<>();
     private final List<PlayMusic> currentPlaylistsMusics = new ArrayList<>();
+
+    private final FileChooser SoundFileChooser;
 
     private PlayImage image;
 
@@ -126,6 +131,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.ySize = 242;
         this.currentPlayList = PlayList.ALL;
         setMonitorsa();
+        this.SoundFileChooser = new FileChooser();
+        this.SoundFileChooser.setTitle(I18n.format("msd.openSoundFile"));
+        this.SoundFileChooser.setInitialDirectory();
+
     }
 
     protected int getMonitorStartX() {
@@ -504,8 +513,21 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSearchButton, false);
 
         this.addPlayMusicSourceSelectOpenFile = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 120, getMonitorStartY() + 12, 60, 15, 53, 80, 15, MSD_GUI_TEXTURES2, n -> {
-            JFrame frame = new JFrame("test");
-            frame.setVisible(true);
+            //  FileChooser chooser = new FileChooser();
+            //  chooser.setTitle("test");
+            //      FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter((new TranslationTextComponent("filetype.images")).getString(), new String[]{"*.png", "*.jpg", "*.jpeg"});
+            //       chooser.getExtensionFilters().clear();
+            //        chooser.getExtensionFilters().add(filter);
+            //       chooser.setSelectedExtensionFilter(filter);
+
+            PlatformImpl.startup(() -> {
+                File file = SoundFileChooser.showOpenDialog(null);
+                if (file != null) {
+                    System.out.println(file.getName());
+                    System.out.println(this.isOpend());
+                }
+            });
+
             System.out.println("test");
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.YES, fontStyle)));
         this.addPlayMusicSourceSelectOpenFile.setSizeAdjustment(true);

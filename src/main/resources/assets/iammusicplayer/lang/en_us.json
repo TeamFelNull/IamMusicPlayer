@@ -28,6 +28,7 @@
   "msd.uploadlocation": "Upload Location",
   "msd.formattype": "Format : %s",
   "msd.addplaymusicsourceslect": "Music Source Select",
+  "msd.openSoundFile": "Open Sound File",
   "musicloadresult.nosupportformat": "No Support Format",
   "musicloadresult.filenotexist": "File Not Exist",
   "musicloadresult.invalidurl": "Invalid URL",
