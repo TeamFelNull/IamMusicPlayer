@@ -47,6 +47,7 @@ import ws.schild.jave.info.MultimediaInfo;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileFilter;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -62,6 +63,13 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
     //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
     public static final Style fontStyle = IKSGStyles.withFont(fontLocation);
+
+    private static final FileFilter FolderSerchFilter = new FileFilter() {
+        @Override
+        public boolean accept(File file) {
+            return !file.isDirectory() && file.exists();
+        }
+    };
 
     private final List<PlayList> jonPlaylists = new ArrayList<>();
     private final List<PlayList> jonedAllPlaylists = new ArrayList<>();
@@ -453,6 +461,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.addPlayMusicSourceSelectDoneButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 150, getMonitorStartY() + 106, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC1);
+            searchFolders = null;
             addPlayMusicSourceField.setText(addPlayMusicSourceSelectSourceField.getText());
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.DONE, fontStyle)));
         this.addPlayMusicSourceSelectDoneButton.setSizeAdjustment(true);
@@ -475,6 +484,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             formattype = null;
             image = new PlayImage(PlayImage.ImageType.STRING, "");
             picturImage = null;
+            searchFolders = null;
             instruction("pathset", new CompoundNBT());
         }, this));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectSourceReferenceButton, false);
@@ -511,7 +521,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusicSourceSelectSearchButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 102, getMonitorStartY() + 12, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
             try {
                 if (getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.LOCAL_FILE) {
-                    searchFolders = new File(addPlayMusicSourceSelectSearchField.getText()).listFiles();
+                    searchFolders = new File(addPlayMusicSourceSelectSearchField.getText()).listFiles(FolderSerchFilter);
                 }
             } catch (Exception ex) {
                 IamMusicPlayer.LOGGER.warn("MSD Error");
@@ -526,10 +536,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 if (file != null && this.isOpend() && isMonitor(Monitors.ADDPLAYMUSICSOURCESELECT)) {
                     if (file.isDirectory()) {
                         addPlayMusicSourceSelectSearchField.setText(file.getPath());
-                        searchFolders = file.listFiles();
+                        searchFolders = file.listFiles(FolderSerchFilter);
                     } else {
                         addPlayMusicSourceSelectSearchField.setText(file.getParentFile().getPath());
-                        searchFolders = file.getParentFile().listFiles();
+                        searchFolders = file.getParentFile().listFiles(FolderSerchFilter);
                         addPlayMusicSourceSelectSourceField.setText(file.getPath());
                     }
                     SoundFileChooser.setInitialDirectory(file.getParentFile());
@@ -541,8 +551,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusicSourceSelectOpenFile.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectOpenFile, false);
 
-        this.addPlayMusicSourceSelectFileListButton = this.addWidgetByIKSG(new LocalFolderScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 28, 187, 77, 40, addPlayMusicSourceSelectSearchlistbar, this, (n, m) -> {
-
+        this.addPlayMusicSourceSelectFileListButton = this.addWidgetByIKSG(new LocalFolderScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 28, 187, 77, 15, addPlayMusicSourceSelectSearchlistbar, this, (n, m) -> {
+            addPlayMusicSourceSelectSourceField.setText(searchFolders[m].getPath());
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectFileListButton, false);
 
