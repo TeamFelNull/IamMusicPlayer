@@ -76,6 +76,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private final List<PlayMusic> currentPlaylistsMusics = new ArrayList<>();
 
     private final FileChooser SoundFileChooser;
+    private final FileChooser ImageFileChooser;
 
     private PlayImage image;
     public File[] searchFolders;
@@ -105,6 +106,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private Checkbox createAnyoneCheckbox;
     private StringImageButton backGuid;
     private StringImageButton createGuid;
+    private ChangeableImageButton resetImage;
+    private ChangeableImageButton openImage;
     private StringImageButton createJoinGuid;
     private StringImageButton addJoinGuid;
     private StringImageButton backJoinGuid;
@@ -115,7 +118,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private TextFieldWidget addPlayMusicNameField;
     public TextFieldWidget addPlayMusicSourceField;
     private PlayMusicSourceReferenceButton addPlayMusicSourceReferenceButton;
-    private ChangeableImageButton addPlayMusicSourceSelectButton;
+
+    private ChangeableImageButton addPlayMusicYoutubeSarchButton;
+
     private StringImageButton nextAddPlayMusic;
     private TextFieldWidget addPlayMusicArtistField;
     private TextFieldWidget addPlayMusicAlbumField;
@@ -143,6 +148,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         setMonitorsa();
         this.SoundFileChooser = new FileChooser();
         this.SoundFileChooser.setTitle(I18n.format("msd.openSoundFile"));
+        this.ImageFileChooser = new FileChooser();
+        this.ImageFileChooser.setTitle(I18n.format("msd.openImageFile"));
     }
 
     protected int getMonitorStartX() {
@@ -231,6 +238,29 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.createGuid.setShadwString(false);
         this.createGuid.setStringColor(0);
         IKSGScreenUtil.setVisible(this.createGuid, false);
+
+        this.resetImage = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 86 - 16, getMonitorStartY() + 106 - 8, 8, 8, 215, 198, 8, MSD_GUI_TEXTURES, n -> {
+            this.picturImage = null;
+            instruction("pathset", new CompoundNBT());
+            if (isMonitor(Monitors.CREATEPLAYLIST)) {
+                this.image = new PlayImage(PlayImage.ImageType.STRING, createGuildNameField.getText());
+            } else if (isMonitor(Monitors.ADDPLAYMUSIC1)) {
+                this.image = new PlayImage(PlayImage.ImageType.STRING, addPlayMusicNameField.getText());
+            }
+        }));
+        IKSGScreenUtil.setVisible(this.resetImage, false);
+
+        this.openImage = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 86 - 8, getMonitorStartY() + 106 - 8, 8, 8, 223, 198, 8, MSD_GUI_TEXTURES, n -> {
+            PlatformImpl.startup(() -> {
+                File file = ImageFileChooser.showOpenDialog(null);
+                if (file != null && this.isOpend() && isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && !file.isDirectory()) {
+                    DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(true, this, file.toPath());
+                    lt.start();
+                    ImageFileChooser.setInitialDirectory(file.getParentFile());
+                }
+            });
+        }));
+        IKSGScreenUtil.setVisible(this.openImage, false);
 
         this.createGuildNameField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 95, getMonitorStartY() + 29, 91, 12, new StringTextComponent("test")));
         this.createGuildNameField.setEnableBackgroundDrawing(false);
@@ -349,10 +379,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }, this));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceReferenceButton, false);
 
-        this.addPlayMusicSourceSelectButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 157, getMonitorStartY() + 52, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
+        this.addPlayMusicYoutubeSarchButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 157, getMonitorStartY() + 52, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
             insMode(Monitors.ADDPLAYMUSICSOURCESELECT);
         }));
-        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectButton, false);
+        IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSarchButton, false);
 
 
         this.nextAddPlayMusic = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
@@ -648,6 +678,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.createGuildNameField, isMonitor(Monitors.CREATEPLAYLIST));
         IKSGScreenUtil.setVisible(this.backGuid, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.createGuid, isMonitor(Monitors.CREATEPLAYLIST));
+        IKSGScreenUtil.setVisible(this.resetImage, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && image != null && image.getImageType() == PlayImage.ImageType.IMGAE);
+        IKSGScreenUtil.setVisible(this.openImage, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.createAnyoneCheckbox, isMonitor(Monitors.CREATEPLAYLIST));
         IKSGScreenUtil.setActive(this.createGuid, image != null && !createGuildNameField.getText().isEmpty());
         IKSGScreenUtil.setVisible(this.createJoinGuid, isMonitor(Monitors.ADDPLAYLIST));
@@ -661,7 +693,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicNameField, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceField, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceReferenceButton, isMonitor(Monitors.ADDPLAYMUSIC1));
-        IKSGScreenUtil.setVisible(this.addPlayMusicSourceSelectButton, isMonitor(Monitors.ADDPLAYMUSIC1));
+        IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSarchButton, isMonitor(Monitors.ADDPLAYMUSIC1) && musicSourceClientReferencesType == MusicSourceClientReferencesType.YOUTUBE);
+
         IKSGScreenUtil.setVisible(this.nextAddPlayMusic, isMonitor(Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setActive(this.nextAddPlayMusic, image != null && !addPlayMusicNameField.getText().isEmpty() && musicLoadResult == MusicLoadResult.AVAILABLE);
         IKSGScreenUtil.setVisible(this.addPlayMusicArtistField, isMonitor(Monitors.ADDPLAYMUSIC2));
