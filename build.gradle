@@ -283,6 +283,7 @@ publishing {
         }
     }
 }
+/*
 if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
     curseforge {
         apiKey = System.getenv('curesforgeapikey')
@@ -324,3 +325,4 @@ if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
         }
     }
 }
+*/
