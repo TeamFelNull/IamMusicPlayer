@@ -44,6 +44,9 @@ public class RenderUtil {
             case PLAYERFACE:
                 drwPlayImagePlayerFace(matrix, image.getName(), x, y, size, upOver, downOver);
                 break;
+            case URLIMAGE:
+                drwPlayImageURLImage(matrix, image.getName(), x, y, size, upOver, downOver);
+                break;
         }
     }
 
@@ -58,6 +61,9 @@ public class RenderUtil {
                 break;
             case PLAYERFACE:
                 drwPlayImagePlayerFace(matrix, image.getName(), x, y, size, upOver, downOver);
+                break;
+            case URLIMAGE:
+                drwPlayImageURLImage(matrix, image.getName(), x, y, size, upOver, downOver);
                 break;
         }
     }
@@ -102,6 +108,40 @@ public class RenderUtil {
         int ysize = (int) (size * ((float) h / 256f));
         int xz = (size - xsize) / 2;
         int yz = (size - ysize) / 2;
+        int upOverZure = upOver < yz ? 0 : upOver - yz;
+        int downOverZure = downOver < yz ? 0 : downOver - yz;
+        IKSGRenderUtil.guiBindAndBlit(location, matrix, x + xz, y + yz + upOverZure, 0, upOverZure, xsize, ysize - downOverZure - upOverZure, xsize, ysize);
+    }
+
+    private static void drwPlayImageURLImage(MatrixStack matrix, String url, int x, int y, int size, int upOver, int downOver) {
+        ResourceLocation location = null;
+
+        if (url == null)
+            location = IKSGTextureUtil.TEXTUER_NOTFINED;
+        else if (url.isEmpty())
+            location = new ResourceLocation("otyacraftengine", "textures/gui/textuer_not_find.png");
+        else
+            location = IKSGTextureUtil.getPictureImageURLTexture(url);
+
+        float w = IKSGTextureUtil.getWidth(location, 256);
+        float h = IKSGTextureUtil.getHeight(location, 256);
+
+        int xsize = 0;
+        int ysize = 0;
+        if (w == h) {
+            xsize = size;
+            ysize = size;
+        } else if (w > h) {
+            xsize = size;
+            ysize = (int) ((float) size * (h / w));
+        } else if (w < h) {
+            xsize = (int) ((float) size * (w / h));
+            ysize = size;
+        }
+
+        int xz = (size - xsize) / 2;
+        int yz = (size - ysize) / 2;
+
         int upOverZure = upOver < yz ? 0 : upOver - yz;
         int downOverZure = downOver < yz ? 0 : downOver - yz;
         IKSGRenderUtil.guiBindAndBlit(location, matrix, x + xz, y + yz + upOverZure, 0, upOverZure, xsize, ysize - downOverZure - upOverZure, xsize, ysize);

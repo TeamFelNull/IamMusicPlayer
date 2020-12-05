@@ -1,10 +1,10 @@
 package red.felnull.imp.client.gui.screen;
 
-import com.google.api.services.youtube.model.SearchResult;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.stage.FileChooser;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -46,7 +46,6 @@ import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
@@ -83,7 +82,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     private PlayImage image;
 
-    private List<SearchResult> youtubeResilts = new ArrayList<>();
+    private List<AudioTrack> youtubeResilts = new ArrayList<>();
     private boolean youtubeSearchLoading;
     private YoutubeSearchThread youtubeSearchThread;
 
@@ -1148,8 +1147,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                         aw = (int) ((float) size * (w / h));
                         ah = size;
                     }
-                    BufferedImage outbfi = new BufferedImage(aw, ah, bfi.getType());
-                    outbfi.createGraphics().drawImage(bfi.getScaledInstance(aw, ah, Image.SCALE_AREA_AVERAGING), 0, 0, aw, ah, null);
+                    BufferedImage outbfi = IKSGPictuerUtil.resize(bfi, aw, ah);
                     if (IKSGScreenUtil.isOpendScreen(screen))
                         screen.setPicturImage(IKSGPictuerUtil.geByteImage(outbfi), path);
                 } else {
@@ -1351,7 +1349,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             screen.youtubeSearchLoading = true;
             screen.youtubeResilts.clear();
             IamMusicPlayer.LOGGER.info("Youtube Search: " + searchText);
-            List<SearchResult> list = YoutubeUtils.getVideoSearchResults(searchText);
+            List<AudioTrack> list = YoutubeUtils.getVideoSearchResults(searchText);
             IamMusicPlayer.LOGGER.info("Youtube Search Finished: " + searchText);
             if (!this.stop)
                 screen.youtubeResilts.addAll(list);

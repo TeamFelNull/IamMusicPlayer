@@ -7,7 +7,7 @@ public class PlayImage implements INBTReadWriter {
     private ImageType imageType;
     private String name;
 
-    //イメージUUID、プレイヤー名、表示名のどれか
+    //イメージUUID、プレイヤー名、表示名、イメージURLのどれか
     public PlayImage(ImageType type, String str) {
         this.imageType = type;
         this.name = str;
@@ -41,6 +41,7 @@ public class PlayImage implements INBTReadWriter {
     public enum ImageType {
         IMGAE,
         STRING,
-        PLAYERFACE
+        PLAYERFACE,
+        URLIMAGE;
     }
 }

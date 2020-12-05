@@ -29,7 +29,7 @@ public class TestSoundItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (worldIn.isRemote) {
-            YoutubeUtils.getVideoSearchResults(itemstack.getDisplayName().getString()).forEach(n -> playerIn.sendStatusMessage(new StringTextComponent(n.getSnippet().getTitle()), false));
+            YoutubeUtils.getVideoSearchResults(itemstack.getDisplayName().getString()).forEach(n -> playerIn.sendStatusMessage(new StringTextComponent("n.getSnippet().getTitle()"), false));
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
