@@ -42,7 +42,6 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
 
     @Override
     protected int getCont() {
-        System.out.println(screen.youtubeResilts);
         if (screen.youtubeResilts == null)
             return 0;
         return screen.youtubeResilts.size();
