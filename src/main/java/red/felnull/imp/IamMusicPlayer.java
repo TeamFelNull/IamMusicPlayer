@@ -1,6 +1,5 @@
 package red.felnull.imp;
 
-import com.github.kiulian.downloader.YoutubeDownloader;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;

@@ -87,7 +87,7 @@ configurations {
 }
 allprojects {
     repositories {
-        maven { url = 'https://jitpack.io' }
+    //    maven { url = 'https://jitpack.io' }
         jcenter()
     }
 }
@@ -98,8 +98,9 @@ dependencies {
     compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${ftb_gui_library_version}")
     compile fg.deobf(files("libs/OtyacraftEngine-${oe_version}-dev.jar"))
     shadowAll 'com.mpatric:mp3agic:0.9.1'
-    shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
+   // shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
     shadowAll 'com.sedmelluq:lavaplayer:1.3.63'
+    shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
     shadowAll 'ws.schild:jave-core:3.0.1'
     shadowWin32 'ws.schild:jave-nativebin-win32:3.0.1'
     shadowWin64 'ws.schild:jave-nativebin-win64:3.0.1'
@@ -130,6 +131,19 @@ shadowJar {
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+
 }
 task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -140,6 +154,18 @@ task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
 }
 task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -150,6 +176,18 @@ task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
 }
 task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -160,6 +198,18 @@ task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
 }
 task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -170,6 +220,18 @@ task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
 }
 task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -180,6 +242,18 @@ task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
 }
 task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -190,6 +264,18 @@ task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
     relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
 }
 
 afterEvaluate {

@@ -12,20 +12,18 @@ import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-import java.util.List;
-
 public class YoutubeSearchResultScrollListButton extends ScrollListButton {
-    private List<AudioTrack> youtubeResilts;
+    private MusicSharingDeviceScreen screen;
 
-    public YoutubeSearchResultScrollListButton(int x, int y, int sizeX, int sizeY, int sizeOne, ScrollBarSlider scrollBar, List<AudioTrack> youtubeResilts, IPressable pressed) {
+    public YoutubeSearchResultScrollListButton(int x, int y, int sizeX, int sizeY, int sizeOne, ScrollBarSlider scrollBar, MusicSharingDeviceScreen screen, IPressable pressed) {
         super(x, y, sizeX, sizeY, sizeOne, 0, scrollBar, null, pressed);
-        this.youtubeResilts = youtubeResilts;
+        this.screen = screen;
     }
 
     @Override
     public void renderOneList(MatrixStack matrix, int x, int y, int num, int upOver, int downOver) {
         IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x, y + upOver, 48, upOver, 187, 40 - downOver, 256, 256);
-        AudioTrack pl = youtubeResilts.get(num);
+        AudioTrack pl = screen.youtubeResilts.get(num);
 
         int upzure = 1 < upOver ? upOver - 1 : 0;
         int downzure = 1 < downOver ? downOver - 1 : 0;
@@ -44,8 +42,9 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
 
     @Override
     protected int getCont() {
-        if (youtubeResilts == null)
+        System.out.println(screen.youtubeResilts);
+        if (screen.youtubeResilts == null)
             return 0;
-        return youtubeResilts.size();
+        return screen.youtubeResilts.size();
     }
 }

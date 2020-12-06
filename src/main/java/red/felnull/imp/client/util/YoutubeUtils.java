@@ -14,7 +14,6 @@ import java.util.*;
 
 public class YoutubeUtils {
 
-    public static final Map<String, String> YOUTUBE_VIDEOINFO = new HashMap<>();
     public static final Map<String, String> YOUTUBE_THUMBNAILURL = new HashMap<>();
 
     public static List<AudioTrack> getVideoSearchResults(String searchText) {
@@ -57,32 +56,19 @@ public class YoutubeUtils {
     }
 
     public static String getThumbnailURL(String videoID) {
-        String info = getYoutubeInfo(videoID);
-        if (info != null && !info.isEmpty()) {
-            JsonObject jsonobject = new Gson().fromJson(info, JsonObject.class);
-            String url = jsonobject.get("thumbnail_url").getAsString();
-            YOUTUBE_THUMBNAILURL.put(videoID, url);
-            return url;
-        }
+        if (YOUTUBE_THUMBNAILURL.containsKey(videoID))
+            return YOUTUBE_THUMBNAILURL.get(videoID);
+        YoutubeThumbnailThread ytt = new YoutubeThumbnailThread(videoID);
+        ytt.start();
+        YOUTUBE_THUMBNAILURL.put(videoID, null);
         return null;
     }
 
-    public static String getYoutubeInfo(String videoID) {
 
-        if (YOUTUBE_VIDEOINFO.containsKey(videoID))
-            return YOUTUBE_VIDEOINFO.get(videoID);
-
-        YoutubeInfoThread yit = new YoutubeInfoThread(videoID);
-        yit.start();
-
-        YOUTUBE_VIDEOINFO.put(videoID, "");
-        return "";
-    }
-
-    public static class YoutubeInfoThread extends Thread {
+    public static class YoutubeThumbnailThread extends Thread {
         private final String videoID;
 
-        private YoutubeInfoThread(String videoID) {
+        private YoutubeThumbnailThread(String videoID) {
             this.videoID = videoID;
         }
 
@@ -91,11 +77,12 @@ public class YoutubeUtils {
             try {
                 String url = "https://noembed.com/embed?url=https://www.youtube.com/watch?v=" + videoID;
                 String rp = IKSGURLUtil.getURLResponse(url);
-                YOUTUBE_VIDEOINFO.put(videoID, rp);
+                JsonObject jsonobject = new Gson().fromJson(rp, JsonObject.class);
+                String urla = jsonobject.get("thumbnail_url").getAsString();
+                YOUTUBE_THUMBNAILURL.put(videoID, urla);
                 return;
             } catch (IOException e) {
                 e.printStackTrace();
-                YOUTUBE_VIDEOINFO.put(videoID, null);
                 return;
             }
         }

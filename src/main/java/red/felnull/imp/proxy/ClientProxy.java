@@ -8,6 +8,8 @@ import red.felnull.imp.client.gui.IMPScrennContainerRegister;
 import red.felnull.imp.client.handler.MusicUploadHandler;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 
+import java.util.Properties;
+
 public class ClientProxy extends CommonProxy {
     public static void clientInit() {
         IMPTileEntityRenderers.registerTileEntityRenderer();
