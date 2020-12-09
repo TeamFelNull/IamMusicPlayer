@@ -64,6 +64,15 @@ public class YoutubeUtils {
         return null;
     }
 
+    public static boolean isYoutubeURL(String url) {
+
+        return url.contains("youtube") && url.contains("=");
+    }
+
+    public static String getYoutubeIDFromURL(String url) {
+        String[] ur = url.split("=");
+        return ur[ur.length - 1];
+    }
 
     public static class YoutubeThumbnailThread extends Thread {
         private final String videoID;

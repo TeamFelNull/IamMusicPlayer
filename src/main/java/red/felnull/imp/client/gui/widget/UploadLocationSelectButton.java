@@ -38,7 +38,7 @@ public class UploadLocationSelectButton extends ImageButton {
     @Override
     public void renderButton(MatrixStack matrix, int mouseX, int mouseY, float parTic) {
 
-        if (isComingSoon || screen.uploadLocation != locationType) {
+     /*   if (isComingSoon || screen.uploadLocation != locationType) {
             super.renderButton(matrix, mouseX, mouseY, parTic);
         } else {
             int i = this.yTexStart + this.height * 2;
@@ -46,7 +46,7 @@ public class UploadLocationSelectButton extends ImageButton {
                 i += this.yDiffText;
             }
             IKSGRenderUtil.guiBindAndBlit(resourceLocation, matrix, this.x, this.y, xTexStart, i, this.width, this.height, 256, 256);
-        }
+        }*/
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         int drsize = isComingSoon ? width - 2 : width - 15;
