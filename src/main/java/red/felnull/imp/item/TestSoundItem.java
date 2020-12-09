@@ -5,31 +5,43 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
-import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.util.YoutubeUtils;
-import red.felnull.otyacraftengine.util.IKSGStyles;
+import red.felnull.imp.client.music.LocalFileMusicPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Paths;
 
 public class TestSoundItem extends Item {
     public TestSoundItem(Properties properties) {
         super(properties);
     }
 
-    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
-    private static final Style fontStyle = IKSGStyles.withFont(fontLocation);
-
-    public static List<ResourceLocation> locs = new ArrayList<>();
+    public static LocalFileMusicPlayer player = null;
 
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (worldIn.isRemote) {
-            YoutubeUtils.getVideoSearchResults(itemstack.getDisplayName().getString()).forEach(n -> playerIn.sendStatusMessage(new StringTextComponent("n.getSnippet().getTitle()"), false));
+            try {
+                if (player == null) {
+                    player = new LocalFileMusicPlayer(Paths.get("C:\\Users\\MORI\\Music\\playlist\\銀の龍の背に乗って  中島みゆき (Cover) [高音質] フル.mp3").toFile());
+                }
+
+                if (!playerIn.isSneaking()) {
+
+                    long time = 0;
+
+                    try {
+                        time = Long.valueOf(itemstack.getDisplayName().getString());
+                    } catch (Exception ex) {
+
+                    }
+
+                    player.play(time);
+                } else {
+                    player.stop();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
