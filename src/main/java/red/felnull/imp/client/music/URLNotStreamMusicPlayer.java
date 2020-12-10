@@ -3,39 +3,89 @@ package red.felnull.imp.client.music;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import red.felnull.imp.util.FFMPEGUtils;
 import red.felnull.imp.util.MusicUtils;
+import red.felnull.imp.util.PathUtil;
+import ws.schild.jave.Encoder;
+import ws.schild.jave.EncoderException;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
+import ws.schild.jave.encode.EncodingAttributes;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.SequenceInputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.UUID;
 
 public class URLNotStreamMusicPlayer implements IMusicPlayer {
-    private AdvancedPlayer player;
-    private long startPlayTime;
+    private static final long oneCovCutTime = 60 * 1000;
 
     private final URL inputURL;
     private final float frameSecond;
+    private final boolean isDirectly;
+    private final long duration;
+    private final URLStreamFileEnumeration streamEnumeration;
 
+    private AdvancedPlayer player;
+    private long startPlayTime;
+    private long startPosition;
+    private int cont;
+    private boolean stopRQ;
 
-    public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException {
-        this.frameSecond = MusicUtils.getMP3MillisecondPerFrame(url.openStream());
+    public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException {
+        MultimediaObject mo = FFMPEGUtils.createMultimediaObject(url);
+        this.isDirectly = mo.getInfo().getFormat().equals("mp3");
+        this.frameSecond = isDirectly ? MusicUtils.getMP3MillisecondPerFrame(url.openStream()) : 0;
+        this.duration = !isDirectly ? mo.getInfo().getDuration() : 0;
         this.inputURL = url;
+        this.streamEnumeration = new URLStreamFileEnumeration();
     }
 
 
     @Override
     public void play(long startMiliSecond) {
-        try {
-            int frame = (int) (startMiliSecond / frameSecond);
-            if (player == null) {
-                this.player = new AdvancedPlayer(new BufferedInputStream(inputURL.openStream()));
-                MusicPlayThread playThread = new MusicPlayThread(this, frame);
-                playThread.start();
+        this.startPosition = startMiliSecond;
+        if (isDirectly) {
+            try {
+                int frame = (int) (startMiliSecond / frameSecond);
+                if (player == null) {
+                    this.player = new AdvancedPlayer(inputURL.openStream());
+                    MusicPlayThread playThread = new MusicPlayThread(frame);
+                    playThread.start();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                this.player = null;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            this.player = null;
+        } else {
+            try {
+                if (player == null) {
+                    stopRQ = false;
+                    long alltime = duration - startMiliSecond;
+                    this.streamEnumeration.clear();
+                    String fristname = UUID.randomUUID().toString();
+                    boolean nextFlag = alltime - oneCovCutTime * 2 > oneCovCutTime;
+                    converting(inputURL, PathUtil.getClientTmpFolder().resolve(fristname), startMiliSecond, nextFlag ? oneCovCutTime : 0);
+                    if (stopRQ)
+                        return;
+                    streamEnumeration.add(new FileInputStream(PathUtil.getClientTmpFolder().resolve(fristname).toFile()));
+                    cont++;
+                    this.player = new AdvancedPlayer(new SequenceInputStream(streamEnumeration));
+                    MusicPlayThread playThread = new MusicPlayThread();
+                    playThread.start();
+                    if (nextFlag) {
+                        MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
+                        conversionThread.start();
+                    }
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                this.player = null;
+                this.streamEnumeration.clear();
+            }
         }
     }
 
@@ -43,6 +93,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     public void stop() {
         if (player != null) {
             player.close();
+            stopRQ = true;
         }
     }
 
@@ -57,27 +108,92 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         if (player == null)
             return 0;
 
-        return System.currentTimeMillis() - startPlayTime;
+        return System.currentTimeMillis() - startPlayTime + startPosition;
     }
 
     private class MusicPlayThread extends Thread {
-        private final URLNotStreamMusicPlayer Fplayer;
         private final int startMiliSecond;
 
-        public MusicPlayThread(URLNotStreamMusicPlayer Fplayer, int startMiliSecond) {
-            this.Fplayer = Fplayer;
+        public MusicPlayThread(int startMiliSecond) {
+            this.startMiliSecond = startMiliSecond;
+        }
+
+        public MusicPlayThread() {
+            this(0);
+        }
+
+        @Override
+        public void run() {
+            try {
+                startPlayTime = System.currentTimeMillis();
+                player.play(startMiliSecond, Integer.MAX_VALUE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                player = null;
+                streamEnumeration.clear();
+            }
+        }
+    }
+
+    private class MusicConversionThread extends Thread {
+        private final long startMiliSecond;
+
+        public MusicConversionThread(long startMiliSecond) {
             this.startMiliSecond = startMiliSecond;
         }
 
         @Override
         public void run() {
             try {
-                Fplayer.startPlayTime = System.currentTimeMillis();
-                Fplayer.player.play(startMiliSecond, Integer.MAX_VALUE);
-                Fplayer.player = null;
-            } catch (JavaLayerException e) {
-                e.printStackTrace();
+                String name = UUID.randomUUID().toString();
+                long off = oneCovCutTime * cont;
+                long alltime = duration - startMiliSecond - oneCovCutTime * cont;
+                sleep(off - oneCovCutTime / 2 - cureentElapsedTime());
+                if (!isPlaying())
+                    return;
+                cont++;
+                boolean nextFlag = alltime - oneCovCutTime > oneCovCutTime;
+                converting(inputURL, PathUtil.getClientTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
+                if (!isPlaying())
+                    return;
+                streamEnumeration.add(new FileInputStream(PathUtil.getClientTmpFolder().resolve(name).toFile()));
+                if (nextFlag) {
+                    MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
+                    conversionThread.start();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
+
+    public static void converting(URL url, Path outPath, long offset, long duration) {
+        try {
+            float offsetF = (float) offset / 1000f;
+            float durationF = (float) duration / 1000f;
+
+            AudioAttributes audio = new AudioAttributes();
+            audio.setCodec("libmp3lame");
+            audio.setBitRate(128000);
+            audio.setChannels(1);
+            audio.setSamplingRate(44100);
+
+            EncodingAttributes attrs = new EncodingAttributes();
+            attrs.setOutputFormat("mp3");
+            attrs.setAudioAttributes(audio);
+
+            if (offset != 0)
+                attrs.setOffset(offsetF);
+
+            if (duration != 0)
+                attrs.setDuration(durationF);
+
+            Encoder encoder = new Encoder();
+            encoder.encode(FFMPEGUtils.createMultimediaObject(url), outPath.toFile(), attrs);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }

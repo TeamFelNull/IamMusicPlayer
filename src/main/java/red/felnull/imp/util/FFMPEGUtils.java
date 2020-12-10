@@ -1,6 +1,7 @@
 package red.felnull.imp.util;
 
 import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.encode.AudioAttributes;
 
 import java.io.File;
 import java.net.URL;
@@ -16,4 +17,7 @@ public class FFMPEGUtils {
 
         return new MultimediaObject(file);
     }
+
+
+
 }

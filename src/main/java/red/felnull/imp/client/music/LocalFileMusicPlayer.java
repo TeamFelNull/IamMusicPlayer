@@ -11,6 +11,7 @@ import java.io.*;
 public class LocalFileMusicPlayer implements IMusicPlayer {
     private AdvancedPlayer player;
     private long startPlayTime;
+    private long startPosition;
 
     private final File inputFile;
     private final float frameSecond;
@@ -29,7 +30,8 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
         try {
             int frame = (int) (startMiliSecond / frameSecond);
             if (player == null) {
-                this.player = new AdvancedPlayer(new BufferedInputStream(new FileInputStream(inputFile)));
+                this.startPosition = startMiliSecond;
+                this.player = new AdvancedPlayer(new FileInputStream(inputFile));
                 MusicPlayThread playThread = new MusicPlayThread(this, frame);
                 playThread.start();
             }
@@ -56,7 +58,7 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
         if (player == null)
             return 0;
 
-        return System.currentTimeMillis() - startPlayTime;
+        return System.currentTimeMillis() - startPlayTime + startPosition;
     }
 
     private class MusicPlayThread extends Thread {

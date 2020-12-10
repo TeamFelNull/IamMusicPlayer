@@ -1,5 +1,9 @@
 package red.felnull.imp.client.util;
 
+import com.github.kiulian.downloader.YoutubeDownloader;
+import com.github.kiulian.downloader.YoutubeException;
+import com.github.kiulian.downloader.model.YoutubeVideo;
+import com.github.kiulian.downloader.model.formats.AudioVideoFormat;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -72,6 +76,13 @@ public class YoutubeUtils {
     public static String getYoutubeIDFromURL(String url) {
         String[] ur = url.split("=");
         return ur[ur.length - 1];
+    }
+
+    public static String getYoutubeMa4DirectLink(String videoID) throws YoutubeException {
+        YoutubeDownloader yd = new YoutubeDownloader();
+        YoutubeVideo yv = yd.getVideo(videoID);
+        AudioVideoFormat videoFormats = yv.videoWithAudioFormats().get(0);
+        return videoFormats.url();
     }
 
     public static class YoutubeThumbnailThread extends Thread {

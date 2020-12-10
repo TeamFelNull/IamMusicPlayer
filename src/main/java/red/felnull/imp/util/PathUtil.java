@@ -7,15 +7,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PathUtil {
+    public static Path getClientIMPFolder() {
+        return Paths.get(IamMusicPlayer.MODID);
+    }
+
     public static Path getClientTmpFolder() {
-        return Paths.get(IamMusicPlayer.MODID).resolve("tmp");
+        return getClientIMPFolder().resolve("tmp");
+    }
+
+    public static Path getWorldIMPFolder() {
+        return IKSGPathUtil.getWorldSaveDataPath().resolve(IamMusicPlayer.MODID);
     }
 
     public static Path getWorldTmpFolder() {
-        return IKSGPathUtil.getWorldSaveDataPath().resolve(IamMusicPlayer.MODID).resolve("tmp");
+        return getWorldIMPFolder().resolve("tmp");
     }
 
     public static Path getWorldMusicFolder() {
-        return IKSGPathUtil.getWorldSaveDataPath().resolve(IamMusicPlayer.MODID).resolve("music");
+        return getWorldIMPFolder().resolve("music");
     }
 }
