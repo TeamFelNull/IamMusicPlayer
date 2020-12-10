@@ -1,10 +1,12 @@
 package red.felnull.imp.client.gui.screen;
 
+import com.github.kiulian.downloader.YoutubeException;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import javazoom.jl.decoder.BitstreamException;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -18,6 +20,8 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.gui.widget.*;
+import red.felnull.imp.client.music.IMusicPlayer;
+import red.felnull.imp.client.music.YoutubeMusicPlayer;
 import red.felnull.imp.client.util.FileUtils;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.client.util.YoutubeUtils;
@@ -37,17 +41,20 @@ import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
 import red.felnull.otyacraftengine.client.gui.widget.Checkbox;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.StringImageButton;
+import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 import red.felnull.otyacraftengine.util.*;
 import ws.schild.jave.Encoder;
+import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,6 +95,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private boolean musicLoading;
     private MusicLoadResult musicLoadResult;
     //   public UploadLocation uploadLocation;
+    private IMusicPlayer musicPlayer;
+    private boolean musicPlayLoading;
+
     private Monitors Monitorsa;
     private MusicSourceClientReferencesType musicSourceClientReferencesType;
     private String formattype;
@@ -243,7 +253,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             FileUtils.openFileChoser(I18n.format("msd.openImageFile"), file -> {
                 if (file != null && this.isOpend() && isMonitor(Monitors.ADDPLAYMUSIC1)) {
                     if (file != null && this.isOpend() && isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && !file.isDirectory()) {
-                        DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(true, this, file.toPath());
+                        DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(true, file.toPath());
                         lt.start();
                         //    ImageFileChooser.setInitialDirectory(file.getParentFile());
                     }
@@ -346,7 +356,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 if (musicSourceClientReferencesType != MusicSourceClientReferencesType.YOUTUBE || YoutubeUtils.isYoutubeURL(n)) {
                     if (this.sourceCheckThread != null)
                         this.sourceCheckThread.setStop(true);
-                    this.sourceCheckThread = new SourceCheckThread(this, n);
+                    this.sourceCheckThread = new SourceCheckThread(n);
                     this.sourceCheckThread.start();
                 }
             }
@@ -506,7 +516,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusicYoutubeSearchButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 102 + 29, getMonitorStartY() + 12, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
             if (this.youtubeSearchThread != null)
                 youtubeSearchThread.stop = true;
-            youtubeSearchThread = new YoutubeSearchThread(this, addPlayMusicYoutubeSearchField.getText());
+            youtubeSearchThread = new YoutubeSearchThread(addPlayMusicYoutubeSearchField.getText());
             youtubeSearchThread.start();
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchButton, false);
@@ -514,17 +524,27 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.addPlayMusicYoutubeSearchFileListButton = this.addWidgetByIKSG(new YoutubeSearchResultScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 28, 187, 93, 40, addPlayMusicYoutubeSearchlistbar, this, (n, m) -> {
             AudioTrack at = youtubeResilts.get(m);
-            if (!at.getInfo().isStream) {
-                removePictuerPath();
-                setImage(PlayImage.ImageType.URLIMAGE, YoutubeUtils.getThumbnailURL(at.getIdentifier()));
-                addPlayMusicSourceField.setText(at.getInfo().identifier);
-                addPlayMusicNameField.setText(at.getInfo().title);
-                addPlayMusicArtistField.setText(at.getInfo().author);
-                this.musicLoadResult = MusicLoadResult.AVAILABLE;
-                this.formattype = "Youtube";
-                insMode(Monitors.ADDPLAYMUSIC1);
+            if (IKSGClientUtil.isKeyInput(getMinecraft().gameSettings.keyBindSneak, false)) {
+                try {
+                    MusicPlayThread mpt = new MusicPlayThread(new YoutubeMusicPlayer(at.getInfo().identifier), 0);
+                    mpt.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
-                setMusicLoadError(MusicLoadResult.STREAM);
+
+                if (!at.getInfo().isStream) {
+                    removePictuerPath();
+                    setImage(PlayImage.ImageType.URLIMAGE, YoutubeUtils.getThumbnailURL(at.getIdentifier()));
+                    addPlayMusicSourceField.setText(at.getInfo().identifier);
+                    addPlayMusicNameField.setText(at.getInfo().title);
+                    addPlayMusicArtistField.setText(at.getInfo().author);
+                    this.musicLoadResult = MusicLoadResult.AVAILABLE;
+                    this.formattype = "Youtube";
+                    insMode(Monitors.ADDPLAYMUSIC1);
+                } else {
+                    setMusicLoadError(MusicLoadResult.STREAM);
+                }
             }
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, false);
@@ -533,7 +553,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
                 Path picPath = getPicturPath();
                 if (picPath != null) {
-                    DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, this, picPath);
+                    DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, picPath);
                     plt.start();
                 } else {
                     removePictuerPath();
@@ -722,7 +742,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         if (isSlectedMonitor(moniter, Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1)) {
             Path picPath = getPicturPath();
             if (picPath != null) {
-                DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, this, picPath);
+                DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, picPath);
                 plt.start();
             }
         }
@@ -735,6 +755,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             //       this.uploadLocation = null;
             this.formattype = "";
         }
+
+        MusicPlayThread spt = new MusicPlayThread(null, 0);
+        spt.start();
     }
 
     private void updatePlayList() {
@@ -975,7 +998,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     public void dropAndDragByIKSG(List<Path> dragFiles) {
         if (isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1, Monitors.ADDPLAYMUSICYOUTUBESELECT)) {
             if (dragFiles.size() == 1 && !pictuerLoading) {
-                DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(false, this, dragFiles.get(0));
+                DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(false, dragFiles.get(0));
                 lt.start();
             }
         }
@@ -984,6 +1007,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     @Override
     public void onCloseByIKSG() {
         super.onCloseByIKSG();
+        MusicPlayThread mpt = new MusicPlayThread(null, 0);
+        mpt.start();
     }
 
     @Override
@@ -1032,6 +1057,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         tag.putString("path", path.toString());
         instruction("pathset", tag);
     }
+
 
     public void setMusicLoadError(MusicLoadResult musicLoadError) {
         this.musicLoadResult = musicLoadError;
@@ -1104,19 +1130,18 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         GITHUB
     }
 
-    private static class DropAndDragFileLoadThread extends Thread {
-        private final MusicSharingDeviceScreen screen;
+    private class DropAndDragFileLoadThread extends Thread {
         private final Path path;
         private final boolean pictuerOnry;
 
-        public DropAndDragFileLoadThread(boolean pictueronry, MusicSharingDeviceScreen screen, Path path) {
-            this.screen = screen;
+        public DropAndDragFileLoadThread(boolean pictueronry, Path path) {
+
             this.path = path;
             this.pictuerOnry = pictueronry;
         }
 
         public void run() {
-            screen.pictuerLoading = true;
+            pictuerLoading = true;
             boolean nopicteur = false;
             try {
                 BufferedImage bfi = IKSGPictuerUtil.getBffImage(path);
@@ -1137,34 +1162,32 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                         ah = size;
                     }
                     BufferedImage outbfi = IKSGPictuerUtil.resize(bfi, aw, ah);
-                    if (IKSGScreenUtil.isOpendScreen(screen))
-                        screen.setPicturImage(IKSGPictuerUtil.geByteImage(outbfi), path);
+                    if (isOpend())
+                        setPicturImage(IKSGPictuerUtil.geByteImage(outbfi), path);
                 } else {
                     nopicteur = true;
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            screen.pictuerLoading = false;
+            pictuerLoading = false;
 
             if (pictuerOnry)
                 return;
 
             if (nopicteur) {
-                screen.musicLoadResult = null;
-                screen.setMusicSourceClientReferencesType(MusicSourceClientReferencesType.LOCAL_FILE);
-                screen.addPlayMusicSourceField.setText(path.toString());
+                musicLoadResult = null;
+                setMusicSourceClientReferencesType(MusicSourceClientReferencesType.LOCAL_FILE);
+                addPlayMusicSourceField.setText(path.toString());
             }
         }
     }
 
-    private static class SourceCheckThread extends Thread {
-        private final MusicSharingDeviceScreen screen;
+    private class SourceCheckThread extends Thread {
         private final String source;
         private boolean stop;
 
-        public SourceCheckThread(MusicSharingDeviceScreen screen, String source) {
-            this.screen = screen;
+        public SourceCheckThread(String source) {
             this.source = source;
         }
 
@@ -1182,16 +1205,16 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (this.stop || source.isEmpty())
                 return;
 
-            screen.musicLoading = true;
-            screen.musicLoadResult = null;
+            musicLoading = true;
+            musicLoadResult = null;
 
-            if (screen.getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.LOCAL_FILE) {
+            if (getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.LOCAL_FILE) {
                 try {
                     Path path = Paths.get(source);
                     if (!path.toFile().exists()) {
                         if (!this.stop) {
-                            screen.musicLoadResult = MusicLoadResult.FILE_NOT_EXIST;
-                            screen.musicLoading = false;
+                            musicLoadResult = MusicLoadResult.FILE_NOT_EXIST;
+                            musicLoading = false;
                         }
                         return;
                     }
@@ -1207,79 +1230,79 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                                 if (id3v2 != null) {
                                     if (id3v2.getTitle() != null) {
                                         if (!this.stop)
-                                            screen.addPlayMusicNameField.setText(id3v2.getTitle());
+                                            addPlayMusicNameField.setText(id3v2.getTitle());
                                     } else {
                                         if (!this.stop)
-                                            screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
+                                            addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
                                     }
                                     if (id3v2.getArtist() != null) {
                                         if (!this.stop)
-                                            screen.addPlayMusicArtistField.setText(id3v2.getArtist());
+                                            addPlayMusicArtistField.setText(id3v2.getArtist());
                                     } else {
                                         if (!this.stop)
-                                            screen.addPlayMusicArtistField.setText("");
+                                            addPlayMusicArtistField.setText("");
                                     }
                                     if (id3v2.getAlbum() != null) {
                                         if (!this.stop)
-                                            screen.addPlayMusicAlbumField.setText(id3v2.getAlbum());
+                                            addPlayMusicAlbumField.setText(id3v2.getAlbum());
                                     } else {
                                         if (!this.stop)
-                                            screen.addPlayMusicAlbumField.setText("");
+                                            addPlayMusicAlbumField.setText("");
                                     }
                                     if (id3v2.getYear() != null) {
                                         if (!this.stop)
-                                            screen.addPlayMusicYearField.setText(id3v2.getYear());
+                                            addPlayMusicYearField.setText(id3v2.getYear());
                                     } else {
                                         if (!this.stop)
-                                            screen.addPlayMusicYearField.setText("");
+                                            addPlayMusicYearField.setText("");
                                     }
                                     if (id3v2.getGenreDescription() != null) {
                                         if (!this.stop)
-                                            screen.addPlayMusicGenreField.setText(id3v2.getGenreDescription());
+                                            addPlayMusicGenreField.setText(id3v2.getGenreDescription());
                                     } else {
                                         if (!this.stop)
-                                            screen.addPlayMusicGenreField.setText("");
+                                            addPlayMusicGenreField.setText("");
                                     }
                                     if (id3v2.getAlbumImage() != null) {
                                         String uuid = UUID.randomUUID().toString();
                                         IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtil.getClientTmpFolder().resolve(uuid));
                                         if (!this.stop) {
-                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, screen, PathUtil.getClientTmpFolder().resolve(uuid));
+                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, PathUtil.getClientTmpFolder().resolve(uuid));
                                             plt.start();
                                         }
                                     }
                                 } else {
                                     if (!this.stop)
-                                        screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
+                                        addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
                                 }
                             } else {
                                 if (!this.stop)
-                                    screen.addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
+                                    addPlayMusicNameField.setText(IKSGStringUtil.deleteExtension(path.toFile().getName()));
                             }
                             if (!this.stop)
-                                screen.formattype = info.getFormat();
+                                formattype = info.getFormat();
                         } else {
                             if (!this.stop) {
-                                screen.musicLoadResult = MusicLoadResult.NO_SUPPORT_FORMAT;
-                                screen.musicLoading = false;
+                                musicLoadResult = MusicLoadResult.NO_SUPPORT_FORMAT;
+                                musicLoading = false;
                             }
                             return;
                         }
                     } catch (Exception ex) {
                         if (!this.stop) {
-                            screen.musicLoadResult = MusicLoadResult.NO_SUPPORT_FORMAT;
-                            screen.musicLoading = false;
+                            musicLoadResult = MusicLoadResult.NO_SUPPORT_FORMAT;
+                            musicLoading = false;
                         }
                         return;
                     }
                 } catch (Exception ex) {
                     if (!this.stop) {
-                        screen.musicLoadResult = MusicLoadResult.FILE_NOT_EXIST;
-                        screen.musicLoading = false;
+                        musicLoadResult = MusicLoadResult.FILE_NOT_EXIST;
+                        musicLoading = false;
                     }
                     return;
                 }
-            } else if (screen.getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.URL) {
+            } else if (getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.URL) {
                 try {
                     URL url = new URL(source);
                     MultimediaObject mo = new MultimediaObject(url);
@@ -1288,51 +1311,49 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                     if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(info.getFormat())) {
                         if (info.getDuration() == -1) {
                             if (!this.stop) {
-                                screen.musicLoadResult = MusicLoadResult.STREAM;
-                                screen.musicLoading = false;
+                                musicLoadResult = MusicLoadResult.STREAM;
+                                musicLoading = false;
                             }
                             return;
                         }
                         if (!this.stop) {
-                            screen.formattype = info.getFormat();
+                            formattype = info.getFormat();
                         }
                     } else {
                         if (!this.stop) {
-                            screen.musicLoadResult = MusicLoadResult.NO_SUPPORT_FORMAT;
-                            screen.musicLoading = false;
+                            musicLoadResult = MusicLoadResult.NO_SUPPORT_FORMAT;
+                            musicLoading = false;
                         }
                         return;
                     }
                 } catch (Exception ex) {
                     if (!this.stop) {
-                        screen.musicLoadResult = MusicLoadResult.INVALID_URL;
-                        screen.musicLoading = false;
+                        musicLoadResult = MusicLoadResult.INVALID_URL;
+                        musicLoading = false;
                     }
                     return;
                 }
-            } else if (screen.getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.YOUTUBE) {
+            } else if (getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.YOUTUBE) {
                 if (YoutubeUtils.isYoutubeURL(source)) {
-                    screen.addPlayMusicSourceField.setText(YoutubeUtils.getYoutubeIDFromURL(source));
-                    screen.formattype = "Youtube";
+                    addPlayMusicSourceField.setText(YoutubeUtils.getYoutubeIDFromURL(source));
+                    formattype = "Youtube";
                 }
             }
 
             if (!this.stop) {
-                screen.musicLoadResult = MusicLoadResult.AVAILABLE;
-                screen.musicLoading = false;
+                musicLoadResult = MusicLoadResult.AVAILABLE;
+                musicLoading = false;
             }
         }
 
     }
 
-    private static class YoutubeSearchThread extends Thread {
-        private final MusicSharingDeviceScreen screen;
+    private class YoutubeSearchThread extends Thread {
         private final String searchText;
         private boolean stop;
 
 
-        public YoutubeSearchThread(MusicSharingDeviceScreen screen, String searchText) {
-            this.screen = screen;
+        public YoutubeSearchThread(String searchText) {
             this.searchText = searchText;
         }
 
@@ -1340,14 +1361,42 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (this.stop || searchText.isEmpty())
                 return;
 
-            screen.youtubeSearchLoading = true;
-            screen.youtubeResilts.clear();
+            youtubeSearchLoading = true;
+            youtubeResilts.clear();
             IamMusicPlayer.LOGGER.info("Youtube Search: " + searchText);
             List<AudioTrack> list = YoutubeUtils.getVideoSearchResults(searchText);
             IamMusicPlayer.LOGGER.info("Youtube Search Finished: " + searchText);
             if (!this.stop)
-                screen.youtubeResilts.addAll(list);
-            screen.youtubeSearchLoading = false;
+                youtubeResilts.addAll(list);
+            youtubeSearchLoading = false;
+        }
+    }
+
+    private class MusicPlayThread extends Thread {
+        private final long startTime;
+        private final IMusicPlayer musicPlayera;
+
+        public MusicPlayThread(IMusicPlayer musicPlayer, long time) {
+            this.startTime = time;
+            this.musicPlayera = musicPlayer;
+        }
+
+        public void run() {
+            if (musicPlayera != null) {
+                if (musicPlayLoading)
+                    return;
+                musicPlayLoading = true;
+                if (musicPlayer != null && musicPlayer.isPlaying()) {
+                    musicPlayer.stop();
+                }
+                musicPlayer = this.musicPlayera;
+                musicPlayer.play(startTime);
+                musicPlayLoading = false;
+            } else {
+                if (musicPlayer != null && musicPlayer.isPlaying()) {
+                    musicPlayer.stop();
+                }
+            }
         }
     }
 }

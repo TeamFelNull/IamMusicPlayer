@@ -6,6 +6,7 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import red.felnull.imp.util.FFMPEGUtils;
 import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtil;
+import red.felnull.otyacraftengine.util.IKSGMath;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
@@ -64,10 +65,11 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             try {
                 if (player == null) {
                     stopRQ = false;
+                    cont = 0;
                     long alltime = duration - startMiliSecond;
                     this.streamEnumeration.clear();
                     String fristname = UUID.randomUUID().toString();
-                    boolean nextFlag = alltime - oneCovCutTime * 2 > oneCovCutTime;
+                    boolean nextFlag = duration - startMiliSecond > 60;
                     converting(inputURL, PathUtil.getClientTmpFolder().resolve(fristname), startMiliSecond, nextFlag ? oneCovCutTime : 0);
                     if (stopRQ)
                         return;
@@ -149,11 +151,13 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                 String name = UUID.randomUUID().toString();
                 long off = oneCovCutTime * cont;
                 long alltime = duration - startMiliSecond - oneCovCutTime * cont;
-                sleep(off - oneCovCutTime / 2 - cureentElapsedTime());
+                long wait = off - oneCovCutTime / 2 - cureentElapsedTime();
+                if (wait >= 0)
+                    sleep(wait);
                 if (!isPlaying())
                     return;
                 cont++;
-                boolean nextFlag = alltime - oneCovCutTime > oneCovCutTime;
+                boolean nextFlag = alltime - oneCovCutTime * cont > 60;
                 converting(inputURL, PathUtil.getClientTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
                 if (!isPlaying())
                     return;

@@ -144,7 +144,9 @@ shadowJar {
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -167,6 +169,9 @@ task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -189,6 +194,9 @@ task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -211,6 +219,9 @@ task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -233,6 +244,9 @@ task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -255,6 +269,9 @@ task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -277,6 +294,9 @@ task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
     relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
 
 afterEvaluate {
