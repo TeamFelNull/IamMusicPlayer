@@ -25,8 +25,8 @@ public class TestSoundItem extends Item {
         if (worldIn.isRemote) {
             try {
                 if (player == null) {
-                    player = new LocalFileMusicPlayer(Paths.get("C:\\Users\\MORI\\Music\\playlist\\銀の龍の背に乗って  中島みゆき (Cover) [高音質] フル.mp3").toFile());
-                    //  player = new URLNotStreamMusicPlayer(new URL("https://www.dropbox.com/s/l3bwr7yc53x70kl/nyan.mp3?dl=1"));
+                    //   player = new LocalFileMusicPlayer(Paths.get("C:\\Users\\MORI\\Music\\playlist\\銀の龍の背に乗って  中島みゆき (Cover) [高音質] フル.mp3").toFile());
+                    player = new URLNotStreamMusicPlayer(new URL("https://www.dropbox.com/s/l3bwr7yc53x70kl/nyan.mp3?dl=1"));
                 }
 
                 if (!playerIn.isSneaking()) {
