@@ -9,12 +9,13 @@ import red.felnull.imp.util.MusicUtils;
 import java.io.*;
 
 public class LocalFileMusicPlayer implements IMusicPlayer {
+    private final File inputFile;
+    private final float frameSecond;
+    private final long duration;
+
     private AdvancedPlayer player;
     private long startPlayTime;
     private long startPosition;
-
-    private final File inputFile;
-    private final float frameSecond;
 
     public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException {
 
@@ -23,6 +24,7 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
 
         this.frameSecond = MusicUtils.getMP3MillisecondPerFrame(file);
         this.inputFile = file;
+        this.duration = MusicUtils.getMP3MillisecondDuration(file);
     }
 
     @Override
@@ -54,11 +56,21 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public long cureentElapsedTime() {
+    public long getCureentElapsed() {
         if (player == null)
             return 0;
 
         return System.currentTimeMillis() - startPlayTime + startPosition;
+    }
+
+    @Override
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
+    public Object getMusicSource() {
+        return inputFile;
     }
 
     private class MusicPlayThread extends Thread {

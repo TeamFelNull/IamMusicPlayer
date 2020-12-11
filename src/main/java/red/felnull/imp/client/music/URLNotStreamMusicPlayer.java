@@ -106,11 +106,21 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public long cureentElapsedTime() {
+    public long getCureentElapsed() {
         if (player == null)
             return 0;
 
         return System.currentTimeMillis() - startPlayTime + startPosition;
+    }
+
+    @Override
+    public long getDuration() {
+        return duration;
+    }
+
+    @Override
+    public Object getMusicSource() {
+        return inputURL;
     }
 
     private class MusicPlayThread extends Thread {
@@ -151,7 +161,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                 String name = UUID.randomUUID().toString();
                 long off = oneCovCutTime * cont;
                 long alltime = duration - startMiliSecond - oneCovCutTime * cont;
-                long wait = off - oneCovCutTime / 2 - cureentElapsedTime();
+                long wait = off - oneCovCutTime / 2 - getCureentElapsed();
                 if (wait >= 0)
                     sleep(wait);
                 if (!isPlaying())

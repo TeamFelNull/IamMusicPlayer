@@ -1,12 +1,10 @@
 package red.felnull.imp.client.gui.screen;
 
-import com.github.kiulian.downloader.YoutubeException;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import javazoom.jl.decoder.BitstreamException;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -54,7 +52,6 @@ import ws.schild.jave.info.MultimediaInfo;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -95,7 +92,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private boolean musicLoading;
     private MusicLoadResult musicLoadResult;
     //   public UploadLocation uploadLocation;
-    private IMusicPlayer musicPlayer;
+    public IMusicPlayer musicPlayer;
     private boolean musicPlayLoading;
 
     private Monitors Monitorsa;
@@ -525,12 +522,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusicYoutubeSearchFileListButton = this.addWidgetByIKSG(new YoutubeSearchResultScrollListButton(getMonitorStartX() + 1, getMonitorStartY() + 28, 187, 93, 40, addPlayMusicYoutubeSearchlistbar, this, (n, m) -> {
             AudioTrack at = youtubeResilts.get(m);
             if (IKSGClientUtil.isKeyInput(getMinecraft().gameSettings.keyBindSneak, false)) {
-                try {
-                    MusicPlayThread mpt = new MusicPlayThread(new YoutubeMusicPlayer(at.getInfo().identifier), 0);
-                    mpt.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                playYoutubeMusic(at.getInfo().identifier);
             } else {
 
                 if (!at.getInfo().isStream) {
@@ -632,7 +624,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.createGuildNameField, isMonitor(Monitors.CREATEPLAYLIST));
         IKSGScreenUtil.setVisible(this.backGuid, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1));
         IKSGScreenUtil.setVisible(this.createGuid, isMonitor(Monitors.CREATEPLAYLIST));
-        IKSGScreenUtil.setVisible(this.resetImage, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && image != null && image.getImageType() == PlayImage.ImageType.IMGAE);
+        IKSGScreenUtil.setVisible(this.resetImage, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && image != null && image.getImageType() != PlayImage.ImageType.STRING);
         IKSGScreenUtil.setVisible(this.openImage, isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && canOpenFileChooser);
         IKSGScreenUtil.setVisible(this.createAnyoneCheckbox, isMonitor(Monitors.CREATEPLAYLIST));
         IKSGScreenUtil.setActive(this.createGuid, image != null && !createGuildNameField.getText().isEmpty());
@@ -756,8 +748,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             this.formattype = "";
         }
 
-        MusicPlayThread spt = new MusicPlayThread(null, 0);
-        spt.start();
+        stopPlayMusic();
     }
 
     private void updatePlayList() {
@@ -848,7 +839,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     protected void drawAddPlayMusicYoutubeSelect(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
-        drawFontString(matrx, new TranslationTextComponent("msd.addplaymusicsourceslect"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        drawFontString(matrx, new TranslationTextComponent("msd.youtubesearch"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         IKSGRenderUtil.guiBindAndBlit(YOUTUBE_ICON, matrx, getMonitorStartX() + 2, getMonitorStartY() + 16, 0, 0, 27, 7, 27, 7);
         addPlayMusicYoutubeSearchField.render(matrx, mouseX, mouseY, partTick);
     }
@@ -1007,8 +998,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     @Override
     public void onCloseByIKSG() {
         super.onCloseByIKSG();
-        MusicPlayThread mpt = new MusicPlayThread(null, 0);
-        mpt.start();
+        stopPlayMusic();
     }
 
     @Override
@@ -1061,6 +1051,19 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     public void setMusicLoadError(MusicLoadResult musicLoadError) {
         this.musicLoadResult = musicLoadError;
+    }
+
+    public void playYoutubeMusic(String videoID) {
+        MusicPlayThread mpt = new MusicPlayThread(MusicSourceClientReferencesType.YOUTUBE, videoID, 0);
+        mpt.start();
+    }
+
+    public void stopPlayMusic() {
+        if (musicPlayer != null) {
+            if (musicPlayer.isPlaying())
+                musicPlayer.stop();
+            musicPlayer = null;
+        }
     }
 
     private enum Monitors {
@@ -1374,28 +1377,29 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     private class MusicPlayThread extends Thread {
         private final long startTime;
-        private final IMusicPlayer musicPlayera;
+        private final MusicSourceClientReferencesType type;
+        private final String src;
 
-        public MusicPlayThread(IMusicPlayer musicPlayer, long time) {
+        public MusicPlayThread(MusicSourceClientReferencesType type, String src, long time) {
             this.startTime = time;
-            this.musicPlayera = musicPlayer;
+            this.type = type;
+            this.src = src;
         }
 
         public void run() {
-            if (musicPlayera != null) {
+            try {
                 if (musicPlayLoading)
                     return;
                 musicPlayLoading = true;
                 if (musicPlayer != null && musicPlayer.isPlaying()) {
                     musicPlayer.stop();
                 }
-                musicPlayer = this.musicPlayera;
+                musicPlayer = type == MusicSourceClientReferencesType.YOUTUBE ? new YoutubeMusicPlayer(src) : null;
                 musicPlayer.play(startTime);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
                 musicPlayLoading = false;
-            } else {
-                if (musicPlayer != null && musicPlayer.isPlaying()) {
-                    musicPlayer.stop();
-                }
             }
         }
     }

@@ -22,4 +22,9 @@ public class MusicUtils {
         Mp3File mfile = new Mp3File(file);
         return (float) mfile.getLengthInMilliseconds() / (float) mfile.getFrameCount();
     }
+
+    public static long getMP3MillisecondDuration(File file) throws InvalidDataException, IOException, UnsupportedTagException {
+        Mp3File mfile = new Mp3File(file);
+        return mfile.getLengthInMilliseconds();
+    }
 }

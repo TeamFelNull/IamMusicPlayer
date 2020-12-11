@@ -7,6 +7,10 @@ public interface IMusicPlayer {
 
     boolean isPlaying();
 
-    long cureentElapsedTime();
+    long getCureentElapsed();
+
+    long getDuration();
+
+    Object getMusicSource();
 
 }

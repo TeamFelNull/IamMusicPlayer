@@ -5,6 +5,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
+import red.felnull.imp.client.music.IMusicPlayer;
+import red.felnull.imp.client.music.YoutubeMusicPlayer;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.client.util.YoutubeUtils;
 import red.felnull.imp.musicplayer.PlayImage;
@@ -25,19 +27,29 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
         IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x, y + upOver, 48, upOver, 187, 40 - downOver, 256, 256);
         AudioTrack pl = screen.youtubeResilts.get(num);
 
+        Minecraft minecraft = Minecraft.getInstance();
+        FontRenderer fontrenderer = minecraft.fontRenderer;
+        if (upOver < 13 && downOver <= 37) {
+            IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, pl.getInfo().title, "imp.msdfc." + pl.hashCode() + " file.hashCode()", 30, x + 41, y + 3, 133, 30, MusicSharingDeviceScreen.fontStyle);
+        }
+
         int upzure = 1 < upOver ? upOver - 1 : 0;
         int downzure = 1 < downOver ? downOver - 1 : 0;
         RenderUtil.drwPlayImage(matrix, new PlayImage(PlayImage.ImageType.URLIMAGE, YoutubeUtils.getThumbnailURL(pl.getInfo().identifier)), x + 2, y + 2, 36, upzure, downzure);
 
-        Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        if (upOver < 13 && downOver <= 37) {
-            IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, pl.getInfo().title, "imp.msdfc." + pl.hashCode() + " file.hashCode()", 30, x + 53, y + 3, 131, 30, MusicSharingDeviceScreen.fontStyle);
+        int fupzure = 29 < upOver ? upOver - 29 : 0;
+        int fdownzure = 3 < downOver ? downOver - 3 : 0;
+        IMusicPlayer player = screen.musicPlayer;
+        if (player instanceof YoutubeMusicPlayer && player.isPlaying()) {
+            String playingVideoID = (String) player.getMusicSource();
+            if (playingVideoID.equals(pl.getIdentifier())) {
+                IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 41, y + 29 + fupzure, 14, 30 + fupzure, 8, 8 - fupzure - fdownzure, 256, 256);
+                IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 80 + fupzure, 134, 8 - fupzure - fdownzure, 256, 256);
+                int gagePar = (int) (134f * ((float) player.getCureentElapsed() / (float) player.getDuration()));
+                IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 88 + fupzure, gagePar, 8 - fupzure - fdownzure, 256, 256);
+            }
         }
-        int fupzure = 27 < upOver ? upOver - 27 : 0;
-        int fdownzure = 5 < downOver ? downOver - 5 : 0;
-        //  String chanelImageURL= YoutubeData.getYoutube().channels().list("").
-        //pl.getSnippet().getChannelId()
+
     }
 
     @Override
