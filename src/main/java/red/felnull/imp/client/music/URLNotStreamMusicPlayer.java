@@ -35,6 +35,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private long startPosition;
     private int cont;
     private boolean stopRQ;
+    private boolean stop;
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException {
         MultimediaObject mo = FFMPEGUtils.createMultimediaObject(url);
@@ -49,6 +50,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     @Override
     public void play(long startMiliSecond) {
         this.startPosition = startMiliSecond;
+        stop = false;
         if (isDirectly) {
             try {
                 int frame = (int) (startMiliSecond / frameSecond);
@@ -66,7 +68,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                 if (player == null) {
                     stopRQ = false;
                     cont = 0;
-                    long alltime = duration - startMiliSecond;
                     this.streamEnumeration.clear();
                     String fristname = UUID.randomUUID().toString();
                     boolean nextFlag = duration - startMiliSecond > 60;
@@ -93,6 +94,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
 
     @Override
     public void stop() {
+        stop = true;
         if (player != null) {
             player.close();
             stopRQ = true;
@@ -137,13 +139,16 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         @Override
         public void run() {
             try {
-                startPlayTime = System.currentTimeMillis();
-                player.play(startMiliSecond, Integer.MAX_VALUE);
+                if (!stop) {
+                    startPlayTime = System.currentTimeMillis();
+                    player.play(startMiliSecond, Integer.MAX_VALUE);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
                 player = null;
                 streamEnumeration.clear();
+                stop = false;
             }
         }
     }
@@ -196,10 +201,8 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             EncodingAttributes attrs = new EncodingAttributes();
             attrs.setOutputFormat("mp3");
             attrs.setAudioAttributes(audio);
-
             if (offset != 0)
                 attrs.setOffset(offsetF);
-
             if (duration != 0)
                 attrs.setDuration(durationF);
 

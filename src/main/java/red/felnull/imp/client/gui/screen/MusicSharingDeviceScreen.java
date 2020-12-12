@@ -19,7 +19,6 @@ import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.gui.widget.*;
 import red.felnull.imp.client.music.IMusicPlayer;
-import red.felnull.imp.client.music.YoutubeMusicPlayer;
 import red.felnull.imp.client.util.FileUtils;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.client.util.YoutubeUtils;
@@ -215,7 +214,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.guildButtons, false);
 
         this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, playlistbar, currentPlaylistsMusics, (n, m) -> {
-
+            PlayMusic music = currentPlaylistsMusics.get(m);
+            playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
         }));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
 
@@ -456,8 +456,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.addPlayMusic2BackButton.setStringColor(0);
         IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, false);
         this.addPlayMusic2CrateButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            PlayLocation.LocationType pl = musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE ? PlayLocation.LocationType.WORLD_FILE : musicSourceClientReferencesType == MusicSourceClientReferencesType.YOUTUBE ? PlayLocation.LocationType.YOUTUBE : PlayLocation.LocationType.URL;
-            PlayLocation location = new PlayLocation(pl, musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE ? UUID.randomUUID().toString() : this.addPlayMusicSourceField.getText());
+            PlayLocation location = new PlayLocation(musicSourceClientReferencesType.getLocationType(), musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE ? UUID.randomUUID().toString() : this.addPlayMusicSourceField.getText());
             PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), currentPlayList, this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
             insMode(Monitors.PLAYLIST);
         }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
@@ -1056,14 +1055,17 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     public void playYoutubeMusic(String videoID) {
-        MusicPlayThread mpt = new MusicPlayThread(MusicSourceClientReferencesType.YOUTUBE, videoID, 0, Monitorsa);
+        playMusic(MusicSourceClientReferencesType.YOUTUBE, videoID);
+    }
+
+    public void playMusic(MusicSourceClientReferencesType type, String url) {
+        MusicPlayThread mpt = new MusicPlayThread(type, url, 0, Monitorsa);
         mpt.start();
     }
 
     public void stopPlayMusic() {
         if (musicPlayer != null) {
-            if (musicPlayer.isPlaying())
-                musicPlayer.stop();
+            musicPlayer.stop();
             musicPlayer = null;
         }
     }
@@ -1396,11 +1398,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                     return;
                 musicPlayLodingSrc = src;
                 musicPlayLoading = true;
-                if (musicPlayer != null && musicPlayer.isPlaying()) {
+                if (musicPlayer != null)
                     musicPlayer.stop();
-                }
-                musicPlayer = type == MusicSourceClientReferencesType.YOUTUBE ? new YoutubeMusicPlayer(src) : null;
-                if (Monitorsa == monitor && musicPlayer != null) {
+                musicPlayer = type.getMusicPlayer(src);
+                if (Monitorsa == monitor && musicPlayer != null && isOpend()) {
                     musicPlayer.play(startTime);
                 }
             } catch (Exception ex) {

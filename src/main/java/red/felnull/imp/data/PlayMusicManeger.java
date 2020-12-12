@@ -68,7 +68,7 @@ public class PlayMusicManeger {
     public void createPlayMusic(ServerPlayerEntity player, PlayList playList, String name, PlayImage image, PlayLocation musicLocation, String artist, String album, String year, String genre) {
         String plUUID = UUID.randomUUID().toString();
         PlayMusic playMusic = new PlayMusic(plUUID, name, image, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), musicLocation, artist, album, year, genre, 0);
-        if (musicLocation.getLocationType() == PlayLocation.LocationType.URL || (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE && MusicReceiveHandler.downloadble.containsKey(musicLocation.getIdOrURL()) && MusicReceiveHandler.downloadble.get(musicLocation.getIdOrURL()) == SendReceiveLogger.SRResult.SUCCESS)) {
+        if (musicLocation.getLocationType() != PlayLocation.LocationType.WORLD_FILE || (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE && MusicReceiveHandler.downloadble.containsKey(musicLocation.getIdOrURL()) && MusicReceiveHandler.downloadble.get(musicLocation.getIdOrURL()) == SendReceiveLogger.SRResult.SUCCESS)) {
             PlayMusic.addPlayMusic(playMusic);
             playMusic.addPlayMusicToPlayList(playList);
             if (musicLocation.getLocationType() == PlayLocation.LocationType.WORLD_FILE)
