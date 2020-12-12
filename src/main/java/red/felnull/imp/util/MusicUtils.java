@@ -6,6 +6,8 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
+import ws.schild.jave.EncoderException;
+import ws.schild.jave.MultimediaObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +25,8 @@ public class MusicUtils {
         return (float) mfile.getLengthInMilliseconds() / (float) mfile.getFrameCount();
     }
 
-    public static long getMP3MillisecondDuration(File file) throws InvalidDataException, IOException, UnsupportedTagException {
-        Mp3File mfile = new Mp3File(file);
-        return mfile.getLengthInMilliseconds();
+    public static long getMP3MillisecondDuration(File file) throws EncoderException {
+        MultimediaObject mo = FFMPEGUtils.createMultimediaObject(file);
+        return mo.getInfo().getDuration();
     }
 }

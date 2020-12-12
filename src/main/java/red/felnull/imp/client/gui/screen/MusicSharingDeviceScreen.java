@@ -31,7 +31,7 @@ import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.musicplayer.PlayLocation;
 import red.felnull.imp.musicplayer.PlayMusic;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
-import red.felnull.imp.util.PathUtil;
+import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
@@ -1272,9 +1272,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                                     }
                                     if (id3v2.getAlbumImage() != null) {
                                         String uuid = UUID.randomUUID().toString();
-                                        IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtil.getClientTmpFolder().resolve(uuid));
+                                        IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtils.getClientTmpFolder().resolve(uuid));
                                         if (!this.stop) {
-                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, PathUtil.getClientTmpFolder().resolve(uuid));
+                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, PathUtils.getClientTmpFolder().resolve(uuid));
                                             plt.start();
                                         }
                                     }

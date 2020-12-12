@@ -1,19 +1,16 @@
 package red.felnull.imp.client.music;
 
 import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import red.felnull.imp.util.FFMPEGUtils;
 import red.felnull.imp.util.MusicUtils;
-import red.felnull.imp.util.PathUtil;
-import red.felnull.otyacraftengine.util.IKSGMath;
+import red.felnull.imp.util.PathUtils;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.encode.AudioAttributes;
 import ws.schild.jave.encode.EncodingAttributes;
 
-import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.SequenceInputStream;
@@ -71,10 +68,10 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                     this.streamEnumeration.clear();
                     String fristname = UUID.randomUUID().toString();
                     boolean nextFlag = duration - startMiliSecond > 60;
-                    converting(inputURL, PathUtil.getClientTmpFolder().resolve(fristname), startMiliSecond, nextFlag ? oneCovCutTime : 0);
+                    converting(inputURL, PathUtils.getClientTmpFolder().resolve(fristname), startMiliSecond, nextFlag ? oneCovCutTime : 0);
                     if (stopRQ)
                         return;
-                    streamEnumeration.add(new FileInputStream(PathUtil.getClientTmpFolder().resolve(fristname).toFile()));
+                    streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(fristname).toFile()));
                     cont++;
                     this.player = new AdvancedPlayer(new SequenceInputStream(streamEnumeration));
                     MusicPlayThread playThread = new MusicPlayThread();
@@ -173,10 +170,10 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                     return;
                 cont++;
                 boolean nextFlag = alltime - oneCovCutTime * cont > 60;
-                converting(inputURL, PathUtil.getClientTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
+                converting(inputURL, PathUtils.getClientTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
                 if (!isPlaying())
                     return;
-                streamEnumeration.add(new FileInputStream(PathUtil.getClientTmpFolder().resolve(name).toFile()));
+                streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(name).toFile()));
                 if (nextFlag) {
                     MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
                     conversionThread.start();

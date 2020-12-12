@@ -7,9 +7,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import red.felnull.imp.client.music.IMusicPlayer;
-import red.felnull.imp.client.music.LocalFileMusicPlayer;
-import red.felnull.imp.client.music.URLNotStreamMusicPlayer;
-import red.felnull.imp.client.music.YoutubeMusicPlayer;
+import red.felnull.imp.client.music.WorldFileMusicPlayer;
 
 
 public class TestSoundItem extends Item {
@@ -24,10 +22,17 @@ public class TestSoundItem extends Item {
         if (worldIn.isRemote) {
             try {
                 if (player == null) {
-                    //   player = new LocalFileMusicPlayer(Paths.get("C:\\Users\\MORI\\Music\\playlist\\銀の龍の背に乗って  中島みゆき (Cover) [高音質] フル.mp3").toFile());
-                   // player = new YoutubeMusicPlayer("hlNWfslbSGA");
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                player = new WorldFileMusicPlayer("7e23db29-0575-4be5-aa3c-acefec831e77");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
                 }
-
                 if (!playerIn.isSneaking()) {
 
                     long time = 0;
@@ -37,8 +42,8 @@ public class TestSoundItem extends Item {
                     } catch (Exception ex) {
 
                     }
-
-                    player.play(time);
+                    if (player != null)
+                        player.play(time);
                 } else {
                     player.stop();
                 }

@@ -6,7 +6,7 @@ import red.felnull.otyacraftengine.util.IKSGPathUtil;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class PathUtil {
+public class PathUtils {
     public static Path getClientIMPFolder() {
         return Paths.get(IamMusicPlayer.MODID);
     }
@@ -25,5 +25,9 @@ public class PathUtil {
 
     public static Path getWorldMusicFolder() {
         return getWorldIMPFolder().resolve("music");
+    }
+
+    public static Path getWorldMusic(String uuid) {
+        return getWorldMusicFolder().resolve(uuid);
     }
 }
