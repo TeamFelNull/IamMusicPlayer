@@ -45,7 +45,6 @@ import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 import red.felnull.otyacraftengine.util.*;
 import ws.schild.jave.Encoder;
-import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 
@@ -93,7 +92,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private MusicLoadResult musicLoadResult;
     //   public UploadLocation uploadLocation;
     public IMusicPlayer musicPlayer;
-    private boolean musicPlayLoading;
+    public boolean musicPlayLoading;
+    public String musicPlayLodingSrc;
 
     private Monitors Monitorsa;
     private MusicSourceClientReferencesType musicSourceClientReferencesType;
@@ -248,12 +248,10 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.openImage = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 86 - 8, getMonitorStartY() + 106 - 8, 8, 8, 223, 198, 8, MSD_GUI_TEXTURES, n -> {
             FileUtils.openFileChoser(I18n.format("msd.openImageFile"), file -> {
-                if (file != null && this.isOpend() && isMonitor(Monitors.ADDPLAYMUSIC1)) {
-                    if (file != null && this.isOpend() && isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && !file.isDirectory()) {
-                        DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(true, file.toPath());
-                        lt.start();
-                        //    ImageFileChooser.setInitialDirectory(file.getParentFile());
-                    }
+                if (file != null && this.isOpend() && isMonitor(Monitors.CREATEPLAYLIST, Monitors.ADDPLAYMUSIC1) && !file.isDirectory()) {
+                    DropAndDragFileLoadThread lt = new DropAndDragFileLoadThread(true, file.toPath());
+                    lt.start();
+                    //    ImageFileChooser.setInitialDirectory(file.getParentFile());
                 }
             });
         }));
@@ -613,6 +611,9 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         else
             addPlayMusicButton.setTextuer(235, 40, 18, 256, 256);
 
+        if (getTileEntity() instanceof MusicSharingDeviceTileEntity && ((MusicSharingDeviceTileEntity) getTileEntity()).getAntenna().isEmpty()) {
+            stopPlayMusic();
+        }
 
         fieldTick();
         IKSGScreenUtil.setVisible(this.allbutton, isMonitor(Monitors.PLAYLIST));
@@ -828,6 +829,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         tag.putBoolean("on", on);
         tag.putString("listuuid", currentPlayList.getUUID());
         this.instruction("power", tag);
+        stopPlayMusic();
     }
 
 
@@ -1054,7 +1056,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     public void playYoutubeMusic(String videoID) {
-        MusicPlayThread mpt = new MusicPlayThread(MusicSourceClientReferencesType.YOUTUBE, videoID, 0);
+        MusicPlayThread mpt = new MusicPlayThread(MusicSourceClientReferencesType.YOUTUBE, videoID, 0, Monitorsa);
         mpt.start();
     }
 
@@ -1379,23 +1381,28 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         private final long startTime;
         private final MusicSourceClientReferencesType type;
         private final String src;
+        private final Monitors monitor;
 
-        public MusicPlayThread(MusicSourceClientReferencesType type, String src, long time) {
+        public MusicPlayThread(MusicSourceClientReferencesType type, String src, long time, Monitors monitors) {
             this.startTime = time;
             this.type = type;
             this.src = src;
+            this.monitor = monitors;
         }
 
         public void run() {
             try {
                 if (musicPlayLoading)
                     return;
+                musicPlayLodingSrc = src;
                 musicPlayLoading = true;
                 if (musicPlayer != null && musicPlayer.isPlaying()) {
                     musicPlayer.stop();
                 }
                 musicPlayer = type == MusicSourceClientReferencesType.YOUTUBE ? new YoutubeMusicPlayer(src) : null;
-                musicPlayer.play(startTime);
+                if (Monitorsa == monitor && musicPlayer != null) {
+                    musicPlayer.play(startTime);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
