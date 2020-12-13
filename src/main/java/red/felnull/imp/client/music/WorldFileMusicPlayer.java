@@ -31,7 +31,9 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
             this.byteEnumeration.clear();
             MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);
             mrt.start();
-            Thread.sleep(3000);
+            while (byteEnumeration.isEmpty()) {
+                Thread.sleep(100);
+            }
             this.player = new AdvancedPlayer(new SequenceInputStream(byteEnumeration));
             WorldFileMusicPlayer.MusicPlayThread playThread = new WorldFileMusicPlayer.MusicPlayThread();
             playThread.start();
@@ -88,6 +90,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     private class MusicReceiveThread extends Thread {
         private final long startMilisecond;
         private int rcByteCont;
+        private int rcCont;
 
         public MusicReceiveThread(long startMilisecond) {
             this.startMilisecond = startMilisecond;
@@ -114,11 +117,15 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
 
         public void rqAddByte(int begin) {
             try {
+                while (byteEnumeration.curentCont() <= rcCont - 3) {
+                    sleep(100);
+                }
                 UUID byteUuid = MusicDownloader.instance().byteRequest(uuid, begin);
                 while (!MusicDownloader.instance().WORLDMUSICBYTE.containsKey(byteUuid)) {
                     sleep(100);
                 }
                 byte[] rqdata = MusicDownloader.instance().WORLDMUSICBYTE.get(byteUuid);
+                rcCont++;
                 rcByteCont += rqdata.length;
                 byteEnumeration.add(new ByteArrayInputStream(rqdata));
             } catch (Exception ex) {

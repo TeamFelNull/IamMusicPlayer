@@ -40,4 +40,8 @@ public class InputStreamArrayEnumeration implements Enumeration {
     public int curentCont() {
         return ct;
     }
+
+    public boolean isEmpty() {
+        return inpuStrereadmList.isEmpty();
+    }
 }

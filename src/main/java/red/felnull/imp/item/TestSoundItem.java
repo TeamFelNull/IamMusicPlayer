@@ -48,7 +48,7 @@ public class TestSoundItem extends Item {
                         public void run() {
                             try {
                                 if (player != null)
-                                    player.play(20 * 1000);
+                                    player.play(0 * 1000);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
