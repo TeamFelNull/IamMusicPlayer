@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-public class URLStreamFileEnumeration implements Enumeration {
+public class InputStreamArrayEnumeration implements Enumeration {
     private final List<InputStream> inpuStrereadmList;
     private int ct;
 
-    public URLStreamFileEnumeration() {
+    public InputStreamArrayEnumeration() {
         this.inpuStrereadmList = new ArrayList<>();
     }
 
@@ -37,4 +37,7 @@ public class URLStreamFileEnumeration implements Enumeration {
         this.inpuStrereadmList.clear();
     }
 
+    public int curentCont() {
+        return ct;
+    }
 }

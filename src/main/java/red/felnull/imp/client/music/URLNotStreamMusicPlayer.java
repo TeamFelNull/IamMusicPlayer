@@ -25,7 +25,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private final float frameSecond;
     private final boolean isDirectly;
     private final long duration;
-    private final URLStreamFileEnumeration streamEnumeration;
+    private final InputStreamArrayEnumeration streamEnumeration;
 
     private AdvancedPlayer player;
     private long startPlayTime;
@@ -40,7 +40,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         this.frameSecond = isDirectly ? MusicUtils.getMP3MillisecondPerFrame(url.openStream()) : 0;
         this.duration = !isDirectly ? mo.getInfo().getDuration() : 0;
         this.inputURL = url;
-        this.streamEnumeration = new URLStreamFileEnumeration();
+        this.streamEnumeration = new InputStreamArrayEnumeration();
     }
 
 

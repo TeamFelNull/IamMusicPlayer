@@ -42,8 +42,19 @@ public class TestSoundItem extends Item {
                     } catch (Exception ex) {
 
                     }
-                    if (player != null)
-                        player.play(time);
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (player != null)
+                                    player.play(20 * 1000);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+
                 } else {
                     player.stop();
                 }
