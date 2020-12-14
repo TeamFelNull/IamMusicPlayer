@@ -145,7 +145,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             } finally {
                 player = null;
                 streamEnumeration.clear();
-                stop = false;
             }
         }
     }

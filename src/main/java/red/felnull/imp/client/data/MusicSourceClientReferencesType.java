@@ -4,9 +4,8 @@ import com.github.kiulian.downloader.YoutubeException;
 import javazoom.jl.decoder.BitstreamException;
 import net.minecraft.util.ResourceLocation;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.music.IMusicPlayer;
-import red.felnull.imp.client.music.URLNotStreamMusicPlayer;
-import red.felnull.imp.client.music.YoutubeMusicPlayer;
+import red.felnull.imp.client.music.*;
+import red.felnull.imp.exception.IMPWorldMusicException;
 import red.felnull.imp.musicplayer.PlayLocation;
 import ws.schild.jave.EncoderException;
 
@@ -38,14 +37,14 @@ public enum MusicSourceClientReferencesType {
         return Arrays.stream(values()).filter(n -> n.getLocationType() == type).findFirst().get();
     }
 
-    public IMusicPlayer getMusicPlayer(String src) throws YoutubeException, EncoderException, BitstreamException, IOException {
+    public IMusicPlayer getMusicPlayer(String src) throws YoutubeException, EncoderException, BitstreamException, IOException, IMPWorldMusicException, InterruptedException {
         switch (this) {
             case YOUTUBE:
                 return new YoutubeMusicPlayer(src);
             case URL:
                 return new URLNotStreamMusicPlayer(new URL(src));
             case LOCAL_FILE:
-                return null;
+                return new WorldFileMusicPlayer(src);
             default:
                 return null;
         }

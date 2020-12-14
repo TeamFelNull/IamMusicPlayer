@@ -17,6 +17,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     private AdvancedPlayer player;
     private long startPlayTime;
     private long startPosition;
+    private boolean stop;
 
     public WorldFileMusicPlayer(String uuid) throws InterruptedException, IMPWorldMusicException {
         this.uuid = uuid;
@@ -28,6 +29,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     public void play(long startMiliSecond) {
         try {
             this.startPosition = startMiliSecond;
+            this.stop = false;
             this.byteEnumeration.clear();
             MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);
             mrt.start();
@@ -46,7 +48,10 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
 
     @Override
     public void stop() {
-
+        this.stop = true;
+        if (player != null) {
+            player.close();
+        }
     }
 
     @Override
@@ -76,8 +81,10 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
         @Override
         public void run() {
             try {
-                startPlayTime = System.currentTimeMillis();
-                player.play();
+                if (!stop) {
+                    startPlayTime = System.currentTimeMillis();
+                    player.play();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
@@ -98,16 +105,16 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
 
         @Override
         public void run() {
-
             float secParByte = (float) worldMusicInfo.getByteSize() / (float) worldMusicInfo.getDuration();
             int startbyte = (int) (secParByte * (float) startMilisecond);
             rcByteCont += startbyte;
             while (true) {
-                if (rcByteCont > worldMusicInfo.getByteSize())
-                    break;
-
-                rqAddByte(rcByteCont);
                 try {
+                    if (rcByteCont > worldMusicInfo.getByteSize())
+                        break;
+                    rqAddByte(rcByteCont);
+                    if (stop)
+                        return;
                     sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -119,10 +126,14 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
             try {
                 while (byteEnumeration.curentCont() <= rcCont - 3) {
                     sleep(100);
+                    if (stop)
+                        return;
                 }
                 UUID byteUuid = MusicDownloader.instance().byteRequest(uuid, begin);
                 while (!MusicDownloader.instance().WORLDMUSICBYTE.containsKey(byteUuid)) {
                     sleep(100);
+                    if (stop)
+                        return;
                 }
                 byte[] rqdata = MusicDownloader.instance().WORLDMUSICBYTE.get(byteUuid);
                 rcCont++;

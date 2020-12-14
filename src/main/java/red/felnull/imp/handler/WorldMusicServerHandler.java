@@ -1,5 +1,6 @@
 package red.felnull.imp.handler;
 
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -40,32 +41,49 @@ public class WorldMusicServerHandler {
                     ResponseSender.sendToClient(e.getPlayer(), IMPWorldData.WORLDMUSICFILEDATA, 1, e.getMessage(), new CompoundNBT());
                 }
             } else if (e.getId() == 1) {
-                try {
-                    byte[] data = null;
-                    if (WORLDMUSIC_DATA.containsKey(e.getMessage())) {
-                        data = WORLDMUSIC_DATA.get(e.getMessage());
-                    } else {
-                        File musicfile = PathUtils.getWorldMusic(e.getMessage()).toFile();
-                        if (musicfile.exists()) {
-                            data = Files.readAllBytes(musicfile.toPath());
-                            WORLDMUSIC_DATA.put(e.getMessage(), data);
-                        }
+                ByteSendThread bst = new ByteSendThread(e.getPlayer(), e.getMessage(), e.getData().getInt("begin"), e.getData().getString("byteuuid"));
+                bst.start();
+            }
+        }
+    }
+
+    public static class ByteSendThread extends Thread {
+        private final ServerPlayerEntity playerEntity;
+        private final String uuid;
+        private final String beginUUID;
+        private final int begin;
+
+        public ByteSendThread(ServerPlayerEntity player, String uuid, int begin, String beginUUID) {
+            this.playerEntity = player;
+            this.uuid = uuid;
+            this.begin = begin;
+            this.beginUUID = beginUUID;
+        }
+
+        @Override
+        public void run() {
+            try {
+                byte[] data = null;
+                if (WORLDMUSIC_DATA.containsKey(uuid)) {
+                    data = WORLDMUSIC_DATA.get(uuid);
+                } else {
+                    File musicfile = PathUtils.getWorldMusic(uuid).toFile();
+                    if (musicfile.exists()) {
+                        data = Files.readAllBytes(musicfile.toPath());
+                        WORLDMUSIC_DATA.put(uuid, data);
                     }
-                    if (data == null)
-                        throw new FileNotFoundException();
-
-                    int begin = e.getData().getInt("begin");
-
-                    int nocori = data.length - begin;
-
-                    byte[] sendData = new byte[sendByteLength <= nocori ? sendByteLength : nocori];
-
-                    System.arraycopy(data, begin, sendData, 0, sendData.length);
-
-                    PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(e::getPlayer), new WorldMusicSendByteMessage(e.getData().getString("byteuuid"), sendData));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
+                if (data == null)
+                    throw new FileNotFoundException();
+
+
+                int nocori = data.length - begin;
+
+                byte[] sendData = new byte[Math.min(sendByteLength, nocori)];
+                System.arraycopy(data, begin, sendData, 0, sendData.length);
+                PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> playerEntity), new WorldMusicSendByteMessage(beginUUID, sendData));
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }

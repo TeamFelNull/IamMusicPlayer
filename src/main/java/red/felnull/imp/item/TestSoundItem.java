@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import red.felnull.imp.client.music.IMusicPlayer;
 import red.felnull.imp.client.music.WorldFileMusicPlayer;
@@ -20,7 +21,7 @@ public class TestSoundItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (worldIn.isRemote) {
-            try {
+      /*      try {
                 if (player == null) {
                     new Thread(new Runnable() {
                         @Override
@@ -47,8 +48,10 @@ public class TestSoundItem extends Item {
                         @Override
                         public void run() {
                             try {
-                                if (player != null)
-                                    player.play(0 * 1000);
+                                if (player != null && !player.isPlaying()) {
+                                    playerIn.sendStatusMessage(new StringTextComponent("Play Start"), false);
+                                    player.play(120 * 1000);
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -56,11 +59,12 @@ public class TestSoundItem extends Item {
                     }).start();
 
                 } else {
+                    playerIn.sendStatusMessage(new StringTextComponent("Play Stop"), false);
                     player.stop();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
