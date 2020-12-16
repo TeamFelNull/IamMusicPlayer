@@ -28,15 +28,24 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     @Override
     public void play(long startMiliSecond) {
         try {
-            this.startPosition = startMiliSecond;
             this.stop = false;
+            this.startPosition = startMiliSecond;
             this.byteEnumeration.clear();
             MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);
             mrt.start();
             while (byteEnumeration.isEmpty()) {
                 Thread.sleep(100);
+                if (stop)
+                    return;
             }
+            if (stop)
+                return;
             this.player = new AdvancedPlayer(new SequenceInputStream(byteEnumeration));
+            if (stop) {
+                this.player = null;
+                this.byteEnumeration.clear();
+                return;
+            }
             WorldFileMusicPlayer.MusicPlayThread playThread = new WorldFileMusicPlayer.MusicPlayThread();
             playThread.start();
         } catch (Exception ex) {

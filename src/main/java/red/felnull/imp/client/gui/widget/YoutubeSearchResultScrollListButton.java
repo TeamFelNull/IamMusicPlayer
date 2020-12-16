@@ -43,7 +43,7 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
         int fupzure = 29 < upOver ? upOver - 29 : 0;
         int fdownzure = 3 < downOver ? downOver - 3 : 0;
 
-        if (screen.musicPlayLoading && screen.musicPlayLodingSrc != null && screen.musicPlayLodingSrc.equals(pl.getIdentifier())) {
+        if (screen.musicPlayThread != null && screen.musicPlayThread.isMusicPlayLoading() && screen.musicPlayThread.getMusicPlayLodingSrc() != null && screen.musicPlayThread.getMusicPlayLodingSrc().equals(pl.getIdentifier())) {
             IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getLoadingIconTextuer(), matrix, x + 41, y + 29 + fupzure, 0, fupzure, 8, 8 - fupzure - fdownzure, 8, 8);
             if (upOver < 38 && downOver <= 12) {
                 IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new TranslationTextComponent("msd.musicloading"), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
@@ -54,8 +54,8 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
                 String playingVideoID = (String) player.getMusicSource();
                 if (playingVideoID.equals(pl.getIdentifier())) {
                     IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 41, y + 29 + fupzure, 14, 30 + fupzure, 8, 8 - fupzure - fdownzure, 256, 256);
-                    IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 80 + fupzure, 134, 8 - fupzure - fdownzure, 256, 256);
-                    int gagePar = (int) (134f * ((float) player.getCureentElapsed() / (float) player.getDuration()));
+                    IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 80 + fupzure, 133, 8 - fupzure - fdownzure, 256, 256);
+                    int gagePar = (int) (133f * ((float) player.getCureentElapsed() / (float) player.getDuration()));
                     IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 88 + fupzure, gagePar, 8 - fupzure - fdownzure, 256, 256);
                 }
             }

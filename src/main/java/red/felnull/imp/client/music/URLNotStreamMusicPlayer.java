@@ -31,7 +31,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private long startPlayTime;
     private long startPosition;
     private int cont;
-    private boolean stopRQ;
     private boolean stop;
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException {
@@ -63,13 +62,12 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         } else {
             try {
                 if (player == null) {
-                    stopRQ = false;
                     cont = 0;
                     this.streamEnumeration.clear();
                     String fristname = UUID.randomUUID().toString();
                     boolean nextFlag = duration - startMiliSecond > 60;
                     converting(inputURL, PathUtils.getClientTmpFolder().resolve(fristname), startMiliSecond, nextFlag ? oneCovCutTime : 0);
-                    if (stopRQ)
+                    if (stop)
                         return;
                     streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(fristname).toFile()));
                     cont++;
@@ -94,7 +92,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         stop = true;
         if (player != null) {
             player.close();
-            stopRQ = true;
         }
     }
 
@@ -165,15 +162,15 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                 long wait = off - oneCovCutTime / 2 - getCureentElapsed();
                 if (wait >= 0)
                     sleep(wait);
-                if (!isPlaying())
+                if (!isPlaying() || stop)
                     return;
                 cont++;
                 boolean nextFlag = alltime - oneCovCutTime * cont > 60;
                 converting(inputURL, PathUtils.getClientTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
-                if (!isPlaying())
+                if (!isPlaying() || stop)
                     return;
                 streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(name).toFile()));
-                if (nextFlag) {
+                if (nextFlag && !stop) {
                     MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
                     conversionThread.start();
                 }

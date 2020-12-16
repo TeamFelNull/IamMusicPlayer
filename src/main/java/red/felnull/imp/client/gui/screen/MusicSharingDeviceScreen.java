@@ -91,8 +91,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private MusicLoadResult musicLoadResult;
     //   public UploadLocation uploadLocation;
     public IMusicPlayer musicPlayer;
-    public boolean musicPlayLoading;
-    public String musicPlayLodingSrc;
+    public MusicPlayThread musicPlayThread;
 
     private Monitors Monitorsa;
     private MusicSourceClientReferencesType musicSourceClientReferencesType;
@@ -216,7 +215,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, playlistbar, currentPlaylistsMusics, (n, m) -> {
             PlayMusic music = currentPlaylistsMusics.get(m);
             playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
-        }));
+        },this));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
 
         this.backGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 92, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
@@ -521,7 +520,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             if (IKSGClientUtil.isKeyInput(getMinecraft().gameSettings.keyBindSneak, false)) {
                 playYoutubeMusic(at.getInfo().identifier);
             } else {
-
                 if (!at.getInfo().isStream) {
                     removePictuerPath();
                     setImage(PlayImage.ImageType.URLIMAGE, YoutubeUtils.getThumbnailURL(at.getIdentifier()));
@@ -1059,11 +1057,16 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     }
 
     public void playMusic(MusicSourceClientReferencesType type, String url) {
-        MusicPlayThread mpt = new MusicPlayThread(type, url, 0, Monitorsa);
-        mpt.start();
+        stopPlayMusic();
+        musicPlayThread = new MusicPlayThread(type, url, 0, Monitorsa);
+        musicPlayThread.start();
     }
 
     public void stopPlayMusic() {
+
+        if (musicPlayThread != null)
+            musicPlayThread.stopd();
+
         if (musicPlayer != null) {
             musicPlayer.stop();
             musicPlayer = null;
@@ -1379,11 +1382,15 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         }
     }
 
-    private class MusicPlayThread extends Thread {
+    public class MusicPlayThread extends Thread {
         private final long startTime;
         private final MusicSourceClientReferencesType type;
         private final String src;
         private final Monitors monitor;
+        private boolean musicPlayLoading;
+        private String musicPlayLodingSrc;
+        private MusicSourceClientReferencesType musicPlayLodingType;
+        private boolean stop;
 
         public MusicPlayThread(MusicSourceClientReferencesType type, String src, long time, Monitors monitors) {
             this.startTime = time;
@@ -1394,21 +1401,37 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         public void run() {
             try {
-                if (musicPlayLoading)
-                    return;
                 musicPlayLodingSrc = src;
+                musicPlayLodingType = type;
                 musicPlayLoading = true;
-                if (musicPlayer != null)
-                    musicPlayer.stop();
+                if(!stop)
                 musicPlayer = type.getMusicPlayer(src);
-                if (Monitorsa == monitor && musicPlayer != null && isOpend()) {
+                if (!stop && Monitorsa == monitor && musicPlayer != null && isOpend()) {
                     musicPlayer.play(startTime);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
                 musicPlayLoading = false;
+                musicPlayLodingSrc = null;
+                musicPlayLodingType = null;
             }
+        }
+
+        public String getMusicPlayLodingSrc() {
+            return musicPlayLodingSrc;
+        }
+
+        public MusicSourceClientReferencesType getMusicPlayLodingType() {
+            return musicPlayLodingType;
+        }
+
+        public boolean isMusicPlayLoading() {
+            return musicPlayLoading;
+        }
+
+        public void stopd() {
+            this.stop = true;
         }
     }
 }

@@ -8,7 +8,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
+import red.felnull.imp.client.music.IMusicPlayer;
 import red.felnull.imp.client.util.RenderUtil;
+import red.felnull.imp.musicplayer.PlayLocation;
 import red.felnull.imp.musicplayer.PlayMusic;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
@@ -21,9 +23,11 @@ import java.util.List;
 
 public class PlayMusicScrollButton extends ScrollListButton {
     private final List<PlayMusic> playMusic;
+    private final MusicSharingDeviceScreen screen;
 
-    public PlayMusicScrollButton(int x, int y, int sizeX, int sizeY, int sizeOne, ScrollBarSlider scrollBar, List<PlayMusic> playMusic, IPressable pressed) {
+    public PlayMusicScrollButton(int x, int y, int sizeX, int sizeY, int sizeOne, ScrollBarSlider scrollBar, List<PlayMusic> playMusic, IPressable pressed, MusicSharingDeviceScreen screen) {
         super(x, y, sizeX, sizeY, sizeOne, 0, scrollBar, null, pressed);
+        this.screen = screen;
         this.playMusic = playMusic;
     }
 
@@ -57,16 +61,33 @@ public class PlayMusicScrollButton extends ScrollListButton {
 
             IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, musicdesc.getString(), "imp.msdpm.desc." + pm.getUUID(), 30, x + 40, y + 16, 115, 30, MusicSharingDeviceScreen.fontStyle);
         }
-        if (upOver < 38 && downOver <= 12) {
-            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pm.getCreatePlayerName()), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
-        }
+
         int fupzure = 29 < upOver ? upOver - 29 : 0;
         int fdownzure = 3 < downOver ? downOver - 3 : 0;
-        IKSGRenderUtil.matrixPush(matrix);
-        ResourceLocation plskin = IKSGTextureUtil.getPlayerSkinTexture(pm.getCreatePlayerName());
-        IKSGRenderUtil.guiBindAndBlit(plskin, matrix, x + 40, y + 29 + fupzure, 8, 8 + fupzure, 8, 8 - fupzure - fdownzure, 64, 64);
-        IKSGRenderUtil.guiBindAndBlit(plskin, matrix, x + 40, y + 29 + fupzure, 40, 8 + fupzure, 8, 8 - fupzure - fdownzure, 64, 64);
-        IKSGRenderUtil.matrixPop(matrix);
+
+        PlayLocation pl = pm.getMusicLocation();
+
+        if (screen.musicPlayThread != null && screen.musicPlayThread.isMusicPlayLoading() && screen.musicPlayThread.getMusicPlayLodingSrc() != null && screen.musicPlayThread.getMusicPlayLodingSrc().equals(pl.getIdOrURL()) && screen.musicPlayThread.getMusicPlayLodingType().getLocationType() == pl.getLocationType()) {
+            IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getLoadingIconTextuer(), matrix, x + 41, y + 29 + fupzure, 0, fupzure, 8, 8 - fupzure - fdownzure, 8, 8);
+            if (upOver < 38 && downOver <= 12)
+                IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new TranslationTextComponent("msd.musicloading"), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
+        } else {
+            IMusicPlayer player = screen.musicPlayer;
+            if (player != null && player.isPlaying() && ((String) player.getMusicSource()).equals(pl.getIdOrURL())) {
+                IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 41, y + 29 + fupzure, 14, 30 + fupzure, 8, 8 - fupzure - fdownzure, 256, 256);
+                IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 96 + fupzure, 104, 8 - fupzure - fdownzure, 256, 256);
+                int gagePar = (int) (104f * ((float) player.getCureentElapsed() / (float) player.getDuration()));
+                IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 104 + fupzure, gagePar, 8 - fupzure - fdownzure, 256, 256);
+            } else {
+                if (upOver < 38 && downOver <= 12)
+                    IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pm.getCreatePlayerName()), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
+                IKSGRenderUtil.matrixPush(matrix);
+                ResourceLocation plskin = IKSGTextureUtil.getPlayerSkinTexture(pm.getCreatePlayerName());
+                IKSGRenderUtil.guiBindAndBlit(plskin, matrix, x + 40, y + 29 + fupzure, 8, 8 + fupzure, 8, 8 - fupzure - fdownzure, 64, 64);
+                IKSGRenderUtil.guiBindAndBlit(plskin, matrix, x + 40, y + 29 + fupzure, 40, 8 + fupzure, 8, 8 - fupzure - fdownzure, 64, 64);
+                IKSGRenderUtil.matrixPop(matrix);
+            }
+        }
     }
 
 
