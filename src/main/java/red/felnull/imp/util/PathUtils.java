@@ -7,12 +7,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PathUtils {
-    public static Path getClientIMPFolder() {
+    public static Path getIMPFolder() {
         return Paths.get(IamMusicPlayer.MODID);
     }
 
     public static Path getClientTmpFolder() {
-        return getClientIMPFolder().resolve("tmp");
+        return getIMPFolder().resolve("tmp");
     }
 
     public static Path getWorldIMPFolder() {
@@ -30,4 +30,10 @@ public class PathUtils {
     public static Path getWorldMusic(String uuid) {
         return getWorldMusicFolder().resolve(uuid);
     }
+
+    public static Path getFFmpegFolder() {
+        return getIMPFolder().resolve("ffmpeg");
+    }
+
+
 }

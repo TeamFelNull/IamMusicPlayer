@@ -26,7 +26,7 @@ public class MusicUtils {
     }
 
     public static long getMP3MillisecondDuration(File file) throws EncoderException {
-        MultimediaObject mo = FFMPEGUtils.createMultimediaObject(file);
+        MultimediaObject mo = FFmpegUtils.createMultimediaObject(file);
         return mo.getInfo().getDuration();
     }
 }

@@ -31,6 +31,7 @@ import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.musicplayer.PlayLocation;
 import red.felnull.imp.musicplayer.PlayMusic;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
+import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
 import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
@@ -1230,7 +1231,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                     }
 
                     try {
-                        MultimediaObject mo = new MultimediaObject(path.toFile());
+                        MultimediaObject mo = FFmpegUtils.createMultimediaObject(path.toFile());
                         Encoder encoder = new Encoder();
                         if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(mo.getInfo().getFormat())) {
                             MultimediaInfo info = mo.getInfo();
@@ -1315,7 +1316,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             } else if (getMusicSourceClientReferencesType() == MusicSourceClientReferencesType.URL) {
                 try {
                     URL url = new URL(source);
-                    MultimediaObject mo = new MultimediaObject(url);
+                    MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
                     Encoder encoder = new Encoder();
                     MultimediaInfo info = mo.getInfo();
                     if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(info.getFormat())) {

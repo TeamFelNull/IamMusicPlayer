@@ -9,8 +9,7 @@ import red.felnull.imp.client.gui.IMPScrennContainerRegister;
 import red.felnull.imp.client.handler.MusicUploadHandler;
 import red.felnull.imp.client.handler.WorldMusicClientHandler;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
-
-import java.util.Properties;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 
 public class ClientProxy extends CommonProxy {
     public static void clientInit() {
@@ -36,6 +35,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void posInit() {
         super.posInit();
+        FFmpegManeger.instance().check();
     }
 
     @Override

@@ -2,7 +2,7 @@ package red.felnull.imp.client.music;
 
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
-import red.felnull.imp.util.FFMPEGUtils;
+import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtils;
 import ws.schild.jave.Encoder;
@@ -34,7 +34,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private boolean stop;
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException {
-        MultimediaObject mo = FFMPEGUtils.createMultimediaObject(url);
+        MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
         this.isDirectly = mo.getInfo().getFormat().equals("mp3");
         this.frameSecond = isDirectly ? MusicUtils.getMP3MillisecondPerFrame(url.openStream()) : 0;
         this.duration = !isDirectly ? mo.getInfo().getDuration() : 0;
@@ -200,7 +200,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                 attrs.setDuration(durationF);
 
             Encoder encoder = new Encoder();
-            encoder.encode(FFMPEGUtils.createMultimediaObject(url), outPath.toFile(), attrs);
+            encoder.encode(FFmpegUtils.createMultimediaObject(url), outPath.toFile(), attrs);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

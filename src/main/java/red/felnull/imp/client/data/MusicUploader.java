@@ -6,6 +6,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.client.gui.toasts.MusicUploadToast;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.musicplayer.PlayImage;
+import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.util.IKSGDataUtil;
@@ -89,12 +90,12 @@ public class MusicUploader {
     }
 
     private boolean conversion(URL url, String uuid, int bitrate) throws UnsupportedTagException, NotSupportedException, EncoderException, InvalidDataException, IOException {
-        MultimediaObject mo = new MultimediaObject(url);
+        MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
         return conversion(mo, uuid, bitrate);
     }
 
     private boolean conversion(Path path, String uuid, int bitrate) throws UnsupportedTagException, NotSupportedException, EncoderException, InvalidDataException, IOException {
-        MultimediaObject mo = new MultimediaObject(path.toFile());
+        MultimediaObject mo = FFmpegUtils.createMultimediaObject(path.toFile());
         return conversion(mo, uuid, bitrate);
     }
 

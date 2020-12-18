@@ -73,7 +73,7 @@ public class PlayMusicScrollButton extends ScrollListButton {
                 IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new TranslationTextComponent("msd.musicloading"), MusicSharingDeviceScreen.fontStyle), x + 50, y + 29, 0);
         } else {
             IMusicPlayer player = screen.musicPlayer;
-            if (player != null && player.isPlaying() && ((String) player.getMusicSource()).equals(pl.getIdOrURL())) {
+            if (player != null && player.isPlaying() && player.getMusicSource().equals(pl.getIdOrURL())) {
                 IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 41, y + 29 + fupzure, 14, 30 + fupzure, 8, 8 - fupzure - fdownzure, 256, 256);
                 IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES2, matrix, x + 50, y + 29 + fupzure, 113, 96 + fupzure, 104, 8 - fupzure - fdownzure, 256, 256);
                 int gagePar = (int) (104f * ((float) player.getCureentElapsed() / (float) player.getDuration()));
