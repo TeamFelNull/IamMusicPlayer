@@ -8,6 +8,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import red.felnull.imp.client.music.IMusicPlayer;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 
 import java.io.File;
 
@@ -22,10 +23,10 @@ public class TestSoundItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         //if (worldIn.isRemote) {
-            playerIn.sendStatusMessage(new StringTextComponent(System.getProperty("os.name").toLowerCase()), false);
-            playerIn.sendStatusMessage(new StringTextComponent(System.getProperty("os.arch")), false);
-            File dirFolder = new File(System.getProperty("java.io.tmpdir"), "jave/");
-            playerIn.sendStatusMessage(new StringTextComponent(dirFolder.toString()), false);
+        playerIn.sendStatusMessage(new StringTextComponent(System.getProperty("os.name").toLowerCase()), false);
+        playerIn.sendStatusMessage(new StringTextComponent(System.getProperty("os.arch")), false);
+        File dirFolder = new File(System.getProperty("java.io.tmpdir"), "jave/");
+        playerIn.sendStatusMessage(new StringTextComponent(dirFolder.toString()), false);
          /*   try {
                 if (player == null) {
                     new Thread(new Runnable() {
@@ -70,7 +71,14 @@ public class TestSoundItem extends Item {
             } catch (Exception e) {
                 e.printStackTrace();
             }*/
-      //  }
+        //  }
+        try {
+            playerIn.sendStatusMessage(new StringTextComponent(FFmpegManeger.instance().getFFmpegLink(FFmpegManeger.OSAndArch.getMyOSAndArch())), false);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
 }

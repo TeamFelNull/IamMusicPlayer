@@ -57,5 +57,9 @@
   "playmusic.desc.year": "年 : %s",
   "playmusic.desc.genre": "ジャンル : %s",
   "playmusic.desc.timestamp": "追加された時間 : %s",
+  "ffmpegdlstate.preparation": "FFmpegの読み込み準備中",
+  "ffmpegdlstate.loading": "FFmpegを読み込み中",
+  "ffmpegdlstate.download": "FFmpegをダウンロード中",
+  "ffmpegdlstate.completion": "FFmpegの読み込み完了",
   "_comment.l": "last"
 }

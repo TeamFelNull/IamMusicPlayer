@@ -17,7 +17,7 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public class MusicUploadToast implements IToast {
-    private static final ResourceLocation IMP_TEXTURE_TOASTS = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/toasts.png");
+    public static final ResourceLocation IMP_TEXTURE_TOASTS = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/toasts.png");
     private final String uuid;
     private boolean completedOrError;
     protected long coeTime;
@@ -48,11 +48,7 @@ public class MusicUploadToast implements IToast {
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
             IKSGRenderUtil.drawCenterString(fr, matrix, tc, (int) (92.5f / 0.5f), (int) (20.5f / 0.5f), 0);
             IKSGRenderUtil.matrixPop(matrix);
-        }
 
-        IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new StringTextComponent(sd.getName()), MusicSharingDeviceScreen.fontStyle), 29, 6, 0);
-
-        if (sd.getState().isProgressble()) {
             IKSGRenderUtil.matrixPush(matrix);
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
             IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), (int) (29f / 0.5f), (int) (14.5f / 0.5f), 0);
@@ -60,6 +56,9 @@ public class MusicUploadToast implements IToast {
         } else {
             IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), 29, 18, 0);
         }
+
+        IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new StringTextComponent(sd.getName()), MusicSharingDeviceScreen.fontStyle), 29, 6, 0);
+
 
         if (sd.getState() == MusicUploadData.UploadState.COMPLETION || sd.getState() == MusicUploadData.UploadState.ERROR) {
             if (!completedOrError) {
@@ -72,6 +71,7 @@ public class MusicUploadToast implements IToast {
         return IToast.Visibility.SHOW;
     }
 
+    @Override
     public Object getType() {
         return uuid;
     }
@@ -87,6 +87,4 @@ public class MusicUploadToast implements IToast {
             toastgui.add(new MusicUploadToast(uuid));
         }
     }
-
-
 }

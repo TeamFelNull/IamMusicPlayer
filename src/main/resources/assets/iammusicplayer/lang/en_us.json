@@ -57,5 +57,9 @@
   "playmusic.desc.year": "Year : %s",
   "playmusic.desc.genre": "Genre : %s",
   "playmusic.desc.timestamp": "Added time : %s",
+  "ffmpegdlstate.preparation": "Preparation loading FFmpeg",
+  "ffmpegdlstate.loading": "Loading FFmpeg",
+  "ffmpegdlstate.download": "Downloading FFmpeg",
+  "ffmpegdlstate.completion": "FFmpeg loading completed",
   "_comment.l": "last"
 }

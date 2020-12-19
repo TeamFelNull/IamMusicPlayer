@@ -27,10 +27,13 @@ public class CommonProxy {
     }
 
     public void posInit() {
-
+        FFmpegManeger.instance().check();
     }
 
     public Minecraft getMinecraft() {
         return null;
+    }
+
+    public void addFFmpegLoadToast() {
     }
 }
