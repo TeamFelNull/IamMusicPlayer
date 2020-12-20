@@ -16,15 +16,14 @@ public class IMPContainerTypes {
     public static List<ContainerType<?>> MOD_CONTAINERTYPE = new ArrayList<ContainerType<?>>();
 
     @ObjectHolder(IamMusicPlayer.MODID + ":" + "music_sharing_device")
-    public static ContainerType<MusicSharingDeviceContainer> MUSIC_SHARING_DEVICE = register((windowId, inv, data) -> {
-        return new MusicSharingDeviceContainer(windowId, inv, new Inventory(1), data.readBlockPos());
-    }, new ResourceLocation(OtyacraftEngine.MODID, "music_sharing_device"));
+    public static ContainerType<MusicSharingDeviceContainer> MUSIC_SHARING_DEVICE = register((windowId, inv, data) -> new MusicSharingDeviceContainer(windowId, inv, new Inventory(1), data.readBlockPos()), new ResourceLocation(OtyacraftEngine.MODID, "music_sharing_device"));
+
+    @ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_deck")
+    public static ContainerType<CassetteDeckContainer> CASSETTE_DECK = register((windowId, inv, data) -> new CassetteDeckContainer(windowId, inv, new Inventory(4), data.readBlockPos()), new ResourceLocation(OtyacraftEngine.MODID, "cassette_deck"));
 
     private static <T extends ContainerType<?>> T register(IContainerFactory<?> factory, ResourceLocation location) {
         T cont = IKSGRegistryUtil.createContainerType(factory, location);
         MOD_CONTAINERTYPE.add(cont);
         return cont;
     }
-
-
 }

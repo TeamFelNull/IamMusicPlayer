@@ -144,6 +144,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         super(screenContainer, playerInventory, titleIn);
         this.xSize = 215;
         this.ySize = 242;
+        this.playerInventoryTitleY = this.ySize - 94;
         this.currentPlayList = PlayList.ALL;
         setMonitorsa();
         this.canOpenFileChooser = FileUtils.isCanOpenFileChooser();
@@ -184,7 +185,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.pictuerLoading = false;
         this.musicLoading = false;
-        this.playerInventoryTitleY = this.ySize - 94;
         this.powerButton = this.addWidgetByIKSG(new ChangeableImageButton(getTexturStartX() + 181, getTexturStartY() + 202, 20, 20, 215, 0, 20, MSD_GUI_TEXTURES, 256, 256, n -> {
             insPower(!this.isStateOn());
         }));
@@ -604,6 +604,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     @Override
     public void tickByIKSG() {
+        super.tickByIKSG();
         setMonitorsa();
 
         if (isStateOn())

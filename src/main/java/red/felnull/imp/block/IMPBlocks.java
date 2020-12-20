@@ -17,6 +17,8 @@ public class IMPBlocks {
     public static List<Item> MOD_BLOCKITEMS = new ArrayList<Item>();
 
     public static final Block MUSIC_SHARING_DEVICE = register("music_sharing_device", new MusicSharingDeviceBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)));
+    public static final Block CASSETTE_DECK = register("cassette_deck", new CassetteDeckBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)));
+
 
     private static Block register(String name, Block block) {
         return register(name, block, new BlockItem(block, new Item.Properties().group(IMPItemGroup.MOD_TAB)).setRegistryName(IamMusicPlayer.MODID, name));
