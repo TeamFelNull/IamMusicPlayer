@@ -125,6 +125,30 @@ tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompil
 shadowJar {
     classifier ''
     project.configurations.shadowAll.setTransitive(true);
+    configurations = [project.configurations.shadowAll]
+    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
+    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
+    relocate 'certificates', 'red.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
+    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
+    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
+    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
+    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
+    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+}
+task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    from sourceSets.main.output
+    classifier 'all'
+    project.configurations.shadowAll.setTransitive(true);
     project.configurations.shadowWin32.setTransitive(true);
     project.configurations.shadowWin64.setTransitive(true);
     project.configurations.shadowLinux32.setTransitive(true);
@@ -313,6 +337,7 @@ task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
 afterEvaluate {
     reobf {
         shadowJar { mappings = tasks.reobfJar.mappings }
+        shadowJarAll { mappings = tasks.reobfJar.mappings }
         shadowJarWin32 { mappings = tasks.reobfJar.mappings }
         shadowJarWin64 { mappings = tasks.reobfJar.mappings }
         shadowJarLinux32 { mappings = tasks.reobfJar.mappings }
@@ -346,6 +371,10 @@ task sourceJar(type: Jar) {
     classifier = 'source'
     manifest themanifest
 }
+task jarAll(type: Jar) {
+    classifier = 'all'
+    manifest themanifest
+}
 task jarWin32(type: Jar) {
     classifier = 'win32'
     manifest themanifest
@@ -373,6 +402,7 @@ task jarOsx64(type: Jar) {
 artifacts {
     archives devJar
     archives sourceJar
+    archives jarAll
     archives jarWin32
     archives jarWin64
     archives jarLinux32
@@ -387,6 +417,7 @@ publishing {
             artifact jar
             artifact devJar
             artifact sourceJar
+            artifact jarAll
             artifact jarWin32
             artifact jarWin64
             artifact jarLinux32
@@ -418,6 +449,9 @@ if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
             }
             addArtifact(sourceJar) {
                 displayName = "${mod_name}-${mc_version}-${mod_version}-source"
+            }
+            addArtifact(jarAll) {
+                displayName = "${mod_name}-${mc_version}-${mod_version}-all"
             }
             addArtifact(jarWin32) {
                 displayName = "${mod_name}-${mc_version}-${mod_version}-win32"

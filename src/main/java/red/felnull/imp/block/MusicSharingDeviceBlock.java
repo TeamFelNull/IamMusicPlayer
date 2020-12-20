@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
 import red.felnull.imp.block.voxelshape.MusicSharingDeviceVoxelShape;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 
 public class MusicSharingDeviceBlock extends HorizontalBlock {
@@ -73,11 +74,16 @@ public class MusicSharingDeviceBlock extends HorizontalBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand p_225533_5_, BlockRayTraceResult p_225533_6_) {
+        FFmpegManeger maneger = FFmpegManeger.instance();
         if (!worldIn.isRemote) {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
-            if (!(tileentity instanceof MusicSharingDeviceTileEntity))
-                return ActionResultType.PASS;
-            NetworkHooks.openGui((ServerPlayerEntity) playerIn, (INamedContainerProvider) tileentity, pos);
+            if (maneger.canUseFFmpeg()) {
+                TileEntity tileentity = worldIn.getTileEntity(pos);
+                if (!(tileentity instanceof MusicSharingDeviceTileEntity))
+                    return ActionResultType.PASS;
+                NetworkHooks.openGui((ServerPlayerEntity) playerIn, (INamedContainerProvider) tileentity, pos);
+            } else {
+                maneger.cantFFmpegCaution(playerIn);
+            }
         }
         return ActionResultType.SUCCESS;
     }

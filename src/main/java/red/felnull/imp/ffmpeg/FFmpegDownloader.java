@@ -49,6 +49,7 @@ public class FFmpegDownloader {
             IamMusicPlayer.proxy.addFFmpegLoadToast();
             try {
                 InputStream ffmpegResource = maneger.getFFmpegResource(osAndArch.getResourceName());
+          //      ffmpegResource = null;
                 if (ffmpegResource != null) {
                     state = FFmpegDwonloadState.LOADING;
                     IamMusicPlayer.LOGGER.info("Start ffmpeg copy");
@@ -75,6 +76,15 @@ public class FFmpegDownloader {
                     ex.printStackTrace();
                 }
             }
+      /*      while (true) {
+                try {
+                    sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (false)
+                    break;
+            }*/
             state = null;
             dwonloading = false;
 

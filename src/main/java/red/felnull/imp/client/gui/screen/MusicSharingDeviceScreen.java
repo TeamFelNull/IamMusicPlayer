@@ -25,6 +25,7 @@ import red.felnull.imp.client.util.YoutubeUtils;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
@@ -64,7 +65,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_1.png");
     public static final ResourceLocation MSD_GUI_TEXTURES2 = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_2.png");
     private static final ResourceLocation YOUTUBE_ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/youtube_icon.png");
-    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "msd");
+    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "imp_fonts");
     //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
     public static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
@@ -166,6 +167,12 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     @Override
     public void initByIKSG() {
+        FFmpegManeger maneger = FFmpegManeger.instance();
+        if (!maneger.canUseFFmpeg()) {
+            maneger.cantFFmpegCaution(getMinecraft().player);
+            closeScreen();
+            return;
+        }
         super.initByIKSG();
         updatePlayList();
         updatePlayMusic();

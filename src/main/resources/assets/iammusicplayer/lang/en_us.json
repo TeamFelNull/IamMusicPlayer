@@ -61,5 +61,6 @@
   "ffmpegdlstate.loading": "Loading FFmpeg",
   "ffmpegdlstate.download": "Downloading FFmpeg",
   "ffmpegdlstate.completion": "FFmpeg loading completed",
+  "ffmpegdl.caution": "Can't listen to or upload music until FFmpeg has finished loading",
   "_comment.l": "last"
 }

@@ -2,6 +2,8 @@ package red.felnull.imp.ffmpeg;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
@@ -94,6 +96,14 @@ public class FFmpegManeger {
 
     public ProcessLocator getLocator() {
         return locator;
+    }
+
+    public boolean canUseFFmpeg() {
+        return locator != null && !FFmpegDownloader.getInstance().isDwonloading();
+    }
+
+    public void cantFFmpegCaution(PlayerEntity player) {
+        player.sendStatusMessage(new TranslationTextComponent("ffmpegdl.caution"), true);
     }
 
     public enum OSAndArch {
