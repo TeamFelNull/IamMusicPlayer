@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.musicplayer.PlayImage;
@@ -80,7 +81,7 @@ public class RenderUtil {
         Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
         FontRenderer ft = mc.fontRenderer;
 
-        IFormattableTextComponent comp = IKSGStyles.withStyle(new StringTextComponent(str), MusicSharingDeviceScreen.fontStyle);
+        IFormattableTextComponent comp = IKSGStyles.withStyle(new StringTextComponent(str),  IMPAbstractEquipmentScreen.smart_fontStyle);
         int stWidthSize = ft.getStringPropertyWidth(comp);
         float baritu = (float) (size - 3) / (float) stWidthSize;
         float yzure = (size - ft.FONT_HEIGHT * baritu) / 2;

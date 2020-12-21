@@ -11,6 +11,7 @@ import net.minecraft.util.text.StringTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicUploadData;
 import red.felnull.imp.client.data.MusicUploader;
+import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -44,20 +45,20 @@ public class MusicUploadToast implements IToast {
             IKSGRenderUtil.guiBindAndBlit(IMP_TEXTURE_TOASTS, matrix, 29, 19, 0, 32, 125, 7, 256, 256);
             IKSGRenderUtil.guiBindAndBlit(IMP_TEXTURE_TOASTS, matrix, 30, 20, 0, 39, (int) (123 * sd.getProgress()), 5, 256, 256);
             IKSGRenderUtil.matrixPush(matrix);
-            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(sd.getProgress() * 100) + "%"), MusicSharingDeviceScreen.fontStyle);
+            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(sd.getProgress() * 100) + "%"),  IMPAbstractEquipmentScreen.smart_fontStyle);
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
             IKSGRenderUtil.drawCenterString(fr, matrix, tc, (int) (92.5f / 0.5f), (int) (20.5f / 0.5f), 0);
             IKSGRenderUtil.matrixPop(matrix);
 
             IKSGRenderUtil.matrixPush(matrix);
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), (int) (29f / 0.5f), (int) (14.5f / 0.5f), 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(),  IMPAbstractEquipmentScreen.smart_fontStyle), (int) (29f / 0.5f), (int) (14.5f / 0.5f), 0);
             IKSGRenderUtil.matrixPop(matrix);
         } else {
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), 29, 18, 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(sd.getState().getLocalized(),  IMPAbstractEquipmentScreen.smart_fontStyle), 29, 18, 0);
         }
 
-        IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new StringTextComponent(sd.getName()), MusicSharingDeviceScreen.fontStyle), 29, 6, 0);
+        IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new StringTextComponent(sd.getName()),  IMPAbstractEquipmentScreen.smart_fontStyle), 29, 6, 0);
 
 
         if (sd.getState() == MusicUploadData.UploadState.COMPLETION || sd.getState() == MusicUploadData.UploadState.ERROR) {

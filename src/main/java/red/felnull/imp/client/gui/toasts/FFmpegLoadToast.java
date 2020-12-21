@@ -11,6 +11,7 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.ffmpeg.FFmpegDownloader;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -40,14 +41,14 @@ public class FFmpegLoadToast implements IToast {
             IKSGRenderUtil.guiBindAndBlit(MusicUploadToast.IMP_TEXTURE_TOASTS, matrix, 29, 19, 0, 32, 125, 7, 256, 256);
             IKSGRenderUtil.guiBindAndBlit(MusicUploadToast.IMP_TEXTURE_TOASTS, matrix, 30, 20, 0, 39, (int) (123 * downloader.getProgress()), 5, 256, 256);
             IKSGRenderUtil.matrixPush(matrix);
-            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(downloader.getProgress() * 100) + "%"), MusicSharingDeviceScreen.fontStyle);
+            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(downloader.getProgress() * 100) + "%"),  IMPAbstractEquipmentScreen.smart_fontStyle);
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
             IKSGRenderUtil.drawCenterString(fr, matrix, tc, (int) (92.5f / 0.5f), (int) (20.5f / 0.5f), 0);
             IKSGRenderUtil.matrixPop(matrix);
 
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(downloader.getState().getLocalized(), MusicSharingDeviceScreen.fontStyle), 29, 8, 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(downloader.getState().getLocalized(),  IMPAbstractEquipmentScreen.smart_fontStyle), 29, 8, 0);
         } else {
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new TranslationTextComponent("ffmpegdlstate.completion"), MusicSharingDeviceScreen.fontStyle), 29, 16 - fr.FONT_HEIGHT / 2, 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new TranslationTextComponent("ffmpegdlstate.completion"),  IMPAbstractEquipmentScreen.smart_fontStyle), 29, 16 - fr.FONT_HEIGHT / 2, 0);
         }
 
         if (!downloader.isDwonloading()) {

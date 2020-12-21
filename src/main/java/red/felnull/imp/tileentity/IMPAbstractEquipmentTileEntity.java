@@ -14,9 +14,7 @@ import red.felnull.otyacraftengine.tileentity.IkisugiLockableTileEntity;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 
 public abstract class IMPAbstractEquipmentTileEntity extends IkisugiLockableTileEntity implements ITickableTileEntity {
-    private int antennaRotationPitch;//縦方向最大90度
-    private int antennaRotationYaw;//横方向最大360度
-    private boolean antennaInversionPitch;
+
 
     protected IMPAbstractEquipmentTileEntity(TileEntityType<?> typeIn) {
         super(typeIn);
@@ -87,25 +85,6 @@ public abstract class IMPAbstractEquipmentTileEntity extends IkisugiLockableTile
 
     @Override
     public void tick() {
-        if (isAntennaRotation()) {
-            this.antennaRotationYaw += 2;
-            while (this.antennaRotationYaw > 360) {
-                this.antennaRotationYaw -= 360;
-            }
-            if (!antennaInversionPitch) {
-                if (50 >= antennaRotationPitch) {
-                    this.antennaRotationPitch += 2;
-                } else {
-                    this.antennaInversionPitch = true;
-                }
-            } else {
-                if (-50 <= antennaRotationPitch) {
-                    this.antennaRotationPitch -= 2;
-                } else {
-                    this.antennaInversionPitch = false;
-                }
-            }
-        }
         this.syncble(this);
     }
 
@@ -114,38 +93,20 @@ public abstract class IMPAbstractEquipmentTileEntity extends IkisugiLockableTile
     public void readByIKSG(BlockState state, CompoundNBT tag) {
         super.readByIKSG(state, tag);
         IKSGNBTUtil.loadAllItemsByIKSG(tag, getItems());
-        this.antennaRotationPitch = tag.getInt("AntennaRotationPitch");
-        this.antennaRotationYaw = tag.getInt("AntennaRotationYaw");
-        this.antennaInversionPitch = tag.getBoolean("AntennaInversionPitch");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         super.write(tag);
         IKSGNBTUtil.saveAllItemsByIKSG(tag, getItems());
-        tag.putInt("AntennaRotationPitch", this.antennaRotationPitch);
-        tag.putInt("AntennaRotationYaw", this.antennaRotationYaw);
-        tag.putBoolean("AntennaInversionPitch", this.antennaInversionPitch);
         return tag;
     }
 
-    protected boolean isAntennaRotation() {
-        return isOn();
-    }
-
-    protected int getAntennaIndex() {
-        return 0;
-    }
-
-    public ItemStack getAntenna() {
-        return getStackInSlot(getAntennaIndex());
-    }
-
-    public int getAntennaRotationPitch() {
-        return antennaRotationPitch;
-    }
-
-    public int getAntennaRotationYaw() {
-        return antennaRotationYaw;
+    @Override
+    public CompoundNBT instructionFromClient(ServerPlayerEntity serverPlayerEntity, String s, CompoundNBT tag) {
+        if (s.equals("power")) {
+            setBlockState(getBlockState().with(IMPAbstractEquipmentBlock.ON, tag.getBoolean("on")));
+        }
+        return null;
     }
 }

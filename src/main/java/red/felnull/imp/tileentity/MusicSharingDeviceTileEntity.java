@@ -8,9 +8,10 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import red.felnull.imp.block.IMPAbstractEquipmentBlock;
+import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
@@ -24,7 +25,7 @@ import red.felnull.otyacraftengine.util.IKSGServerUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MusicSharingDeviceTileEntity extends IMPAbstractEquipmentTileEntity {
+public class MusicSharingDeviceTileEntity extends IMPAbstractPAEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
     private Map<String, String> plpageModes = new HashMap<>();
@@ -75,6 +76,7 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractEquipmentTileEntity
                 dtag.put("playmusic", updatePlayMusic(serverPlayerEntity, tag.getString("listuuid")));
                 return dtag;
             }
+            return null;
         } else if (s.equals("mode")) {
             plpageModes.put(uuid, tag.getString("name"));
             CompoundNBT dtag = new CompoundNBT();
@@ -102,7 +104,7 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractEquipmentTileEntity
             return updatePlayMusic(serverPlayerEntity, tag.getString("listuuid"));
         }
 
-        return null;
+        return super.instructionFromClient(serverPlayerEntity, s, tag);
     }
 
     protected CompoundNBT updatePlayMusic(ServerPlayerEntity playerEntity, String uuid) {
@@ -133,7 +135,7 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractEquipmentTileEntity
     public void tick() {
         super.tick();
         if (!world.isRemote) {
-            if (!ItemHelper.isAntenna(getAntenna())) {
+            if (!ItemHelper.isAntenna(getPAntenna())) {
                 plpageModes.entrySet().stream().filter(n -> !n.getValue().equals("noantenna")).forEach(n -> plpageModes.put(n.getKey(), "noantenna"));
             } else {
                 plpageModes.entrySet().stream().filter(n -> n.getValue().equals("noantenna")).forEach(n -> plpageModes.put(n.getKey(), "playlist"));
@@ -169,5 +171,39 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractEquipmentTileEntity
             return getPlayerModeMap().get(uuid);
         }
         return null;
+    }
+
+    public enum Screen {
+        OFF("off"),
+        ON("on"),
+        PLAYLIST("playlist"),
+        NO_ANTENNA("no_antenna"),
+        CREATE_PLAYLIST("create_playlist"),
+        ADD_PLAYLIST("add_playlist"),
+        JOIN_PLAYLIST("join_playlist"),
+        ADD_PLAYMUSIC_1("add_playmusic_1"),
+        ADD_PLAYMUSIC_2("add_playmusic_2"),
+        YOUTUBE_SEARCH("youtube_search");
+        private final String name;
+
+        private Screen(String name) {
+            this.name = name;
+        }
+
+        public static Screen getScreenByName(String name) {
+            for (Screen sc : values()) {
+                if (sc.getName().equals(name))
+                    return sc;
+            }
+            return OFF;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public ResourceLocation getTexLocation() {
+            return new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/music_sharing_device_screen/" + getName() + ".png");
+        }
     }
 }

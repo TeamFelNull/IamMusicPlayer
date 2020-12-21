@@ -30,6 +30,7 @@
   "msd.youtubesearch": "Youtube Search",
   "msd.openSoundFile": "Open Sound File",
   "msd.openImageFile": "Open Image File",
+  "cd.operationselection": "Operation selection",
   "musicloadresult.nosupportformat": "No Support Format",
   "musicloadresult.filenotexist": "File Not Exist",
   "musicloadresult.invalidurl": "Invalid URL",
@@ -62,5 +63,7 @@
   "ffmpegdlstate.download": "Downloading FFmpeg",
   "ffmpegdlstate.completion": "FFmpeg loading completed",
   "ffmpegdl.caution": "Can't listen to or upload music until FFmpeg has finished loading",
+  "_comment.n": "narrator",
+  "narrator.button.power": "Power",
   "_comment.l": "last"
 }

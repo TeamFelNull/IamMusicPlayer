@@ -15,7 +15,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.*;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.block.MusicSharingDeviceBlock;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.gui.widget.*;
 import red.felnull.imp.client.music.IMusicPlayer;
@@ -35,7 +34,6 @@ import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
 import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
-import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ChangeableImageButton;
 import red.felnull.otyacraftengine.client.gui.widget.Checkbox;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
@@ -60,14 +58,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<MusicSharingDeviceContainer> {
+public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSharingDeviceContainer> {
 
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_1.png");
     public static final ResourceLocation MSD_GUI_TEXTURES2 = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_2.png");
     private static final ResourceLocation YOUTUBE_ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/youtube_icon.png");
-    private static final ResourceLocation fontLocation = new ResourceLocation(IamMusicPlayer.MODID, "imp_fonts");
     //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
-    public static final Style fontStyle = IKSGStyles.withFont(fontLocation);
 
     private static final FileFilter FolderSerchFilter = new FileFilter() {
         @Override
@@ -101,7 +97,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
     private PlayList currentPlayList;
     private boolean initFrist;
     private SourceCheckThread sourceCheckThread;
-    private ChangeableImageButton powerButton;
     private StringImageButton allbutton;
     private ImageButton addGuildButton;
     private ScrollBarSlider guildlistbar;
@@ -185,18 +180,11 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.pictuerLoading = false;
         this.musicLoading = false;
-        this.powerButton = this.addWidgetByIKSG(new ChangeableImageButton(getTexturStartX() + 181, getTexturStartY() + 202, 20, 20, 215, 0, 20, MSD_GUI_TEXTURES, 256, 256, n -> {
-            insPower(!this.isStateOn());
-        }));
-        if (isStateOn()) {
-            powerButton.setTextuer(235, 0, 20, 256, 256);
-        } else {
-            powerButton.setTextuer(215, 0, 20, 256, 256);
-        }
+
         this.allbutton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 1, 18, 18, 215, 60, 18, MSD_GUI_TEXTURES, n -> {
             this.currentPlayList = PlayList.ALL;
             updatePlayMusic();
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.all"), fontStyle)));
+        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.all"), smart_fontStyle)));
         this.allbutton.setSizeAdjustment(true);
         this.allbutton.setShadwString(false);
         this.allbutton.setStringColor(0);
@@ -223,12 +211,12 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, playlistbar, currentPlaylistsMusics, (n, m) -> {
             PlayMusic music = currentPlaylistsMusics.get(m);
             playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
-        },this));
+        }, this));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
 
         this.backGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 92, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
         this.backGuid.setSizeAdjustment(true);
         this.backGuid.setShadwString(false);
         this.backGuid.setStringColor(0);
@@ -237,7 +225,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         this.createGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), image, picturImage, createAnyoneCheckbox.isCheck());
             insMode(Monitors.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, smart_fontStyle)));
         this.createGuid.setSizeAdjustment(true);
         this.createGuid.setShadwString(false);
         this.createGuid.setStringColor(0);
@@ -281,7 +269,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.createJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.CREATEPLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, smart_fontStyle)));
         this.createJoinGuid.setSizeAdjustment(true);
         this.createJoinGuid.setShadwString(false);
         this.createJoinGuid.setStringColor(0);
@@ -289,7 +277,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.addJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.JOINPLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.JOIN, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.JOIN, smart_fontStyle)));
         this.addJoinGuid.setSizeAdjustment(true);
         this.addJoinGuid.setShadwString(false);
         this.addJoinGuid.setStringColor(0);
@@ -297,7 +285,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.backJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 24, getMonitorStartY() + getMonitorYsize() / 2 + 18, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
         this.backJoinGuid.setSizeAdjustment(true);
         this.backJoinGuid.setShadwString(false);
         this.backJoinGuid.setStringColor(0);
@@ -314,7 +302,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.joinplaylistbackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 12, 14, 7, 0, 30, 14, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
         this.joinplaylistbackButton.setSizeAdjustment(true);
         this.joinplaylistbackButton.setShadwString(false);
         this.joinplaylistbackButton.setStringColor(0);
@@ -392,7 +380,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGScreenUtil.setVisible(this.addPlayMusicOpenFolder, false);
         this.nextAddPlayMusic = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC2);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.NEXT, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.NEXT, smart_fontStyle)));
         this.nextAddPlayMusic.setSizeAdjustment(true);
         this.nextAddPlayMusic.setShadwString(false);
         this.nextAddPlayMusic.setStringColor(0);
@@ -457,7 +445,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.addPlayMusic2BackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC1);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
         this.addPlayMusic2BackButton.setSizeAdjustment(true);
         this.addPlayMusic2BackButton.setShadwString(false);
         this.addPlayMusic2BackButton.setStringColor(0);
@@ -466,7 +454,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
             PlayLocation location = new PlayLocation(musicSourceClientReferencesType.getLocationType(), musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE ? UUID.randomUUID().toString() : this.addPlayMusicSourceField.getText());
             PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), currentPlayList, this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
             insMode(Monitors.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, smart_fontStyle)));
         this.addPlayMusic2CrateButton.setSizeAdjustment(true);
         this.addPlayMusic2CrateButton.setShadwString(false);
         this.addPlayMusic2CrateButton.setStringColor(0);
@@ -490,7 +478,7 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
         this.addPlayMusicYoutubeSerchBackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 150, getMonitorStartY() + 12, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
             insMode(Monitors.ADDPLAYMUSIC1);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
         this.addPlayMusicYoutubeSerchBackButton.setSizeAdjustment(true);
         this.addPlayMusicYoutubeSerchBackButton.setShadwString(false);
         this.addPlayMusicYoutubeSerchBackButton.setStringColor(0);
@@ -607,17 +595,12 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         super.tickByIKSG();
         setMonitorsa();
 
-        if (isStateOn())
-            powerButton.setTextuer(235, 0, 20, 256, 256);
-        else
-            powerButton.setTextuer(215, 0, 20, 256, 256);
-
         if (currentPlayList == PlayList.ALL)
             addPlayMusicButton.setTextuer(244, 40, 18, 256, 256);
         else
             addPlayMusicButton.setTextuer(235, 40, 18, 256, 256);
 
-        if (getTileEntity() instanceof MusicSharingDeviceTileEntity && ((MusicSharingDeviceTileEntity) getTileEntity()).getAntenna().isEmpty()) {
+        if (getTileEntity() instanceof MusicSharingDeviceTileEntity && ((MusicSharingDeviceTileEntity) getTileEntity()).getPAntenna().isEmpty()) {
             stopPlayMusic();
         }
 
@@ -721,9 +704,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         return MSD_GUI_TEXTURES;
     }
 
-    public boolean isStateOn() {
-        return getTileEntity().getBlockState().get(MusicSharingDeviceBlock.ON);
-    }
 
     protected String getMode() {
         return ((MusicSharingDeviceTileEntity) getTileEntity()).getMode(IamMusicPlayer.proxy.getMinecraft().player);
@@ -830,14 +810,14 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
 
     }
 
-    public void insPower(boolean on) {
+    @Override
+    protected void insPower(boolean on) {
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("on", on);
         tag.putString("listuuid", currentPlayList.getUUID());
         this.instruction("power", tag);
         stopPlayMusic();
     }
-
 
     private void setMonitorsa() {
         if (!isStateOn())
@@ -964,13 +944,6 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
         IKSGRenderUtil.matrixPop(matrx);
     }
 
-    protected void drawCenterFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
-        IKSGRenderUtil.drawCenterString(this.font, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
-    }
-
-    protected void drawFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
-        IKSGRenderUtil.drawString(this.font, matx, IKSGStyles.withStyle(text, fontStyle), x, y, 0);
-    }
 
     public PlayList getCurrentPlayList() {
         return currentPlayList;
@@ -1413,8 +1386,8 @@ public class MusicSharingDeviceScreen extends AbstractIkisugiContainerScreen<Mus
                 musicPlayLodingSrc = src;
                 musicPlayLodingType = type;
                 musicPlayLoading = true;
-                if(!stop)
-                musicPlayer = type.getMusicPlayer(src);
+                if (!stop)
+                    musicPlayer = type.getMusicPlayer(src);
                 if (!stop && Monitorsa == monitor && musicPlayer != null && isOpend()) {
                     musicPlayer.play(startTime);
                 }
