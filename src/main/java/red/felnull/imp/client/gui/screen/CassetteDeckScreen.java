@@ -63,6 +63,6 @@ public class CassetteDeckScreen extends IMPAbstractEquipmentScreen<CassetteDeckC
     }
 
     public CassetteDeckTileEntity.Screen getCurrentScreen() {
-        return ((CassetteDeckTileEntity) getTileEntity()).getMode();
+        return ((CassetteDeckTileEntity) getTileEntity()).getScreen();
     }
 }

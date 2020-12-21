@@ -52,7 +52,7 @@ public class CassetteDeckTileEntity extends IMPAbstractPAEquipmentTileEntity {
         this.currentScreen = screen;
     }
 
-    public Screen getMode() {
+    public Screen getScreen() {
         return currentScreen;
     }
 

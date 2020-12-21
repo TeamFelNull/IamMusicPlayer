@@ -19,13 +19,13 @@ public class PlayImage implements INBTReadWriter {
 
     @Override
     public void read(CompoundNBT tag) {
-        this.imageType = ImageType.valueOf(tag.getString("ImageType"));
+        this.imageType = ImageType.getImageTypeByName(tag.getString("ImageType"));
         this.name = tag.getString("Name");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        tag.putString("ImageType", this.imageType.name());
+        tag.putString("ImageType", this.imageType.getNmae());
         tag.putString("Name", this.name);
         return tag;
     }
@@ -39,9 +39,26 @@ public class PlayImage implements INBTReadWriter {
     }
 
     public enum ImageType {
-        IMGAE,
-        STRING,
-        PLAYERFACE,
-        URLIMAGE;
+        IMGAE("imgae"),
+        STRING("string"),
+        PLAYERFACE("playerface"),
+        URLIMAGE("urlimage");
+        private final String nmae;
+
+        private ImageType(String name) {
+            this.nmae = name;
+        }
+
+        public String getNmae() {
+            return nmae;
+        }
+
+        public static ImageType getImageTypeByName(String name) {
+            for (ImageType it : values()) {
+                if (it.getNmae().equals(name))
+                    return it;
+            }
+            return STRING;
+        }
     }
 }
