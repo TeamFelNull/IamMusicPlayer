@@ -2,6 +2,7 @@ package red.felnull.imp.tileentity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -12,7 +13,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.CassetteDeckContainer;
 
-public class CassetteDeckTileEntity extends IMPAbstractPAEquipmentTileEntity {
+public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     private Screen currentScreen = Screen.OFF;
 
@@ -48,7 +49,7 @@ public class CassetteDeckTileEntity extends IMPAbstractPAEquipmentTileEntity {
         return tag;
     }
 
-    public void setMode(Screen screen) {
+    public void setScreen(Screen screen) {
         this.currentScreen = screen;
     }
 
@@ -61,7 +62,8 @@ public class CassetteDeckTileEntity extends IMPAbstractPAEquipmentTileEntity {
         super.tick();
         if (!world.isRemote) {
             if (isOn()) {
-                currentScreen = Screen.SELECTION;
+                if (currentScreen == Screen.OFF)
+                    currentScreen = Screen.SELECTION;
             } else {
                 if (currentScreen != Screen.OFF)
                     currentScreen = Screen.OFF;
@@ -69,9 +71,22 @@ public class CassetteDeckTileEntity extends IMPAbstractPAEquipmentTileEntity {
         }
     }
 
+    @Override
+    public CompoundNBT instructionFromClient(ServerPlayerEntity player, String s, CompoundNBT tag) {
+        if (s.equals("Mode")) {
+            setScreen(Screen.getScreenByName(tag.getString("name")));
+        }
+        return super.instructionFromClient(player, s, tag);
+    }
+
+
     public enum Screen {
         OFF("off"),
-        SELECTION("selection");
+        SELECTION("selection"),
+        PLAY("play"),
+        WRITE_1("write_1"),
+        ERASE("erase"),
+        COPY("copy");
         private final String name;
 
         private Screen(String name) {

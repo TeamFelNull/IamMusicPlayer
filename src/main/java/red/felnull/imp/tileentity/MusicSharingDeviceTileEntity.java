@@ -14,8 +14,6 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
-import red.felnull.imp.data.PlayMusicManeger;
-import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -24,7 +22,7 @@ import red.felnull.otyacraftengine.util.IKSGServerUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MusicSharingDeviceTileEntity extends IMPAbstractPAEquipmentTileEntity {
+public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private Map<String, CompoundNBT> plyerDatas = new HashMap<>();
 
@@ -66,27 +64,10 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAEquipmentTileEnti
             setScreen(player, Screen.getScreenByName(tag.getString("name")));
         } else if (s.equals("PathSet")) {
             setPath(player, tag.getString("path"));
-        } else if (s.equals("LastPlayListSet")) {
-            setLastPlayList(player, tag.getString("uuid"));
         } else if (s.equals("CanJoinPlayListUpdate")) {
             return getUpdateCanJoinPlayListTag(player);
-        } else if (s.equals("PlayListUpdate")) {
-            return getUpdatePlayListTag(player);
-        } else if (s.equals("PlayMusicUpdate")) {
-            return getUpdatePlayMusicTag(player, tag.getString("uuid"));
         }
         return super.instructionFromClient(player, s, tag);
-    }
-
-    private CompoundNBT getUpdatePlayMusicTag(ServerPlayerEntity playerEntity, String uuid) {
-        CompoundNBT tag = new CompoundNBT();
-        tag.putString("uuid", uuid);
-        tag.put("list", PlayMusicManeger.instance().getAllPlayMusicNBT(playerEntity, PlayList.getPlayListByUUID(uuid)));
-        return tag;
-    }
-
-    private CompoundNBT getUpdatePlayListTag(ServerPlayerEntity player) {
-        return PlayListGuildManeger.instance().getJoinedPlayListsNBT(player);
     }
 
     private CompoundNBT getUpdateCanJoinPlayListTag(ServerPlayerEntity player) {
@@ -121,17 +102,6 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAEquipmentTileEnti
                 }
             });
         }
-    }
-
-    public String getLastPlayList(PlayerEntity pl) {
-        return getPlayerData(pl).getString("LastPlayList");
-    }
-
-    public void setLastPlayList(PlayerEntity pl, String uuid) {
-        if (uuid == null || uuid.isEmpty())
-            getPlayerData(pl).remove("LastPlayList");
-        else
-            getPlayerData(pl).putString("LastPlayList", uuid);
     }
 
     public void setPath(String pluuid, String path) {

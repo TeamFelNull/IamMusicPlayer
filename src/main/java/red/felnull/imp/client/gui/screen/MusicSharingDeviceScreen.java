@@ -26,7 +26,6 @@ import red.felnull.imp.client.util.YoutubeUtils;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
-import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.musicplayer.PlayImage;
 import red.felnull.imp.musicplayer.PlayList;
@@ -50,7 +49,6 @@ import ws.schild.jave.MultimediaObject;
 import ws.schild.jave.info.MultimediaInfo;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileFilter;
 import java.net.URL;
 import java.nio.file.Path;
@@ -60,23 +58,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSharingDeviceContainer> {
+public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<MusicSharingDeviceContainer> {
 
     public static final ResourceLocation MSD_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_1.png");
     public static final ResourceLocation MSD_GUI_TEXTURES2 = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_2.png");
     private static final ResourceLocation YOUTUBE_ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/youtube_icon.png");
-    //   private static final ResourceLocation fontLocation = new ResourceLocation("minecraft", "default");
-
-    private static final FileFilter FolderSerchFilter = new FileFilter() {
-        @Override
-        public boolean accept(File file) {
-            return !file.isDirectory() && file.exists();
-        }
-    };
-
     private final List<PlayList> jonPlaylists = new ArrayList<>();
-    private final List<PlayList> jonedAllPlaylists = new ArrayList<>();
-    private final List<PlayMusic> currentPlaylistsMusics = new ArrayList<>();
     private final boolean canOpenFileChooser;
     public List<AudioTrack> youtubeResilts = new ArrayList<>();
     public TextFieldWidget addPlayMusicSourceField;
@@ -95,15 +82,13 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
 
     private MusicSourceClientReferencesType musicSourceClientReferencesType;
     private String formattype;
-    private PlayList currentPlayList;
     private boolean initFrist;
-    private boolean isFristMLUpdate;
     private SourceCheckThread sourceCheckThread;
     private StringImageButton allbutton;
     private ImageButton addGuildButton;
     private ScrollBarSlider guildlistbar;
     private ScrollBarSlider playlistbar;
-    private GuildPlayListScrollButton guildButtons;
+    private PlayListScrollButton guildButtons;
     private PlayMusicScrollButton playlistButtons;
     private TextFieldWidget createGuildNameField;
     private Checkbox createAnyoneCheckbox;
@@ -142,38 +127,34 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         this.xSize = 215;
         this.ySize = 242;
         this.playerInventoryTitleY = this.ySize - 94;
-        this.currentPlayList = PlayList.ALL;
         this.canOpenFileChooser = FileUtils.isCanOpenFileChooser();
     }
 
-    protected int getMonitorStartX() {
+    @Override
+    public int getMonitorStartX() {
         return getTexturStartX() + 8;
     }
 
-    protected int getMonitorStartY() {
+    @Override
+    public int getMonitorStartY() {
         return getTexturStartY() + 20;
     }
 
-    protected int getMonitorXsize() {
+    @Override
+    public int getMonitorXsize() {
         return 199;
     }
 
-    protected int getMonitorYsize() {
+    @Override
+    public int getMonitorYsize() {
         return 122;
     }
 
     @Override
     public void initByIKSG() {
-        FFmpegManeger maneger = FFmpegManeger.instance();
-        if (!maneger.canUseFFmpeg()) {
-            maneger.cantFFmpegCaution(getMinecraft().player);
-            closeScreen();
-            return;
-        }
         super.initByIKSG();
         updateAll();
         timerSet();
-
 
         if (musicSourceClientReferencesType == null)
             this.musicSourceClientReferencesType = MusicSourceClientReferencesType.LOCAL_FILE;
@@ -181,55 +162,40 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         this.pictuerLoading = false;
         this.musicLoading = false;
 
-        this.allbutton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 1, 18, 18, 215, 60, 18, MSD_GUI_TEXTURES, n -> {
-            this.currentPlayList = PlayList.ALL;
+        this.allbutton = addStringImageButton(new TranslationTextComponent("playlist.all"), 1, 1, 18, 18, 0, 40, n -> {
+            setCurrentSelectedPlayList(PlayList.ALL);
             updatePlayMusic();
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.all"), smart_fontStyle)));
-        this.allbutton.setSizeAdjustment(true);
-        this.allbutton.setShadwString(false);
-        this.allbutton.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.allbutton, false);
+        });
 
         this.addGuildButton = this.addWidgetByIKSG(new ImageButton(getMonitorStartX() + 20, getMonitorStartY() + 1, 9, 18, 235, 40, 18, MSD_GUI_TEXTURES, n -> {
             insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYLIST);
         }));
         IKSGScreenUtil.setVisible(this.addGuildButton, false);
 
-        this.guildlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 20, getMonitorStartY() + 20, 101, 100, 0, -20, 215, 126, MSD_GUI_TEXTURES));
+        this.guildlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 20, getMonitorStartY() + 20, 101, 100, 0, -20, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
         IKSGScreenUtil.setVisible(this.guildlistbar, false);
 
-        this.playlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -159, 215, 126, MSD_GUI_TEXTURES));
+        this.playlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -159, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
         IKSGScreenUtil.setVisible(this.playlistbar, false);
 
-
-        this.guildButtons = this.addWidgetByIKSG(new GuildPlayListScrollButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 18, 101, 18, guildlistbar, jonedAllPlaylists, (n, m) -> {
-            this.currentPlayList = jonedAllPlaylists.get(m);
-            updatePlayMusic();
-        }, this));
+        this.guildButtons = this.addWidgetByIKSG(new PlayListScrollButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 101, guildlistbar, (n, m) -> {
+            setCurrentSelectedPlayList(getJonedAllPlayLists().get(m));
+            updateAll();
+        }, this, false));
         IKSGScreenUtil.setVisible(this.guildButtons, false);
 
-        this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, playlistbar, currentPlaylistsMusics, (n, m) -> {
-            PlayMusic music = currentPlaylistsMusics.get(m);
+        this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, playlistbar,  (n, m) -> {
+            PlayMusic music = getCurrentPLPlayMusic().get(m);
             playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
-        }, this));
+        }, this,this,false));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
 
-        this.backGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 92, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
-        this.backGuid.setSizeAdjustment(true);
-        this.backGuid.setShadwString(false);
-        this.backGuid.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.backGuid, false);
+        this.backGuid = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.BACK, 92, 92, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
 
-        this.createGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+        this.createGuid = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.CRATE, 145, 92, n -> {
             PlayListGuildManeger.instance().createPlayListRequest(createGuildNameField.getText(), image, picturImage, createAnyoneCheckbox.isCheck());
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, smart_fontStyle)));
-        this.createGuid.setSizeAdjustment(true);
-        this.createGuid.setShadwString(false);
-        this.createGuid.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.createGuid, false);
+        });
 
         this.resetImage = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 86 - 16, getMonitorStartY() + 106 - 8, 8, 8, 215, 198, 8, MSD_GUI_TEXTURES, n -> {
             removePictuerPath();
@@ -267,31 +233,14 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         this.createAnyoneCheckbox = this.addWidgetByIKSG(new Checkbox(getMonitorStartX() + 92, getMonitorStartY() + 56, 15, 15, 215, 96, 256, 256, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.createAnyoneCheckbox, false);
 
-        this.createJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, smart_fontStyle)));
-        this.createJoinGuid.setSizeAdjustment(true);
-        this.createJoinGuid.setShadwString(false);
-        this.createJoinGuid.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.createJoinGuid, false);
+        this.createJoinGuid = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.CRATE, getMonitorXsize() / 2 - 48 - 5, getMonitorYsize() / 2, n -> insMode(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST));
 
-        this.addJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + getMonitorYsize() / 2, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.JOIN, smart_fontStyle)));
-        this.addJoinGuid.setSizeAdjustment(true);
-        this.addJoinGuid.setShadwString(false);
-        this.addJoinGuid.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.addJoinGuid, false);
+        this.addJoinGuid = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.JOIN, getMonitorXsize() / 2 + 5, getMonitorYsize() / 2, n -> insMode(MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST));
 
-        this.backJoinGuid = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 24, getMonitorStartY() + getMonitorYsize() / 2 + 18, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
-        this.backJoinGuid.setSizeAdjustment(true);
-        this.backJoinGuid.setShadwString(false);
-        this.backJoinGuid.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.backJoinGuid, false);
+        this.backJoinGuid = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.BACK, getMonitorXsize() / 2 - 24, getMonitorYsize() / 2 + 18, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
 
-        this.joinplaylistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -189, 215, 126, MSD_GUI_TEXTURES));
+
+        this.joinplaylistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 20, 101, 100, 0, -189, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
         IKSGScreenUtil.setVisible(this.joinplaylistbar, false);
 
         this.JoinPlayListScrollButtons = this.addWidgetByIKSG(new JoinPlayListScrollButton(getMonitorStartX() + 1, getMonitorStartY() + 20, 187, 101, 40, joinplaylistbar, jonPlaylists, (n, m) -> {
@@ -308,6 +257,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         this.joinplaylistbackButton.setStringColor(0);
         this.joinplaylistbackButton.setScale(0.5f);
         IKSGScreenUtil.setVisible(this.joinplaylistbackButton, false);
+
 
         this.addPlayMusicButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 189, getMonitorStartY() + 1, 9, 18, 235, 40, 18, MSD_GUI_TEXTURES, n -> {
             insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1);
@@ -377,15 +327,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
                 }
             });
         }));
-        IKSGScreenUtil.setVisible(this.addPlayMusicOpenFolder, false);
-        this.nextAddPlayMusic = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 145, getMonitorStartY() + 92, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.NEXT, smart_fontStyle)));
-        this.nextAddPlayMusic.setSizeAdjustment(true);
-        this.nextAddPlayMusic.setShadwString(false);
-        this.nextAddPlayMusic.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.nextAddPlayMusic, false);
 
+        this.nextAddPlayMusic = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.NEXT, 145, 92, n -> insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
 
         String MusicArtistField = "";
         if (this.addPlayMusicArtistField != null)
@@ -443,22 +386,13 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         });
         IKSGScreenUtil.setVisible(this.addPlayMusicGenreField, false);
 
-        this.addPlayMusic2BackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 - 48 - 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
-        this.addPlayMusic2BackButton.setSizeAdjustment(true);
-        this.addPlayMusic2BackButton.setShadwString(false);
-        this.addPlayMusic2BackButton.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, false);
-        this.addPlayMusic2CrateButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + getMonitorXsize() / 2 + 5, getMonitorStartY() + 105, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
+        this.addPlayMusic2BackButton = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.BACK, getMonitorXsize() / 2 - 48 - 5, 105, n -> insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1));
+
+        this.addPlayMusic2CrateButton = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.CRATE, getMonitorXsize() / 2 + 5, 105, n -> {
             PlayLocation location = new PlayLocation(musicSourceClientReferencesType.getLocationType(), musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE ? UUID.randomUUID().toString() : this.addPlayMusicSourceField.getText());
-            PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), currentPlayList, this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
+            PlayMusicManeger.instance().createPlayMusicRequest(this.addPlayMusicNameField.getText(), getCurrentSelectedPlayList(), this.image, picturImage, location, musicSourceClientReferencesType, this.addPlayMusicSourceField.getText(), this.addPlayMusicArtistField.getText(), this.addPlayMusicAlbumField.getText(), this.addPlayMusicYearField.getText(), this.addPlayMusicGenreField.getText());
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.CRATE, smart_fontStyle)));
-        this.addPlayMusic2CrateButton.setSizeAdjustment(true);
-        this.addPlayMusic2CrateButton.setShadwString(false);
-        this.addPlayMusic2CrateButton.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.addPlayMusic2CrateButton, false);
+        });
 
         this.addPlayMusic2UploadSelectWorld = this.addWidgetByIKSG(new UploadLocationSelectButton(this, UploadLocation.WORLD, getMonitorStartX() + 6, getMonitorStartY() + 78, 53, 15, 0, 44, 15, MSD_GUI_TEXTURES2, n -> {
             //       this.uploadLocation = UploadLocation.WORLD;
@@ -476,13 +410,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectGitHub, false);
 
 
-        this.addPlayMusicYoutubeSerchBackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 150, getMonitorStartY() + 12, 48, 15, 0, 0, 15, MSD_GUI_TEXTURES2, n -> {
-            insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
-        this.addPlayMusicYoutubeSerchBackButton.setSizeAdjustment(true);
-        this.addPlayMusicYoutubeSerchBackButton.setShadwString(false);
-        this.addPlayMusicYoutubeSerchBackButton.setStringColor(0);
-        IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSerchBackButton, false);
+        this.addPlayMusicYoutubeSerchBackButton = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.BACK, 150, 12, n -> insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1));
 
         String SelectionMusicSearchField = "";
         if (this.addPlayMusicYoutubeSearchField != null)
@@ -499,7 +427,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         {
         });
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchField, false);
-        this.addPlayMusicYoutubeSearchlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 28, 93, 100, 0, -189, 215, 126, MSD_GUI_TEXTURES));
+        this.addPlayMusicYoutubeSearchlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 28, 93, 100, 0, -189, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchlistbar, false);
 
         this.addPlayMusicYoutubeSearchButton = this.addWidgetByIKSG(new ChangeableImageButton(getMonitorStartX() + 102 + 29, getMonitorStartY() + 12, 18, 15, 233, 168, 15, MSD_GUI_TEXTURES, n -> {
@@ -551,7 +479,6 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
 
         }
         this.initFrist = true;
-
     }
 
     @Override
@@ -593,7 +520,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
     public void tickByIKSG() {
         super.tickByIKSG();
 
-        if (currentPlayList == PlayList.ALL)
+        if (getCurrentSelectedPlayList() == PlayList.ALL)
             addPlayMusicButton.setTextuer(244, 40, 18, 256, 256);
         else
             addPlayMusicButton.setTextuer(235, 40, 18, 256, 256);
@@ -623,7 +550,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         IKSGScreenUtil.setVisible(this.JoinPlayListScrollButtons, isMonitor(MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST));
         IKSGScreenUtil.setVisible(this.joinplaylistbackButton, isMonitor(MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST));
         IKSGScreenUtil.setVisible(this.addPlayMusicButton, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
-        IKSGScreenUtil.setActive(this.addPlayMusicButton, currentPlayList != PlayList.ALL);
+        IKSGScreenUtil.setActive(this.addPlayMusicButton, getCurrentSelectedPlayList() != PlayList.ALL);
         IKSGScreenUtil.setVisible(this.addPlayMusicNameField, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceField, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1));
         IKSGScreenUtil.setVisible(this.addPlayMusicSourceReferenceButton, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1));
@@ -710,10 +637,6 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         CompoundNBT tag = new CompoundNBT();
         tag.putString("name", moniter.getName());
 
-        if (isSlectedMonitor(moniter, MusicSharingDeviceTileEntity.Screen.PLAYLIST)) {
-            tag.putString("listuuid", currentPlayList.getUUID());
-        }
-
         this.instruction("Mode", tag);
         if (isSlectedMonitor(moniter, MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
             Path picPath = getPicturPath();
@@ -731,51 +654,20 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
             //       this.uploadLocation = null;
             this.formattype = "";
         }
-        updateAll(moniter);
+        updateAll();
         stopPlayMusic();
     }
 
     private void updateCanJoinPlayList() {
-        updateCanJoinPlayList(getCurrentScreen());
+        instruction("CanJoinPlayListUpdate", new CompoundNBT());
     }
 
-    private void updateCanJoinPlayList(MusicSharingDeviceTileEntity.Screen screen) {
-        if (isSlectedMonitor(screen, MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST)) {
-            instruction("CanJoinPlayListUpdate", new CompoundNBT());
-        }
-    }
-
-    private void updatePlayList() {
-        updatePlayList(getCurrentScreen());
-    }
-
-    private void updatePlayList(MusicSharingDeviceTileEntity.Screen screen) {
-        if (isSlectedMonitor(screen, MusicSharingDeviceTileEntity.Screen.PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1, MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH, MusicSharingDeviceTileEntity.Screen.NO_ANTENNA)) {
-            instruction("PlayListUpdate", new CompoundNBT());
-        }
-    }
-
-    private void updatePlayMusic() {
-        updatePlayMusic(getCurrentScreen());
-    }
-
-    private void updatePlayMusic(MusicSharingDeviceTileEntity.Screen screen) {
-        if (isSlectedMonitor(screen, MusicSharingDeviceTileEntity.Screen.PLAYLIST, MusicSharingDeviceTileEntity.Screen.NO_ANTENNA)) {
-            CompoundNBT tag = new CompoundNBT();
-            tag.putString("uuid", currentPlayList.getUUID());
-            instruction("PlayMusicUpdate", tag);
-        }
-    }
-
+    @Override
     public void updateAll() {
-        updateAll(getCurrentScreen());
+        super.updateAll();
+        updateCanJoinPlayList();
     }
 
-    public void updateAll(MusicSharingDeviceTileEntity.Screen screen) {
-        updatePlayMusic(screen);
-        updatePlayList(screen);
-        updateCanJoinPlayList(screen);
-    }
 
     private void timerSet() {
         this.timer = new ClockTimer(n -> this.isOpend());
@@ -801,40 +693,11 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
 
     @Override
     public void instructionReturn(String name, CompoundNBT tag) {
-
+        super.instructionReturn(name, tag);
         if (name.equals("CanJoinPlayListUpdate")) {
             jonPlaylists.clear();
             for (String pltagst : tag.keySet()) {
                 jonPlaylists.add(new PlayList(pltagst, tag.getCompound(pltagst)));
-            }
-        } else if (name.equals("PlayListUpdate")) {
-            jonedAllPlaylists.clear();
-            for (String pltagst : tag.keySet()) {
-                jonedAllPlaylists.add(new PlayList(pltagst, tag.getCompound(pltagst)));
-            }
-            if (!isFristMLUpdate) {
-                String lastPlayMusic = getLastPlayListUUID();
-                if (!lastPlayMusic.isEmpty()) {
-                    PlayList list = PlayList.ALL;
-                    for (PlayList pl : jonedAllPlaylists) {
-                        if (pl.getUUID().equals(lastPlayMusic)) {
-                            list = pl;
-                            break;
-                        }
-                    }
-                    this.currentPlayList = list;
-                } else {
-                    this.currentPlayList = PlayList.ALL;
-                }
-                isFristMLUpdate = true;
-            }
-        } else if (name.equals("PlayMusicUpdate")) {
-            if (currentPlayList.getUUID().equals(tag.getString("uuid"))) {
-                CompoundNBT taga = tag.getCompound("list");
-                currentPlaylistsMusics.clear();
-                for (String pmtagst : taga.keySet()) {
-                    currentPlaylistsMusics.add(new PlayMusic(pmtagst, taga.getCompound(pmtagst)));
-                }
             }
         }
     }
@@ -842,7 +705,6 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
     @Override
     protected void insPower(boolean on) {
         super.insPower(on);
-        updateAll(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
         stopPlayMusic();
     }
 
@@ -950,7 +812,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
     }
 
     protected void drawPlayList(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
-        drawFontString(matrx, new StringTextComponent(currentPlayList.getName()), getMonitorStartX() + 31, getMonitorStartY() + 2);
+        drawFontString(matrx, new StringTextComponent(getCurrentSelectedPlayList().getName()), getMonitorStartX() + 31, getMonitorStartY() + 2);
     }
 
     protected void drawNoAntenna(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
@@ -963,20 +825,6 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         IKSGRenderUtil.matrixTranslatef(matrx, 0, 0, 500);
         IKSGRenderUtil.guiBindAndBlit(MSD_GUI_TEXTURES, matrx, getTexturStartX() + getXSize() / 2 - 10, getTexturStartY() + 83, 215, 40, 20, 20, 256, 256);
         IKSGRenderUtil.matrixPop(matrx);
-    }
-
-
-    public PlayList getCurrentPlayList() {
-        return currentPlayList;
-    }
-
-    public void setCurrentPlayList(PlayList playList) {
-        this.currentPlayList = playList;
-    }
-
-    private String getLastPlayListUUID() {
-        String pathst = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayList(getMinecraft().player);
-        return pathst;
     }
 
     private Path getPicturPath() {
@@ -1006,16 +854,6 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
     public void onCloseByIKSG() {
         super.onCloseByIKSG();
         stopPlayMusic();
-
-        if (currentPlayList != null)
-            setLastPlayList();
-    }
-
-    @Override
-    public boolean mouseDragged(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {
-        boolean flag1 = super.mouseDragged(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
-        boolean flag2 = this.getListener() != null && this.isDragging() && p_231045_5_ == 0 && this.getListener().mouseDragged(p_231045_1_, p_231045_3_, p_231045_5_, p_231045_6_, p_231045_8_);
-        return flag1 & flag2;
     }
 
     public MusicSourceClientReferencesType getMusicSourceClientReferencesType() {
@@ -1056,16 +894,6 @@ public class MusicSharingDeviceScreen extends IMPAbstractEquipmentScreen<MusicSh
         CompoundNBT tag = new CompoundNBT();
         tag.putString("path", path.toString());
         instruction("PathSet", tag);
-    }
-
-    public void removeLastPlayList() {
-        instruction("LastPlayListSet", new CompoundNBT());
-    }
-
-    public void setLastPlayList() {
-        CompoundNBT tag = new CompoundNBT();
-        tag.putString("uuid", currentPlayList.getUUID());
-        instruction("LastPlayListSet", tag);
     }
 
     public void setMusicLoadError(MusicLoadResult musicLoadError) {
