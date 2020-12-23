@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayList implements INBTReadWriter {
-    public static final String ALL_UUID = "6681f205-ea7c-4fee-9149-fbe8226143c6";
-    public static final PlayList ALL = new PlayList(ALL_UUID, "all", new PlayImage(PlayImage.ImageType.STRING, "all"), "", "", "", false);
+    public static final PlayList EMPTY = new PlayList("3b88748c-a1a4-4819-aa75-0e175682c47b", "empty", PlayImage.EMPTY, "", "", "", false);
+    public static final PlayList ALL = new PlayList("6681f205-ea7c-4fee-9149-fbe8226143c6", "all", new PlayImage(PlayImage.ImageType.STRING, "all"), "", "", "", false);
     private final String UUID;
     private String name;
     private String createPlayerName;

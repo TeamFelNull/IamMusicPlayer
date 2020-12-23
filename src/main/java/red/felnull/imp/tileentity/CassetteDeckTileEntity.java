@@ -12,9 +12,11 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.CassetteDeckContainer;
+import red.felnull.imp.musicplayer.PlayMusic;
 
 public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
+    private PlayMusic writePlayMusic = PlayMusic.EMPTY;
     private Screen currentScreen = Screen.OFF;
 
     public CassetteDeckTileEntity() {
@@ -40,12 +42,15 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     public void readByIKSG(BlockState state, CompoundNBT tag) {
         super.readByIKSG(state, tag);
         this.currentScreen = Screen.getScreenByName(tag.getString("CurrentScreen"));
+        this.writePlayMusic = new PlayMusic(tag.getString("WritePlayMusicUUID"), tag.getCompound("WritePlayMusic"));
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         super.write(tag);
         tag.putString("CurrentScreen", this.currentScreen.getName());
+        tag.put("WritePlayMusic", writePlayMusic.write(new CompoundNBT()));
+        tag.putString("WritePlayMusicUUID", writePlayMusic.getUUID());
         return tag;
     }
 
@@ -55,6 +60,10 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
 
     public Screen getScreen() {
         return currentScreen;
+    }
+
+    public PlayMusic getWritePlayMusic() {
+        return writePlayMusic;
     }
 
     @Override
@@ -75,16 +84,22 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     public CompoundNBT instructionFromClient(ServerPlayerEntity player, String s, CompoundNBT tag) {
         if (s.equals("Mode")) {
             setScreen(Screen.getScreenByName(tag.getString("name")));
+        } else if (s.equals("PlayMusicSet")) {
+            setWritePlayMusic(tag.getString("UUID"));
         }
         return super.instructionFromClient(player, s, tag);
     }
 
+    public void setWritePlayMusic(String UUID) {
+        this.writePlayMusic = PlayMusic.getPlayMusicByUUID(UUID);
+    }
 
     public enum Screen {
         OFF("off"),
         SELECTION("selection"),
         PLAY("play"),
         WRITE_1("write_1"),
+        WRITE_2("write_2"),
         ERASE("erase"),
         COPY("copy");
         private final String name;

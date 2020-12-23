@@ -1,5 +1,6 @@
 package red.felnull.imp.client.renderer.tileentity;
 
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -9,17 +10,17 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import red.felnull.imp.item.ParabolicAntennaItem;
-import red.felnull.imp.tileentity.MusicSharingDeviceTileEntity;
+import red.felnull.imp.tileentity.CassetteDeckTileEntity;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-public class MusicSharingDeviceTileEntityRenderer extends IMPAbstractEquipmentTileEntityRenderer<MusicSharingDeviceTileEntity> {
+public class CassetteDeckTileEntityRenderer extends IMPAbstractEquipmentTileEntityRenderer<CassetteDeckTileEntity> {
 
-    public MusicSharingDeviceTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
+    public CassetteDeckTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
     }
 
     @Override
-    public void render(MusicSharingDeviceTileEntity tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+    public void render(CassetteDeckTileEntity tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         super.render(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
         IKSGRenderUtil.matrixPush(matrix);
         matrixRotateHorizontal(tileEntityIn.getBlockState(), matrix);

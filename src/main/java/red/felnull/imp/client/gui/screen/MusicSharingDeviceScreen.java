@@ -184,7 +184,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         }, this, false));
         IKSGScreenUtil.setVisible(this.guildButtons, false);
 
-        this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, 40, playlistbar,  (n, m) -> {
+        this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101,  playlistbar,  (n, m) -> {
             PlayMusic music = getCurrentPLPlayMusic().get(m);
             playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
         }, this,this,false));

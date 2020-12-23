@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundNBT;
 import red.felnull.otyacraftengine.data.INBTReadWriter;
 
 public class PlayImage implements INBTReadWriter {
+    public static final PlayImage EMPTY = new PlayImage(PlayImage.ImageType.STRING, "empty");
     private ImageType imageType;
     private String name;
 

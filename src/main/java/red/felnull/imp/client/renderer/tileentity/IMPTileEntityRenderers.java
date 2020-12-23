@@ -6,5 +6,6 @@ import red.felnull.imp.tileentity.IMPTileEntityTypes;
 public class IMPTileEntityRenderers {
     public static void registerTileEntityRenderer() {
         ClientRegistry.bindTileEntityRenderer(IMPTileEntityTypes.MUSIC_SHARING_DEVICE, MusicSharingDeviceTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(IMPTileEntityTypes.CASSETTE_DECK, CassetteDeckTileEntityRenderer::new);
     }
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayMusic implements INBTReadWriter {
+    public static final PlayMusic EMPTY = new PlayMusic("de61ebfc-0451-483e-ba22-8f915214864e", "empty", PlayImage.EMPTY, "", "", "", PlayLocation.EMPTY, "", "", "", "", 0l);
     private final String UUID;
     private String name;
     private String createPlayerName;
@@ -148,7 +149,7 @@ public class PlayMusic implements INBTReadWriter {
     public static PlayMusic getPlayMusicByUUID(String uuid) {
         CompoundNBT pmtag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playmusics");
         if (!pmtag.contains(uuid))
-            return null;
+            return PlayMusic.EMPTY;
         return new PlayMusic(uuid, pmtag.getCompound(uuid));
     }
 
