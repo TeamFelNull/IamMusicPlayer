@@ -3,8 +3,8 @@
 	"textures": {
 		"0": "iammusicplayer:block/music_sharing_device_1",
 		"1": "iammusicplayer:block/music_sharing_device_2",
-		"2": "iammusicplayer:block/music_sharing_device_on",
-		"particle": "iammusicplayer:block/music_sharing_device_on"
+		"2": "iammusicplayer:block/power_button_on",
+		"particle": "iammusicplayer:block/music_sharing_device_1"
 	},
 	"elements": [
 		{
