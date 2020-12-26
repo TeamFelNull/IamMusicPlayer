@@ -22,16 +22,21 @@ import net.minecraft.world.World;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
 
+import java.util.function.ToIntFunction;
+
 public abstract class IMPAbstractEquipmentBlock extends HorizontalBlock implements IWaterLoggable {
 
     public static final BooleanProperty ON = IMPBlockStateProperties.ON;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public IMPAbstractEquipmentBlock(Properties builder) {
-        super(builder);
+        super(builder.setLightLevel(getLightValueOn(13)));
         this.setDefaultState(this.stateContainer.getBaseState().with(WATERLOGGED, Boolean.valueOf(false)).with(ON, Boolean.valueOf(false)));
     }
 
+    private static ToIntFunction<BlockState> getLightValueOn(int lightValue) {
+        return (state) -> state.get(ON) ? lightValue : 0;
+    }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {

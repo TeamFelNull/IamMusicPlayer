@@ -2,58 +2,30 @@ package red.felnull.imp.client.renderer.tileentity;
 
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import red.felnull.imp.item.ParabolicAntennaItem;
 import red.felnull.imp.tileentity.CassetteDeckTileEntity;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-public class CassetteDeckTileEntityRenderer extends IMPAbstractEquipmentTileEntityRenderer<CassetteDeckTileEntity> {
+public class CassetteDeckTileEntityRenderer extends IMPAbstractPAEquipmentTileEntityRenderer<CassetteDeckTileEntity> {
 
     public CassetteDeckTileEntityRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {
         super(rendererDispatcherIn);
+        this.parabolicAntennaX = 7.5f;
+        this.parabolicAntennaY = 7.45f;
+        this.parabolicAntennaZ = 9.5f;
     }
 
     @Override
     public void render(CassetteDeckTileEntity tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         super.render(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
-        IKSGRenderUtil.matrixPush(matrix);
-        matrixRotateHorizontal(tileEntityIn.getBlockState(), matrix);
-        IVertexBuilder ivb = bufferIn.getBuffer(RenderType.getSolid());
-        float pix = 1f / 16f;
-        if (!tileEntityIn.getPAntenna().isEmpty()) {
-            if (tileEntityIn.getPAntenna().getItem() instanceof ParabolicAntennaItem) {
-                IBakedModel parabolic_antenna = IKSGRenderUtil.getBakedModel(((ParabolicAntennaItem) tileEntityIn.getPAntenna().getItem()).getAntennaTextuer());
-                IKSGRenderUtil.matrixPush(matrix);
-                IKSGRenderUtil.matrixRotateDegreefY(matrix, -90f);
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 4.5f, 0f);
-                IKSGRenderUtil.matrixTranslatef(matrix, pix * 10.5f, pix * 4.3f, pix * 13.5f);
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * -4.5f, 0f);
-                IKSGRenderUtil.matrixRotateDegreefY(matrix, tileEntityIn.getPARotationYaw());
-                IKSGRenderUtil.matrixRotateDegreefZ(matrix, tileEntityIn.getPARotationPitch());
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 4.5f, 0f);
-                IKSGRenderUtil.matrixScalf(matrix, 0.1f);
-                IKSGRenderUtil.renderBlockBakedModel(parabolic_antenna, matrix, ivb, combinedOverlayIn, tileEntityIn);
-                IKSGRenderUtil.matrixPop(matrix);
-            } else {
-                IKSGRenderUtil.matrixPush(matrix);
-                IKSGRenderUtil.matrixRotateDegreefY(matrix, -90f);
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, 0f, -1f);
-                IKSGRenderUtil.matrixTranslatef(matrix, pix * 10.5f, pix * 6f, pix * 13.5f);
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * -1f, 0f);
-                IKSGRenderUtil.matrixRotateDegreefY(matrix, tileEntityIn.getPARotationYaw());
-                IKSGRenderUtil.matrixRotateDegreefZ(matrix, tileEntityIn.getPARotationPitch());
-                IKSGRenderUtil.matrixTranslatef(matrix, 0f, pix * 1f, 0f);
-                Minecraft.getInstance().getItemRenderer().renderItem(tileEntityIn.getPAntenna(), ItemCameraTransforms.TransformType.GROUND, combinedLightIn, combinedOverlayIn, matrix, bufferIn);
-                IKSGRenderUtil.matrixPop(matrix);
-            }
+        if (tileEntityIn.isOn()) {
+            IKSGRenderUtil.matrixPush(matrix);
+            IKSGRenderUtil.matrixTranslatef(matrix, 0, 0, 1);
+            IKSGRenderUtil.matrixTranslatef16Divisions(matrix, 6.175f, 1.6f, -3.49f);
+            float pix = 1f / 16f;
+            IKSGRenderUtil.renderSpritePanel(tileEntityIn.getScreen().getTexLocation(), matrix, bufferIn, 0, 0, 0, 0, 0, 0, pix * 3.7f, pix * 1.325f, 0, 0, 199, 122, 199, 122, combinedOverlayIn, combinedLightIn);
+            IKSGRenderUtil.matrixPop(matrix);
         }
-        IKSGRenderUtil.matrixPop(matrix);
     }
 }

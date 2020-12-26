@@ -49,6 +49,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         this.playerInventoryTitleY = this.ySize - 94;
     }
 
+
     @Override
     public ResourceLocation getBackGrandTextuer() {
         return CD_GUI_TEXTURES;
@@ -126,6 +127,13 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
     public int getMonitorYsize() {
         return 80;
     }
+
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, x, y);
+    }
+
 
     @Override
     protected void drawGuiContainerBackgroundLayerByIKSG(MatrixStack matx, float partTick, int mouseX, int mouseY) {
