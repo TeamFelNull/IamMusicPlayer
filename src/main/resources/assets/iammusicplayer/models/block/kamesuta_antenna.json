@@ -1,5 +1,0 @@
-{
-  "parent": "item/generated",
-  "loader": "forge:obj",
-  "model": "iammusicplayer:models/block/kamesuta_antenna.obj"
-}

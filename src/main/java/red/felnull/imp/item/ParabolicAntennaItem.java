@@ -5,7 +5,7 @@ import net.minecraft.util.ResourceLocation;
 import red.felnull.imp.IamMusicPlayer;
 
 public class ParabolicAntennaItem extends Item {
-    private static final ResourceLocation PARABOLIC_ANTENNA_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "block/parabolic_antenna");
+    private static final ResourceLocation PARABOLIC_ANTENNA_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/parabolic_antenna");
 
     public ParabolicAntennaItem(Properties properties) {
         super(properties);

@@ -1,6 +1,5 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "iammusicplayer:item/kamesuta_antenna"
-  }
+  "parent": "iammusicplayer:item/parabolic_antenna_base",
+  "loader": "forge:obj",
+  "model": "iammusicplayer:models/item/kamesuta_antenna.obj"
 }

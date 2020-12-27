@@ -3,6 +3,7 @@ package red.felnull.imp.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MusicDiscItem;
+import red.felnull.imp.item.CassetteTapeItem;
 import red.felnull.imp.item.IMPItemTags;
 
 public class ItemHelper {
@@ -11,7 +12,7 @@ public class ItemHelper {
     }
 
     public static boolean isCassetteTape(ItemStack stack) {
-        return stack.getItem() == Items.APPLE;
+        return stack.getItem() instanceof CassetteTapeItem;
     }
 
     public static boolean isWrittenCassetteTape(ItemStack stack) {

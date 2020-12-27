@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "iammusicplayer:item/music_sharing_device"
-  }
+  "parent": "iammusicplayer:block/music_sharing_device_off"
 }

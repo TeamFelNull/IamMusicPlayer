@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "iammusicplayer:item/cassette_deck"
-  }
+  "parent": "iammusicplayer:block/cassette_deck_off"
 }

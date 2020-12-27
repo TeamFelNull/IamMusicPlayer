@@ -99,7 +99,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
 
         this.writeStartButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 178, getMonitorStartY() + 69, 21, 10, 88, 0, 10, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             insScreen(CassetteDeckTileEntity.Screen.WRITE_2);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.YES, smart_fontStyle)));
+        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.START, smart_fontStyle)));
         this.writeStartButton.setSizeAdjustment(true);
         this.writeStartButton.setShadwString(false);
         this.writeStartButton.setStringColor(0);

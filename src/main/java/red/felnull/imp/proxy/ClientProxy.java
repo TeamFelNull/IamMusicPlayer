@@ -2,6 +2,7 @@ package red.felnull.imp.proxy;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
+import red.felnull.imp.client.data.IMPClientRegistration;
 import red.felnull.imp.client.data.MusicDownloader;
 import red.felnull.imp.client.data.MusicUploader;
 import red.felnull.imp.client.data.YoutubeData;
@@ -25,6 +26,7 @@ public class ClientProxy extends CommonProxy {
         super.preInit();
         MusicUploader.init();
         MusicDownloader.init();
+        IMPClientRegistration.init();
     }
 
     @Override
