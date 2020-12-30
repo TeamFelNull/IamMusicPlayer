@@ -24,6 +24,10 @@ public class IMPTileEntityTypes {
     @ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_deck")
     public static TileEntityType<CassetteDeckTileEntity> CASSETTE_DECK = register(CassetteDeckTileEntity::new, new ResourceLocation(IamMusicPlayer.MODID, "cassette_deck"), IMPBlocks.CASSETTE_DECK);
 
+    @ObjectHolder(IamMusicPlayer.MODID + ":" + "boombox")
+    public static TileEntityType<BoomboxTileEntity> BOOMBOX = register(BoomboxTileEntity::new, new ResourceLocation(IamMusicPlayer.MODID, "boombox"), IMPBlocks.BOOMBOX);
+
+
     private static <T extends TileEntityType<?>> T register(Supplier<? extends TileEntity> factoryIn, ResourceLocation location, Block... blocks) {
         T tile = IKSGRegistryUtil.craeteTileEntityType(factoryIn, location, blocks);
         MOD_TILEENTITYTYPES.add(tile);

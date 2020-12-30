@@ -1,7 +1,9 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "iammusicplayer:block/boombox"
+		"0": "iammusicplayer:block/boombox",
+		"1": "iammusicplayer:block/boombox_on",
+		"particle": "iammusicplayer:block/boombox"
 	},
 	"elements": [
 		{
@@ -165,12 +167,12 @@
 			"to": [15, 10.8, 10],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11, 13]},
 			"faces": {
-				"north": {"uv": [4, 2.25, 8.5, 3.25], "texture": "#0"},
-				"east": {"uv": [4, 2.25, 4.25, 3.25], "texture": "#0"},
-				"south": {"uv": [4, 2.25, 8.5, 3.25], "texture": "#0"},
-				"west": {"uv": [4, 2.25, 4.25, 3.25], "texture": "#0"},
-				"up": {"uv": [4, 3, 8.5, 3.25], "texture": "#0"},
-				"down": {"uv": [4, 3, 8.5, 3.25], "texture": "#0"}
+				"north": {"uv": [0, 0, 16, 3.55556], "texture": "#1"},
+				"east": {"uv": [0, 0, 0.88889, 3.55556], "texture": "#1"},
+				"south": {"uv": [0, 0, 16, 3.55556], "texture": "#1"},
+				"west": {"uv": [15.11111, 0, 16, 3.55556], "texture": "#1"},
+				"up": {"uv": [0, 0, 16, 0.88889], "texture": "#1"},
+				"down": {"uv": [0, 3.11111, 16, 4], "texture": "#1"}
 			}
 		},
 		{
@@ -581,12 +583,12 @@
 			"to": [13.5, 12.2, 14],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11, 13]},
 			"faces": {
-				"north": {"uv": [4.75, 4.5, 6.75, 4.75], "texture": "#0"},
-				"east": {"uv": [4.75, 3.5, 5, 4.75], "texture": "#0"},
-				"south": {"uv": [4.75, 4.5, 6.75, 4.75], "texture": "#0"},
-				"west": {"uv": [4.75, 3.5, 5, 4.75], "texture": "#0"},
-				"up": {"uv": [4.75, 3.5, 6.75, 4.75], "texture": "#0"},
-				"down": {"uv": [4.75, 3.5, 6.75, 4.75], "texture": "#0"}
+				"north": {"uv": [0, 3.55556, 7.11111, 4], "texture": "#1"},
+				"east": {"uv": [6.66667, 3.55556, 7.11111, 8], "texture": "#1"},
+				"south": {"uv": [0, 7.55556, 7.11111, 8], "texture": "#1"},
+				"west": {"uv": [0, 3.55556, 0.44444, 8], "texture": "#1"},
+				"up": {"uv": [0, 3.55556, 6.66667, 8], "texture": "#1"},
+				"down": {"uv": [0, 3.55556, 6.66667, 8], "texture": "#1"}
 			}
 		},
 		{

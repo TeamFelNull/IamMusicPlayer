@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.block.IMPBlocks;
 import red.felnull.otyacraftengine.client.renderer.handanimation.IHandAnimation;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
@@ -19,7 +18,7 @@ public class BoomboxHandAnimation implements IHandAnimation {
 
     @Override
     public boolean isRender(Hand hand, ItemStack itemStack, float equipProgress, float interpolatedPitch, float swingProgress) {
-        return itemStack.getItem() == IMPBlocks.BOOMBOX.asItem();
+        return false;
     }
 
     @Override

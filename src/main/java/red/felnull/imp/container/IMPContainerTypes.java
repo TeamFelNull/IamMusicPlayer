@@ -21,6 +21,10 @@ public class IMPContainerTypes {
     @ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_deck")
     public static ContainerType<CassetteDeckContainer> CASSETTE_DECK = register((windowId, inv, data) -> new CassetteDeckContainer(windowId, inv, new Inventory(4), data.readBlockPos()), new ResourceLocation(OtyacraftEngine.MODID, "cassette_deck"));
 
+    @ObjectHolder(IamMusicPlayer.MODID + ":" + "boombox")
+    public static ContainerType<BoomboxContainer> BOOMBOX = register((windowId, inv, data) -> new BoomboxContainer(windowId, inv, new Inventory(1), data.readBlockPos()), new ResourceLocation(OtyacraftEngine.MODID, "boombox"));
+
+
     private static <T extends ContainerType<?>> T register(IContainerFactory<?> factory, ResourceLocation location) {
         T cont = IKSGRegistryUtil.createContainerType(factory, location);
         MOD_CONTAINERTYPE.add(cont);

@@ -126,8 +126,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         super(screenContainer, playerInventory, titleIn);
         this.xSize = 215;
         this.ySize = 242;
-        this.playerInventoryTitleY = this.ySize - 94;
         this.canOpenFileChooser = FileUtils.isCanOpenFileChooser();
+        this.playerInventoryTitleY = this.ySize - 94;
     }
 
     @Override

@@ -12,7 +12,7 @@ import red.felnull.otyacraftengine.util.ClockTimer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends IMPAbstractEquipmentScreen<T> implements IMusicPlayListScreen {
+public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends IMPAbstractMonitorEquipmentScreen<T> implements IMusicPlayListScreen {
 
     private final List<PlayList> jonedAllPlaylists = new ArrayList<>();
     private final List<PlayMusic> currentPlayMusics = new ArrayList<>();
