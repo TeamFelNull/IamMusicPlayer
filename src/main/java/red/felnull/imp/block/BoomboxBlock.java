@@ -9,6 +9,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -20,16 +21,18 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
+import red.felnull.imp.block.propertie.BoomboxMode;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
 import red.felnull.imp.block.voxelshape.BoomboxVoxelShape;
 import red.felnull.imp.tileentity.BoomboxTileEntity;
 
 public class BoomboxBlock extends IMPAbstractEquipmentBlock {
     public static final BooleanProperty WALL = IMPBlockStateProperties.WALL;
+    public static final EnumProperty<BoomboxMode> BOOMBOX_MODE = IMPBlockStateProperties.BOOMBOX_MODE;
 
     public BoomboxBlock(Properties properties) {
         super(properties);
-        this.setDefaultState(getDefaultState().with(WALL, Boolean.valueOf(false)));
+        this.setDefaultState(getDefaultState().with(WALL, Boolean.valueOf(false)).with(BOOMBOX_MODE, BoomboxMode.NONE));
     }
 
     @Override
@@ -66,7 +69,7 @@ public class BoomboxBlock extends IMPAbstractEquipmentBlock {
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> blockBlockStateBuilder) {
         super.fillStateContainer(blockBlockStateBuilder);
-        blockBlockStateBuilder.add(WALL);
+        blockBlockStateBuilder.add(WALL, BOOMBOX_MODE);
     }
 
     @Override
