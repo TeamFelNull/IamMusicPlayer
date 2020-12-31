@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,6 +15,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.propertie.BoomboxMode;
 import red.felnull.imp.container.BoomboxContainer;
 import red.felnull.imp.tileentity.BoomboxTileEntity;
+import red.felnull.imp.util.MusicUtils;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
 public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> {
@@ -50,6 +52,13 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
     @Override
     public ResourceLocation getBackGrandTextuer() {
         return BOOMBOX_GUI_TEXTURES;
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayerByIKSG(MatrixStack matx, float partTick, int mouseX, int mouseY) {
+        super.drawGuiContainerBackgroundLayerByIKSG(matx, partTick, mouseX, mouseY);
+        IKSGRenderUtil.drawCenterString(this.font, matx, new StringTextComponent(MusicUtils.getTimeNotationPercentage(1919 * 5, 114514 * 60)), getTexturStartX() + 72, getTexturStartY() + 48, 2722312);
+
     }
 
     public void insMode(BoomboxMode mode) {
