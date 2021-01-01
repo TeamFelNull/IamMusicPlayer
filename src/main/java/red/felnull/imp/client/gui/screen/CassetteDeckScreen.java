@@ -105,7 +105,6 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         this.writeStartButton.setStringColor(0);
         IKSGScreenUtil.setVisible(this.writeStartButton, false);
 
-
     }
 
     @Override
@@ -157,6 +156,19 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
 
     private void drawWrite2Screen(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("cd.write"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        Minecraft minecraft = Minecraft.getInstance();
+        FontRenderer fontrenderer = minecraft.fontRenderer;
+        IKSGRenderUtil.drawHorizontalMovementString(matrx, fontrenderer, getWritePlayMusic().getName(), "imp.cdpm.name." + getWritePlayMusic().getUUID(), 10, getMonitorStartX() + 69, getMonitorStartY() + 17, 100, 30, IMPAbstractEquipmentScreen.smart_fontStyle);
+
+        RenderUtil.drwPlayImage(matrx, getWritePlayMusic().getImage(), getMonitorStartX() + 30, getMonitorStartY() + 15, 36);
+
+        CassetteDeckTileEntity cdt = (CassetteDeckTileEntity) getTileEntity();
+
+        float parsent = (float) cdt.getWriteProgres() / (float) cdt.getWriteProgresAll();
+        float prevParsent = (float) cdt.getPrevWriteProgres() / (float) cdt.getWriteProgresAll();
+
+        IKSGRenderUtil.guiBindAndBlit(CD_GUI_TEXTURES, matrx, getMonitorStartX() + 88, getMonitorStartY() + 54, 167, 227, 16, (int) (23f * IKSGRenderUtil.partialTicksMisalignment(parsent, prevParsent, partTick)), 256, 256);
+
     }
 
     private void drawWrite1Screen(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
@@ -178,6 +190,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         drawFontString(matrx, new TranslationTextComponent("cd.operationselection"), getMonitorStartX() + 2, getMonitorStartY() + 2);
     }
 
+
     @Override
     public void tickByIKSG() {
         super.tickByIKSG();
@@ -192,7 +205,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         IKSGScreenUtil.setVisible(this.playMusicButtons, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.writeBackButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.writeStartButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
-        IKSGScreenUtil.setActive(this.writeStartButton, !getWritePlayMusic().equals(PlayMusic.EMPTY));
+        IKSGScreenUtil.setActive(this.writeStartButton, !getWritePlayMusic().equals(PlayMusic.EMPTY) && !((CassetteDeckTileEntity) getTileEntity()).getCassetteTape().isEmpty());
     }
 
     protected CassetteDeckTileEntity.Screen getCurrentScreen() {

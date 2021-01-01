@@ -18,6 +18,9 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     private PlayMusic writePlayMusic = PlayMusic.EMPTY;
     private Screen currentScreen = Screen.OFF;
+    private int writeProgres;
+    private int prevWriteProgres;
+    private int writeProgresAll;
 
     public CassetteDeckTileEntity() {
         super(IMPTileEntityTypes.CASSETTE_DECK);
@@ -43,6 +46,9 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         super.readByIKSG(state, tag);
         this.currentScreen = Screen.getScreenByName(tag.getString("CurrentScreen"));
         this.writePlayMusic = new PlayMusic(tag.getString("WritePlayMusicUUID"), tag.getCompound("WritePlayMusic"));
+        this.writeProgres = tag.getInt("WriteProgres");
+        this.prevWriteProgres = tag.getInt("PrevWriteProgres");
+        this.writeProgresAll = tag.getInt("WriteProgresAll");
     }
 
     @Override
@@ -51,6 +57,9 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         tag.putString("CurrentScreen", this.currentScreen.getName());
         tag.put("WritePlayMusic", writePlayMusic.write(new CompoundNBT()));
         tag.putString("WritePlayMusicUUID", writePlayMusic.getUUID());
+        tag.putInt("WriteProgres", this.writeProgres);
+        tag.putInt("PrevWriteProgres", this.prevWriteProgres);
+        tag.putInt("WriteProgresAll", this.writeProgresAll);
         return tag;
     }
 
@@ -66,6 +75,18 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         return writePlayMusic;
     }
 
+    public int getWriteProgres() {
+        return writeProgres;
+    }
+
+    public int getWriteProgresAll() {
+        return writeProgresAll;
+    }
+
+    public int getPrevWriteProgres() {
+        return prevWriteProgres;
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -73,12 +94,35 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
             if (isOn()) {
                 if (currentScreen == Screen.OFF)
                     currentScreen = Screen.SELECTION;
+
+                if (currentScreen == Screen.WRITE_2) {
+                    if (getCassetteTape().isEmpty())
+                        currentScreen = Screen.WRITE_1;
+                    writeProgresAll = 20;
+
+                    if (writeProgres < writeProgresAll)
+                        writeProgres++;
+
+                    prevWriteProgres = writeProgres;
+
+                    if (prevWriteProgres < writeProgresAll)
+                        prevWriteProgres++;
+
+                } else {
+                    writeProgres = 0;
+                    prevWriteProgres = 0;
+                }
             } else {
                 if (currentScreen != Screen.OFF)
                     currentScreen = Screen.OFF;
             }
         }
     }
+
+    public ItemStack getCassetteTape() {
+        return getStackInSlot(1);
+    }
+
 
     @Override
     public CompoundNBT instructionFromClient(ServerPlayerEntity player, String s, CompoundNBT tag) {
