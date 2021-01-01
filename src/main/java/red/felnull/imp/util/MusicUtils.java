@@ -6,7 +6,8 @@ import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import red.felnull.imp.musicplayer.PlayMusic;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 
@@ -30,4 +31,7 @@ public class MusicUtils {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(file);
         return mo.getInfo().getDuration();
     }
+
+
+
 }

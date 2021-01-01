@@ -3,6 +3,7 @@
   "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
   "item.iammusicplayer.kamesuta_antenna": "Kamesuta Antenna",
   "item.iammusicplayer.cassette_tape": "Cassette Tape",
+  "item.iammusicplayer.cassette_tape.write": "%s Cassette Tape",
   "_comment.b": "block",
   "block.iammusicplayer.music_sharing_device": "Music Sharing Device",
   "block.iammusicplayer.cassette_deck": "Cassette Deck",

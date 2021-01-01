@@ -13,6 +13,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.CassetteDeckContainer;
 import red.felnull.imp.musicplayer.PlayMusic;
+import red.felnull.imp.util.ItemHelper;
 
 public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -100,6 +101,11 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                         currentScreen = Screen.WRITE_1;
                     writeProgresAll = 20;
 
+                    if (writeProgres >= writeProgresAll) {
+                        writeCassetteTape();
+                        currentScreen = Screen.WRITE_1;
+                    }
+
                     if (writeProgres < writeProgresAll)
                         writeProgres++;
 
@@ -115,14 +121,24 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
             } else {
                 if (currentScreen != Screen.OFF)
                     currentScreen = Screen.OFF;
+
+                writeProgres = 0;
+                prevWriteProgres = 0;
             }
         }
+    }
+
+    private void writeCassetteTape() {
+        setCassetteTape(ItemHelper.writtenCassetteTape(getCassetteTape(), getWritePlayMusic()));
     }
 
     public ItemStack getCassetteTape() {
         return getStackInSlot(1);
     }
 
+    public void setCassetteTape(ItemStack stack) {
+        getItems().set(1, stack);
+    }
 
     @Override
     public CompoundNBT instructionFromClient(ServerPlayerEntity player, String s, CompoundNBT tag) {

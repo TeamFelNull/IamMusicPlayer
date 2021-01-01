@@ -3,6 +3,7 @@
   "item.iammusicplayer.parabolic_antenna": "パラボラアンテナ",
   "item.iammusicplayer.kamesuta_antenna": "カメスタアンテナ",
   "item.iammusicplayer.cassette_tape": "カセットテープ",
+  "item.iammusicplayer.cassette_tape.write": "%s を書き込んだカセットテープ",
   "_comment.b": "block",
   "block.iammusicplayer.music_sharing_device": "音楽共有デバイス",
   "block.iammusicplayer.cassette_deck": "カセットデッキ",
