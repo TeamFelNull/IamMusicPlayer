@@ -1,4 +1,4 @@
-package red.felnull.imp.client.music;
+package red.felnull.imp.client.music.player;
 
 import com.github.kiulian.downloader.YoutubeException;
 import javazoom.jl.decoder.BitstreamException;

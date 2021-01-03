@@ -1,7 +1,8 @@
-package red.felnull.imp.client.music;
+package red.felnull.imp.client.music.player;
 
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import red.felnull.imp.client.music.InputStreamArrayEnumeration;
 import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtils;

@@ -1,7 +1,6 @@
 package red.felnull.imp.data;
 
 import net.minecraft.nbt.CompoundNBT;
-import red.felnull.imp.musicplayer.PlayList;
 import red.felnull.otyacraftengine.data.INBTReadWriter;
 
 public class WorldMusicFileDataInfo implements INBTReadWriter {

@@ -3,7 +3,7 @@ package red.felnull.imp.handler;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayMusicManeger;
-import red.felnull.imp.musicplayer.PlayMusic;
+import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.otyacraftengine.api.event.common.ReceiverEvent;
 import red.felnull.otyacraftengine.data.SendReceiveLogger;
 

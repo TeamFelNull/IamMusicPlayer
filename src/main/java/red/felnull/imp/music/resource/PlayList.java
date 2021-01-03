@@ -1,4 +1,4 @@
-package red.felnull.imp.musicplayer;
+package red.felnull.imp.music.resource;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;

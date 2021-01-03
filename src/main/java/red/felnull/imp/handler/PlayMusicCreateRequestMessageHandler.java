@@ -2,7 +2,7 @@ package red.felnull.imp.handler;
 
 import net.minecraftforge.fml.network.NetworkEvent;
 import red.felnull.imp.data.PlayMusicManeger;
-import red.felnull.imp.musicplayer.PlayList;
+import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.packet.PlayMusicCreateRequestMessage;
 
 import java.util.function.Supplier;

@@ -2,11 +2,10 @@ package red.felnull.imp.client.handler;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import red.felnull.imp.client.renderer.handanimation.BoomboxHandAnimation;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientHandler {
@@ -23,5 +22,4 @@ public class ClientHandler {
     public static void onModelBake(ModelBakeEvent e) {
 
     }
-
 }

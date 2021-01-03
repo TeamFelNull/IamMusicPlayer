@@ -1,7 +1,8 @@
-package red.felnull.imp.client.music;
+package red.felnull.imp.client.music.player;
 
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import red.felnull.imp.client.data.MusicDownloader;
+import red.felnull.imp.client.music.InputStreamArrayEnumeration;
 import red.felnull.imp.data.WorldMusicFileDataInfo;
 import red.felnull.imp.exception.IMPWorldMusicException;
 

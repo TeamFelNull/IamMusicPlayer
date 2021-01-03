@@ -97,9 +97,8 @@ public abstract class IMPAbstractEquipmentTileEntity extends IkisugiLockableTile
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
-        super.write(tag);
         IKSGNBTUtil.saveAllItemsByIKSG(tag, getItems());
-        return tag;
+        return super.write(tag);
     }
 
     @Override

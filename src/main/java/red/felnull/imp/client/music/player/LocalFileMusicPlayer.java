@@ -1,4 +1,4 @@
-package red.felnull.imp.client.music;
+package red.felnull.imp.client.music.player;
 
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;

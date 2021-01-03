@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.IMusicPlayListScreen;
 import red.felnull.imp.client.util.RenderUtil;
-import red.felnull.imp.musicplayer.PlayList;
+import red.felnull.imp.music.resource.PlayList;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;

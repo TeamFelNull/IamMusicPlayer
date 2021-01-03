@@ -1,5 +1,6 @@
 package red.felnull.imp.tileentity;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
@@ -11,12 +12,19 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.block.BoomboxBlock;
 import red.felnull.imp.block.propertie.BoomboxMode;
 import red.felnull.imp.container.BoomboxContainer;
+import red.felnull.imp.music.resource.PlayMusic;
+import red.felnull.imp.util.ItemHelper;
 
-public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity {
+import java.util.UUID;
+
+public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements IMusicPlayerTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    private UUID mPlayerUUID;
+    private long currentPlayPos;
 
     public BoomboxTileEntity() {
         super(IMPTileEntityTypes.BOOMBOX);
+        this.mPlayerUUID = UUID.randomUUID();
     }
 
     @Override
@@ -48,5 +56,62 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity {
 
     public void setMode(BoomboxMode mode) {
         setBlockState(getBlockState().with(BoomboxBlock.BOOMBOX_MODE, mode));
+    }
+
+    @Override
+    public void readByIKSG(BlockState state, CompoundNBT tag) {
+        super.readByIKSG(state, tag);
+        this.currentPlayPos = tag.getLong("CurrentPlayPos");
+        this.mPlayerUUID = UUID.fromString(tag.getString("MusicPlayerUUID"));
+    }
+
+    @Override
+    public CompoundNBT write(CompoundNBT tag) {
+        tag.putLong("CurrentPlayPos", currentPlayPos);
+        tag.putString("MusicPlayerUUID", mPlayerUUID.toString());
+        return super.write(tag);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (getMode() == BoomboxMode.PLAY) {
+            if (!isPlaying())
+                play(currentPlayPos);
+        }
+    }
+
+    public ItemStack getCassetteTape() {
+        return getItems().get(0);
+    }
+
+    @Override
+    public boolean canPlay() {
+        return getMode() == BoomboxMode.PLAY;
+    }
+
+    @Override
+    public void stoped() {
+        setMode(BoomboxMode.NONE);
+    }
+
+    @Override
+    public long getCurrentPlayPosition() {
+        return currentPlayPos;
+    }
+
+    @Override
+    public void setCurrentPlayPosition(long position) {
+        this.currentPlayPos = position;
+    }
+
+    @Override
+    public UUID getMusicPlayerUUID() {
+        return mPlayerUUID;
+    }
+
+    @Override
+    public PlayMusic getMusic() {
+        return ItemHelper.getPlayMusicByItem(getCassetteTape());
     }
 }

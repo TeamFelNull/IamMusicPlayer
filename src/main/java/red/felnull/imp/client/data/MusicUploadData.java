@@ -1,7 +1,7 @@
 package red.felnull.imp.client.data;
 
 import net.minecraft.util.text.TranslationTextComponent;
-import red.felnull.imp.musicplayer.PlayImage;
+import red.felnull.imp.music.resource.PlayImage;
 
 public class MusicUploadData {
     private final String name;

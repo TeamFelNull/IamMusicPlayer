@@ -7,10 +7,6 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import red.felnull.imp.client.music.IMusicPlayer;
-import red.felnull.imp.ffmpeg.FFmpegManeger;
-
-import java.io.File;
 
 
 public class TestSoundItem extends Item {
@@ -18,67 +14,20 @@ public class TestSoundItem extends Item {
         super(properties);
     }
 
-    public static IMusicPlayer player = null;
-
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
-        //if (worldIn.isRemote) {
-        playerIn.sendStatusMessage(new StringTextComponent(System.getProperty("os.name").toLowerCase()), false);
-        playerIn.sendStatusMessage(new StringTextComponent(System.getProperty("os.arch")), false);
-        File dirFolder = new File(System.getProperty("java.io.tmpdir"), "jave/");
-        playerIn.sendStatusMessage(new StringTextComponent(dirFolder.toString()), false);
-         /*   try {
-                if (player == null) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                player = new WorldFileMusicPlayer("7e23db29-0575-4be5-aa3c-acefec831e77");
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-                if (!playerIn.isSneaking()) {
+        if (worldIn.isRemote) {
+          /*  try {
+                //       WorldSoundRinger.instance().addMusicPlayer(UUID.randomUUID(), new LocalFileMusicPlayer(new File("C:\\Users\\MORI\\Music\\playlist\\Brain Power.mp3")));
+                // ClientWorldSoundManager.instance().addMusicPlayer(UUID.randomUUID(), new YoutubeMusicPlayer("l5NPZN2cUlQ"));
+                ClientWorldMusicManager.instance().addMusicPlayer(UUID.randomUUID(), new MusicRinger(new PlayMusic("66537216-f3cc-41e3-9ee4-dcac88295a44", new CompoundNBT()), playerIn.getPositionVec()));
 
-                    long time = 0;
-
-                    try {
-                        time = Long.valueOf(itemstack.getDisplayName().getString());
-                    } catch (Exception ex) {
-
-                    }
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                if (player != null && !player.isPlaying()) {
-                                    playerIn.sendStatusMessage(new StringTextComponent("Play Start"), false);
-                                    player.play(120 * 1000);
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
-
-                } else {
-                    playerIn.sendStatusMessage(new StringTextComponent("Play Stop"), false);
-                    player.stop();
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }*/
-        //  }
-        try {
-            playerIn.sendStatusMessage(new StringTextComponent(FFmpegManeger.instance().getFFmpegLink(FFmpegManeger.OSAndArch.getMyOSAndArch())), false);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } else {
+            playerIn.sendStatusMessage(new StringTextComponent(worldIn.getDimensionKey().getLocation().toString()), false);
         }
-
-
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
 }

@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
-import red.felnull.imp.musicplayer.PlayList;
+import red.felnull.imp.music.resource.PlayList;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 

@@ -5,7 +5,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.client.gui.toasts.MusicUploadToast;
 import red.felnull.imp.data.IMPWorldData;
-import red.felnull.imp.musicplayer.PlayImage;
+import red.felnull.imp.music.resource.PlayImage;
 import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;

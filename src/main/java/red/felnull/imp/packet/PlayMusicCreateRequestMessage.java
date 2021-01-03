@@ -2,8 +2,8 @@ package red.felnull.imp.packet;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import red.felnull.imp.musicplayer.PlayImage;
-import red.felnull.imp.musicplayer.PlayLocation;
+import red.felnull.imp.music.resource.PlayImage;
+import red.felnull.imp.music.resource.PlayLocation;
 
 public class PlayMusicCreateRequestMessage {
     public String name;

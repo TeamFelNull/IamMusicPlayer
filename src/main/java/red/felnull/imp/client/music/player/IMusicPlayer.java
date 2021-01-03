@@ -1,4 +1,4 @@
-package red.felnull.imp.client.music;
+package red.felnull.imp.client.music.player;
 
 public interface IMusicPlayer {
     void play(long startMiliSecond);

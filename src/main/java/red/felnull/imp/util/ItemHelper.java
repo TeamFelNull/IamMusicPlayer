@@ -1,12 +1,11 @@
 package red.felnull.imp.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.CompoundNBT;
 import red.felnull.imp.item.CassetteTapeItem;
 import red.felnull.imp.item.IMPItemTags;
-import red.felnull.imp.musicplayer.PlayMusic;
+import red.felnull.imp.music.resource.PlayMusic;
 
 public class ItemHelper {
     public static boolean isAntenna(ItemStack stack) {
@@ -18,7 +17,8 @@ public class ItemHelper {
     }
 
     public static boolean isWrittenCassetteTape(ItemStack stack) {
-        return stack.getItem() == Items.GOLDEN_APPLE;
+        CompoundNBT tag = stack.getTag();
+        return tag != null && tag.getCompound("music").contains("uuid", 8);
     }
 
     public static boolean isMusicItem(ItemStack stack) {
@@ -37,5 +37,18 @@ public class ItemHelper {
         tag.putString("name", music.getName());
         tag.putString("uuid", music.getUUID());
         return tag;
+    }
+
+    public static PlayMusic getPlayMusicByItem(ItemStack itemStack) {
+        CompoundNBT tag = itemStack.getTag();
+        if (tag != null)
+            return getPlayMusicByTag(tag.getCompound("music"));
+
+        return null;
+    }
+
+
+    public static PlayMusic getPlayMusicByTag(CompoundNBT tag) {
+        return PlayMusic.getPlayMusicByUUID(tag.getString("uuid"));
     }
 }

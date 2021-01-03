@@ -1,4 +1,4 @@
-package red.felnull.imp.musicplayer;
+package red.felnull.imp.music.resource;
 
 import net.minecraft.nbt.CompoundNBT;
 import red.felnull.otyacraftengine.data.INBTReadWriter;

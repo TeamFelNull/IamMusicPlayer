@@ -9,6 +9,7 @@ import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.handler.MusicReceiveHandler;
 import red.felnull.imp.handler.ServerHandler;
 import red.felnull.imp.handler.WorldMusicServerHandler;
+import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.packet.PacketHandler;
 
 public class CommonProxy {
@@ -24,6 +25,7 @@ public class CommonProxy {
     }
 
     public void init() {
+        ServerWorldMusicManager.init();
     }
 
     public void posInit() {

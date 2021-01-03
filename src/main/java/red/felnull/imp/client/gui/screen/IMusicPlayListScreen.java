@@ -1,7 +1,7 @@
 package red.felnull.imp.client.gui.screen;
 
-import red.felnull.imp.musicplayer.PlayList;
-import red.felnull.imp.musicplayer.PlayMusic;
+import red.felnull.imp.music.resource.PlayList;
+import red.felnull.imp.music.resource.PlayMusic;
 
 import java.util.List;
 

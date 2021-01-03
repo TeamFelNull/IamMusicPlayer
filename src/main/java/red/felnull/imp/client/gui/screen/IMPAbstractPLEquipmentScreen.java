@@ -4,8 +4,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
-import red.felnull.imp.musicplayer.PlayList;
-import red.felnull.imp.musicplayer.PlayMusic;
+import red.felnull.imp.music.resource.PlayList;
+import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.tileentity.IMPAbstractPAPLEquipmentTileEntity;
 import red.felnull.otyacraftengine.util.ClockTimer;
 
