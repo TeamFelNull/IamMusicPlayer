@@ -2,16 +2,13 @@ package red.felnull.imp.client.music;
 
 import net.minecraft.client.Minecraft;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ClientWorldMusicManager {
     private static final Minecraft mc = Minecraft.getInstance();
     private static ClientWorldMusicManager INSTANCE;
 
     private Map<UUID, MusicRinger> mplayers = new HashMap<>();
-    private Map<UUID, MusicRinger> waitmplayers = new HashMap<>();
 
     private boolean allStop;
 
@@ -23,38 +20,36 @@ public class ClientWorldMusicManager {
         return INSTANCE;
     }
 
-    public void loop() {
-
-        if (!waitmplayers.isEmpty()) {
-            mplayers.putAll(waitmplayers);
-            waitmplayers.clear();
-        }
-
-        if (allStop) {
-            allStop = false;
-            if (!mplayers.isEmpty()) {
-                //   mplayers.forEach((n, m) -> m.stop());
-                mplayers.clear();
-            }
-        }
-
-        if (mc.player != null) {
-            //   mplayers.values().stream().filter(n -> !n.isPlaying()).forEach(n -> {
-
-        }
-
+    public void addMusicPlayer(UUID uuid, MusicRinger ringer) {
+        stopMusicPlayer(uuid);
+        mplayers.put(uuid, ringer);
     }
 
-    public void addMusicPlayer(UUID uuid, MusicRinger ringer) {
-        if (!waitmplayers.containsKey(uuid)) {
-            waitmplayers.put(uuid, ringer);
-        }else {
-
-            waitmplayers.put(uuid, ringer);
+    public void stopMusicPlayer(UUID uuid) {
+        if (mplayers.containsKey(uuid)) {
+            mplayers.get(uuid).playStop();
+            mplayers.remove(uuid);
         }
     }
 
     public void stopAllMusicPlayer() {
         allStop = true;
     }
+
+    public void loop() {
+        if (mc.player != null) {
+            if (!mplayers.isEmpty()) {
+                stopAllMusicPlayer();
+            }
+        }
+        if (allStop) {
+            allStop = false;
+            if (!mplayers.isEmpty()) {
+                List<UUID> stopedUUID = new ArrayList<>(new ArrayList<>(mplayers.keySet()));
+                stopedUUID.forEach(this::stopMusicPlayer);
+            }
+        }
+    }
+
+
 }

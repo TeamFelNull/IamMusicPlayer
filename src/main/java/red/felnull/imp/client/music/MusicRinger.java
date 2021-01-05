@@ -17,6 +17,7 @@ public class MusicRinger {
     private final PlayMusic music;
     private Vector3d positionVec;
     private IMusicPlayer musicPlayer;
+    private boolean readyPlay;
 
     public MusicRinger(UUID uuid, PlayMusic playMusic, Vector3d positionVec) {
         this.uuid = uuid;
@@ -29,8 +30,7 @@ public class MusicRinger {
     }
 
     public double getDistance() {
-
-        return Objects.requireNonNull(IamMusicPlayer.proxy.getMinecraft().player).getDistanceSq(getPosition());
+        return Math.sqrt(Objects.requireNonNull(IamMusicPlayer.proxy.getMinecraft().player).getDistanceSq(getPosition()));
     }
 
     public void playWait() {
@@ -38,8 +38,16 @@ public class MusicRinger {
         pwt.start();
     }
 
-    public void playStart() {
+    public void playStart(long startpos) {
+        if (readyPlay && musicPlayer != null) {
+            musicPlayer.play(startpos);
+        }
+    }
 
+    public void playStop() {
+        if (readyPlay && musicPlayer != null) {
+            musicPlayer.stop();
+        }
     }
 
     public IMusicPlayer getMusicPlayer() {
@@ -50,12 +58,15 @@ public class MusicRinger {
 
         @Override
         public void run() {
-            try {
-                musicPlayer = MusicSourceClientReferencesType.getMusicPlayer(music);
-            } catch (Exception ex) {
-                ex.printStackTrace();
+            if (!readyPlay) {
+                try {
+                    musicPlayer = MusicSourceClientReferencesType.getMusicPlayer(music);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
             ResponseSender.sendToServer(IMPWorldData.MUSIC_RINGD, 0, uuid.toString(), new CompoundNBT());
+            readyPlay = true;
         }
     }
 }
