@@ -9,6 +9,7 @@ import red.felnull.imp.client.data.YoutubeData;
 import red.felnull.imp.client.gui.IMPScrennContainerRegister;
 import red.felnull.imp.client.gui.toasts.FFmpegLoadToast;
 import red.felnull.imp.client.handler.ClientMusicHandler;
+import red.felnull.imp.client.handler.MusicRingerHandler;
 import red.felnull.imp.client.handler.MusicUploadHandler;
 import red.felnull.imp.client.handler.RenderHandler;
 import red.felnull.imp.client.music.MusicThread;
@@ -37,6 +38,7 @@ public class ClientProxy extends CommonProxy {
         MinecraftForge.EVENT_BUS.register(RenderHandler.class);
         MinecraftForge.EVENT_BUS.register(MusicUploadHandler.class);
         MinecraftForge.EVENT_BUS.register(ClientMusicHandler.class);
+        MinecraftForge.EVENT_BUS.register(MusicRingerHandler.class);
         ClientWorldMusicManager.init();
     }
 

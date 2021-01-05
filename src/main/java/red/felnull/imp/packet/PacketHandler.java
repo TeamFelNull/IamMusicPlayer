@@ -4,9 +4,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.handler.MusicRingMessageHandler;
+import red.felnull.imp.client.handler.WorldMusicSendByteMessageHandler;
 import red.felnull.imp.handler.PlayListCreateRequestMessageHandler;
 import red.felnull.imp.handler.PlayMusicCreateRequestMessageHandler;
-import red.felnull.imp.client.handler.WorldMusicSendByteMessageHandler;
 
 public class PacketHandler {
     public static final String PROTOCOL_VERSION = "1";
@@ -25,5 +26,7 @@ public class PacketHandler {
         INSTANCE.registerMessage(next(), PlayMusicCreateRequestMessage.class, PlayMusicCreateRequestMessage::encodeMessege, PlayMusicCreateRequestMessage::decodeMessege, PlayMusicCreateRequestMessageHandler::reversiveMessage);
         //ワールド音楽ファイルのデータ送信
         INSTANCE.registerMessage(next(), WorldMusicSendByteMessage.class, WorldMusicSendByteMessage::encodeMessege, WorldMusicSendByteMessage::decodeMessege, WorldMusicSendByteMessageHandler::reversiveMessage);
+        //ワールドの音源をクライアントに同期
+        INSTANCE.registerMessage(next(), MusicRingMessage.class, MusicRingMessage::encodeMessege, MusicRingMessage::decodeMessege, MusicRingMessageHandler::reversiveMessage);
     }
 }

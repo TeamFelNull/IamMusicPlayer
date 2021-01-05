@@ -14,6 +14,8 @@ public class IMPWorldData {
     public static final ResourceLocation SERVER_MUSIC_DATA = new ResourceLocation(IamMusicPlayer.MODID, "server_music_data");
     public static final ResourceLocation SEND_MUSIC_RESPONSE = new ResourceLocation(IamMusicPlayer.MODID, "send_music_response");
     public static final ResourceLocation WORLDMUSICFILEDATA = new ResourceLocation(IamMusicPlayer.MODID, "worldmusicfiledatainfo");
+    public static final ResourceLocation MUSIC_RINGD = new ResourceLocation(IamMusicPlayer.MODID, "music_ringd");
+    public static final ResourceLocation WORLD_RINGD = new ResourceLocation(IamMusicPlayer.MODID, "world_ringd");
 
     public static void register() {
         OERegistries.registrierWorldData(PLAYLIST_DATA, new PlayListWorldData());

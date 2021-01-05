@@ -2,9 +2,13 @@ package red.felnull.imp.handler;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.ResponseSender;
 import red.felnull.otyacraftengine.api.event.common.ReceiverEvent;
@@ -18,13 +22,11 @@ import java.io.File;
 public class ServerHandler {
     @SubscribeEvent
     public static void onClientResponse(ResponseEvent.Client e) {
-
         if (e.getLocation().equals(IMPWorldData.PLAYLIST_REQUEST)) {
             if (e.getId() == 0) {
                 PlayListGuildManeger.instance().joinPlayList(e.getPlayer(), e.getMessage());
             }
         }
-
     }
 
     @SubscribeEvent
@@ -51,5 +53,19 @@ public class ServerHandler {
         ResponseSender.sendToClient(player, IMPWorldData.SEND_MUSIC_RESPONSE, 0, uuid, tag);
     }
 
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent e) {
+        ServerWorldMusicManager.instance().tick();
+    }
 
+    @SubscribeEvent
+    public static void onServerStarting(FMLServerStartingEvent e) {
+        ServerWorldMusicManager.instance().clear();
+    }
+
+
+    @SubscribeEvent
+    public static void onServerStopping(FMLServerStoppingEvent e) {
+        ServerWorldMusicManager.instance().clear();
+    }
 }

@@ -7,6 +7,8 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.block.BoomboxBlock;
@@ -15,6 +17,7 @@ import red.felnull.imp.container.BoomboxContainer;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.util.ItemHelper;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements IMusicPlayerTileEntity {
@@ -62,22 +65,22 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     public void readByIKSG(BlockState state, CompoundNBT tag) {
         super.readByIKSG(state, tag);
         this.currentPlayPos = tag.getLong("CurrentPlayPos");
-        this.mPlayerUUID = UUID.fromString(tag.getString("MusicPlayerUUID"));
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putLong("CurrentPlayPos", currentPlayPos);
-        tag.putString("MusicPlayerUUID", mPlayerUUID.toString());
         return super.write(tag);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (getMode() == BoomboxMode.PLAY) {
-            if (!isPlaying())
-                play(currentPlayPos);
+        if (!world.isRemote()) {
+            if (getMode() == BoomboxMode.PLAY) {
+                if (!isMusicPlaying())
+                    musicPlay(currentPlayPos);
+            }
         }
     }
 
@@ -86,22 +89,27 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     }
 
     @Override
-    public boolean canPlay() {
-        return getMode() == BoomboxMode.PLAY;
+    public boolean canMusicPlay() {
+        return getWorld().loadedTileEntityList.contains(this) && getWorld().isBlockLoaded(getPos()) && getMode() == BoomboxMode.PLAY && !getCassetteTape().isEmpty();
     }
 
     @Override
-    public void stoped() {
+    public void musicPlayed() {
+
+    }
+
+    @Override
+    public void musicStoped() {
         setMode(BoomboxMode.NONE);
     }
 
     @Override
-    public long getCurrentPlayPosition() {
+    public long getCurrentMusicPlayPosition() {
         return currentPlayPos;
     }
 
     @Override
-    public void setCurrentPlayPosition(long position) {
+    public void setCurrentMusicPlayPosition(long position) {
         this.currentPlayPos = position;
     }
 
@@ -113,5 +121,22 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     @Override
     public PlayMusic getMusic() {
         return ItemHelper.getPlayMusicByItem(getCassetteTape());
+    }
+
+
+    @Override
+    public Vector3d getMusicPos() {
+        Vector3d v3 = new Vector3d(getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f);
+        return v3;
+    }
+
+    @Override
+    public ResourceLocation getMusicDimension() {
+        return Objects.requireNonNull(getWorld()).getDimensionKey().getLocation();
+    }
+
+    @Override
+    public float getMusicVolume() {
+        return 1f;
     }
 }

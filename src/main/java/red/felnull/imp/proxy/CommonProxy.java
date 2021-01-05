@@ -9,6 +9,7 @@ import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.handler.MusicReceiveHandler;
 import red.felnull.imp.handler.ServerHandler;
 import red.felnull.imp.handler.WorldMusicServerHandler;
+import red.felnull.imp.handler.WorldRingerHandler;
 import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.packet.PacketHandler;
 
@@ -22,6 +23,7 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(ServerHandler.class);
         MinecraftForge.EVENT_BUS.register(MusicReceiveHandler.class);
         MinecraftForge.EVENT_BUS.register(WorldMusicServerHandler.class);
+        MinecraftForge.EVENT_BUS.register(WorldRingerHandler.class);
     }
 
     public void init() {

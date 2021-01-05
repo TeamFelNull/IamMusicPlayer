@@ -33,22 +33,25 @@ public class ClientWorldMusicManager {
         if (allStop) {
             allStop = false;
             if (!mplayers.isEmpty()) {
-                //    mplayers.forEach((n, m) -> m.stop());
+                //   mplayers.forEach((n, m) -> m.stop());
                 mplayers.clear();
             }
         }
 
         if (mc.player != null) {
             //   mplayers.values().stream().filter(n -> !n.isPlaying()).forEach(n -> {
-            //       n.play(0);
-            //   });
+
         }
 
     }
 
     public void addMusicPlayer(UUID uuid, MusicRinger ringer) {
-        if (!waitmplayers.containsKey(uuid))
+        if (!waitmplayers.containsKey(uuid)) {
             waitmplayers.put(uuid, ringer);
+        }else {
+
+            waitmplayers.put(uuid, ringer);
+        }
     }
 
     public void stopAllMusicPlayer() {
