@@ -33,14 +33,14 @@ public class MusicRinger {
         return Math.sqrt(Objects.requireNonNull(IamMusicPlayer.proxy.getMinecraft().player).getDistanceSq(getPosition()));
     }
 
-    public void playWait() {
-        PlayWaitThread pwt = new PlayWaitThread();
+    public void playWait(long startpos) {
+        PlayWaitThread pwt = new PlayWaitThread(startpos);
         pwt.start();
     }
 
     public void playStart(long startpos) {
         if (readyPlay && musicPlayer != null) {
-            musicPlayer.play(startpos);
+            musicPlayer.playAndReady(startpos);
         }
     }
 
@@ -55,12 +55,18 @@ public class MusicRinger {
     }
 
     public class PlayWaitThread extends Thread {
+        private final long startPos;
+
+        public PlayWaitThread(long pos) {
+            this.startPos = pos;
+        }
 
         @Override
         public void run() {
             if (!readyPlay) {
                 try {
                     musicPlayer = MusicSourceClientReferencesType.getMusicPlayer(music);
+                    musicPlayer.ready(startPos);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

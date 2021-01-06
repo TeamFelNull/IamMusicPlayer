@@ -13,6 +13,6 @@ public class MusicRingMessageHandler {
 
         MusicRinger ringer = new MusicRinger(message.uuid, message.music, message.musicPos);
         ClientWorldMusicManager.instance().addMusicPlayer(message.uuid, ringer);
-        ringer.playWait();
+        ringer.playWait(message.startPos);
     }
 }

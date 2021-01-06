@@ -27,7 +27,17 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void play(long startMiliSecond) {
+    public void ready(long startMiliSecond) {
+
+    }
+
+    @Override
+    public void play() {
+
+    }
+
+    @Override
+    public void playAndReady(long startMiliSecond) {
         try {
             this.stop = false;
             this.startPosition = startMiliSecond;

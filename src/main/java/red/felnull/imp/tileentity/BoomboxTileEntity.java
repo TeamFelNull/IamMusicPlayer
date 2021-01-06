@@ -79,7 +79,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         if (!world.isRemote()) {
             if (getMode() == BoomboxMode.PLAY) {
                 if (!isMusicPlaying())
-                    musicPlay(currentPlayPos);
+                    musicPlay();
             }
         }
     }

@@ -8,8 +8,8 @@ import red.felnull.imp.music.resource.PlayMusic;
 import java.util.UUID;
 
 public interface IMusicPlayerTileEntity extends IWorldRingWhether {
-    default void musicPlay(long pos) {
-        ServerWorldMusicManager.instance().play(getMusicPlayerUUID(), getMusicDimension(), getMusic(), this, pos);
+    default void musicPlay() {
+        ServerWorldMusicManager.instance().play(getMusicPlayerUUID(), getMusicDimension(), getMusic(), this);
     }
 
     default boolean isMusicPlaying() {

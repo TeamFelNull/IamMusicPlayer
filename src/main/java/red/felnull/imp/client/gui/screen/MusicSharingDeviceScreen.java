@@ -1216,7 +1216,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                 if (!stop)
                     musicPlayer = type.getMusicPlayer(src);
                 if (!stop && getCurrentScreen() == monitor && musicPlayer != null && isOpend()) {
-                    musicPlayer.play(startTime);
+                    musicPlayer.playAndReady(startTime);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

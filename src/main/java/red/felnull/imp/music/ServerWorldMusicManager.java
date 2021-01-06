@@ -20,8 +20,8 @@ public class ServerWorldMusicManager {
         return INSTANCE;
     }
 
-    public void play(UUID uuid, ResourceLocation dimention, PlayMusic music, IWorldRingWhether whether, long plpos) {
-        WorldMusicRinger wrp = new WorldMusicRinger(uuid, dimention, music, whether, plpos);
+    public void play(UUID uuid, ResourceLocation dimention, PlayMusic music, IWorldRingWhether whether) {
+        WorldMusicRinger wrp = new WorldMusicRinger(uuid, dimention, music, whether);
         ringdMusics.put(uuid, wrp);
         wrp.play();
     }

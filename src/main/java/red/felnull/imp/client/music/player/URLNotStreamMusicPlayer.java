@@ -43,9 +43,18 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         this.streamEnumeration = new InputStreamArrayEnumeration();
     }
 
+    @Override
+    public void ready(long startMiliSecond) {
+
+    }
 
     @Override
-    public void play(long startMiliSecond) {
+    public void play() {
+
+    }
+
+    @Override
+    public void playAndReady(long startMiliSecond) {
         this.startPosition = startMiliSecond;
         stop = false;
         if (isDirectly) {

@@ -7,7 +7,10 @@ import javazoom.jl.player.advanced.AdvancedPlayer;
 import red.felnull.imp.util.MusicUtils;
 import ws.schild.jave.EncoderException;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class LocalFileMusicPlayer implements IMusicPlayer {
     private final File inputFile;
@@ -17,6 +20,8 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     private AdvancedPlayer player;
     private long startPlayTime;
     private long startPosition;
+    private int startFrame;
+    private boolean isReady;
 
     public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException {
 
@@ -29,19 +34,39 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void play(long startMiliSecond) {
+    public void ready(long startMiliSecond) {
         try {
-            int frame = (int) (startMiliSecond / frameSecond);
-            if (player == null) {
+            if (!this.isReady && player == null) {
+                this.startFrame = (int) (startMiliSecond / frameSecond);
                 this.startPosition = startMiliSecond;
                 this.player = new AdvancedPlayer(new FileInputStream(inputFile));
-                MusicPlayThread playThread = new MusicPlayThread(this, frame);
+                this.isReady = true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.player = null;
+            this.isReady = false;
+        }
+    }
+
+    @Override
+    public void play() {
+        try {
+            if (this.isReady && player != null) {
+                MusicPlayThread playThread = new MusicPlayThread(startFrame);
                 playThread.start();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             this.player = null;
+            this.isReady = false;
         }
+    }
+
+    @Override
+    public void playAndReady(long startMiliSecond) {
+        ready(startMiliSecond);
+        play();
     }
 
     @Override
@@ -75,20 +100,18 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     }
 
     private class MusicPlayThread extends Thread {
-        private final LocalFileMusicPlayer Fplayer;
         private final int startMiliSecond;
 
-        public MusicPlayThread(LocalFileMusicPlayer Fplayer, int startMiliSecond) {
-            this.Fplayer = Fplayer;
+        public MusicPlayThread(int startMiliSecond) {
             this.startMiliSecond = startMiliSecond;
         }
 
         @Override
         public void run() {
             try {
-                Fplayer.startPlayTime = System.currentTimeMillis();
-                Fplayer.player.play(startMiliSecond, Integer.MAX_VALUE);
-                Fplayer.player = null;
+                startPlayTime = System.currentTimeMillis();
+                player.play(startMiliSecond, Integer.MAX_VALUE);
+                player = null;
             } catch (JavaLayerException e) {
                 e.printStackTrace();
             }

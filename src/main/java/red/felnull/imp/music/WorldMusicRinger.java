@@ -29,14 +29,12 @@ public class WorldMusicRinger {
     private boolean playWaiting;
     private long waitTime;
     private boolean playing;
-    private long currentTime;
 
-    public WorldMusicRinger(UUID uuid, ResourceLocation dimension, PlayMusic playMusic, IWorldRingWhether whether, long playTime) {
+    public WorldMusicRinger(UUID uuid, ResourceLocation dimension, PlayMusic playMusic, IWorldRingWhether whether) {
         this.uuid = uuid;
         this.dimension = dimension;
         this.playMusic = playMusic;
         this.whether = whether;
-        this.currentTime = playTime;
         this.lastUpdateTime = System.currentTimeMillis();
     }
 
@@ -56,6 +54,10 @@ public class WorldMusicRinger {
     public void stop() {
         pause();
         whether.musicStoped();
+    }
+
+    public long getCurrentMusicPlayPosition() {
+        return whether.getCurrentMusicPlayPosition();
     }
 
     public void pause() {
@@ -86,7 +88,7 @@ public class WorldMusicRinger {
         if (playWaiting && playWaitingPrev) {
             listenPlayers.filter(n -> !(loadingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || loadWaitingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || waitingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))))).forEach(n -> {
                 loadingPlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
-                PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic()));
+                PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
                 playWaitingPrev = false;
             });
         }

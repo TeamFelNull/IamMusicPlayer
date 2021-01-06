@@ -11,16 +11,18 @@ public class MusicRingMessage {
     public UUID uuid;
     public Vector3d musicPos;
     public PlayMusic music;
+    public long startPos;
 
-    public MusicRingMessage(UUID uuid, Vector3d musicPos, PlayMusic music) {
+    public MusicRingMessage(UUID uuid, Vector3d musicPos, PlayMusic music, long startPos) {
         this.uuid = uuid;
         this.musicPos = musicPos;
         this.music = music;
+        this.startPos = startPos;
     }
 
     public static MusicRingMessage decodeMessege(PacketBuffer buffer) {
 
-        return new MusicRingMessage(UUID.fromString(buffer.readString(32767)), new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), new PlayMusic(buffer.readString(32767), buffer.readCompoundTag()));
+        return new MusicRingMessage(UUID.fromString(buffer.readString(32767)), new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()), new PlayMusic(buffer.readString(32767), buffer.readCompoundTag()), buffer.readLong());
     }
 
     public static void encodeMessege(MusicRingMessage messegeIn, PacketBuffer buffer) {
@@ -30,5 +32,6 @@ public class MusicRingMessage {
         buffer.writeDouble(messegeIn.musicPos.getZ());
         buffer.writeString(messegeIn.music.getUUID());
         buffer.writeCompoundTag(messegeIn.music.write(new CompoundNBT()));
+        buffer.writeLong(messegeIn.startPos);
     }
 }
