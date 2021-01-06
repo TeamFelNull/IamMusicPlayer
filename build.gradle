@@ -113,13 +113,13 @@ dependencies {
     shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
     shadowAll files("libs/jl1.0.1-imp1.1.jar");
     shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
-    shadowAll 'ws.schild:jave-core:3.0.1'
-    shadowWin32 'ws.schild:jave-nativebin-win32:3.0.1'
-    shadowWin64 'ws.schild:jave-nativebin-win64:3.0.1'
-    shadowLinux32 'ws.schild:jave-nativebin-linux32:3.0.1'
-    shadowLinux64 'ws.schild:jave-nativebin-linux64:3.0.1'
-    shadowLinuxArm64 'ws.schild:jave-nativebin-linux-arm64:3.0.1'
-    shadowOsx64 'ws.schild:jave-nativebin-osx64:3.0.1'
+    shadowAll "ws.schild:jave-core:${jave_version}"
+    shadowWin32 "ws.schild:jave-nativebin-win32:${jave_version}"
+    shadowWin64 "ws.schild:jave-nativebin-win64:${jave_version}"
+    shadowLinux32 "ws.schild:jave-nativebin-linux32:${jave_version}"
+    shadowLinux64 "ws.schild:jave-nativebin-linux64:${jave_version}"
+    shadowLinuxArm64 "ws.schild:jave-nativebin-linux-arm64:${jave_version}"
+    shadowOsx64 "ws.schild:jave-nativebin-osx64:${jave_version}"
 }
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
 shadowJar {
