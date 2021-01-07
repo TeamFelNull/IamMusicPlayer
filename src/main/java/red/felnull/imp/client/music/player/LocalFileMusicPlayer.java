@@ -4,6 +4,7 @@ import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.util.MusicUtils;
 import ws.schild.jave.EncoderException;
 
@@ -23,7 +24,7 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     private int startFrame;
     private boolean isReady;
 
-    public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException {
+    public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException, IMPFFmpegException {
 
         if (!file.exists())
             throw new FileNotFoundException();

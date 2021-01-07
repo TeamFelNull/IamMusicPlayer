@@ -3,6 +3,7 @@ package red.felnull.imp.client.music.player;
 import com.github.kiulian.downloader.YoutubeException;
 import javazoom.jl.decoder.BitstreamException;
 import red.felnull.imp.client.util.YoutubeUtils;
+import red.felnull.imp.exception.IMPFFmpegException;
 import ws.schild.jave.EncoderException;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ public class YoutubeMusicPlayer extends URLNotStreamMusicPlayer {
 
     private final String videoID;
 
-    public YoutubeMusicPlayer(String videoID) throws IOException, BitstreamException, EncoderException, YoutubeException {
+    public YoutubeMusicPlayer(String videoID) throws IOException, BitstreamException, EncoderException, YoutubeException, IMPFFmpegException {
         super(new URL(YoutubeUtils.getYoutubeMa4DirectLink(videoID)));
         this.videoID = videoID;
     }

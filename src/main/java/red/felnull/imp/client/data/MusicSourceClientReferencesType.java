@@ -8,6 +8,7 @@ import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.URLNotStreamMusicPlayer;
 import red.felnull.imp.client.music.player.WorldFileMusicPlayer;
 import red.felnull.imp.client.music.player.YoutubeMusicPlayer;
+import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.exception.IMPWorldMusicException;
 import red.felnull.imp.music.resource.PlayLocation;
 import red.felnull.imp.music.resource.PlayMusic;
@@ -41,11 +42,11 @@ public enum MusicSourceClientReferencesType {
         return Arrays.stream(values()).filter(n -> n.getLocationType() == type).findFirst().get();
     }
 
-    public static IMusicPlayer getMusicPlayer(PlayMusic music) throws YoutubeException, EncoderException, BitstreamException, IOException, IMPWorldMusicException, InterruptedException {
+    public static IMusicPlayer getMusicPlayer(PlayMusic music) throws YoutubeException, EncoderException, BitstreamException, IOException, IMPWorldMusicException, InterruptedException, IMPFFmpegException {
         return MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()).getMusicPlayer(music.getMusicLocation().getIdOrURL());
     }
 
-    public IMusicPlayer getMusicPlayer(String src) throws YoutubeException, EncoderException, BitstreamException, IOException, IMPWorldMusicException, InterruptedException {
+    public IMusicPlayer getMusicPlayer(String src) throws YoutubeException, EncoderException, BitstreamException, IOException, IMPWorldMusicException, InterruptedException, IMPFFmpegException {
         switch (this) {
             case YOUTUBE:
                 return new YoutubeMusicPlayer(src);

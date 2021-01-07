@@ -42,7 +42,6 @@ public class FFmpegManeger {
         String arch = System.getProperty("os.arch");
         IamMusicPlayer.LOGGER.info("OS and Arch : " + os + " - " + arch + " - " + osAndArch.getName());
 
-
         String filename = "ffmpeg-" + osAndArch.getName() + "-" + FFMPEG_IMPVERSION + (osAndArch.isExe() ? ".exe" : "");
         File ffmpegfile = ffmpegFolderPath.resolve(filename).toFile();
 
@@ -82,6 +81,10 @@ public class FFmpegManeger {
         }
     }
 
+    public void error() {
+
+    }
+
     public void setLocator(File file) {
         locator = new IMPFFMPEGLocator(file.getAbsolutePath());
 
@@ -99,7 +102,7 @@ public class FFmpegManeger {
     }
 
     public boolean canUseFFmpeg() {
-        return locator != null && !FFmpegDownloader.getInstance().isDwonloading();
+        return locator != null && !FFmpegDownloader.getInstance().isDwonloading() && false;
     }
 
     public void cantFFmpegCaution(PlayerEntity player) {
