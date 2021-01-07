@@ -29,7 +29,6 @@ public class TestSoundItem extends Item {
         ItemStack offitemstack = playerIn.getHeldItem(handIn == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND);
 
         if (worldIn.isRemote && ItemHelper.isWrittenCassetteTape(offitemstack)) {
-
             Runnable run = () -> {
                 long frist = System.currentTimeMillis();
                 try {

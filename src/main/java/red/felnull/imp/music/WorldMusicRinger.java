@@ -1,12 +1,15 @@
 package red.felnull.imp.music;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.PacketDistributor;
+import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.packet.MusicRingMessage;
 import red.felnull.imp.packet.PacketHandler;
+import red.felnull.otyacraftengine.api.ResponseSender;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGServerUtil;
 
@@ -25,10 +28,13 @@ public class WorldMusicRinger {
     private final PlayMusic playMusic;
     private final IWorldRingWhether whether;
     private long lastUpdateTime;
+    private long ringStartTime;
+    private long ringStartElapsedTime;
     private boolean playWaitingPrev;
     private boolean playWaiting;
     private long waitTime;
     private boolean playing;
+    private boolean ringin;
 
     public WorldMusicRinger(UUID uuid, ResourceLocation dimension, PlayMusic playMusic, IWorldRingWhether whether) {
         this.uuid = uuid;
@@ -42,13 +48,16 @@ public class WorldMusicRinger {
         if (whether.canMusicPlay())
             whether.musicPlayed();
 
+        ringStartElapsedTime = getCurrentMusicPlayPosition();
+
         if (IKSGServerUtil.getOnlinePlayers().stream().anyMatch(this::canListen)) {
             playWaitingPrev = true;
             playWaiting = true;
         } else {
             playing = true;
+            ringin = true;
+            ringStartTime = System.currentTimeMillis();
         }
-
     }
 
     public void stop() {
@@ -62,6 +71,10 @@ public class WorldMusicRinger {
 
     public void pause() {
         playing = false;
+        ringin = false;
+        playingPlayers.forEach(n -> {
+            ResponseSender.sendToClient(n.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 1, uuid.toString(), new CompoundNBT());
+        });
         playingPlayers.clear();
         loadingPlayers.clear();
         loadWaitingPlayers.clear();
@@ -91,6 +104,24 @@ public class WorldMusicRinger {
                 PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
                 playWaitingPrev = false;
             });
+        } else if (playWaiting && loadingPlayers.isEmpty()) {
+            loadWaitingPlayers.forEach(n -> {
+                ResponseSender.sendToClient(n.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 0, uuid.toString(), new CompoundNBT());
+            });
+            playingPlayers.addAll(loadWaitingPlayers);
+            playWaiting = false;
+            ringin = true;
+            ringStartTime = System.currentTimeMillis();
+        }
+
+        if (ringin) {
+            long cur = ringStartElapsedTime + System.currentTimeMillis() - ringStartTime;
+            if (cur >= Long.MAX_VALUE) {
+                stop();
+                whether.setCurrentMusicPlayPosition(0);
+            } else {
+                whether.setCurrentMusicPlayPosition(cur);
+            }
         }
 
         lastUpdateTime = System.currentTimeMillis();

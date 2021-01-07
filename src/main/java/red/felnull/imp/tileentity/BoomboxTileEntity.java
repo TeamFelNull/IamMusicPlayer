@@ -81,6 +81,14 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
                 if (!isMusicPlaying())
                     musicPlay();
             }
+            if (getMode() == BoomboxMode.STOP || getMode() == BoomboxMode.NONE || getCassetteTape().isEmpty()) {
+                setCurrentMusicPlayPosition(0);
+            }
+
+            if (getMode() == BoomboxMode.STOP || !isOn()) {
+                setMode(BoomboxMode.NONE);
+            }
+
         }
     }
 
@@ -90,7 +98,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
 
     @Override
     public boolean canMusicPlay() {
-        return getWorld().loadedTileEntityList.contains(this) && getWorld().isBlockLoaded(getPos()) && getMode() == BoomboxMode.PLAY && !getCassetteTape().isEmpty();
+        return getWorld().loadedTileEntityList.contains(this) && getWorld().isBlockLoaded(getPos()) && getMode() == BoomboxMode.PLAY && !getCassetteTape().isEmpty() && isOn();
     }
 
     @Override

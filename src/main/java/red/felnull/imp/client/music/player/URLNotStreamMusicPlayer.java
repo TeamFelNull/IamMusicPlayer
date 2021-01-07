@@ -133,6 +133,19 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         return inputURL;
     }
 
+    @Override
+    public void setVolume(float vol) {
+        if (player != null)
+            player.setVolume(vol);
+    }
+
+    @Override
+    public float getVolume() {
+        if (player != null)
+            return player.getVolume();
+        return 0;
+    }
+
     private class MusicPlayThread extends Thread {
         private final int startMiliSecond;
 

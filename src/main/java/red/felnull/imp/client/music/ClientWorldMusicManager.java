@@ -36,8 +36,13 @@ public class ClientWorldMusicManager {
         allStop = true;
     }
 
+    public void playMusicPlayer(UUID uuid) {
+        if (mplayers.containsKey(uuid))
+            mplayers.get(uuid).playStart(0);
+    }
+
     public void loop() {
-        if (mc.player != null) {
+        if (mc.player == null) {
             if (!mplayers.isEmpty()) {
                 stopAllMusicPlayer();
             }
@@ -49,6 +54,7 @@ public class ClientWorldMusicManager {
                 stopedUUID.forEach(this::stopMusicPlayer);
             }
         }
+        mplayers.values().forEach(MusicRinger::volumeUpdate);
     }
 
 

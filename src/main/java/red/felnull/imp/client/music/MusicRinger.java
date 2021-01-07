@@ -40,13 +40,20 @@ public class MusicRinger {
 
     public void playStart(long startpos) {
         if (readyPlay && musicPlayer != null) {
-            musicPlayer.playAndReady(startpos);
+            musicPlayer.play();
         }
     }
 
     public void playStop() {
         if (readyPlay && musicPlayer != null) {
             musicPlayer.stop();
+        }
+    }
+
+    public void volumeUpdate() {
+        if (musicPlayer != null) {
+            float vol = 1f - (float) getDistance() / 30f;
+            musicPlayer.setVolume(Math.max(vol, 0f));
         }
     }
 

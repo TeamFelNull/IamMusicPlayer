@@ -18,4 +18,7 @@ public interface IMusicPlayer {
 
     Object getMusicSource();
 
+    void setVolume(float vol);
+
+    float getVolume();
 }
