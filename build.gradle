@@ -118,7 +118,7 @@ dependencies {
     shadowWin64 "ws.schild:jave-nativebin-win64:${jave_version}"
     shadowLinux32 "ws.schild:jave-nativebin-linux32:${jave_version}"
     shadowLinux64 "ws.schild:jave-nativebin-linux64:${jave_version}"
-    shadowLinuxArm64 "ws.schild:jave-nativebin-linux-arm64:${jave_version}"
+    // shadowLinuxArm64 "ws.schild:jave-nativebin-linux-arm64:${jave_version}"
     shadowOsx64 "ws.schild:jave-nativebin-osx64:${jave_version}"
 }
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'

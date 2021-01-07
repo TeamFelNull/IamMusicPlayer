@@ -33,6 +33,9 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private long startPosition;
     private int cont;
     private boolean stop;
+    private int startFrame;
+    private boolean isReady;
+    private boolean nextCovFlag;
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
@@ -45,56 +48,57 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
 
     @Override
     public void ready(long startMiliSecond) {
-
-    }
-
-    @Override
-    public void play() {
-
-    }
-
-    @Override
-    public void playAndReady(long startMiliSecond) {
-        this.startPosition = startMiliSecond;
-        stop = false;
-        if (isDirectly) {
-            try {
-                int frame = (int) (startMiliSecond / frameSecond);
-                if (player == null) {
+        try {
+            this.startPosition = startMiliSecond;
+            if (!this.isReady && player == null) {
+                if (isDirectly) {
+                    this.startFrame = (int) (startMiliSecond / frameSecond);
                     this.player = new AdvancedPlayer(inputURL.openStream());
-                    MusicPlayThread playThread = new MusicPlayThread(frame);
-                    playThread.start();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                this.player = null;
-            }
-        } else {
-            try {
-                if (player == null) {
-                    cont = 0;
+                } else {
+                    this.cont = 0;
                     this.streamEnumeration.clear();
                     String fristname = UUID.randomUUID().toString();
-                    boolean nextFlag = duration - startMiliSecond > 60;
-                    converting(inputURL, PathUtils.getClientTmpFolder().resolve(fristname), startMiliSecond, nextFlag ? oneCovCutTime : 0);
+                    nextCovFlag = duration - startMiliSecond > 60;
+                    converting(inputURL, PathUtils.getClientTmpFolder().resolve(fristname), startMiliSecond, nextCovFlag ? oneCovCutTime : 0);
                     if (stop)
                         return;
                     streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(fristname).toFile()));
                     cont++;
                     this.player = new AdvancedPlayer(new SequenceInputStream(streamEnumeration));
-                    MusicPlayThread playThread = new MusicPlayThread();
-                    playThread.start();
-                    if (nextFlag) {
-                        MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
-                        conversionThread.start();
-                    }
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                this.player = null;
-                this.streamEnumeration.clear();
+                this.isReady = true;
             }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.player = null;
+            this.isReady = false;
+            this.streamEnumeration.clear();
         }
+    }
+
+    @Override
+    public void play() {
+        try {
+            this.stop = false;
+            if (this.isReady && player != null) {
+                MusicPlayThread playThread = new MusicPlayThread(startFrame);
+                playThread.start();
+                if (!isDirectly && nextCovFlag) {
+                    MusicConversionThread conversionThread = new MusicConversionThread(startPosition);
+                    conversionThread.start();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.player = null;
+            this.stop = true;
+        }
+    }
+
+    @Override
+    public void playAndReady(long startMiliSecond) {
+        ready(startMiliSecond);
+        play();
     }
 
     @Override
@@ -188,6 +192,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                 ex.printStackTrace();
             }
         }
+
     }
 
     public static void converting(URL url, Path outPath, long offset, long duration) {

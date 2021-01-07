@@ -19,6 +19,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     private long startPlayTime;
     private long startPosition;
     private boolean stop;
+    private boolean isReady;
 
     public WorldFileMusicPlayer(String uuid) throws InterruptedException, IMPWorldMusicException {
         this.uuid = uuid;
@@ -28,42 +29,53 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
 
     @Override
     public void ready(long startMiliSecond) {
-
+        try {
+            if (!this.isReady && player == null) {
+                this.startPosition = startMiliSecond;
+                this.byteEnumeration.clear();
+                MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);
+                mrt.start();
+                while (byteEnumeration.isEmpty()) {
+                    Thread.sleep(100);
+                    if (stop)
+                        return;
+                }
+                if (stop)
+                    return;
+                this.player = new AdvancedPlayer(new SequenceInputStream(byteEnumeration));
+                if (stop) {
+                    this.player = null;
+                    this.byteEnumeration.clear();
+                    this.player = null;
+                    return;
+                }
+                this.isReady = true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            this.player = null;
+            this.isReady = false;
+        }
     }
 
     @Override
     public void play() {
-
-    }
-
-    @Override
-    public void playAndReady(long startMiliSecond) {
         try {
             this.stop = false;
-            this.startPosition = startMiliSecond;
-            this.byteEnumeration.clear();
-            MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);
-            mrt.start();
-            while (byteEnumeration.isEmpty()) {
-                Thread.sleep(100);
-                if (stop)
-                    return;
-            }
-            if (stop)
-                return;
-            this.player = new AdvancedPlayer(new SequenceInputStream(byteEnumeration));
-            if (stop) {
-                this.player = null;
-                this.byteEnumeration.clear();
-                return;
-            }
             WorldFileMusicPlayer.MusicPlayThread playThread = new WorldFileMusicPlayer.MusicPlayThread();
             playThread.start();
         } catch (Exception ex) {
             ex.printStackTrace();
             this.player = null;
+            this.stop = true;
             this.byteEnumeration.clear();
         }
+    }
+
+    @Override
+    public void playAndReady(long startMiliSecond) {
+        ready(startMiliSecond);
+        play();
     }
 
     @Override
