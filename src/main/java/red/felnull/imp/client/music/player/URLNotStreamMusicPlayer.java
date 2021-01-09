@@ -34,6 +34,8 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private boolean stop;
     private boolean isReady;
     private boolean nextCovFlag;
+    private long readyTime;
+    private float frameSecond;
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException, IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
@@ -47,11 +49,15 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         try {
             this.startPosition = startMiliSecond;
             if (!this.isReady && player == null) {
+                this.readyTime = System.currentTimeMillis();
                 this.cont = 0;
                 this.streamEnumeration.clear();
                 String fristname = UUID.randomUUID().toString();
                 nextCovFlag = duration - startMiliSecond > 60;
                 converting(inputURL, PathUtils.getIMPTmpFolder().resolve(fristname), startMiliSecond, nextCovFlag ? oneCovCutTime : 0);
+                if (stop)
+                    return;
+                frameSecond = MusicUtils.getMP3MillisecondPerFrame(PathUtils.getIMPTmpFolder().resolve(fristname).toFile());
                 if (stop)
                     return;
                 streamEnumeration.add(new FileInputStream(PathUtils.getIMPTmpFolder().resolve(fristname).toFile()));
@@ -73,12 +79,13 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             this.stop = false;
             if (this.isReady && player != null) {
                 this.startPosition += zure;
-                if (duration <= startPlayTime) {
+                if (duration <= startPosition) {
                     this.player = null;
                     this.stop = true;
                     return;
                 }
-                MusicPlayThread playThread = new MusicPlayThread(Math.toIntExact(zure));
+                int startFrame = (int) ((float) zure / frameSecond);
+                MusicPlayThread playThread = new MusicPlayThread(startFrame);
                 playThread.start();
                 if (nextCovFlag) {
                     MusicConversionThread conversionThread = new MusicConversionThread(startPosition);
@@ -101,6 +108,14 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     public void playAndReady(long startMiliSecond) {
         ready(startMiliSecond);
         play();
+    }
+
+    @Override
+    public void playAutoMisalignment() {
+        long zure = System.currentTimeMillis() - readyTime;
+        if (getMaxMisalignment() > zure) {
+            playMisalignment(zure);
+        }
     }
 
     @Override
@@ -154,10 +169,10 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     }
 
     private class MusicPlayThread extends Thread {
-        private final int startMiliSecond;
+        private final int startMiliFrame;
 
-        public MusicPlayThread(int startMiliSecond) {
-            this.startMiliSecond = startMiliSecond;
+        public MusicPlayThread(int startMiliFrame) {
+            this.startMiliFrame = startMiliFrame;
         }
 
         @Override
@@ -165,7 +180,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             try {
                 if (!stop) {
                     startPlayTime = System.currentTimeMillis();
-                    player.play(startMiliSecond, Integer.MAX_VALUE);
+                    player.play(startMiliFrame, Integer.MAX_VALUE);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

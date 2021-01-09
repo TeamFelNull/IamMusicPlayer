@@ -5,9 +5,14 @@ import red.felnull.imp.client.data.MusicDownloader;
 import red.felnull.imp.client.music.InputStreamArrayEnumeration;
 import red.felnull.imp.data.WorldMusicFileDataInfo;
 import red.felnull.imp.exception.IMPWorldMusicException;
+import red.felnull.imp.util.MusicUtils;
+import red.felnull.imp.util.PathUtils;
+import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.SequenceInputStream;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 public class WorldFileMusicPlayer implements IMusicPlayer {
@@ -20,7 +25,8 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     private long startPosition;
     private boolean stop;
     private boolean isReady;
-    private long startZure;
+    private int startZureFrame;
+    private long readyTime;
 
     public WorldFileMusicPlayer(String uuid) throws InterruptedException, IMPWorldMusicException {
         this.uuid = uuid;
@@ -32,6 +38,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     public void ready(long startMiliSecond) {
         try {
             if (!this.isReady && player == null) {
+                this.readyTime = System.currentTimeMillis();
                 this.startPosition = startMiliSecond;
                 this.byteEnumeration.clear();
                 MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);
@@ -41,6 +48,8 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
                     if (stop)
                         return;
                 }
+                if (stop)
+                    return;
                 if (stop)
                     return;
                 this.player = new AdvancedPlayer(new SequenceInputStream(byteEnumeration));
@@ -62,8 +71,14 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     @Override
     public void playMisalignment(long zure) {
         try {
+            startPosition += zure;
+            if (getDuration() <= startPosition) {
+                this.player = null;
+                this.stop = true;
+                return;
+            }
             this.stop = false;
-            startZure = zure;
+            this.startZureFrame = (int) ((float) zure / worldMusicInfo.getFrameParSecond());
             MusicPlayThread playThread = new MusicPlayThread();
             playThread.start();
         } catch (Exception ex) {
@@ -83,6 +98,14 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     public void playAndReady(long startMiliSecond) {
         ready(startMiliSecond);
         play();
+    }
+
+    @Override
+    public void playAutoMisalignment() {
+        long zure = System.currentTimeMillis() - readyTime;
+        if (getMaxMisalignment() > zure) {
+            playMisalignment(zure);
+        }
     }
 
     @Override
@@ -140,7 +163,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
             try {
                 if (!stop) {
                     startPlayTime = System.currentTimeMillis();
-                    player.play((int) startZure, Integer.MAX_VALUE);
+                    player.play(startZureFrame, Integer.MAX_VALUE);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

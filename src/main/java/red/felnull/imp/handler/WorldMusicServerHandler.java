@@ -31,7 +31,7 @@ public class WorldMusicServerHandler {
                 try {
                     File musicfile = PathUtils.getWorldMusic(e.getMessage()).toFile();
                     if (musicfile.exists()) {
-                        WorldMusicFileDataInfo wmfd = new WorldMusicFileDataInfo(MusicUtils.getMP3MillisecondDuration(musicfile), musicfile.length());
+                        WorldMusicFileDataInfo wmfd = new WorldMusicFileDataInfo(MusicUtils.getMP3MillisecondDuration(musicfile), musicfile.length(), MusicUtils.getMP3MillisecondPerFrame(musicfile));
                         ResponseSender.sendToClient(e.getPlayer(), IMPWorldData.WORLDMUSICFILEDATA, 0, e.getMessage(), wmfd.write(new CompoundNBT()));
                     } else {
                         ResponseSender.sendToClient(e.getPlayer(), IMPWorldData.WORLDMUSICFILEDATA, 1, e.getMessage(), new CompoundNBT());

@@ -6,11 +6,13 @@ import red.felnull.otyacraftengine.data.INBTReadWriter;
 public class WorldMusicFileDataInfo implements INBTReadWriter {
     private long duration;
     private long byteSize;
+    private float frameParSec;
     private boolean isError;
 
-    public WorldMusicFileDataInfo(long duration, long byteSize) {
+    public WorldMusicFileDataInfo(long duration, long byteSize, float frameParSec) {
         this.duration = duration;
         this.byteSize = byteSize;
+        this.frameParSec = frameParSec;
     }
 
     public WorldMusicFileDataInfo(boolean error) {
@@ -25,12 +27,14 @@ public class WorldMusicFileDataInfo implements INBTReadWriter {
     public void read(CompoundNBT tag) {
         this.duration = tag.getLong("Duration");
         this.byteSize = tag.getLong("ByteSize");
+        this.frameParSec = tag.getFloat("FrameParSec");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putLong("Duration", this.duration);
         tag.putLong("ByteSize", this.byteSize);
+        tag.putFloat("FrameParSec", this.frameParSec);
         return tag;
     }
 
@@ -40,6 +44,10 @@ public class WorldMusicFileDataInfo implements INBTReadWriter {
 
     public long getDuration() {
         return duration;
+    }
+
+    public float getFrameParSecond() {
+        return frameParSec;
     }
 
     public boolean isError() {

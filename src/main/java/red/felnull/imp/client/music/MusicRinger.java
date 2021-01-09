@@ -38,9 +38,15 @@ public class MusicRinger {
         pwt.start();
     }
 
-    public void playStart(long zure) {
-        if (readyPlay && musicPlayer != null && musicPlayer.getMaxMisalignment() > zure) {
-            musicPlayer.playMisalignment(zure);
+    public void playStart() {
+        if (readyPlay && musicPlayer != null) {
+            musicPlayer.play();
+        }
+    }
+
+    public void playStartAutoMisalignment() {
+        if (readyPlay && musicPlayer != null) {
+            musicPlayer.playAutoMisalignment();
         }
     }
 

@@ -38,12 +38,12 @@ public class ClientWorldMusicManager {
 
     public void playMusicPlayer(UUID uuid) {
         if (mplayers.containsKey(uuid))
-            mplayers.get(uuid).playStart(0);
+            mplayers.get(uuid).playStart();
     }
 
-    public void playMusicMiddlePlayer(UUID uuid, long zure) {
+    public void playMusicMiddlePlayer(UUID uuid) {
         if (mplayers.containsKey(uuid))
-            mplayers.get(uuid).playStart(zure);
+            mplayers.get(uuid).playStartAutoMisalignment();
     }
 
     public void loop() {

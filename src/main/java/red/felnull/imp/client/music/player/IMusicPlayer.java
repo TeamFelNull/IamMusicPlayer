@@ -8,6 +8,8 @@ public interface IMusicPlayer {
 
     void playMisalignment(long zure);
 
+    void playAutoMisalignment();
+
     void playAndReady(long startMiliSecond);
 
     void stop();

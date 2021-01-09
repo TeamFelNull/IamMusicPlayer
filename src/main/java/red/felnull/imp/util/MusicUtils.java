@@ -10,9 +10,7 @@ import red.felnull.imp.exception.IMPFFmpegException;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class MusicUtils {
     public static float getMP3MillisecondPerFrame(InputStream stream) throws BitstreamException {
@@ -21,16 +19,14 @@ public class MusicUtils {
         return h.ms_per_frame();
     }
 
-    public static float getMP3MillisecondPerFrame(File file) throws InvalidDataException, IOException, UnsupportedTagException {
-        Mp3File mfile = new Mp3File(file);
-        return (float) mfile.getLengthInMilliseconds() / (float) mfile.getFrameCount();
+    public static float getMP3MillisecondPerFrame(File file) throws IOException, BitstreamException {
+        //    Mp3File mfile = new Mp3File(file);
+        //    return (float) mfile.getLengthInMilliseconds() / (float) mfile.getFrameCount();
+        return getMP3MillisecondPerFrame(new BufferedInputStream(new FileInputStream(file)));
     }
 
     public static long getMP3MillisecondDuration(File file) throws EncoderException, IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(file);
         return mo.getInfo().getDuration();
     }
-
-
-
 }

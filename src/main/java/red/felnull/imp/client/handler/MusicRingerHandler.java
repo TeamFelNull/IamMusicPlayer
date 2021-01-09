@@ -18,8 +18,7 @@ public class MusicRingerHandler {
             } else if (e.getId() == 1) {
                 ClientWorldMusicManager.instance().stopMusicPlayer(UUID.fromString(e.getMessage()));
             } else if (e.getId() == 2) {
-                CompoundNBT tag = e.getData();
-                ClientWorldMusicManager.instance().playMusicMiddlePlayer(UUID.fromString(e.getMessage()), tag.getLong("zure"));
+                ClientWorldMusicManager.instance().playMusicMiddlePlayer(UUID.fromString(e.getMessage()));
             }
         }
     }

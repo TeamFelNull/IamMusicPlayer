@@ -107,7 +107,7 @@ public class WorldMusicRinger {
                 playWaitingPrev = false;
             });
         } else if (playWaiting && loadingPlayers.isEmpty()) {
-            loadWaitingPlayers.forEach(n -> {
+            loadWaitingPlayers.stream().filter(n -> canListen(IKSGPlayerUtil.getPlayerByUUID(n.toString()))).forEach(n -> {
                 ResponseSender.sendToClient(n.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 0, uuid.toString(), new CompoundNBT());
             });
             playingPlayers.addAll(loadWaitingPlayers);
@@ -130,6 +130,8 @@ public class WorldMusicRinger {
                     waitingMiddlePlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
                 }
             });
+        } else {
+
         }
 
         lastUpdateTime = System.currentTimeMillis();
@@ -167,10 +169,10 @@ public class WorldMusicRinger {
             loadingPlayers.remove(playerUUID);
             loadWaitingPlayers.add(playerUUID);
         } else {
-            CompoundNBT tag = new CompoundNBT();
-            tag.putLong("zure", getCurrentMusicPlayPosition());
-            ResponseSender.sendToClient(playerUUID.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 2, uuid.toString(), tag);
-            playingPlayers.add(playerUUID);
+            if (canListen(IKSGPlayerUtil.getPlayerByUUID(playerUUID.toString()))) {
+                ResponseSender.sendToClient(playerUUID.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 2, uuid.toString(), new CompoundNBT());
+                playingPlayers.add(playerUUID);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package red.felnull.imp.client.music.player;
 
 import com.mpatric.mp3agic.InvalidDataException;
 import com.mpatric.mp3agic.UnsupportedTagException;
+import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import red.felnull.imp.exception.IMPFFmpegException;
@@ -23,8 +24,9 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     private long startPosition;
     private int startFrame;
     private boolean isReady;
+    private long readyTime;
 
-    public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException, IMPFFmpegException {
+    public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException, IMPFFmpegException, BitstreamException {
 
         if (!file.exists())
             throw new FileNotFoundException();
@@ -38,6 +40,7 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     public void ready(long startMiliSecond) {
         try {
             if (!this.isReady && player == null) {
+                this.readyTime = System.currentTimeMillis();
                 this.startFrame = (int) (startMiliSecond / frameSecond);
                 this.startPosition = startMiliSecond;
                 this.player = new AdvancedPlayer(new FileInputStream(inputFile));
@@ -79,6 +82,14 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     public void playAndReady(long startMiliSecond) {
         ready(startMiliSecond);
         play();
+    }
+
+    @Override
+    public void playAutoMisalignment() {
+        long zure = System.currentTimeMillis() - readyTime;
+        if (getMaxMisalignment() > zure) {
+            playMisalignment(zure);
+        }
     }
 
     @Override

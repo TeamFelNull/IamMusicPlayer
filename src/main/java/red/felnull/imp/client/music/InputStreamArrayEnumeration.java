@@ -37,6 +37,10 @@ public class InputStreamArrayEnumeration implements Enumeration {
         this.inpuStrereadmList.clear();
     }
 
+    public InputStream get(int index) {
+        return inpuStrereadmList.get(index);
+    }
+
     public int curentCont() {
         return ct;
     }
