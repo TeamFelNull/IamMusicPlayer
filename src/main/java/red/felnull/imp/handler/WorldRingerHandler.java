@@ -12,7 +12,11 @@ public class WorldRingerHandler {
     public static void onClientResponse(ResponseEvent.Client e) {
         if (e.getLocation().equals(IMPWorldData.MUSIC_RINGD)) {
             if (e.getId() == 0) {
-                ServerWorldMusicManager.instance().loadingFinish(UUID.fromString(e.getMessage()), e.getPlayer());
+                if (e.getData().getString("result").equals("noffmpeg")) {
+                    ServerWorldMusicManager.instance().loadingNotFinishRegularConfirmation(UUID.fromString(e.getMessage()), e.getPlayer());
+                } else {
+                    ServerWorldMusicManager.instance().loadingFinish(UUID.fromString(e.getMessage()), e.getPlayer());
+                }
             }
         }
     }

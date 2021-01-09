@@ -1,5 +1,6 @@
 package red.felnull.imp.client.handler;
 
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import red.felnull.imp.client.music.ClientWorldMusicManager;
 import red.felnull.imp.client.music.MusicRinger;
@@ -16,6 +17,9 @@ public class MusicRingerHandler {
                 ClientWorldMusicManager.instance().playMusicPlayer(UUID.fromString(e.getMessage()));
             } else if (e.getId() == 1) {
                 ClientWorldMusicManager.instance().stopMusicPlayer(UUID.fromString(e.getMessage()));
+            } else if (e.getId() == 2) {
+                CompoundNBT tag = e.getData();
+                ClientWorldMusicManager.instance().playMusicMiddlePlayer(UUID.fromString(e.getMessage()), tag.getLong("zure"));
             }
         }
     }

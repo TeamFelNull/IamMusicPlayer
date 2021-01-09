@@ -41,6 +41,11 @@ public class ClientWorldMusicManager {
             mplayers.get(uuid).playStart(0);
     }
 
+    public void playMusicMiddlePlayer(UUID uuid, long zure) {
+        if (mplayers.containsKey(uuid))
+            mplayers.get(uuid).playStart(zure);
+    }
+
     public void loop() {
         if (mc.player == null) {
             if (!mplayers.isEmpty()) {

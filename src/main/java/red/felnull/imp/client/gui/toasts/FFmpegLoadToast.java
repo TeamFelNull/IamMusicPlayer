@@ -14,6 +14,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.ffmpeg.FFmpegDownloader;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
@@ -25,6 +26,7 @@ public class FFmpegLoadToast implements IToast {
     @Override
     public Visibility func_230444_a_(MatrixStack matrix, ToastGui toast, long time) {
 
+        FFmpegManeger maneger = FFmpegManeger.instance();
         FFmpegDownloader downloader = FFmpegDownloader.getInstance();
 
         Minecraft mc = toast.getMinecraft();
@@ -37,21 +39,21 @@ public class FFmpegLoadToast implements IToast {
         IKSGRenderUtil.guiBindAndBlit(FFMPEGICON_TEXTURE, matrix, 8, 8, 0, 0, 16, 16, 16, 16);
 
 
-        if (downloader.getState() == FFmpegDownloader.FFmpegDwonloadState.DOWNLOAD) {
+        if (maneger.getState() == FFmpegManeger.FFmpegState.DOWNLOADING) {
             IKSGRenderUtil.guiBindAndBlit(MusicUploadToast.IMP_TEXTURE_TOASTS, matrix, 29, 19, 0, 32, 125, 7, 256, 256);
             IKSGRenderUtil.guiBindAndBlit(MusicUploadToast.IMP_TEXTURE_TOASTS, matrix, 30, 20, 0, 39, (int) (123 * downloader.getProgress()), 5, 256, 256);
             IKSGRenderUtil.matrixPush(matrix);
-            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(downloader.getProgress() * 100) + "%"),  IMPAbstractEquipmentScreen.smart_fontStyle);
+            IFormattableTextComponent tc = IKSGStyles.withStyle(new StringTextComponent((int) Math.ceil(downloader.getProgress() * 100) + "%"), IMPAbstractEquipmentScreen.smart_fontStyle);
             IKSGRenderUtil.matrixScalf(matrix, 0.5f);
             IKSGRenderUtil.drawCenterString(fr, matrix, tc, (int) (92.5f / 0.5f), (int) (20.5f / 0.5f), 0);
             IKSGRenderUtil.matrixPop(matrix);
 
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(downloader.getState().getLocalized(),  IMPAbstractEquipmentScreen.smart_fontStyle), 29, 8, 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(maneger.getState().getLocalized(), IMPAbstractEquipmentScreen.smart_fontStyle), 29, 8, 0);
         } else {
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new TranslationTextComponent("ffmpegdlstate.completion"),  IMPAbstractEquipmentScreen.smart_fontStyle), 29, 16 - fr.FONT_HEIGHT / 2, 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new TranslationTextComponent("ffmpegdlstate.completion"), IMPAbstractEquipmentScreen.smart_fontStyle), 29, 16 - fr.FONT_HEIGHT / 2, 0);
         }
 
-        if (!downloader.isDwonloading()) {
+        if (maneger.getState() != FFmpegManeger.FFmpegState.DOWNLOADING && maneger.getState() != FFmpegManeger.FFmpegState.EXTRACTING && maneger.getState() != FFmpegManeger.FFmpegState.PREPARATION) {
             if (!completed) {
                 compTime = time;
                 completed = true;

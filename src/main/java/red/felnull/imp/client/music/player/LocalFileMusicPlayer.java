@@ -51,9 +51,15 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void play() {
+    public void playMisalignment(long zure) {
         try {
             if (this.isReady && player != null) {
+                this.startFrame += (int) (zure / frameSecond);
+                if (duration * frameSecond <= startFrame) {
+                    this.player = null;
+                    this.isReady = false;
+                    return;
+                }
                 MusicPlayThread playThread = new MusicPlayThread(startFrame);
                 playThread.start();
             }
@@ -62,6 +68,11 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
             this.player = null;
             this.isReady = false;
         }
+    }
+
+    @Override
+    public void play() {
+        playMisalignment(0);
     }
 
     @Override
@@ -80,6 +91,11 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     @Override
     public boolean isPlaying() {
         return player != null;
+    }
+
+    @Override
+    public long getMaxMisalignment() {
+        return Integer.MAX_VALUE;
     }
 
     @Override

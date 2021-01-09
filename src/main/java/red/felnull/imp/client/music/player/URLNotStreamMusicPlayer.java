@@ -24,8 +24,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private static final long oneCovCutTime = 60 * 1000;
 
     private final URL inputURL;
-    private final float frameSecond;
-    private final boolean isDirectly;
     private final long duration;
     private final InputStreamArrayEnumeration streamEnumeration;
 
@@ -34,15 +32,12 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private long startPosition;
     private int cont;
     private boolean stop;
-    private int startFrame;
     private boolean isReady;
     private boolean nextCovFlag;
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException, IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
-        this.isDirectly = mo.getInfo().getFormat().equals("mp3");
-        this.frameSecond = isDirectly ? MusicUtils.getMP3MillisecondPerFrame(url.openStream()) : 0;
-        this.duration = !isDirectly ? mo.getInfo().getDuration() : 0;
+        this.duration = mo.getInfo().getDuration();
         this.inputURL = url;
         this.streamEnumeration = new InputStreamArrayEnumeration();
     }
@@ -52,21 +47,16 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         try {
             this.startPosition = startMiliSecond;
             if (!this.isReady && player == null) {
-                if (isDirectly) {
-                    this.startFrame = (int) (startMiliSecond / frameSecond);
-                    this.player = new AdvancedPlayer(inputURL.openStream());
-                } else {
-                    this.cont = 0;
-                    this.streamEnumeration.clear();
-                    String fristname = UUID.randomUUID().toString();
-                    nextCovFlag = duration - startMiliSecond > 60;
-                    converting(inputURL, PathUtils.getClientTmpFolder().resolve(fristname), startMiliSecond, nextCovFlag ? oneCovCutTime : 0);
-                    if (stop)
-                        return;
-                    streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(fristname).toFile()));
-                    cont++;
-                    this.player = new AdvancedPlayer(new SequenceInputStream(streamEnumeration));
-                }
+                this.cont = 0;
+                this.streamEnumeration.clear();
+                String fristname = UUID.randomUUID().toString();
+                nextCovFlag = duration - startMiliSecond > 60;
+                converting(inputURL, PathUtils.getIMPTmpFolder().resolve(fristname), startMiliSecond, nextCovFlag ? oneCovCutTime : 0);
+                if (stop)
+                    return;
+                streamEnumeration.add(new FileInputStream(PathUtils.getIMPTmpFolder().resolve(fristname).toFile()));
+                cont++;
+                this.player = new AdvancedPlayer(new SequenceInputStream(streamEnumeration));
                 this.isReady = true;
             }
         } catch (Exception ex) {
@@ -78,13 +68,19 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void play() {
+    public void playMisalignment(long zure) {
         try {
             this.stop = false;
             if (this.isReady && player != null) {
-                MusicPlayThread playThread = new MusicPlayThread(startFrame);
+                this.startPosition += zure;
+                if (duration <= startPlayTime) {
+                    this.player = null;
+                    this.stop = true;
+                    return;
+                }
+                MusicPlayThread playThread = new MusicPlayThread(Math.toIntExact(zure));
                 playThread.start();
-                if (!isDirectly && nextCovFlag) {
+                if (nextCovFlag) {
                     MusicConversionThread conversionThread = new MusicConversionThread(startPosition);
                     conversionThread.start();
                 }
@@ -94,6 +90,11 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             this.player = null;
             this.stop = true;
         }
+    }
+
+    @Override
+    public void play() {
+        playMisalignment(0);
     }
 
     @Override
@@ -114,6 +115,11 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     @Override
     public boolean isPlaying() {
         return player != null;
+    }
+
+    @Override
+    public long getMaxMisalignment() {
+        return oneCovCutTime;
     }
 
     @Override
@@ -154,10 +160,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             this.startMiliSecond = startMiliSecond;
         }
 
-        public MusicPlayThread() {
-            this(0);
-        }
-
         @Override
         public void run() {
             try {
@@ -194,10 +196,10 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                     return;
                 cont++;
                 boolean nextFlag = alltime - oneCovCutTime * cont > 60;
-                converting(inputURL, PathUtils.getClientTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
+                converting(inputURL, PathUtils.getIMPTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
                 if (!isPlaying() || stop)
                     return;
-                streamEnumeration.add(new FileInputStream(PathUtils.getClientTmpFolder().resolve(name).toFile()));
+                streamEnumeration.add(new FileInputStream(PathUtils.getIMPTmpFolder().resolve(name).toFile()));
                 if (nextFlag && !stop) {
                     MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
                     conversionThread.start();

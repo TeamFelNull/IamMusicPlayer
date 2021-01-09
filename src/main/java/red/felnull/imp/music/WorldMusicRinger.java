@@ -22,7 +22,8 @@ public class WorldMusicRinger {
     private final List<UUID> playingPlayers = new ArrayList<>();
     private final List<UUID> loadingPlayers = new ArrayList<>();
     private final List<UUID> loadWaitingPlayers = new ArrayList<>();
-    private final List<UUID> waitingPlayers = new ArrayList<>();
+    private final List<UUID> waitingMiddlePlayers = new ArrayList<>();
+    private final List<UUID> regularConfirmationPlayers = new ArrayList<>();
     private final UUID uuid;
     private final ResourceLocation dimension;
     private final PlayMusic playMusic;
@@ -72,13 +73,14 @@ public class WorldMusicRinger {
     public void pause() {
         playing = false;
         ringin = false;
-        playingPlayers.forEach(n -> {
+        playingPlayers.stream().filter(n -> IKSGServerUtil.isOnlinePlayer(n.toString())).forEach(n -> {
             ResponseSender.sendToClient(n.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 1, uuid.toString(), new CompoundNBT());
         });
         playingPlayers.clear();
         loadingPlayers.clear();
         loadWaitingPlayers.clear();
-        waitingPlayers.clear();
+        waitingMiddlePlayers.clear();
+        regularConfirmationPlayers.clear();
     }
 
 
@@ -99,7 +101,7 @@ public class WorldMusicRinger {
         Stream<ServerPlayerEntity> listenPlayers = IKSGServerUtil.getOnlinePlayers().stream().filter(this::canListen);
 
         if (playWaiting && playWaitingPrev) {
-            listenPlayers.filter(n -> !(loadingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || loadWaitingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || waitingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))))).forEach(n -> {
+            listenPlayers.filter(n -> !(loadingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || loadWaitingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || waitingMiddlePlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))))).forEach(n -> {
                 loadingPlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
                 PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
                 playWaitingPrev = false;
@@ -122,6 +124,12 @@ public class WorldMusicRinger {
             } else {
                 whether.setCurrentMusicPlayPosition(cur);
             }
+            IKSGServerUtil.getOnlinePlayers().stream().filter(this::canListen).forEach(n -> {
+                if (!playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) && !waitingMiddlePlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n)))) {
+                    PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
+                    waitingMiddlePlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
+                }
+            });
         }
 
         lastUpdateTime = System.currentTimeMillis();
@@ -155,7 +163,21 @@ public class WorldMusicRinger {
     }
 
     public void musicLoadingFinish(UUID playerUUID) {
-        loadingPlayers.remove(playerUUID);
-        loadWaitingPlayers.add(playerUUID);
+        if (loadingPlayers.contains(playerUUID)) {
+            loadingPlayers.remove(playerUUID);
+            loadWaitingPlayers.add(playerUUID);
+        } else {
+            CompoundNBT tag = new CompoundNBT();
+            tag.putLong("zure", getCurrentMusicPlayPosition());
+            ResponseSender.sendToClient(playerUUID.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 2, uuid.toString(), tag);
+            playingPlayers.add(playerUUID);
+        }
+    }
+
+    public void musicLoadingNotFinishRegularConfirmation(UUID playerUUID) {
+        if (loadingPlayers.contains(playerUUID)) {
+            loadingPlayers.remove(playerUUID);
+        }
+        regularConfirmationPlayers.add(playerUUID);
     }
 }

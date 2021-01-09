@@ -103,7 +103,7 @@ public class MusicUploader {
     private boolean conversion(MultimediaObject mo, String uuid, int bitrate) throws EncoderException, InvalidDataException, IOException, UnsupportedTagException, NotSupportedException {
         if (mo.getInfo().getDuration() == -1)
             return false;
-        IKSGFileLoadUtil.createFolder(PathUtils.getClientTmpFolder());
+        IKSGFileLoadUtil.createFolder(PathUtils.getIMPTmpFolder());
         AudioAttributes aa = new AudioAttributes();
         aa.setCodec("libmp3lame");
         aa.setBitRate(bitrate);
@@ -113,7 +113,7 @@ public class MusicUploader {
         ea.setOutputFormat("mp3");
         ea.setAudioAttributes(aa);
         Encoder encoder = new Encoder();
-        encoder.encode(mo, PathUtils.getClientTmpFolder().resolve(uuid + "-tmp").toFile(), ea, new EncoderProgressListener() {
+        encoder.encode(mo, PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp").toFile(), ea, new EncoderProgressListener() {
             @Override
             public void sourceInfo(MultimediaInfo info) {
             }
@@ -127,17 +127,17 @@ public class MusicUploader {
             public void message(String message) {
             }
         });
-        Mp3File m3f = new Mp3File(PathUtils.getClientTmpFolder().resolve(uuid + "-tmp").toFile());
+        Mp3File m3f = new Mp3File(PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp").toFile());
         m3f.setId3v1Tag(new ID3v1Tag());
         m3f.setId3v2Tag(new ID3v24Tag());
         m3f.setCustomTag(new byte[0]);
-        m3f.save(PathUtils.getClientTmpFolder().resolve(uuid).toString());
-        IKSGFileLoadUtil.deleteFile(PathUtils.getClientTmpFolder().resolve(uuid + "-tmp"));
+        m3f.save(PathUtils.getIMPTmpFolder().resolve(uuid).toString());
+        IKSGFileLoadUtil.deleteFile(PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp"));
         return true;
     }
 
     private byte[] compressing(String uuid) throws IOException {
-        File file = PathUtils.getClientTmpFolder().resolve(uuid).toFile();
+        File file = PathUtils.getIMPTmpFolder().resolve(uuid).toFile();
         byte[] bytes = IKSGFileLoadUtil.fileBytesReader(file.toPath());
         IKSGFileLoadUtil.deleteFile(file);
         return IKSGDataUtil.gzZipping(bytes);

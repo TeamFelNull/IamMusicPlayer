@@ -20,6 +20,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     private long startPosition;
     private boolean stop;
     private boolean isReady;
+    private long startZure;
 
     public WorldFileMusicPlayer(String uuid) throws InterruptedException, IMPWorldMusicException {
         this.uuid = uuid;
@@ -59,10 +60,11 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void play() {
+    public void playMisalignment(long zure) {
         try {
             this.stop = false;
-            WorldFileMusicPlayer.MusicPlayThread playThread = new WorldFileMusicPlayer.MusicPlayThread();
+            startZure = zure;
+            MusicPlayThread playThread = new MusicPlayThread();
             playThread.start();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -70,6 +72,11 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
             this.stop = true;
             this.byteEnumeration.clear();
         }
+    }
+
+    @Override
+    public void play() {
+        playMisalignment(0);
     }
 
     @Override
@@ -89,6 +96,11 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     @Override
     public boolean isPlaying() {
         return player != null;
+    }
+
+    @Override
+    public long getMaxMisalignment() {
+        return 3 * 1000;
     }
 
     @Override
@@ -128,7 +140,7 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
             try {
                 if (!stop) {
                     startPlayTime = System.currentTimeMillis();
-                    player.play();
+                    player.play((int) startZure, Integer.MAX_VALUE);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

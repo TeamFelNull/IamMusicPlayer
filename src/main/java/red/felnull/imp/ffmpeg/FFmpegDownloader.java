@@ -13,8 +13,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class FFmpegDownloader {
     private static FFmpegDownloader INSTANCE;
-    private boolean dwonloading;
-    private FFmpegDwonloadState state;
     private float progress;
 
     public static void init() {
@@ -26,9 +24,6 @@ public class FFmpegDownloader {
     }
 
     public void startDL(FFmpegManeger.OSAndArch oaa, File file) {
-        if (dwonloading)
-            return;
-        dwonloading = true;
         FFmpegDownloadThread fdt = new FFmpegDownloadThread(oaa, file);
         fdt.start();
     }
@@ -45,13 +40,13 @@ public class FFmpegDownloader {
         @Override
         public void run() {
             FFmpegManeger maneger = FFmpegManeger.instance();
-            state = FFmpegDwonloadState.PREPARATION;
+            maneger.setState(FFmpegManeger.FFmpegState.PREPARATION);
             IamMusicPlayer.proxy.addFFmpegLoadToast();
             try {
                 InputStream ffmpegResource = maneger.getFFmpegResource(osAndArch.getResourceName());
-                //      ffmpegResource = null;
+                ffmpegResource = null;
                 if (ffmpegResource != null) {
-                    state = FFmpegDwonloadState.LOADING;
+                    maneger.setState(FFmpegManeger.FFmpegState.EXTRACTING);
                     IamMusicPlayer.LOGGER.info("Start ffmpeg copy");
                     Files.copy(ffmpegResource, ffmpegfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -61,7 +56,7 @@ public class FFmpegDownloader {
             if (!ffmpegfile.exists()) {
                 try {
                     URL url = new URL(maneger.getFFmpegLink(osAndArch));
-                    state = FFmpegDwonloadState.DOWNLOAD;
+                    maneger.setState(FFmpegManeger.FFmpegState.DOWNLOADING);
                     IamMusicPlayer.LOGGER.info("Start ffmpeg download");
                     AtomicLong lastt = new AtomicLong(System.currentTimeMillis());
                     IKSGFileLoadUtil.fileURLWriterProgress(url, ffmpegfile.toPath(), progressa -> {
@@ -76,9 +71,7 @@ public class FFmpegDownloader {
                     ex.printStackTrace();
                 }
             }
-            state = null;
-            dwonloading = false;
-
+            maneger.setState(FFmpegManeger.FFmpegState.NONE);
             if (ffmpegfile.exists())
                 FFmpegManeger.instance().setLocator(ffmpegfile);
         }
@@ -87,31 +80,5 @@ public class FFmpegDownloader {
     public float getProgress() {
         return progress;
     }
-
-    public FFmpegDwonloadState getState() {
-        return state;
-    }
-
-    public enum FFmpegDwonloadState {
-        PREPARATION(new TranslationTextComponent("ffmpegdlstate.preparation")),
-        LOADING(new TranslationTextComponent("ffmpegdlstate.loading")),
-        DOWNLOAD(new TranslationTextComponent("ffmpegdlstate.download"));
-
-        private final TranslationTextComponent localized;
-
-        FFmpegDwonloadState(TranslationTextComponent localized) {
-            this.localized = localized;
-        }
-
-        public TranslationTextComponent getLocalized() {
-            return localized;
-        }
-
-    }
-
-    public boolean isDwonloading() {
-        return dwonloading;
-    }
-
 
 }

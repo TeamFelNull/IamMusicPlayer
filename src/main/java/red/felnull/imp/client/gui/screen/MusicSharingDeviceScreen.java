@@ -1084,9 +1084,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                                     }
                                     if (id3v2.getAlbumImage() != null) {
                                         String uuid = UUID.randomUUID().toString();
-                                        IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtils.getClientTmpFolder().resolve(uuid));
+                                        IKSGFileLoadUtil.fileBytesWriter(id3v2.getAlbumImage(), PathUtils.getIMPTmpFolder().resolve(uuid));
                                         if (!this.stop) {
-                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, PathUtils.getClientTmpFolder().resolve(uuid));
+                                            DropAndDragFileLoadThread plt = new DropAndDragFileLoadThread(true, PathUtils.getIMPTmpFolder().resolve(uuid));
                                             plt.start();
                                         }
                                     }

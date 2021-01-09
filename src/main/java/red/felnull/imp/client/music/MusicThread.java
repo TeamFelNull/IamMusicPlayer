@@ -17,7 +17,7 @@ public class MusicThread extends Thread {
     }
 
     public MusicThread() {
-        this.setName("IMP-Music thread");
+        this.setName("Music thread");
     }
 
     @Override

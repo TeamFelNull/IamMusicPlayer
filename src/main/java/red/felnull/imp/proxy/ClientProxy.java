@@ -16,6 +16,7 @@ import red.felnull.imp.client.music.MusicThread;
 import red.felnull.imp.client.music.ClientWorldMusicManager;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 import red.felnull.imp.ffmpeg.FFmpegDownloader;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 
 public class ClientProxy extends CommonProxy {
     public static void clientInit() {
@@ -55,7 +56,8 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void addFFmpegLoadToast() {
-        if (FFmpegDownloader.getInstance().isDwonloading() && !FFmpegLoadToast.isAlreadyExists()) {
+        FFmpegManeger maneger = FFmpegManeger.instance();
+        if ((maneger.getState() == FFmpegManeger.FFmpegState.DOWNLOADING || maneger.getState() == FFmpegManeger.FFmpegState.EXTRACTING || maneger.getState() == FFmpegManeger.FFmpegState.PREPARATION) && !FFmpegLoadToast.isAlreadyExists()) {
             Minecraft.getInstance().getToastGui().add(new FFmpegLoadToast());
         }
     }

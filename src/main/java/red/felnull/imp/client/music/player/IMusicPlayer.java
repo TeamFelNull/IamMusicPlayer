@@ -6,11 +6,15 @@ public interface IMusicPlayer {
 
     void play();
 
+    void playMisalignment(long zure);
+
     void playAndReady(long startMiliSecond);
 
     void stop();
 
     boolean isPlaying();
+
+    long getMaxMisalignment();
 
     long getCureentElapsed();
 

@@ -48,6 +48,11 @@ public class ServerWorldMusicManager {
         removeRingers.forEach(this::stop);
     }
 
+    public void loadingNotFinishRegularConfirmation(UUID uuid, ServerPlayerEntity player) {
+        if (ringdMusics.containsKey(uuid))
+            ringdMusics.get(uuid).musicLoadingNotFinishRegularConfirmation(UUID.fromString(IKSGPlayerUtil.getUUID(player)));
+    }
+
     public void loadingFinish(UUID uuid, ServerPlayerEntity player) {
         if (ringdMusics.containsKey(uuid))
             ringdMusics.get(uuid).musicLoadingFinish(UUID.fromString(IKSGPlayerUtil.getUUID(player)));

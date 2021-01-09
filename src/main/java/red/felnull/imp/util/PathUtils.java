@@ -11,7 +11,7 @@ public class PathUtils {
         return Paths.get(IamMusicPlayer.MODID);
     }
 
-    public static Path getClientTmpFolder() {
+    public static Path getIMPTmpFolder() {
         return getIMPFolder().resolve("tmp");
     }
 
