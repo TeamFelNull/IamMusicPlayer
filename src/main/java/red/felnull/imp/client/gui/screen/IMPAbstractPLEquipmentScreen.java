@@ -86,7 +86,7 @@ public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends 
 
             @Override
             public long time(ClockTimer clockTimer) {
-                return 3000;
+                return 500;
             }
         });
     }

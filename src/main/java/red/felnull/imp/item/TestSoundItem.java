@@ -1,11 +1,9 @@
 package red.felnull.imp.item;
 
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
@@ -25,7 +23,7 @@ public class TestSoundItem extends Item {
         ItemStack offitemstack = playerIn.getHeldItem(handIn == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND);
 
         if (worldIn.isRemote) {
-            FFmpegManeger.instance().startFFmpegEncodeTest();
+            FFmpegManeger.instance().error();
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }

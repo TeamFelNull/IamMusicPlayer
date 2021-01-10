@@ -22,4 +22,8 @@ public interface IMusicPlayerTileEntity extends IWorldRingWhether {
 
     ResourceLocation getMusicDimension();
 
+    default long getMusicDuration() {
+        return getMusic().getLengthInMilliseconds();
+    }
+
 }

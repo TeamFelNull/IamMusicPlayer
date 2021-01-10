@@ -51,8 +51,10 @@ public class MusicUploader {
     public void startUpload(String name, Path path, URL url, String uuid, PlayImage image, byte[] imageData) {
         stateDatas.put(uuid, new MusicUploadData(name, image, imageData));
         MusicUploadToast.add(uuid);
-        UploadThread ut = new UploadThread(path, url, uuid);
-        ut.start();
+        if (path != null)
+            upload(path, uuid);
+        else if (url != null)
+            upload(url, uuid);
     }
 
 
@@ -132,7 +134,6 @@ public class MusicUploader {
         m3f.setId3v2Tag(new ID3v24Tag());
         m3f.setCustomTag(new byte[0]);
         m3f.save(PathUtils.getIMPTmpFolder().resolve(uuid).toString());
-        IKSGFileLoadUtil.deleteFile(PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp"));
         return true;
     }
 
@@ -166,27 +167,5 @@ public class MusicUploader {
     public MusicUploadData getStateData(String uuid) {
         return stateDatas.get(uuid);
     }
-
-
-    private class UploadThread extends Thread {
-        private final Path path;
-        private final String uuid;
-        private final URL url;
-
-        public UploadThread(Path path, URL url, String uuid) {
-            this.path = path;
-            this.uuid = uuid;
-            this.url = url;
-        }
-
-        @Override
-        public void run() {
-            if (path != null)
-                upload(path, uuid);
-            else if (url != null)
-                upload(url, uuid);
-        }
-    }
-
 
 }

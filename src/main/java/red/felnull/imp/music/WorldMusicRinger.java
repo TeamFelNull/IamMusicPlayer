@@ -83,6 +83,23 @@ public class WorldMusicRinger {
         regularConfirmationPlayers.clear();
     }
 
+    public void playerPause(UUID plyaerUUID) {
+        ResponseSender.sendToClient(plyaerUUID.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 1, uuid.toString(), new CompoundNBT());
+        playingPlayers.remove(plyaerUUID);
+        loadingPlayers.remove(plyaerUUID);
+        loadWaitingPlayers.remove(plyaerUUID);
+        waitingMiddlePlayers.remove(plyaerUUID);
+        regularConfirmationPlayers.remove(plyaerUUID);
+    }
+
+    public boolean isRelatedPlayer(UUID playerUUID) {
+        boolean flag1 = playingPlayers.contains(playerUUID);
+        boolean flag2 = loadingPlayers.contains(playerUUID);
+        boolean flag3 = loadWaitingPlayers.contains(playerUUID);
+        boolean flag4 = waitingMiddlePlayers.contains(playerUUID);
+        boolean flag5 = regularConfirmationPlayers.contains(playerUUID);
+        return flag1 || flag2 || flag3 || flag4 || flag5;
+    }
 
     public boolean tick() {
 
@@ -118,19 +135,21 @@ public class WorldMusicRinger {
 
         if (ringin) {
             long cur = ringStartElapsedTime + System.currentTimeMillis() - ringStartTime;
-            if (cur >= Long.MAX_VALUE) {
+            if (cur >= playMusic.getLengthInMilliseconds()) {
                 stop();
                 whether.setCurrentMusicPlayPosition(0);
             } else {
                 whether.setCurrentMusicPlayPosition(cur);
             }
+
             IKSGServerUtil.getOnlinePlayers().stream().filter(this::canListen).forEach(n -> {
                 if (!playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) && !waitingMiddlePlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n)))) {
                     PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
                     waitingMiddlePlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
                 }
             });
-        } else {
+
+            IKSGServerUtil.getOnlinePlayers().stream().filter(n -> isRelatedPlayer(UUID.fromString(IKSGPlayerUtil.getUUID(n)))).filter(n -> !canListen(n)).forEach(n -> playerPause(UUID.fromString(IKSGPlayerUtil.getUUID(n))));
 
         }
 

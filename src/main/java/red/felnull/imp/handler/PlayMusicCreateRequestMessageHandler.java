@@ -14,6 +14,6 @@ public class PlayMusicCreateRequestMessageHandler {
         if (list == null || list.equals(PlayList.ALL))
             return;
 
-        PlayMusicManeger.instance().createPlayMusic(ctx.get().getSender(), list, message.name, message.image, message.musicLocation, message.artist, message.album, message.year, message.genre);
+        PlayMusicManeger.instance().createPlayMusic(ctx.get().getSender(), list, message.name, message.image, message.musicLocation, message.artist, message.album, message.year, message.genre, message.lethInSecond);
     }
 }

@@ -33,7 +33,7 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
 
         this.frameSecond = MusicUtils.getMP3MillisecondPerFrame(file);
         this.inputFile = file;
-        this.duration = MusicUtils.getMP3MillisecondDuration(file);
+        this.duration = MusicUtils.getMillisecondDuration(file);
     }
 
     @Override

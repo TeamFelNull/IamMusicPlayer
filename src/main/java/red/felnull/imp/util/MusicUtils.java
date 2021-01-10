@@ -1,8 +1,5 @@
 package red.felnull.imp.util;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.Mp3File;
-import com.mpatric.mp3agic.UnsupportedTagException;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
@@ -11,6 +8,7 @@ import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 
 import java.io.*;
+import java.net.URL;
 
 public class MusicUtils {
     public static float getMP3MillisecondPerFrame(InputStream stream) throws BitstreamException {
@@ -25,7 +23,12 @@ public class MusicUtils {
         return getMP3MillisecondPerFrame(new BufferedInputStream(new FileInputStream(file)));
     }
 
-    public static long getMP3MillisecondDuration(File file) throws EncoderException, IMPFFmpegException {
+    public static long getMillisecondDuration(URL url) throws EncoderException, IMPFFmpegException {
+        MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
+        return mo.getInfo().getDuration();
+    }
+
+    public static long getMillisecondDuration(File file) throws EncoderException, IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(file);
         return mo.getInfo().getDuration();
     }
