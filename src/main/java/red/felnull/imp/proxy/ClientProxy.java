@@ -15,7 +15,6 @@ import red.felnull.imp.client.handler.RenderHandler;
 import red.felnull.imp.client.music.MusicThread;
 import red.felnull.imp.client.music.ClientWorldMusicManager;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
-import red.felnull.imp.ffmpeg.FFmpegDownloader;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
 
 public class ClientProxy extends CommonProxy {

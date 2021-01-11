@@ -75,6 +75,7 @@
   "ffmpegdl.caution": "Can't listen to or upload music until FFmpeg has finished loading",
   "_comment.n": "narrator",
   "narrator.button.power": "Power",
+  "narrator.button.impoptions": "Iam Music Player options",
   "_comment.ig": "itemgroup",
   "itemGroup.iammusicplayer": "Iam Music Player",
   "_comment.l": "last"

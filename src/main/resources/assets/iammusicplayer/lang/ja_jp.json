@@ -75,6 +75,7 @@
   "ffmpegdl.caution": "FFmpegの読み込みが終わるまで音楽を聴いたりアップロードはできません",
   "_comment.n": "narrator",
   "narrator.button.power": "電源",
+  "narrator.button.impoptions": "Iam Music Playerの設定",
   "_comment.ig": "itemgroup",
   "itemGroup.iammusicplayer": "Iam Music Player",
   "_comment.l": "last"

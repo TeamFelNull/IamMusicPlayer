@@ -12,7 +12,7 @@ public class BoomboxBlockItem extends BlockItem {
     public BoomboxBlockItem(Block blockIn, Properties builder) {
         super(blockIn, builder);
     }
-
+/*
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote) {
@@ -20,4 +20,5 @@ public class BoomboxBlockItem extends BlockItem {
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }
+ */
 }

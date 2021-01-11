@@ -60,12 +60,7 @@ public class YoutubeUtils {
     }
 
     public static String getThumbnailURL(String videoID) {
-        if (YOUTUBE_THUMBNAILURL.containsKey(videoID))
-            return YOUTUBE_THUMBNAILURL.get(videoID);
-        YoutubeThumbnailThread ytt = new YoutubeThumbnailThread(videoID);
-        ytt.start();
-        YOUTUBE_THUMBNAILURL.put(videoID, null);
-        return null;
+        return String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", videoID);
     }
 
     public static boolean isYoutubeURL(String url) {
@@ -83,28 +78,5 @@ public class YoutubeUtils {
         YoutubeVideo yv = yd.getVideo(videoID);
         AudioVideoFormat videoFormats = yv.videoWithAudioFormats().get(0);
         return videoFormats.url();
-    }
-
-    public static class YoutubeThumbnailThread extends Thread {
-        private final String videoID;
-
-        private YoutubeThumbnailThread(String videoID) {
-            this.videoID = videoID;
-        }
-
-        @Override
-        public void run() {
-            try {
-                String url = "https://noembed.com/embed?url=https://www.youtube.com/watch?v=" + videoID;
-                String rp = IKSGURLUtil.getURLResponse(url);
-                JsonObject jsonobject = new Gson().fromJson(rp, JsonObject.class);
-                String urla = jsonobject.get("thumbnail_url").getAsString();
-                YOUTUBE_THUMBNAILURL.put(videoID, urla);
-                return;
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-        }
     }
 }
