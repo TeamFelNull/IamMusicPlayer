@@ -33,6 +33,7 @@ public class FFmpegDownloader {
         private final File ffmpegfile;
 
         public FFmpegDownloadThread(FFmpegManeger.OSAndArch oaa, File file) {
+            this.setName("FFmpeg Downloader thread");
             this.osAndArch = oaa;
             this.ffmpegfile = file;
         }

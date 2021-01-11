@@ -58,8 +58,8 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
     protected void drawGuiContainerBackgroundLayerByIKSG(MatrixStack matx, float partTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayerByIKSG(matx, partTick, mouseX, mouseY);
         BoomboxTileEntity boomboxButton = (BoomboxTileEntity) getTileEntity();
-        if (/*boomboxButton.getMusic() != null && */boomboxButton.isOn()) {
-            IKSGRenderUtil.drawCenterString(this.font, matx, new StringTextComponent(StringUtils.getTimeNotationPercentage(boomboxButton.getCurrentMusicPlayPosition(), 0/* boomboxButton.getMusicDuration()*/)), getTexturStartX() + 72, getTexturStartY() + 48, 2722312);
+        if (boomboxButton.getMusic() != null && boomboxButton.isOn()) {
+            IKSGRenderUtil.drawCenterString(this.font, matx, new StringTextComponent(StringUtils.getTimeNotationPercentage(boomboxButton.getCurrentMusicPlayPosition(), boomboxButton.getMusicDuration())), getTexturStartX() + 72, getTexturStartY() + 48, 2722312);
         }
     }
 

@@ -60,12 +60,16 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         super.initByIKSG();
 
         this.playButton = addSmartStringButton(new TranslationTextComponent("cd.play"), (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.PLAY));
+        IKSGScreenUtil.setVisible(this.playButton, false);
 
         this.writeButton = addSmartStringButton(new TranslationTextComponent("cd.write"), (getMonitorXsize() / 4) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.WRITE_1));
+        IKSGScreenUtil.setVisible(this.writeButton,false);
 
         this.eraseButton = addSmartStringButton(new TranslationTextComponent("cd.erase"), (getMonitorXsize() / 2) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.ERASE));
+        IKSGScreenUtil.setVisible(this.eraseButton, false);
 
         this.copyButton = addSmartStringButton(new TranslationTextComponent("cd.copy"), (getMonitorXsize() / 4 * 3) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.COPY));
+        IKSGScreenUtil.setVisible(this.copyButton, false);
 
         this.allPlayListButton = addStringImageButton(new StringTextComponent(String.valueOf(I18n.format("playlist.all").toCharArray()[0])), 1, 1, 10, 10, 36, 40, n -> {
             setCurrentSelectedPlayList(PlayList.ALL);
@@ -194,10 +198,10 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
     @Override
     public void tickByIKSG() {
         super.tickByIKSG();
-        IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+      //  IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.writeButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
-        IKSGScreenUtil.setVisible(this.eraseButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
-        IKSGScreenUtil.setVisible(this.copyButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+     //   IKSGScreenUtil.setVisible(this.eraseButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+    //    IKSGScreenUtil.setVisible(this.copyButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.allPlayListButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.playListBar, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.playMusicBar, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));

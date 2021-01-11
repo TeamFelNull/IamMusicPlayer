@@ -16,6 +16,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.gui.widget.*;
@@ -183,10 +185,10 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         }, this, false));
         IKSGScreenUtil.setVisible(this.guildButtons, false);
 
-        this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101,  playlistbar,  (n, m) -> {
+        this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, playlistbar, (n, m) -> {
             PlayMusic music = getCurrentPLPlayMusic().get(m);
             playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
-        }, this,this,false));
+        }, this, this, false));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
 
         this.backGuid = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.BACK, 92, 92, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
@@ -326,6 +328,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                 }
             });
         }));
+        IKSGScreenUtil.setVisible(this.addPlayMusicOpenFolder, false);
 
         this.nextAddPlayMusic = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.NEXT, 145, 92, n -> insMode(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
 
@@ -445,7 +448,11 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             } else {
                 if (!at.getInfo().isStream) {
                     removePictuerPath();
-                    setImage(PlayImage.ImageType.URLIMAGE, YoutubeUtils.getThumbnailURL(at.getIdentifier()));
+                    if (YoutubeUtils.getThumbnailURL(at.getIdentifier()) != null) {
+                        setImage(PlayImage.ImageType.URLIMAGE, YoutubeUtils.getThumbnailURL(at.getIdentifier()));
+                    } else {
+                        setImage(PlayImage.ImageType.STRING, at.getInfo().title);
+                    }
                     addPlayMusicSourceField.setText(at.getInfo().identifier);
                     addPlayMusicNameField.setText(at.getInfo().title);
                     addPlayMusicArtistField.setText(at.getInfo().author);
@@ -1007,6 +1014,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         private boolean stop;
 
         public SourceCheckThread(String source) {
+            this.setName("Music Source Check");
             this.source = source;
         }
 
@@ -1167,12 +1175,15 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
     }
 
+    public static final Logger YOUTUBESEARCH_LOGGER = LogManager.getLogger(YoutubeSearchThread.class);
+
     private class YoutubeSearchThread extends Thread {
         private final String searchText;
         private boolean stop;
 
 
         public YoutubeSearchThread(String searchText) {
+            this.setName("Youtube Search");
             this.searchText = searchText;
         }
 
@@ -1182,9 +1193,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
             youtubeSearchLoading = true;
             youtubeResilts.clear();
-            IamMusicPlayer.LOGGER.info("Youtube Search: " + searchText);
+            YOUTUBESEARCH_LOGGER.debug("Youtube Search: " + searchText);
             List<AudioTrack> list = YoutubeUtils.getVideoSearchResults(searchText);
-            IamMusicPlayer.LOGGER.info("Youtube Search Finished: " + searchText);
+            YOUTUBESEARCH_LOGGER.debug("Youtube Search Finished: " + searchText);
             if (!this.stop)
                 youtubeResilts.addAll(list);
             youtubeSearchLoading = false;
@@ -1202,6 +1213,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         private boolean stop;
 
         public MusicPlayThread(MusicSourceClientReferencesType type, String src, long time, MusicSharingDeviceTileEntity.Screen monitors) {
+            this.setName("MSD Music Play");
             this.startTime = time;
             this.type = type;
             this.src = src;

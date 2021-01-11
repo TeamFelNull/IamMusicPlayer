@@ -67,6 +67,7 @@ public abstract class IMPAbstractEquipmentScreen<T extends Container> extends Ab
 
     private static class PowerButton extends Button {
         private final PowerButton.IPowerIsOn powerIsOn;
+
         public PowerButton(int x, int y, IPowerIsOn ison, IPressable pressedAction) {
             super(x, y, 20, 20, new TranslationTextComponent("narrator.button.power"), pressedAction);
             this.powerIsOn = ison;

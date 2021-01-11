@@ -17,8 +17,8 @@ public class ItemHelper {
     }
 
     public static boolean isWrittenCassetteTape(ItemStack stack) {
-        CompoundNBT tag = stack.getTag();
-        return tag != null && tag.getCompound("music").contains("uuid", 8);
+        PlayMusic music = ItemHelper.getPlayMusicByItem(stack);
+        return music != null;
     }
 
     public static boolean isMusicItem(ItemStack stack) {
@@ -28,27 +28,16 @@ public class ItemHelper {
     public static ItemStack writtenCassetteTape(ItemStack casstape, PlayMusic music) {
         ItemStack itemstack = casstape.copy();
         CompoundNBT tag = itemstack.getOrCreateTag();
-        tag.put("music", createMusicNBTTag(music));
+        tag.putString("musicuuid", music.getUUID());
+        tag.put("music", music.write(new CompoundNBT()));
         return itemstack;
     }
 
-    public static CompoundNBT createMusicNBTTag(PlayMusic music) {
-        CompoundNBT tag = new CompoundNBT();
-        tag.putString("name", music.getName());
-        tag.putString("uuid", music.getUUID());
-        return tag;
-    }
 
     public static PlayMusic getPlayMusicByItem(ItemStack itemStack) {
         CompoundNBT tag = itemStack.getTag();
         if (tag != null)
-            return getPlayMusicByTag(tag.getCompound("music"));
-
+            return new PlayMusic(tag.getString("musicuuid"), tag.getCompound("music"));
         return null;
-    }
-
-
-    public static PlayMusic getPlayMusicByTag(CompoundNBT tag) {
-        return PlayMusic.getPlayMusicByUUID(tag.getString("uuid"));
     }
 }
