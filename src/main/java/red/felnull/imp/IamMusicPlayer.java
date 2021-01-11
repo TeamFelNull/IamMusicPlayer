@@ -9,6 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.felnull.imp.client.config.ClientConfig;
 import red.felnull.imp.proxy.ClientProxy;
 import red.felnull.imp.proxy.CommonProxy;
 
@@ -24,6 +25,7 @@ public class IamMusicPlayer {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::processIMC);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        ClientConfig.init();
     }
 
     private void setup(final FMLCommonSetupEvent event) {

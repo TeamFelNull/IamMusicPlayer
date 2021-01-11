@@ -1,12 +1,15 @@
 package red.felnull.imp.client.music;
 
 import net.minecraft.client.Minecraft;
+import red.felnull.imp.client.config.ClientConfig;
 
 import java.util.*;
 
 public class ClientWorldMusicManager {
     private static final Minecraft mc = Minecraft.getInstance();
     private static ClientWorldMusicManager INSTANCE;
+    private double musicVolume;
+    private boolean stereoEnabled;
 
     private Map<UUID, MusicRinger> mplayers = new HashMap<>();
 
@@ -14,6 +17,8 @@ public class ClientWorldMusicManager {
 
     public static void init() {
         INSTANCE = new ClientWorldMusicManager();
+        INSTANCE.setMusicVolume(ClientConfig.MusicVolume.get());
+        INSTANCE.setStereoEnabled(ClientConfig.StereoEnabled.get());
     }
 
     public static ClientWorldMusicManager instance() {
@@ -62,5 +67,19 @@ public class ClientWorldMusicManager {
         mplayers.values().forEach(MusicRinger::volumeUpdate);
     }
 
+    public double getMusicVolume() {
+        return musicVolume;
+    }
 
+    public void setMusicVolume(double musicVolume) {
+        this.musicVolume = musicVolume;
+    }
+
+    public boolean isStereoEnabled() {
+        return stereoEnabled;
+    }
+
+    public void setStereoEnabled(boolean stereoEnabled) {
+        this.stereoEnabled = stereoEnabled;
+    }
 }
