@@ -1049,8 +1049,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                     try {
                         MultimediaObject mo = FFmpegUtils.createMultimediaObject(path.toFile());
                         Encoder encoder = new Encoder();
-                        if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(mo.getInfo().getFormat())) {
-                            MultimediaInfo info = mo.getInfo();
+                        if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(FFmpegUtils.getInfo(mo).getFormat())) {
+                            MultimediaInfo info = FFmpegUtils.getInfo(mo);
                             if (info.getFormat().equals("mp3")) {
                                 Mp3File mp3 = new Mp3File(path);
                                 ID3v2 id3v2 = mp3.getId3v2Tag();
@@ -1134,7 +1134,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                     URL url = new URL(source);
                     MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
                     Encoder encoder = new Encoder();
-                    MultimediaInfo info = mo.getInfo();
+                    MultimediaInfo info = FFmpegUtils.getInfo(mo);
                     if (Arrays.asList(encoder.getSupportedEncodingFormats()).contains(info.getFormat())) {
                         if (info.getDuration() == -1) {
                             if (!this.stop) {

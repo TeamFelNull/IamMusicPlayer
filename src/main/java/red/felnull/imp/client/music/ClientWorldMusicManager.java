@@ -1,6 +1,7 @@
 package red.felnull.imp.client.music;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.SoundCategory;
 import red.felnull.imp.client.config.ClientConfig;
 
 import java.util.*;
@@ -69,6 +70,10 @@ public class ClientWorldMusicManager {
 
     public double getMusicVolume() {
         return musicVolume;
+    }
+
+    public double getEventuallyMusicVolume() {
+        return musicVolume * Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MASTER);
     }
 
     public void setMusicVolume(double musicVolume) {

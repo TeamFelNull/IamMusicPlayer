@@ -59,7 +59,7 @@ public class MusicRinger {
     public void volumeUpdate() {
         if (musicPlayer != null) {
             float vol = 1f - (float) getDistance() / 30f;
-            musicPlayer.setVolume(Math.max(vol, 0f));
+            musicPlayer.setVolume((float) (Math.max(vol, 0f) * ClientWorldMusicManager.instance().getEventuallyMusicVolume()));
         }
     }
 

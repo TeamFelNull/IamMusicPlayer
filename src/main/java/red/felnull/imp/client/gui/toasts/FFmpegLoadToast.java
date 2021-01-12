@@ -19,7 +19,7 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public class FFmpegLoadToast implements IToast {
-    private static final ResourceLocation FFMPEGICON_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/ffmpeg.png");
+    public static final ResourceLocation FFMPEGICON_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/ffmpeg.png");
     private boolean completed;
     protected long compTime;
 
@@ -38,7 +38,6 @@ public class FFmpegLoadToast implements IToast {
 
         IKSGRenderUtil.guiBindAndBlit(FFMPEGICON_TEXTURE, matrix, 8, 8, 0, 0, 16, 16, 16, 16);
 
-
         if (maneger.getState() == FFmpegManeger.FFmpegState.DOWNLOADING) {
             IKSGRenderUtil.guiBindAndBlit(MusicUploadToast.IMP_TEXTURE_TOASTS, matrix, 29, 19, 0, 32, 125, 7, 256, 256);
             IKSGRenderUtil.guiBindAndBlit(MusicUploadToast.IMP_TEXTURE_TOASTS, matrix, 30, 20, 0, 39, (int) (123 * downloader.getProgress()), 5, 256, 256);
@@ -50,7 +49,7 @@ public class FFmpegLoadToast implements IToast {
 
             IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(maneger.getState().getLocalized(), IMPAbstractEquipmentScreen.smart_fontStyle), 29, 8, 0);
         } else {
-            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new TranslationTextComponent("ffmpegdlstate.completion"), IMPAbstractEquipmentScreen.smart_fontStyle), 29, 16 - fr.FONT_HEIGHT / 2, 0);
+            IKSGRenderUtil.drawString(fr, matrix, IKSGStyles.withStyle(new TranslationTextComponent("ffmpegtoast.completion"), IMPAbstractEquipmentScreen.smart_fontStyle), 29, 16 - fr.FONT_HEIGHT / 2, 0);
         }
 
         if (maneger.getState() != FFmpegManeger.FFmpegState.DOWNLOADING && maneger.getState() != FFmpegManeger.FFmpegState.EXTRACTING && maneger.getState() != FFmpegManeger.FFmpegState.PREPARATION) {

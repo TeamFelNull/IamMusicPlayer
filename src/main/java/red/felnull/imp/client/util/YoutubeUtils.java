@@ -3,6 +3,7 @@ package red.felnull.imp.client.util;
 import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.YoutubeException;
 import com.github.kiulian.downloader.model.YoutubeVideo;
+import com.github.kiulian.downloader.model.formats.AudioFormat;
 import com.github.kiulian.downloader.model.formats.AudioVideoFormat;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -76,7 +77,7 @@ public class YoutubeUtils {
     public static String getYoutubeMa4DirectLink(String videoID) throws YoutubeException {
         YoutubeDownloader yd = new YoutubeDownloader();
         YoutubeVideo yv = yd.getVideo(videoID);
-        AudioVideoFormat videoFormats = yv.videoWithAudioFormats().get(0);
-        return videoFormats.url();
+        AudioFormat audioformat = yv.audioFormats().get(0);
+        return audioformat.url();
     }
 }

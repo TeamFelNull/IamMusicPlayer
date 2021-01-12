@@ -1,8 +1,11 @@
 package red.felnull.imp.ffmpeg;
 
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
+import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -12,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class FFmpegDownloader {
+    private static final Logger LOGGER = LogManager.getLogger(FFmpegDownloader.class);
     private static FFmpegDownloader INSTANCE;
     private float progress;
 
@@ -45,10 +49,9 @@ public class FFmpegDownloader {
             IamMusicPlayer.proxy.addFFmpegLoadToast();
             try {
                 InputStream ffmpegResource = maneger.getFFmpegResource(osAndArch.getResourceName());
-                ffmpegResource = null;
                 if (ffmpegResource != null) {
                     maneger.setState(FFmpegManeger.FFmpegState.EXTRACTING);
-                    IamMusicPlayer.LOGGER.info("Start ffmpeg copy");
+                    LOGGER.info("Start ffmpeg copy");
                     Files.copy(ffmpegResource, ffmpegfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
             } catch (Exception ex) {
@@ -58,16 +61,16 @@ public class FFmpegDownloader {
                 try {
                     URL url = new URL(maneger.getFFmpegLink(osAndArch));
                     maneger.setState(FFmpegManeger.FFmpegState.DOWNLOADING);
-                    IamMusicPlayer.LOGGER.info("Start ffmpeg download");
+                    LOGGER.info("Start ffmpeg download");
                     AtomicLong lastt = new AtomicLong(System.currentTimeMillis());
                     IKSGFileLoadUtil.fileURLWriterProgress(url, ffmpegfile.toPath(), progressa -> {
                         progress = progressa;
                         if (System.currentTimeMillis() - lastt.get() >= 3000) {
                             lastt.set(System.currentTimeMillis());
-                            IamMusicPlayer.LOGGER.info("Download ffmpeg : " + progressa + "%");
+                            LOGGER.info("Download ffmpeg : " + getPercentage(progressa));
                         }
                     });
-                    IamMusicPlayer.LOGGER.info("Completed ffmpeg download");
+                    LOGGER.info("Completed ffmpeg download");
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -82,4 +85,7 @@ public class FFmpegDownloader {
         return progress;
     }
 
+    public static String getPercentage(float per) {
+        return Math.round(per * 100) + " %";
+    }
 }

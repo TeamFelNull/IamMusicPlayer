@@ -23,13 +23,13 @@ public class MusicUtils {
         return getMP3MillisecondPerFrame(new BufferedInputStream(new FileInputStream(file)));
     }
 
-    public static long getMillisecondDuration(URL url) throws EncoderException, IMPFFmpegException {
+    public static long getMillisecondDuration(URL url) throws IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
-        return mo.getInfo().getDuration();
+        return FFmpegUtils.getInfo(mo).getDuration();
     }
 
-    public static long getMillisecondDuration(File file) throws EncoderException, IMPFFmpegException {
+    public static long getMillisecondDuration(File file) throws IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(file);
-        return mo.getInfo().getDuration();
+        return FFmpegUtils.getInfo(mo).getDuration();
     }
 }

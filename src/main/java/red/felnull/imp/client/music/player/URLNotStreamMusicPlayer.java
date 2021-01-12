@@ -2,6 +2,7 @@ package red.felnull.imp.client.music.player;
 
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
+import red.felnull.imp.client.music.ClientWorldMusicManager;
 import red.felnull.imp.client.music.InputStreamArrayEnumeration;
 import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.util.FFmpegUtils;
@@ -39,7 +40,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
 
     public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException, IMPFFmpegException {
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
-        this.duration = mo.getInfo().getDuration();
+        this.duration = FFmpegUtils.getInfo(mo).getDuration();
         this.inputURL = url;
         this.streamEnumeration = new InputStreamArrayEnumeration();
     }
@@ -228,28 +229,11 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
 
     public static void converting(URL url, Path outPath, long offset, long duration) {
         try {
-            float offsetF = (float) offset / 1000f;
-            float durationF = (float) duration / 1000f;
-
-            AudioAttributes audio = new AudioAttributes();
-            audio.setCodec("libmp3lame");
-            audio.setBitRate(128000);
-            audio.setChannels(1);
-            audio.setSamplingRate(44100);
-
-            EncodingAttributes attrs = new EncodingAttributes();
-            attrs.setOutputFormat("mp3");
-            attrs.setAudioAttributes(audio);
-            if (offset != 0)
-                attrs.setOffset(offsetF);
-            if (duration != 0)
-                attrs.setDuration(durationF);
-
-            Encoder encoder = new Encoder();
-            encoder.encode(FFmpegUtils.createMultimediaObject(url), outPath.toFile(), attrs);
+            FFmpegUtils.encode(FFmpegUtils.createMultimediaObject(url), outPath.toFile(), "libmp3lame", 128, ClientWorldMusicManager.instance().isStereoEnabled() ? 2 : 1, 44100, "mp3", offset, duration);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+
     }
 
 }

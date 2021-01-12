@@ -68,7 +68,7 @@ public class FFmpegManeger {
         if (ffmpegfile.exists()) {
             setLocator(ffmpegfile);
             state = FFmpegState.NONE;
-            startFFmpegEncodeTest();
+            startFFmpegEncodeTest(false);
         } else {
             LOGGER.info("No ffmpeg");
             FFmpegDownloader.getInstance().startDL(osAndArch, ffmpegfile);
@@ -111,8 +111,13 @@ public class FFmpegManeger {
         }
     }
 
-    public void error() {
-
+    public void error(IMPFFmpegException exception) {
+        state = FFmpegState.ERROR;
+        IamMusicPlayer.proxy.addFFmpegErrorToast(exception);
+        Path ffmpegFolderPath = PathUtils.getFFmpegFolder();
+        String filename = "ffmpeg-" + osAndArch.getName() + "-" + FFMPEG_IMPVERSION + (osAndArch.isExe() ? ".exe" : "");
+        File ffmpegfile = ffmpegFolderPath.resolve(filename).toFile();
+        FFmpegDownloader.getInstance().startDL(osAndArch, ffmpegfile);
     }
 
     public void setLocator(File file) {
@@ -138,17 +143,19 @@ public class FFmpegManeger {
         player.sendStatusMessage(new TranslationTextComponent("ffmpegdl.caution"), true);
     }
 
-    public void startFFmpegEncodeTest() {
+    public void startFFmpegEncodeTest(boolean toast) {
         if (canUseFFmpeg()) {
-            FFmpegEncodeTestThread fet = new FFmpegEncodeTestThread();
+            FFmpegEncodeTestThread fet = new FFmpegEncodeTestThread(toast);
             fet.start();
         }
     }
 
     private class FFmpegEncodeTestThread extends Thread {
+        private final boolean toast;
 
-        private FFmpegEncodeTestThread() {
+        private FFmpegEncodeTestThread(boolean toast) {
             this.setName("FFmpeg Encode Test");
+            this.toast = toast;
         }
 
         @Override
@@ -161,23 +168,17 @@ public class FFmpegManeger {
                     InputStream stream = rm.getResource(new ResourceLocation(IamMusicPlayer.MODID, "ffmpeg_testdata")).getInputStream();
                     IKSGFileLoadUtil.createFolder(PathUtils.getIMPTmpFolder());
                     IKSGFileLoadUtil.fileInputStreamWriter(stream, PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_in"), StandardCopyOption.REPLACE_EXISTING);
+
                     MultimediaObject mo = FFmpegUtils.createMultimediaObject(PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_in").toFile());
-                    Encoder encoder = new Encoder();
-                    AudioAttributes aa = new AudioAttributes();
-                    aa.setCodec("libmp3lame");
-                    aa.setBitRate(128);
-                    aa.setChannels(1);
-                    aa.setSamplingRate(32000);
-                    EncodingAttributes ea = new EncodingAttributes();
-                    ea.setOutputFormat("mp3");
-                    ea.setAudioAttributes(aa);
-                    encoder.encode(mo, PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_out").toFile(), ea);
+                    FFmpegUtils.encode(mo, PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_out").toFile(), "libmp3lame", 128, 1, 32000, "mp3");
+
                     IKSGFileLoadUtil.deleteFile(PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_in"));
                     IKSGFileLoadUtil.deleteFile(PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_out"));
                     state = FFmpegState.NONE;
-                } catch (IMPFFmpegException | EncoderException ex) {
+                    if (toast)
+                        IamMusicPlayer.proxy.addFFmpegTestFinishToast();
+                } catch (IMPFFmpegException ex) {
                     LOGGER.error("FFmpeg encode test failed", ex);
-                    state = FFmpegState.ERROR;
                 }
                 LOGGER.info("Finish FFmpeg encode test");
             } catch (Exception ex) {
@@ -206,7 +207,7 @@ public class FFmpegManeger {
         }
 
         public TranslationTextComponent getLocalized() {
-            return new TranslationTextComponent("ffmpegdlstate." + name);
+            return new TranslationTextComponent("ffmpegtoast." + name);
         }
     }
 

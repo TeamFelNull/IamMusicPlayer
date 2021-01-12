@@ -102,20 +102,12 @@ public class MusicUploader {
         return conversion(mo, uuid, bitrate);
     }
 
-    private boolean conversion(MultimediaObject mo, String uuid, int bitrate) throws EncoderException, InvalidDataException, IOException, UnsupportedTagException, NotSupportedException {
-        if (mo.getInfo().getDuration() == -1)
+    private boolean conversion(MultimediaObject mo, String uuid, int bitrate) throws InvalidDataException, IOException, UnsupportedTagException, NotSupportedException, IMPFFmpegException {
+        if (FFmpegUtils.getInfo(mo).getDuration() == -1)
             return false;
         IKSGFileLoadUtil.createFolder(PathUtils.getIMPTmpFolder());
-        AudioAttributes aa = new AudioAttributes();
-        aa.setCodec("libmp3lame");
-        aa.setBitRate(bitrate);
-        aa.setChannels(1);
-        aa.setSamplingRate(32000);
-        EncodingAttributes ea = new EncodingAttributes();
-        ea.setOutputFormat("mp3");
-        ea.setAudioAttributes(aa);
-        Encoder encoder = new Encoder();
-        encoder.encode(mo, PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp").toFile(), ea, new EncoderProgressListener() {
+
+        FFmpegUtils.encode(mo, PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp").toFile(), "libmp3lame", bitrate, 2, 32000, "mp3", new EncoderProgressListener() {
             @Override
             public void sourceInfo(MultimediaInfo info) {
             }
@@ -129,6 +121,7 @@ public class MusicUploader {
             public void message(String message) {
             }
         });
+
         Mp3File m3f = new Mp3File(PathUtils.getIMPTmpFolder().resolve(uuid + "-tmp").toFile());
         m3f.setId3v1Tag(new ID3v1Tag());
         m3f.setId3v2Tag(new ID3v24Tag());

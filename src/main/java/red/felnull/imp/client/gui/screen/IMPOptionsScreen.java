@@ -11,6 +11,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.client.config.ClientConfig;
 import red.felnull.imp.client.gui.widget.MusicVolumeSlider;
 import red.felnull.imp.client.music.ClientWorldMusicManager;
+import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.otyacraftengine.client.gui.IkisugiDialogTexts;
 import red.felnull.otyacraftengine.client.gui.screen.IkisugiScreen;
 
@@ -32,12 +33,16 @@ public class IMPOptionsScreen extends IkisugiScreen {
         }));
 
         IFormattableTextComponent iformattabletextcomponent = new TranslationTextComponent("imp.stereoEnabled").appendString(":");
-        this.addWidgetByIKSG(new Button(this.width / 2 - 155 + 1 % 2 * 160, this.height / 6 - 12, 150, 20, iformattabletextcomponent.deepCopy().append(ClientWorldMusicManager.instance().isStereoEnabled() ? IkisugiDialogTexts.ON : IkisugiDialogTexts.OFF), (n) -> {
+        this.addWidgetByIKSG(new Button(this.width / 2 - 155 + 160, this.height / 6 - 12, 150, 20, iformattabletextcomponent.deepCopy().append(ClientWorldMusicManager.instance().isStereoEnabled() ? IkisugiDialogTexts.ON : IkisugiDialogTexts.OFF), (n) -> {
             ClientWorldMusicManager.instance().setStereoEnabled(!ClientWorldMusicManager.instance().isStereoEnabled());
             n.setMessage(iformattabletextcomponent.deepCopy().append(ClientWorldMusicManager.instance().isStereoEnabled() ? IkisugiDialogTexts.ON : IkisugiDialogTexts.OFF));
         }));
 
         this.musicVolumeSlider = this.addWidgetByIKSG(new MusicVolumeSlider(this.width / 2 - 155, this.height / 6 - 12, 150));
+
+        this.addWidgetByIKSG(new Button(this.width / 2 - 155, this.height / 6 - 12 + 24, 150, 20, new TranslationTextComponent("imp.ffmpegTest"), (n) -> {
+            FFmpegManeger.instance().startFFmpegEncodeTest(true);
+        }));
     }
 
     @Override

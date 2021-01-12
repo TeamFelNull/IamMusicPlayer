@@ -6,9 +6,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
+import red.felnull.imp.util.FFmpegUtils;
+import red.felnull.imp.util.MusicUtils;
+import ws.schild.jave.MultimediaObject;
+
+import java.io.File;
 
 
 public class TestSoundItem extends Item {
@@ -23,7 +30,7 @@ public class TestSoundItem extends Item {
         ItemStack offitemstack = playerIn.getHeldItem(handIn == Hand.MAIN_HAND ? Hand.OFF_HAND : Hand.MAIN_HAND);
 
         if (worldIn.isRemote) {
-            FFmpegManeger.instance().error();
+
         }
         return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
     }

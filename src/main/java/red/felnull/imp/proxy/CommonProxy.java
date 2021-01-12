@@ -5,6 +5,7 @@ import net.minecraftforge.common.MinecraftForge;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
+import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.handler.MusicReceiveHandler;
 import red.felnull.imp.handler.ServerHandler;
@@ -39,5 +40,11 @@ public class CommonProxy {
     }
 
     public void addFFmpegLoadToast() {
+    }
+
+    public void addFFmpegErrorToast(IMPFFmpegException exception) {
+    }
+
+    public void addFFmpegTestFinishToast() {
     }
 }
