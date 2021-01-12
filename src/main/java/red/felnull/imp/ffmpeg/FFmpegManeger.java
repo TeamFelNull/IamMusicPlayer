@@ -114,6 +114,10 @@ public class FFmpegManeger {
     public void error(IMPFFmpegException exception) {
         state = FFmpegState.ERROR;
         IamMusicPlayer.proxy.addFFmpegErrorToast(exception);
+        reload();
+    }
+
+    public void reload() {
         Path ffmpegFolderPath = PathUtils.getFFmpegFolder();
         String filename = "ffmpeg-" + osAndArch.getName() + "-" + FFMPEG_IMPVERSION + (osAndArch.isExe() ? ".exe" : "");
         File ffmpegfile = ffmpegFolderPath.resolve(filename).toFile();

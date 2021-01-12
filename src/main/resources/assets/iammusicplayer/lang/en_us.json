@@ -80,6 +80,7 @@
   "imp.musicVolume": "Music Volume",
   "imp.stereoEnabled": "Stereo Enabled",
   "imp.ffmpegTest": "FFmpeg Encode Test",
+  "imp.ffmpegReLoading": "FFmpeg Reload",
   "_comment.n": "narrator",
   "narrator.button.power": "Power",
   "narrator.button.impoptions": "Iam Music Player options",

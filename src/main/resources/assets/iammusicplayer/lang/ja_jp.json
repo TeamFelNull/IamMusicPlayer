@@ -80,6 +80,7 @@
   "imp.musicVolume": "音楽のボリューム",
   "imp.stereoEnabled": "ステレオを有効",
   "imp.ffmpegTest": "FFmpegエンコードテスト",
+  "imp.ffmpegReLoading": "FFmpeg再読み込み",
   "_comment.n": "narrator",
   "narrator.button.power": "電源",
   "narrator.button.impoptions": "Iam Music Playerの設定",

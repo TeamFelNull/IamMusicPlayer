@@ -3,8 +3,10 @@ package red.felnull.imp.client.gui.screen;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -15,6 +17,7 @@ import red.felnull.imp.client.gui.widget.PlayListScrollButton;
 import red.felnull.imp.client.gui.widget.PlayMusicScrollButton;
 import red.felnull.imp.client.util.RenderUtil;
 import red.felnull.imp.container.CassetteDeckContainer;
+import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.tileentity.CassetteDeckTileEntity;
@@ -62,8 +65,13 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         this.playButton = addSmartStringButton(new TranslationTextComponent("cd.play"), (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.PLAY));
         IKSGScreenUtil.setVisible(this.playButton, false);
 
-        this.writeButton = addSmartStringButton(new TranslationTextComponent("cd.write"), (getMonitorXsize() / 4) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.WRITE_1));
-        IKSGScreenUtil.setVisible(this.writeButton,false);
+        this.writeButton = addSmartStringButton(new TranslationTextComponent("cd.write"), (getMonitorXsize() / 4) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> {
+            if (((CassetteDeckTileEntity) getTileEntity()).getPAntenna().isEmpty())
+                insScreen(CassetteDeckTileEntity.Screen.WRITE_NO_ANTENNA);
+            else
+                insScreen(CassetteDeckTileEntity.Screen.WRITE_1);
+        });
+        IKSGScreenUtil.setVisible(this.writeButton, false);
 
         this.eraseButton = addSmartStringButton(new TranslationTextComponent("cd.erase"), (getMonitorXsize() / 2) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.ERASE));
         IKSGScreenUtil.setVisible(this.eraseButton, false);
@@ -154,9 +162,23 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
             case WRITE_2:
                 drawWrite2Screen(matx, partTick, mouseX, mouseY);
                 break;
+            case WRITE_NO_ANTENNA:
+                drawWriteNoAntenna(matx, partTick, mouseX, mouseY);
+                break;
         }
     }
 
+    private void drawWriteNoAntenna(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawCenterFontString(matrx, new TranslationTextComponent("msd.noantenna"), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + 20);
+        ItemRenderer ir = getMinecraft().getItemRenderer();
+        ir.zLevel = 100.0F;
+        ir.renderItemAndEffectIntoGUI(new ItemStack(IMPItems.PARABOLIC_ANTENNA), getTexturStartX() + getXSize() / 2 - 8, getMonitorStartY() + 35);
+        ir.zLevel = 0.0F;
+        IKSGRenderUtil.matrixPush(matrx);
+        IKSGRenderUtil.matrixTranslatef(matrx, 0, 0, 500);
+        IKSGRenderUtil.guiBindAndBlit(MusicSharingDeviceScreen.MSD_GUI_TEXTURES, matrx, getTexturStartX() + getXSize() / 2 - 10, getMonitorStartY() + 33, 215, 40, 20, 20, 256, 256);
+        IKSGRenderUtil.matrixPop(matrx);
+    }
 
     private void drawWrite2Screen(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("cd.write"), getMonitorStartX() + 2, getMonitorStartY() + 2);
@@ -198,16 +220,16 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
     @Override
     public void tickByIKSG() {
         super.tickByIKSG();
-      //  IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+        //  IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.writeButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
-     //   IKSGScreenUtil.setVisible(this.eraseButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
-    //    IKSGScreenUtil.setVisible(this.copyButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+        //   IKSGScreenUtil.setVisible(this.eraseButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+        //    IKSGScreenUtil.setVisible(this.copyButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.allPlayListButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.playListBar, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.playMusicBar, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.playListButtons, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setVisible(this.playMusicButtons, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
-        IKSGScreenUtil.setVisible(this.writeBackButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
+        IKSGScreenUtil.setVisible(this.writeBackButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1, CassetteDeckTileEntity.Screen.WRITE_NO_ANTENNA));
         IKSGScreenUtil.setVisible(this.writeStartButton, isScreen(CassetteDeckTileEntity.Screen.WRITE_1));
         IKSGScreenUtil.setActive(this.writeStartButton, !getWritePlayMusic().equals(PlayMusic.EMPTY) && !((CassetteDeckTileEntity) getTileEntity()).getCassetteTape().isEmpty());
     }

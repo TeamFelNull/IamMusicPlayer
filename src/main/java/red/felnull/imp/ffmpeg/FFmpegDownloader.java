@@ -46,9 +46,11 @@ public class FFmpegDownloader {
         public void run() {
             FFmpegManeger maneger = FFmpegManeger.instance();
             maneger.setState(FFmpegManeger.FFmpegState.PREPARATION);
+            IKSGFileLoadUtil.deleteFile(ffmpegfile);
             IamMusicPlayer.proxy.addFFmpegLoadToast();
             try {
                 InputStream ffmpegResource = maneger.getFFmpegResource(osAndArch.getResourceName());
+            //    ffmpegResource = null;
                 if (ffmpegResource != null) {
                     maneger.setState(FFmpegManeger.FFmpegState.EXTRACTING);
                     LOGGER.info("Start ffmpeg copy");

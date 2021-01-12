@@ -96,6 +96,12 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                 if (currentScreen == Screen.OFF)
                     currentScreen = Screen.SELECTION;
 
+                if ((currentScreen == Screen.WRITE_1 || currentScreen == Screen.WRITE_2) && getPAntenna().isEmpty())
+                    currentScreen = Screen.WRITE_NO_ANTENNA;
+
+                if (currentScreen == Screen.WRITE_NO_ANTENNA && !getPAntenna().isEmpty())
+                    currentScreen = Screen.WRITE_1;
+
                 if (currentScreen == Screen.WRITE_2) {
                     if (getCassetteTape().isEmpty())
                         currentScreen = Screen.WRITE_1;
@@ -161,7 +167,8 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         WRITE_1("write_1"),
         WRITE_2("write_2"),
         ERASE("erase"),
-        COPY("copy");
+        COPY("copy"),
+        WRITE_NO_ANTENNA("write_no_antenna");
         private final String name;
 
         private Screen(String name) {
