@@ -4,7 +4,7 @@ import java.io.File;
 
 public class FileUtils {
     public static void openFileChoser(String title, OpenFile op) {
-        try {
+      /*  try {
             javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
             fc.setTitle(title);
             com.sun.javafx.application.PlatformImpl.startup(() -> {
@@ -13,16 +13,17 @@ public class FileUtils {
             });
         } catch (NoClassDefFoundError ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 
     public static boolean isCanOpenFileChooser() {
-        try {
+    /*    try {
             javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
             return true;
         } catch (NoClassDefFoundError ex) {
             return false;
-        }
+        }*/
+        return false;
     }
 
     public interface OpenFile {

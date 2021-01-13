@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "iammusicplayer:monitor"
+    },
+    {
+      "item": "iammusicplayer:keyboard"
+    },
+    {
+      "item": "iammusicplayer:computer"
+    }
+  ],
+  "result": {
+    "item": "iammusicplayer:music_sharing_device"
+  }
+}

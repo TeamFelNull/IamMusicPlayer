@@ -7,12 +7,10 @@ import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
 import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
-import red.felnull.imp.handler.MusicReceiveHandler;
-import red.felnull.imp.handler.ServerHandler;
-import red.felnull.imp.handler.WorldMusicServerHandler;
-import red.felnull.imp.handler.WorldRingerHandler;
+import red.felnull.imp.handler.*;
 import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.packet.PacketHandler;
+import red.felnull.imp.recipe.ComposterRecipes;
 
 public class CommonProxy {
     public void preInit() {
@@ -21,10 +19,12 @@ public class CommonProxy {
         PlayListGuildManeger.init();
         PlayMusicManeger.init();
         IMPWorldData.register();
+        ComposterRecipes.register();
         MinecraftForge.EVENT_BUS.register(ServerHandler.class);
         MinecraftForge.EVENT_BUS.register(MusicReceiveHandler.class);
         MinecraftForge.EVENT_BUS.register(WorldMusicServerHandler.class);
         MinecraftForge.EVENT_BUS.register(WorldRingerHandler.class);
+        MinecraftForge.EVENT_BUS.register(TradeHandler.class);
     }
 
     public void init() {
