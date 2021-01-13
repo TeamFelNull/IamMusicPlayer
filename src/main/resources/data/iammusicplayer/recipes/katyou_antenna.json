@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CBC",
+    "BAB",
+    "CBC"
+  ],
+  "key": {
+    "A": {
+      "tag": "iammusicplayer:parabolic_antenna"
+    },
+    "B": {
+      "tag": "forge:dyes/brown"
+    },
+    "C": {
+      "tag": "forge:nether_stars"
+    }
+  },
+  "result": {
+    "item": "iammusicplayer:katyou_antenna",
+    "count": 1
+  }
+}
