@@ -81,12 +81,12 @@ public class ServerHandler {
     public static void onLootTableLoad(LootTableLoadEvent e) {
         if (e.getName().toString().equals("minecraft:chests/simple_dungeon")) {
             LootPool pool = LootPool.builder().rolls(new RandomValueRange(1))
-                    .acceptCondition(RandomChance.builder((0.5f)))
+                    .acceptCondition(RandomChance.builder((0.114514f)))
                     .addEntry(ItemLootEntry.builder(IMPItems.KATYOU_ANTENNA).weight(1))
+                    .addEntry(ItemLootEntry.builder(IMPItems.IKISUGI_ANTENNA).weight(1))
                     .name(new ResourceLocation(IamMusicPlayer.MODID, "katyou").toString())
                     .build();
             e.getTable().addPool(pool);
-
         }
     }
 

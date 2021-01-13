@@ -1,0 +1,5 @@
+{
+  "parent": "iammusicplayer:item/parabolic_antenna_base",
+  "loader": "forge:obj",
+  "model": "iammusicplayer:models/item/ikisugi_antenna.obj"
+}

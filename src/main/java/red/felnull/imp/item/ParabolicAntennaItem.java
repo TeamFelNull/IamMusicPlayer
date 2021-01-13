@@ -5,13 +5,20 @@ import net.minecraft.util.ResourceLocation;
 import red.felnull.imp.IamMusicPlayer;
 
 public class ParabolicAntennaItem extends Item {
-    private static final ResourceLocation PARABOLIC_ANTENNA_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/parabolic_antenna");
+    private final ResourceLocation texLocation;
+    private final float writeSpeedMagnification;
 
-    public ParabolicAntennaItem(Properties properties) {
+    public ParabolicAntennaItem(Properties properties, ResourceLocation textuer, float writeSpeedMagnification) {
         super(properties);
+        this.texLocation = textuer;
+        this.writeSpeedMagnification = writeSpeedMagnification;
     }
 
     public ResourceLocation getAntennaTextuer() {
-        return PARABOLIC_ANTENNA_MODEL;
+        return texLocation;
+    }
+
+    public float getWriteSpeedMagnification() {
+        return writeSpeedMagnification;
     }
 }

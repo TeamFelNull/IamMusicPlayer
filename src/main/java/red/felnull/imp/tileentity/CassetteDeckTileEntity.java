@@ -12,6 +12,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.CassetteDeckContainer;
+import red.felnull.imp.item.CassetteTapeItem;
+import red.felnull.imp.item.ParabolicAntennaItem;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.util.ItemHelper;
 
@@ -105,20 +107,27 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                 if (currentScreen == Screen.WRITE_2) {
                     if (getCassetteTape().isEmpty())
                         currentScreen = Screen.WRITE_1;
-                    writeProgresAll = 20;
+                    writeProgresAll = Math.min(Math.toIntExact(getWritePlayMusic().getLengthInMilliseconds() * 1000), 60 * 1000 * 3);
+
+                    int writeSpeed = 1;
+
+                    if (getPAntenna().getItem() instanceof ParabolicAntennaItem) {
+                        writeSpeed = (int) ((float) writeSpeed * ((ParabolicAntennaItem) getCassetteTape().getItem()).getWriteSpeedMagnification());
+                    }
+
+                    if (writeProgres < writeProgresAll)
+                        writeProgres += writeSpeed;
+
+                    prevWriteProgres = writeProgres;
+
+                    if (prevWriteProgres < writeProgresAll)
+                        prevWriteProgres += writeSpeed;
+
 
                     if (writeProgres >= writeProgresAll) {
                         writeCassetteTape();
                         currentScreen = Screen.WRITE_1;
                     }
-
-                    if (writeProgres < writeProgresAll)
-                        writeProgres++;
-
-                    prevWriteProgres = writeProgres;
-
-                    if (prevWriteProgres < writeProgresAll)
-                        prevWriteProgres++;
 
                 } else {
                     writeProgres = 0;
