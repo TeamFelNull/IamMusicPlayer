@@ -135,7 +135,6 @@ shadowJar {
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'

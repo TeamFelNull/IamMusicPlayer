@@ -1,13 +1,19 @@
 package red.felnull.imp.handler;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.*;
+import net.minecraft.loot.conditions.RandomChance;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.ResponseSender;
@@ -16,8 +22,10 @@ import red.felnull.otyacraftengine.api.event.common.ResponseEvent;
 import red.felnull.otyacraftengine.data.SendReceiveLogger;
 import red.felnull.otyacraftengine.util.IKSGDataUtil;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
+import red.felnull.otyacraftengine.util.IKSGReflectionUtil;
 
 import java.io.File;
+import java.util.List;
 
 public class ServerHandler {
     @SubscribeEvent
@@ -68,4 +76,18 @@ public class ServerHandler {
     public static void onServerStopping(FMLServerStoppingEvent e) {
         ServerWorldMusicManager.instance().clear();
     }
+
+    @SubscribeEvent
+    public static void onLootTableLoad(LootTableLoadEvent e) {
+        if (e.getName().toString().equals("minecraft:chests/simple_dungeon")) {
+            LootPool pool = LootPool.builder().rolls(new RandomValueRange(1))
+                    .acceptCondition(RandomChance.builder((0.5f)))
+                    .addEntry(ItemLootEntry.builder(IMPItems.KATYOU_ANTENNA).weight(1))
+                    .name(new ResourceLocation(IamMusicPlayer.MODID, "katyou").toString())
+                    .build();
+            e.getTable().addPool(pool);
+
+        }
+    }
+
 }

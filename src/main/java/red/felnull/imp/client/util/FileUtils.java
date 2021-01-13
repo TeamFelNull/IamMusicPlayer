@@ -16,7 +16,7 @@ public class FileUtils {
             Object fcIns = fcClass.newInstance();
 
             Method stMethod = fcClass.getDeclaredMethod("setTitle", String.class);
-            stMethod.invoke(fcIns, "A-ikiso");
+            stMethod.invoke(fcIns, title);
 
             Class<?> piClass = Class.forName("com.sun.javafx.application.PlatformImpl");
             Method suMethod = piClass.getDeclaredMethod("startup", Runnable.class);
