@@ -12,8 +12,8 @@ public class IMPItems {
     public static final Item TEST_SOUND = register("test_sound", new TestSoundItem(new Item.Properties().group(IMPItemGroup.MOD_TAB)));
     public static final Item PARABOLIC_ANTENNA = register("parabolic_antenna", new ParabolicAntennaItem(new Item.Properties().maxStackSize(1).group(IMPItemGroup.MOD_TAB)));
     public static final Item KAMESUTA_ANTENNA = register("kamesuta_antenna", new KamesutaParabolicAntennaItem(new Item.Properties().maxStackSize(1)));
+    public static final Item KATYOU_ANTENNA = register("katyou_antenna", new KatyouParabolicAntennaItem(new Item.Properties().maxStackSize(1)));
     public static final Item CASSETTE_TAPE = register("cassette_tape", new CassetteTapeItem(new Item.Properties().maxStackSize(1).group(IMPItemGroup.MOD_TAB)));
-
     public static final Item ACOUSTIC_AMPLIFIER = register("acoustic_amplifier");
     public static final Item CASSETTE_PLAYER = register("cassette_player");
     public static final Item IRON_BOWL = register("iron_bowl");
@@ -22,6 +22,8 @@ public class IMPItems {
     public static final Item MAGNETIC_TAPE = register("magnetic_tape");
     public static final Item RECEIVER = register("receiver");
     public static final Item SPEAKER = register("speaker");
+    public static final Item COMPUTER = register("computer");
+    public static final Item MONITOR = register("monitor");
 
     private static Item register(String name) {
         return register(name, new Item(new Item.Properties().group(IMPItemGroup.MOD_TAB)));
