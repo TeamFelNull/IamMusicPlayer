@@ -20,8 +20,8 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
-       # env:
-       #   curesforgeapikey: ${{secrets.CURESFORGEAPIKEY}}
+        env:
+          curesforgeapikey: ${{secrets.CURESFORGEAPIKEY}}
       - name: Zip create
         run: |
           cd build/libs
