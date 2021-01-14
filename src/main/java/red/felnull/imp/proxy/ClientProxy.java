@@ -19,6 +19,11 @@ import red.felnull.imp.client.music.ClientWorldMusicManager;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
+import red.felnull.imp.util.PathUtils;
+import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
+
+import java.nio.file.Path;
+import java.util.Arrays;
 
 public class ClientProxy extends CommonProxy {
     public static void clientInit() {
@@ -29,6 +34,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit() {
+        if (PathUtils.getIMPTmpFolder().toFile().exists())
+            Arrays.stream(PathUtils.getIMPTmpFolder().toFile().listFiles()).forEach(IKSGFileLoadUtil::deleteFile);
+
         super.preInit();
         MusicUploader.init();
         MusicDownloader.init();

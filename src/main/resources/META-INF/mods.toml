@@ -9,7 +9,7 @@ version="${file.jarVersion}"
 displayName="Iam Music Player"
 updateJSONURL="https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/version_check.json" 
 displayURL="https://www.curseforge.com/minecraft/mc-mods/iammusicplayer" 
-credits="TeamFelNull"
+credits="TeamFelNull(MG8853,nin8995,miyabi0333),People who contributed to the production"
 authors="MORIMORI0317" 
 description="Thank you for downloading!\nThis mod is The Ikisugi Music Player MOD."
 
