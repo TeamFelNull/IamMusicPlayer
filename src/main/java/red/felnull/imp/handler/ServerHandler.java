@@ -84,7 +84,7 @@ public class ServerHandler {
                     .acceptCondition(RandomChance.builder((0.0810f)))
                     .addEntry(ItemLootEntry.builder(IMPItems.KATYOU_ANTENNA).weight(1))
                     .addEntry(ItemLootEntry.builder(IMPItems.IKISUGI_ANTENNA).weight(1))
-                    .name(new ResourceLocation(IamMusicPlayer.MODID, "katyou").toString())
+                    .name(new ResourceLocation(IamMusicPlayer.MODID, "antenna").toString())
                     .build();
             e.getTable().addPool(pool);
         }
