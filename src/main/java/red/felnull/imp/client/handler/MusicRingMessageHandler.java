@@ -1,6 +1,5 @@
 package red.felnull.imp.client.handler;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.NetworkEvent;
 import red.felnull.imp.client.music.ClientWorldMusicManager;

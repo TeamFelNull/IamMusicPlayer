@@ -17,8 +17,8 @@ import red.felnull.imp.client.handler.ClientMusicHandler;
 import red.felnull.imp.client.handler.MusicRingerHandler;
 import red.felnull.imp.client.handler.MusicUploadHandler;
 import red.felnull.imp.client.handler.RenderHandler;
-import red.felnull.imp.client.music.MusicThread;
 import red.felnull.imp.client.music.ClientWorldMusicManager;
+import red.felnull.imp.client.music.MusicThread;
 import red.felnull.imp.client.renderer.tileentity.IMPTileEntityRenderers;
 import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
@@ -27,7 +27,6 @@ import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.util.Arrays;
 
 public class ClientProxy extends CommonProxy {

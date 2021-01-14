@@ -36,13 +36,13 @@ public class JoinPlayListScrollButton extends ScrollListButton {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         if (upOver < 12 && downOver <= 38) {
-            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pl.getName()),  IMPAbstractEquipmentScreen.smart_fontStyle), x + 40, y + 2, 0);
+            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pl.getName()), IMPAbstractEquipmentScreen.smart_fontStyle), x + 40, y + 2, 0);
         }
         if (upOver < 24 && downOver <= 26) {
-            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pl.getTimeStamp()),  IMPAbstractEquipmentScreen.smart_fontStyle), x + 40, y + 14, 0);
+            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pl.getTimeStamp()), IMPAbstractEquipmentScreen.smart_fontStyle), x + 40, y + 14, 0);
         }
         if (upOver < 37 && downOver <= 13) {
-            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pl.getCreatePlayerName()),  IMPAbstractEquipmentScreen.smart_fontStyle), x + 50, y + 27, 0);
+            IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new StringTextComponent(pl.getCreatePlayerName()), IMPAbstractEquipmentScreen.smart_fontStyle), x + 50, y + 27, 0);
         }
         int fupzure = 27 < upOver ? upOver - 27 : 0;
         int fdownzure = 5 < downOver ? downOver - 5 : 0;

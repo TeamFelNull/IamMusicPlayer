@@ -22,7 +22,6 @@ public class PlayListGuildManeger {
     private static PlayListGuildManeger INSTANCE;
 
 
-
     public static void init() {
         INSTANCE = new PlayListGuildManeger();
     }

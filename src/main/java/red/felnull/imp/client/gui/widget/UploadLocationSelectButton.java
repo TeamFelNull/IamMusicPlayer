@@ -26,7 +26,7 @@ public class UploadLocationSelectButton extends ImageButton {
 
     public UploadLocationSelectButton(MusicSharingDeviceScreen screen, MusicSharingDeviceScreen.UploadLocation location, int xIn, int yIn, int widthIn, int heightIn, int xTexStartIn, int yTexStartIn, int yDiffTextIn, ResourceLocation resourceLocationIn, IPressable onPressIn, boolean isComingSoon) {
         super(xIn, yIn, widthIn, heightIn, xTexStartIn, yTexStartIn, yDiffTextIn, resourceLocationIn, onPressIn);
-        this.text = !isComingSoon ? IKSGStyles.withStyle(new TranslationTextComponent("uploadlocation." + location.name().toLowerCase()),  IMPAbstractEquipmentScreen.smart_fontStyle) : IKSGStyles.withStyle(new TranslationTextComponent("msd.comingsoon"),  IMPAbstractEquipmentScreen.smart_fontStyle);
+        this.text = !isComingSoon ? IKSGStyles.withStyle(new TranslationTextComponent("uploadlocation." + location.name().toLowerCase()), IMPAbstractEquipmentScreen.smart_fontStyle) : IKSGStyles.withStyle(new TranslationTextComponent("msd.comingsoon"), IMPAbstractEquipmentScreen.smart_fontStyle);
         this.isComingSoon = isComingSoon;
         this.screen = screen;
         this.locationType = location;

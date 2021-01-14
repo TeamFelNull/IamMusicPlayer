@@ -8,11 +8,8 @@ import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtils;
-import ws.schild.jave.Encoder;
 import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.encode.AudioAttributes;
-import ws.schild.jave.encode.EncodingAttributes;
 
 import java.io.FileInputStream;
 import java.io.IOException;

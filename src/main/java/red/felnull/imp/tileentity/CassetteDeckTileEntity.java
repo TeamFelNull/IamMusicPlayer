@@ -12,7 +12,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.CassetteDeckContainer;
-import red.felnull.imp.item.CassetteTapeItem;
 import red.felnull.imp.item.ParabolicAntennaItem;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.util.ItemHelper;

@@ -1,9 +1,7 @@
 package red.felnull.imp.client.handler;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import red.felnull.imp.client.music.ClientWorldMusicManager;
-import red.felnull.imp.client.music.MusicRinger;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.otyacraftengine.api.event.common.ResponseEvent;
 

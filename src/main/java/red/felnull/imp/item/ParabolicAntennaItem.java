@@ -2,7 +2,6 @@ package red.felnull.imp.item;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import red.felnull.imp.IamMusicPlayer;
 
 public class ParabolicAntennaItem extends Item {
     private final ResourceLocation texLocation;

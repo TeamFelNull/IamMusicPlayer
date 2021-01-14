@@ -2,25 +2,17 @@ package red.felnull.imp.ffmpeg;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.music.MusicThread;
 import red.felnull.imp.exception.IMPFFmpegException;
 import red.felnull.imp.util.FFmpegUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 import red.felnull.otyacraftengine.util.IKSGURLUtil;
-import ws.schild.jave.Encoder;
-import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.encode.AudioAttributes;
-import ws.schild.jave.encode.EncodingAttributes;
 import ws.schild.jave.process.ProcessLocator;
 
 import java.io.File;

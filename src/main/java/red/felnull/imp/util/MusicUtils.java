@@ -4,7 +4,6 @@ import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Header;
 import red.felnull.imp.exception.IMPFFmpegException;
-import ws.schild.jave.EncoderException;
 import ws.schild.jave.MultimediaObject;
 
 import java.io.*;

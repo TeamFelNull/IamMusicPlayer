@@ -1,11 +1,9 @@
 package red.felnull.imp.ffmpeg;
 
-import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
-import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
 import java.io.File;
 import java.io.InputStream;
@@ -50,7 +48,7 @@ public class FFmpegDownloader {
             IamMusicPlayer.proxy.addFFmpegLoadToast();
             try {
                 InputStream ffmpegResource = maneger.getFFmpegResource(osAndArch.getResourceName());
-            //    ffmpegResource = null;
+                //    ffmpegResource = null;
                 if (ffmpegResource != null) {
                     maneger.setState(FFmpegManeger.FFmpegState.EXTRACTING);
                     LOGGER.info("Start ffmpeg copy");

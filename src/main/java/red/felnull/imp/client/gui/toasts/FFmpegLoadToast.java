@@ -12,7 +12,6 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
-import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.ffmpeg.FFmpegDownloader;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
