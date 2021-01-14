@@ -1,7 +1,10 @@
 package red.felnull.imp.proxy;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.IResourceManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.IMPClientRegistration;
 import red.felnull.imp.client.data.MusicDownloader;
 import red.felnull.imp.client.data.MusicUploader;
@@ -22,6 +25,8 @@ import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -86,5 +91,17 @@ public class ClientProxy extends CommonProxy {
         if (maneger.getState() != FFmpegManeger.FFmpegState.ERROR && !FFmpegTestFinishToast.isAlreadyExists()) {
             Minecraft.getInstance().getToastGui().add(new FFmpegTestFinishToast());
         }
+    }
+
+    @Override
+    public InputStream getFFmpegTestData() {
+        IResourceManager rm = Minecraft.getInstance().getResourceManager();
+        InputStream stream = null;
+        try {
+            stream = rm.getResource(new ResourceLocation(IamMusicPlayer.MODID, "ffmpeg_testdata")).getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stream;
     }
 }

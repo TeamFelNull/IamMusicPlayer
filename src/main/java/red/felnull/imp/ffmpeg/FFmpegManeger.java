@@ -168,11 +168,8 @@ public class FFmpegManeger {
             try {
                 try {
                     state = FFmpegState.TESTING;
-                    IResourceManager rm = Minecraft.getInstance().getResourceManager();
-                    InputStream stream = rm.getResource(new ResourceLocation(IamMusicPlayer.MODID, "ffmpeg_testdata")).getInputStream();
                     IKSGFileLoadUtil.createFolder(PathUtils.getIMPTmpFolder());
-                    IKSGFileLoadUtil.fileInputStreamWriter(stream, PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_in"), StandardCopyOption.REPLACE_EXISTING);
-
+                    IKSGFileLoadUtil.fileInputStreamWriter(IamMusicPlayer.proxy.getFFmpegTestData(), PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_in"), StandardCopyOption.REPLACE_EXISTING);
                     MultimediaObject mo = FFmpegUtils.createMultimediaObject(PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_in").toFile());
                     FFmpegUtils.encode(mo, PathUtils.getIMPTmpFolder().resolve("ffmpeg_test_out").toFile(), "libmp3lame", 128, 1, 32000, "mp3");
 
@@ -186,7 +183,9 @@ public class FFmpegManeger {
                 }
                 LOGGER.info("Finish FFmpeg encode test");
             } catch (Exception ex) {
+                ex.printStackTrace();
                 LOGGER.error("FFmpeg encode test not complete successfully");
+                state = FFmpegState.NONE;
             }
 
         }

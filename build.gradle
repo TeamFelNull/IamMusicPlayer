@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -144,7 +146,7 @@ shadowJar {
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarAll(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'all'
     project.configurations.shadowAll.setTransitive(true);
@@ -172,7 +174,6 @@ task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJ
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -182,7 +183,7 @@ task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJ
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarWin32(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'win32'
     project.configurations.shadowAll.setTransitive(true);
@@ -197,7 +198,6 @@ task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -207,7 +207,7 @@ task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarWin64(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'win64'
     project.configurations.shadowAll.setTransitive(true);
@@ -222,7 +222,6 @@ task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -232,7 +231,7 @@ task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarLinux32(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'linux32'
     project.configurations.shadowAll.setTransitive(true);
@@ -247,7 +246,6 @@ task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -257,7 +255,7 @@ task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarLinux64(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'linux64'
     project.configurations.shadowAll.setTransitive(true);
@@ -272,7 +270,6 @@ task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -282,7 +279,7 @@ task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarLinuxArm64(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'linux-arm64'
     project.configurations.shadowAll.setTransitive(true);
@@ -297,7 +294,6 @@ task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -307,7 +303,7 @@ task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
 }
-task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+task shadowJarOsx64(type: ShadowJar) {
     from sourceSets.main.output
     classifier 'osx64'
     project.configurations.shadowAll.setTransitive(true);
@@ -322,7 +318,6 @@ task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'org.apache.commons', 'red.felnull.imp.libs.org.apache.commons'
     relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
     relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
     relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
@@ -431,7 +426,7 @@ publishing {
         }
     }
 }
-/*
+
 if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
     curseforge {
         apiKey = System.getenv('curesforgeapikey')
@@ -442,6 +437,9 @@ if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
             addGameVersion "${mc_version}"
             mainArtifact(jar) {
                 displayName = "${mod_name}-${mc_version}-${mod_version}"
+                relations {
+                    requiredDependency 'otyacraft-engine'
+                }
             }
             addArtifact(devJar) {
                 displayName = "${mod_name}-${mc_version}-${mod_version}-dev"
@@ -476,4 +474,3 @@ if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
         }
     }
 }
-*/

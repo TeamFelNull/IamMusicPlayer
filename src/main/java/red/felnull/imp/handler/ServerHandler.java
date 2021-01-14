@@ -5,8 +5,12 @@ import net.minecraft.loot.*;
 import net.minecraft.loot.conditions.RandomChance;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
@@ -23,6 +27,7 @@ import red.felnull.otyacraftengine.data.SendReceiveLogger;
 import red.felnull.otyacraftengine.util.IKSGDataUtil;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 import red.felnull.otyacraftengine.util.IKSGReflectionUtil;
+import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.io.File;
 import java.util.List;
@@ -90,4 +95,8 @@ public class ServerHandler {
         }
     }
 
+    @SubscribeEvent
+    public static void onLogIn(PlayerEvent.PlayerLoggedInEvent e) {
+        e.getPlayer().sendStatusMessage(IKSGStyles.withStyle(new TranslationTextComponent("message.login.impalpha"), IKSGStyles.withColor(TextFormatting.RED)), false);
+    }
 }

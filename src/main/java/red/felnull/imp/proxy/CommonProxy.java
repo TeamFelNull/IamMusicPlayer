@@ -12,6 +12,10 @@ import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.packet.PacketHandler;
 import red.felnull.imp.recipe.ComposterRecipes;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 public class CommonProxy {
     public void preInit() {
         FFmpegManeger.init();
@@ -47,4 +51,14 @@ public class CommonProxy {
 
     public void addFFmpegTestFinishToast() {
     }
+
+    public InputStream getFFmpegTestData() {
+        try {
+            return new URL("").openStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
