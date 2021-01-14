@@ -5,7 +5,7 @@ The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
 # Using Library
 
-[JLayer](http://www.javazoom.net/javalayer/javalayer.html) - mp3 playback
+[JLayer](http://www.javazoom.net/javalayer/javalayer.html) [(Custom)](https://github.com/TeamFelnull/JLayerIMPCustom) - mp3 playback
 
 [Mp3agic](https://github.com/mpatric/mp3agic) - Get ID3 tag of mp3
 
