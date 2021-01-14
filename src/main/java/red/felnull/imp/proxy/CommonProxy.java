@@ -54,7 +54,7 @@ public class CommonProxy {
 
     public InputStream getFFmpegTestData() {
         try {
-            return new URL("").openStream();
+            return new URL("https://github.com/TeamFelnull/IamMusicPlayer/raw/master/ffmpeg/ffmpeg_testdata").openStream();
         } catch (IOException e) {
             e.printStackTrace();
         }
