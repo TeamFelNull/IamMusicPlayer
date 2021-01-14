@@ -30,6 +30,10 @@ public class ServerWorldMusicManager {
         return ringdMusics.containsKey(uuid);
     }
 
+    public boolean isWaiting(UUID uuid) {
+        return ringdMusics.containsKey(uuid) && ringdMusics.get(uuid).isPlayWaiting();
+    }
+
     public void stop(UUID uuid) {
 
         if (ringdMusics.containsKey(uuid))

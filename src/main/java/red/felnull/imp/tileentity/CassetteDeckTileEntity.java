@@ -23,7 +23,6 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     private Screen currentScreen = Screen.OFF;
     private int writeProgres;
     private int prevWriteProgres;
-    private int writeProgresAll;
 
     public CassetteDeckTileEntity() {
         super(IMPTileEntityTypes.CASSETTE_DECK);
@@ -51,7 +50,6 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         this.writePlayMusic = new PlayMusic(tag.getString("WritePlayMusicUUID"), tag.getCompound("WritePlayMusic"));
         this.writeProgres = tag.getInt("WriteProgres");
         this.prevWriteProgres = tag.getInt("PrevWriteProgres");
-        this.writeProgresAll = tag.getInt("WriteProgresAll");
     }
 
     @Override
@@ -62,7 +60,6 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         tag.putString("WritePlayMusicUUID", writePlayMusic.getUUID());
         tag.putInt("WriteProgres", this.writeProgres);
         tag.putInt("PrevWriteProgres", this.prevWriteProgres);
-        tag.putInt("WriteProgresAll", this.writeProgresAll);
         return tag;
     }
 
@@ -83,7 +80,7 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     }
 
     public int getWriteProgresAll() {
-        return writeProgresAll;
+        return 200 * 6;
     }
 
     public int getPrevWriteProgres() {
@@ -107,24 +104,23 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                 if (currentScreen == Screen.WRITE_2) {
                     if (getCassetteTape().isEmpty())
                         currentScreen = Screen.WRITE_1;
-                    writeProgresAll = Math.min(Math.toIntExact(getWritePlayMusic().getLengthInMilliseconds() * 1000), 60 * 1000 * 3);
 
                     int writeSpeed = 1;
 
                     if (getPAntenna().getItem() instanceof ParabolicAntennaItem) {
-                        writeSpeed = (int) ((float) writeSpeed * ((ParabolicAntennaItem) getCassetteTape().getItem()).getWriteSpeedMagnification());
+                        writeSpeed = ((ParabolicAntennaItem) getPAntenna().getItem()).getWriteSpeed();
                     }
 
-                    if (writeProgres < writeProgresAll)
+                    if (writeProgres < getWriteProgresAll())
                         writeProgres += writeSpeed;
 
                     prevWriteProgres = writeProgres;
 
-                    if (prevWriteProgres < writeProgresAll)
+                    if (prevWriteProgres < getWriteProgresAll())
                         prevWriteProgres += writeSpeed;
 
 
-                    if (writeProgres >= writeProgresAll) {
+                    if (writeProgres >= getWriteProgresAll()) {
                         writeCassetteTape();
                         currentScreen = Screen.WRITE_1;
                     }

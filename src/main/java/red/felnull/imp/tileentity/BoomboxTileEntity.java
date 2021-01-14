@@ -24,6 +24,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private UUID mPlayerUUID;
     private long currentPlayPos;
+    private boolean playWaiting;
 
     public BoomboxTileEntity() {
         super(IMPTileEntityTypes.BOOMBOX);
@@ -65,11 +66,13 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     public void readByIKSG(BlockState state, CompoundNBT tag) {
         super.readByIKSG(state, tag);
         this.currentPlayPos = tag.getLong("CurrentPlayPos");
+        this.playWaiting = tag.getBoolean("PlayWaiting");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putLong("CurrentPlayPos", currentPlayPos);
+        tag.putBoolean("PlayWaiting", playWaiting);
         return super.write(tag);
     }
 
@@ -89,11 +92,17 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
                 setMode(BoomboxMode.NONE);
             }
 
+            playWaiting = isMusicPlayWaiting();
         }
     }
 
+
     public ItemStack getCassetteTape() {
         return getItems().get(0);
+    }
+
+    public boolean isPlayWaiting() {
+        return playWaiting;
     }
 
     @Override

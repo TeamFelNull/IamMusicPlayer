@@ -158,6 +158,10 @@ public class WorldMusicRinger {
         return false;
     }
 
+    public boolean isPlayWaiting() {
+        return playWaiting;
+    }
+
     public PlayMusic getPlayMusic() {
         return playMusic;
     }

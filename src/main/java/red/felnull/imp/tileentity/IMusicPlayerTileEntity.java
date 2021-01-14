@@ -26,4 +26,8 @@ public interface IMusicPlayerTileEntity extends IWorldRingWhether {
         return getMusic().getLengthInMilliseconds();
     }
 
+    default boolean isMusicPlayWaiting() {
+        return ServerWorldMusicManager.instance().isWaiting(getMusicPlayerUUID());
+    }
+
 }

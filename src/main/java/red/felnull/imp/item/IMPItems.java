@@ -10,7 +10,7 @@ import java.util.List;
 public class IMPItems {
     public static List<Item> MOD_ITEMS = new ArrayList<Item>();
 
-    public static final Item TEST_SOUND = register("test_sound", new TestSoundItem(new Item.Properties().group(IMPItemGroup.MOD_TAB)));
+  //  public static final Item TEST_SOUND = register("test_sound", new TestSoundItem(new Item.Properties().group(IMPItemGroup.MOD_TAB)));
     public static final Item PARABOLIC_ANTENNA = register("parabolic_antenna", new ParabolicAntennaItem(new Item.Properties().maxStackSize(1).group(IMPItemGroup.MOD_TAB), new ResourceLocation(IamMusicPlayer.MODID, "item/parabolic_antenna"), 1));
     public static final Item KAMESUTA_ANTENNA = register("kamesuta_antenna", new ParabolicAntennaItem(new Item.Properties().maxStackSize(1), new ResourceLocation(IamMusicPlayer.MODID, "item/kamesuta_antenna"), 10));
     public static final Item KATYOU_ANTENNA = register("katyou_antenna", new ParabolicAntennaItem(new Item.Properties().maxStackSize(1), new ResourceLocation(IamMusicPlayer.MODID, "item/katyou_antenna"), 10));

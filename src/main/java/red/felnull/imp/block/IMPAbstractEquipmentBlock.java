@@ -1,13 +1,16 @@
 package red.felnull.imp.block;
 
 import net.minecraft.block.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -21,6 +24,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
+import red.felnull.imp.tileentity.CassetteDeckTileEntity;
+import red.felnull.imp.tileentity.IMPAbstractEquipmentTileEntity;
+import red.felnull.otyacraftengine.util.IKSGEntityUtil;
 
 import java.util.function.ToIntFunction;
 
@@ -96,5 +102,18 @@ public abstract class IMPAbstractEquipmentBlock extends HorizontalBlock implemen
     @Override
     public FluidState getFluidState(BlockState state) {
         return state.get(WATERLOGGED) ? Fluids.WATER.getStillFluidState(false) : super.getFluidState(state);
+    }
+
+    @Override
+    public void onReplaced(BlockState before, World worldIn, BlockPos pos, BlockState after, boolean isMoving) {
+        if (before.getBlock() != after.getBlock() && worldIn.getTileEntity(pos) instanceof IMPAbstractEquipmentTileEntity) {
+            IMPAbstractEquipmentTileEntity tileentity = (IMPAbstractEquipmentTileEntity) worldIn.getTileEntity(pos);
+            tileentity.getItems().forEach(n -> {
+                ItemEntity dropItem = IKSGEntityUtil.createItemEntity(n, worldIn, pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f);
+                worldIn.addEntity(dropItem);
+            });
+            tileentity.clear();
+        }
+        super.onReplaced(before, worldIn, pos, after, isMoving);
     }
 }

@@ -6,19 +6,19 @@ import red.felnull.imp.IamMusicPlayer;
 
 public class ParabolicAntennaItem extends Item {
     private final ResourceLocation texLocation;
-    private final float writeSpeedMagnification;
+    private final int writeSpeed;
 
-    public ParabolicAntennaItem(Properties properties, ResourceLocation textuer, float writeSpeedMagnification) {
+    public ParabolicAntennaItem(Properties properties, ResourceLocation textuer, int writeSpeed) {
         super(properties);
         this.texLocation = textuer;
-        this.writeSpeedMagnification = writeSpeedMagnification;
+        this.writeSpeed = writeSpeed;
     }
 
     public ResourceLocation getAntennaTextuer() {
         return texLocation;
     }
 
-    public float getWriteSpeedMagnification() {
-        return writeSpeedMagnification;
+    public int getWriteSpeed() {
+        return writeSpeed;
     }
 }
