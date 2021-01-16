@@ -3,6 +3,7 @@ package red.felnull.imp.ffmpeg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 
 import java.io.File;
@@ -44,6 +45,7 @@ public class FFmpegDownloader {
         public void run() {
             FFmpegManeger maneger = FFmpegManeger.instance();
             maneger.setState(FFmpegManeger.FFmpegState.PREPARATION);
+            IKSGFileLoadUtil.createFolder(PathUtils.getFFmpegFolder());
             IKSGFileLoadUtil.deleteFile(ffmpegfile);
             IamMusicPlayer.proxy.addFFmpegLoadToast();
             try {

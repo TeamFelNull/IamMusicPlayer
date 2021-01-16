@@ -40,6 +40,10 @@ public class FFmpegManeger {
         INSTANCE = new FFmpegManeger();
     }
 
+    public OSAndArch getOsAndArch() {
+        return osAndArch;
+    }
+
     public static FFmpegManeger instance() {
         return INSTANCE;
     }

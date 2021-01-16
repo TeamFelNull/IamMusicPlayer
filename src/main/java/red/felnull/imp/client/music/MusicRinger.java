@@ -71,6 +71,7 @@ public class MusicRinger {
         private final long startPos;
 
         public PlayWaitThread(long pos) {
+            this.setName("Play Wait Thread");
             this.startPos = pos;
         }
 

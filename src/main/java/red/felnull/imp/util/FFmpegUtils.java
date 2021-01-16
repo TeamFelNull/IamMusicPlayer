@@ -1,6 +1,7 @@
 package red.felnull.imp.util;
 
 import red.felnull.imp.exception.IMPFFmpegException;
+import red.felnull.imp.ffmpeg.FFmpegErrorReporter;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.MultimediaObject;
@@ -22,6 +23,7 @@ public class FFmpegUtils {
         } catch (Exception ex) {
             ex.printStackTrace();
             IMPFFmpegException impfFmpegException = new IMPFFmpegException("Create URL MultimediaObject Error");
+            FFmpegErrorReporter.reportExport(ex, impfFmpegException);
             FFmpegManeger.instance().error(impfFmpegException);
             throw impfFmpegException;
         }
@@ -33,6 +35,7 @@ public class FFmpegUtils {
         } catch (Exception ex) {
             ex.printStackTrace();
             IMPFFmpegException impfFmpegException = new IMPFFmpegException("Create File MultimediaObject Error");
+            FFmpegErrorReporter.reportExport(ex, impfFmpegException);
             FFmpegManeger.instance().error(impfFmpegException);
             throw impfFmpegException;
         }
@@ -44,6 +47,7 @@ public class FFmpegUtils {
         } catch (Exception ex) {
             ex.printStackTrace();
             IMPFFmpegException impfFmpegException = new IMPFFmpegException("Get Info Error");
+            FFmpegErrorReporter.reportExport(ex, impfFmpegException);
             FFmpegManeger.instance().error(impfFmpegException);
             throw impfFmpegException;
         }
@@ -86,6 +90,7 @@ public class FFmpegUtils {
         } catch (Exception ex) {
             ex.printStackTrace();
             IMPFFmpegException impfFmpegException = new IMPFFmpegException("Encode Error");
+            FFmpegErrorReporter.reportExport(ex, impfFmpegException);
             FFmpegManeger.instance().error(impfFmpegException);
             throw impfFmpegException;
         }

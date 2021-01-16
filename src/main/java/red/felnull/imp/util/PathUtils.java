@@ -35,5 +35,8 @@ public class PathUtils {
         return getIMPFolder().resolve("ffmpeg");
     }
 
+    public static Path getFFmpegReportFolder() {
+        return getIMPFolder().resolve("ffmpeg-reports");
+    }
 
 }

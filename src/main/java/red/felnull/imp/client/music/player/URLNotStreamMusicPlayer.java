@@ -230,7 +230,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
     }
 
 }
