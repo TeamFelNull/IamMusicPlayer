@@ -67,7 +67,7 @@ public class FFmpegUtils {
 
     public static void encode(MultimediaObject multimediaObject, File file, String codec, int bitrate, int channels, int samplingRate, String format, EncoderProgressListener listener, long offset, long duration) throws IMPFFmpegException {
         try {
-            Encoder encoder = new Encoder();
+            Encoder encoder = new Encoder(FFmpegManeger.instance().getLocator());
             AudioAttributes aa = new AudioAttributes();
             aa.setCodec(codec);
             aa.setBitRate(bitrate);

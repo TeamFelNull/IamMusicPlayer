@@ -430,7 +430,7 @@ if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
         apiKey = System.getenv('curesforgeapikey')
         project {
             id = "${curesfg_id}"
-            changelog = ""
+            changelog = "${mod_changelog}"
             releaseType = "${releasetype}"
             addGameVersion "${mc_version}"
             mainArtifact(jar) {

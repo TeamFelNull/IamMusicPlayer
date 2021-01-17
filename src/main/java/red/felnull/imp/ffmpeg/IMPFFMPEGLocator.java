@@ -5,6 +5,7 @@ import ws.schild.jave.process.ProcessLocator;
 public class IMPFFMPEGLocator implements ProcessLocator {
     private final String path;
 
+
     public IMPFFMPEGLocator(String path) {
         this.path = path;
     }
@@ -13,4 +14,6 @@ public class IMPFFMPEGLocator implements ProcessLocator {
     public String getExecutablePath() {
         return path;
     }
+
 }
+
