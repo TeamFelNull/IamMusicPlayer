@@ -20,8 +20,8 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     protected NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     private PlayMusic writePlayMusic = PlayMusic.EMPTY;
     private Screen currentScreen = Screen.OFF;
-    private int writeProgres;
-    private int prevWriteProgres;
+    private int progres;
+    private int prevProgres;
 
     public CassetteDeckTileEntity() {
         super(IMPTileEntityTypes.CASSETTE_DECK);
@@ -47,8 +47,8 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         super.readByIKSG(state, tag);
         this.currentScreen = Screen.getScreenByName(tag.getString("CurrentScreen"));
         this.writePlayMusic = new PlayMusic(tag.getString("WritePlayMusicUUID"), tag.getCompound("WritePlayMusic"));
-        this.writeProgres = tag.getInt("WriteProgres");
-        this.prevWriteProgres = tag.getInt("PrevWriteProgres");
+        this.progres = tag.getInt("Progres");
+        this.prevProgres = tag.getInt("PrevProgres");
     }
 
     @Override
@@ -57,8 +57,8 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         tag.putString("CurrentScreen", this.currentScreen.getName());
         tag.put("WritePlayMusic", writePlayMusic.write(new CompoundNBT()));
         tag.putString("WritePlayMusicUUID", writePlayMusic.getUUID());
-        tag.putInt("WriteProgres", this.writeProgres);
-        tag.putInt("PrevWriteProgres", this.prevWriteProgres);
+        tag.putInt("Progres", this.progres);
+        tag.putInt("PrevProgres", this.prevProgres);
         return tag;
     }
 
@@ -74,16 +74,31 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         return writePlayMusic;
     }
 
-    public int getWriteProgres() {
-        return writeProgres;
+    public int getProgres() {
+        return progres;
+    }
+
+    public int getPrevProgres() {
+        return prevProgres;
     }
 
     public int getWriteProgresAll() {
-        return 200 * 6;
+        return 20 * 15;
     }
 
-    public int getPrevWriteProgres() {
-        return prevWriteProgres;
+    protected int getWriteSpeedMagnification() {
+        if (getPAntenna().getItem() instanceof ParabolicAntennaItem) {
+            return ((ParabolicAntennaItem) getPAntenna().getItem()).getWriteSpeedMagnification();
+        }
+        return 1;
+    }
+
+    protected int getWriteSpeed() {
+        return getWriteSpeedMagnification();
+    }
+
+    public int getErasureProgresAll() {
+        return 20 * 5;
     }
 
     @Override
@@ -104,42 +119,69 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                     if (getCassetteTape().isEmpty())
                         currentScreen = Screen.WRITE_1;
 
-                    int writeSpeed = 1;
+                    if (progres < getWriteProgresAll())
+                        progres += getWriteSpeed();
 
-                    if (getPAntenna().getItem() instanceof ParabolicAntennaItem) {
-                        writeSpeed = ((ParabolicAntennaItem) getPAntenna().getItem()).getWriteSpeed();
-                    }
+                    prevProgres = progres;
 
-                    if (writeProgres < getWriteProgresAll())
-                        writeProgres += writeSpeed;
+                    if (prevProgres < getWriteProgresAll())
+                        prevProgres += getWriteSpeed();
 
-                    prevWriteProgres = writeProgres;
-
-                    if (prevWriteProgres < getWriteProgresAll())
-                        prevWriteProgres += writeSpeed;
-
-
-                    if (writeProgres >= getWriteProgresAll()) {
+                    if (progres >= getWriteProgresAll()) {
                         writeCassetteTape();
                         currentScreen = Screen.WRITE_1;
                     }
 
+                } else if (currentScreen == Screen.ERASE) {
+                    if (getCassetteTape().isEmpty() || !ItemHelper.isWrittenCassetteTape(getCassetteTape()))
+                        currentScreen = Screen.SELECTION;
+
+                    if (progres < getErasureProgresAll())
+                        progres += 1;
+
+                    prevProgres = progres;
+
+                    if (prevProgres < getErasureProgresAll())
+                        prevProgres += 1;
+
+                    if (progres >= getErasureProgresAll()) {
+                        erasureCassetteTape();
+                        currentScreen = Screen.SELECTION;
+                    }
+
+                } else if (currentScreen == Screen.COPY) {
+                    if (progres < getErasureProgresAll())
+                        progres += 1;
+
+                    prevProgres = progres;
+
+                    if (prevProgres < getErasureProgresAll())
+                        prevProgres += 1;
+
+                    if (progres >= getErasureProgresAll()) {
+
+                        currentScreen = Screen.SELECTION;
+                    }
                 } else {
-                    writeProgres = 0;
-                    prevWriteProgres = 0;
+                    progres = 0;
+                    prevProgres = 0;
                 }
             } else {
                 if (currentScreen != Screen.OFF)
                     currentScreen = Screen.OFF;
 
-                writeProgres = 0;
-                prevWriteProgres = 0;
+                progres = 0;
+                prevProgres = 0;
             }
         }
     }
 
-    private void writeCassetteTape() {
+    protected void writeCassetteTape() {
         setCassetteTape(ItemHelper.writtenCassetteTape(getCassetteTape(), getWritePlayMusic()));
+    }
+
+    protected void erasureCassetteTape() {
+        setCassetteTape(ItemHelper.erasureCassetteTape(getCassetteTape()));
     }
 
     public ItemStack getCassetteTape() {

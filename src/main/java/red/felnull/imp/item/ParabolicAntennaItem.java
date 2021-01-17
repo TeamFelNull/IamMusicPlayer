@@ -5,19 +5,19 @@ import net.minecraft.util.ResourceLocation;
 
 public class ParabolicAntennaItem extends Item {
     private final ResourceLocation texLocation;
-    private final int writeSpeed;
+    private final int writeSpeedMagnification;
 
-    public ParabolicAntennaItem(Properties properties, ResourceLocation textuer, int writeSpeed) {
+    public ParabolicAntennaItem(Properties properties, ResourceLocation textuer, int writeSpeedMagnification) {
         super(properties);
         this.texLocation = textuer;
-        this.writeSpeed = writeSpeed;
+        this.writeSpeedMagnification = writeSpeedMagnification;
     }
 
     public ResourceLocation getAntennaTextuer() {
         return texLocation;
     }
 
-    public int getWriteSpeed() {
-        return writeSpeed;
+    public int getWriteSpeedMagnification() {
+        return writeSpeedMagnification;
     }
 }
