@@ -5,7 +5,6 @@ import net.minecraft.util.IStringSerializable;
 public enum BoomboxMode implements IStringSerializable {
     NONE("none"),
     PAUSE("pause"),
-    STOP("stop"),
     PLAY("play");
 
     private final String name;

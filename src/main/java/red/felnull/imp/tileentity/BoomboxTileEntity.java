@@ -25,6 +25,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     private UUID mPlayerUUID;
     private long currentPlayPos;
     private boolean playWaiting;
+    private boolean playLoop;
 
     public BoomboxTileEntity() {
         super(IMPTileEntityTypes.BOOMBOX);
@@ -45,6 +46,10 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     public CompoundNBT instructionFromClient(ServerPlayerEntity player, String s, CompoundNBT tag) {
         if (s.equals("Mode")) {
             setMode(BoomboxMode.getScreenByName(tag.getString("name")));
+        } else if (s.equals("Stop")) {
+            musciPlayStop();
+        } else if (s.equals("Loop")) {
+            setLoop(tag.getBoolean("enble"));
         }
         return super.instructionFromClient(player, s, tag);
     }
@@ -67,12 +72,14 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         super.readByIKSG(state, tag);
         this.currentPlayPos = tag.getLong("CurrentPlayPos");
         this.playWaiting = tag.getBoolean("PlayWaiting");
+        this.playLoop = tag.getBoolean("PlayLoop");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putLong("CurrentPlayPos", currentPlayPos);
         tag.putBoolean("PlayWaiting", playWaiting);
+        tag.putBoolean("PlayLoop", playLoop);
         return super.write(tag);
     }
 
@@ -84,11 +91,16 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
                 if (!isMusicPlaying())
                     musicPlay();
             }
-            if (getMode() == BoomboxMode.STOP || getMode() == BoomboxMode.NONE || getCassetteTape().isEmpty()) {
+
+            if (getMode() == BoomboxMode.PAUSE && getCassetteTape().isEmpty()) {
+                setMode(BoomboxMode.NONE);
+            }
+
+            if (getMode() == BoomboxMode.NONE || getCassetteTape().isEmpty()) {
                 setCurrentMusicPlayPosition(0);
             }
 
-            if (getMode() == BoomboxMode.STOP || !isOn()) {
+            if (!isOn()) {
                 setMode(BoomboxMode.NONE);
             }
 
@@ -96,6 +108,9 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         }
     }
 
+    public void musciPlayStop() {
+        setMode(BoomboxMode.NONE);
+    }
 
     public ItemStack getCassetteTape() {
         return getItems().get(0);
@@ -103,6 +118,10 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
 
     public boolean isPlayWaiting() {
         return playWaiting;
+    }
+
+    public void setLoop(boolean loop) {
+        this.playLoop = loop;
     }
 
     @Override
@@ -150,6 +169,11 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     @Override
     public ResourceLocation getMusicDimension() {
         return Objects.requireNonNull(getWorld()).getDimensionKey().getLocation();
+    }
+
+    @Override
+    public boolean isMusicLoop() {
+        return playLoop;
     }
 
     @Override

@@ -21,7 +21,7 @@ public class BoomboxContainer extends IkisugiContainer {
 
     @Override
     protected void setSlot() {
-        this.addSlot(new WrittenCassetteTapeSlot(inventory, 0, 126, 47));
+        this.addSlot(new WrittenCassetteTapeSlot(inventory, 0, 151, 47));
     }
 
     @Override

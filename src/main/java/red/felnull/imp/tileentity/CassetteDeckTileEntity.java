@@ -150,6 +150,9 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                     }
 
                 } else if (currentScreen == Screen.COPY) {
+                    if (getCassetteTape().isEmpty() || getSubCassetteTape().isEmpty() || !ItemHelper.isWrittenCassetteTape(getSubCassetteTape()))
+                        currentScreen = Screen.SELECTION;
+
                     if (progres < getErasureProgresAll())
                         progres += 1;
 
@@ -159,7 +162,7 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
                         prevProgres += 1;
 
                     if (progres >= getErasureProgresAll()) {
-
+                        copyCassetteTape();
                         currentScreen = Screen.SELECTION;
                     }
                 } else {
@@ -184,9 +187,21 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
         setCassetteTape(ItemHelper.erasureCassetteTape(getCassetteTape()));
     }
 
+    protected void copyCassetteTape() {
+        if (!getSubCassetteTape().isEmpty()) {
+            PlayMusic music = ItemHelper.getPlayMusicByItem(getSubCassetteTape());
+            setCassetteTape(ItemHelper.writtenCassetteTape(getCassetteTape(), music));
+        }
+    }
+
     public ItemStack getCassetteTape() {
         return getStackInSlot(1);
     }
+
+    public ItemStack getSubCassetteTape() {
+        return getStackInSlot(2);
+    }
+
 
     public void setCassetteTape(ItemStack stack) {
         getItems().set(1, stack);

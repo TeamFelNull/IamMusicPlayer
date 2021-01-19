@@ -81,7 +81,11 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         });
         IKSGScreenUtil.setVisible(this.eraseButton, false);
 
-        this.copyButton = addSmartStringButton(new TranslationTextComponent("cd.copy"), (getMonitorXsize() / 4 * 3) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> insScreen(CassetteDeckTileEntity.Screen.COPY));
+        this.copyButton = addSmartStringButton(new TranslationTextComponent("cd.copy"), (getMonitorXsize() / 4 * 3) + (getMonitorXsize() / 4 - 48) / 2, getMonitorYsize() - 16, n -> {
+            CassetteDeckTileEntity tileEntity = (CassetteDeckTileEntity) getTileEntity();
+            if (!tileEntity.getCassetteTape().isEmpty() && !tileEntity.getSubCassetteTape().isEmpty() && ItemHelper.isWrittenCassetteTape(tileEntity.getSubCassetteTape()))
+                insScreen(CassetteDeckTileEntity.Screen.COPY);
+        });
         IKSGScreenUtil.setVisible(this.copyButton, false);
 
         this.allPlayListButton = addStringImageButton(new StringTextComponent(String.valueOf(I18n.format("playlist.all").toCharArray()[0])), 1, 1, 10, 10, 36, 40, n -> {
@@ -186,6 +190,14 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         float prevParsent = (float) cdt.getPrevProgres() / (float) cdt.getErasureProgresAll();
         float feparsent = IKSGRenderUtil.partialTicksMisalignment(parsent, prevParsent, partTick);
 
+        float fp1 = Math.min(feparsent / (1f / 3f), 1f);
+        float fp2 = Math.max(Math.min(feparsent / (1f / 3f) - 1f, 1f), 0f);
+        float fp3 = Math.max(Math.min(feparsent / (1f / 3f) - 2f, 1f), 0f);
+
+        IKSGRenderUtil.guiBindAndBlit(CD_GUI_TEXTURES, matrx, getMonitorStartX() + 145, getMonitorStartY() + 54 + (23 - (int) (23f * (fp1))), 252, 233 + (23 - (int) (23f * (fp1))), 4, (int) (23f * (fp1)), 256, 256);
+        IKSGRenderUtil.guiBindAndBlit(CD_GUI_TEXTURES, matrx, getMonitorStartX() + 95 + (50 - (int) (50f * (fp2))), getMonitorStartY() + 54, 202 + (50 - (int) (50f * (fp2))), 229, (int) (50f * (fp2)), 4, 256, 256);
+        IKSGRenderUtil.guiBindAndBlit(CD_GUI_TEXTURES, matrx, getMonitorStartX() + 89, getMonitorStartY() + 58, 167, 231, 16, (int) (23f * fp3), 256, 256);
+
     }
 
     private void drawEraseScreen(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
@@ -198,7 +210,6 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
         float feparsent = IKSGRenderUtil.partialTicksMisalignment(parsent, prevParsent, partTick);
 
         IKSGRenderUtil.guiBindAndBlit(CD_GUI_TEXTURES, matrx, getMonitorStartX() + 88, getMonitorStartY() + 54 + (23 - (int) (23f * (feparsent))), 183, 227 + (23 - (int) (23f * (feparsent))), 16, (int) (23f * (feparsent)), 256, 256);
-
     }
 
     private void drawWriteNoAntennaScreen(MatrixStack matrx, float partTick, int mouseX, int mouseY) {

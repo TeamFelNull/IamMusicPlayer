@@ -2,8 +2,8 @@ package red.felnull.imp.client.gui.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -21,9 +21,13 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> {
     public static final ResourceLocation BOOMBOX_GUI_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox.png");
 
-    private ImageButton pauseButton;
-    private ImageButton stopButton;
-    private ImageButton playButton;
+    private BoomboxButton pauseButton;
+    private BoomboxButton stopButton;
+    private BoomboxButton playButton;
+    private BoomboxButton loopButton;
+    private BoomboxButton volDownButton;
+    private BoomboxButton volUpButton;
+    private BoomboxButton volMuteButton;
 
     public BoomboxScreen(BoomboxContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -35,14 +39,36 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
     @Override
     public void initByIKSG() {
         super.initByIKSG();
-        addBoomboxButton(70, 17, BoomboxMode.PAUSE);
-        addBoomboxButton(92, 17, BoomboxMode.STOP);
-        addBoomboxButton(114, 17, BoomboxMode.PLAY);
-
+        this.pauseButton = addBoomboxButton(25, 17, 0, n -> {
+            if (!getCassetteTape().isEmpty() && getMode() == BoomboxMode.PLAY)
+                insMode(BoomboxMode.PAUSE);
+        }, () -> getMode() == BoomboxMode.PAUSE);
+        this.stopButton = addBoomboxButton(47, 17, 1, n -> insStop());
+        this.playButton = addBoomboxButton(69, 17, 2, n -> {
+            if (!getCassetteTape().isEmpty())
+                insMode(BoomboxMode.PLAY);
+        }, () -> getMode() == BoomboxMode.PLAY);
+        this.loopButton = addBoomboxButton(91, 17, 3, n -> {
+            BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
+            insLoop(!boomboxTile.isMusicLoop());
+        }, () -> {
+            BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
+            return boomboxTile.isMusicLoop();
+        });
+        this.volDownButton = addBoomboxButton(119, 17, 4, n -> System.out.println("dwon"));
+        this.volUpButton = addBoomboxButton(141, 17, 5, n -> System.out.println("up"));
+        this.volMuteButton = addBoomboxButton(163, 17, 6, n -> System.out.println("mute"));
     }
 
-    private void addBoomboxButton(int x, int y, BoomboxMode mode) {
-        this.addWidgetByIKSG(new BoomboxButton(getTexturStartX() + x, getTexturStartY() + y, mode, n -> insMode(mode), this::getMode));
+    private BoomboxButton addBoomboxButton(int x, int y, int btnnum, Button.IPressable pressedAction) {
+        return addBoomboxButton(x, y, btnnum, pressedAction, () -> false);
+    }
+
+    private BoomboxButton addBoomboxButton(int x, int y, int btnnum, Button.IPressable pressedAction, BoomboxButton.IWhetherPresseble whetherpresseble) {
+        return this.addWidgetByIKSG(new BoomboxButton(getTexturStartX() + x, getTexturStartY() + y, btnnum, n -> {
+            if (isStateOn())
+                pressedAction.onPress(n);
+        }, whetherpresseble));
     }
 
     private BoomboxMode getMode() {
@@ -58,41 +84,78 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
     protected void drawGuiContainerBackgroundLayerByIKSG(MatrixStack matx, float partTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayerByIKSG(matx, partTick, mouseX, mouseY);
         BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
-        if (boomboxTile.getMusic() != null && boomboxTile.isOn()) {
-            if (boomboxTile.isPlayWaiting()) {
-                IKSGRenderUtil.drawCenterString(this.font, matx, new TranslationTextComponent("boombox.loading"), getTexturStartX() + 72, getTexturStartY() + 48, 2722312);
-            } else {
-                IKSGRenderUtil.drawCenterString(this.font, matx, new StringTextComponent(StringUtils.getTimeNotationPercentage(boomboxTile.getCurrentMusicPlayPosition(), boomboxTile.getMusicDuration())), getTexturStartX() + 72, getTexturStartY() + 48, 2722312);
-            }
+        if (boomboxTile.isOn()) {
 
+            if (boomboxTile.getMusic() != null) {
+                IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 116, getTexturStartY() + 47, 154, 165, 8, 8, 256, 256);
+
+                IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 36, getTexturStartY() + 58, 154, 173, 91, 3, 256, 256);
+
+                float cumpp = (float) boomboxTile.getCurrentMusicPlayPosition() / (float) boomboxTile.getMusicDuration();
+                IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 36, getTexturStartY() + 58, 154, 185, (int) (91 * cumpp), 3, 256, 256);
+
+
+                int zure = getMode() == BoomboxMode.PAUSE ? 1 : getMode() == BoomboxMode.NONE ? 2 : 0;
+                IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 28, getTexturStartY() + 56, 164 + 7 * zure, 165, 7, 7, 256, 256);
+
+                IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 128, getTexturStartY() + 55, 154 + (boomboxTile.isMusicLoop() ? 0 : 11), 176, 11, 8, 256, 256);
+
+
+                IKSGRenderUtil.matrixPush(matx);
+                float fs = 0.75f;
+                IKSGRenderUtil.matrixScalf(matx, fs);
+                int fx = getTexturStartX() + 126;
+                float fy = getTexturStartY() + 47.5f;
+                IKSGRenderUtil.matrixTranslatef(matx, (fx / fs) - fx, (fy / fs) - fy, 0);
+                IKSGRenderUtil.drawString(this.font, matx, new StringTextComponent("100"), fx, (int) fy, 2722312);
+                IKSGRenderUtil.matrixPop(matx);
+
+                if (boomboxTile.isPlayWaiting()) {
+                    IKSGRenderUtil.drawString(this.font, matx, new TranslationTextComponent("boombox.loading"), getTexturStartX() + 29, getTexturStartY() + 47, 2722312);
+                } else {
+                    IKSGRenderUtil.drawString(this.font, matx, new StringTextComponent(StringUtils.getTimeNotationPercentage(boomboxTile.getCurrentMusicPlayPosition(), boomboxTile.getMusicDuration())), getTexturStartX() + 29, getTexturStartY() + 47, 2722312);
+                }
+            }
         }
     }
 
-    public void insMode(BoomboxMode mode) {
+    protected void insMode(BoomboxMode mode) {
         CompoundNBT tag = new CompoundNBT();
         tag.putString("name", mode.getName());
         this.instruction("Mode", tag);
     }
 
-    private static class BoomboxButton extends Button {
-        private final BoomboxMode nummode;
-        private final IMode mode;
+    protected void insLoop(boolean loop) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putBoolean("enble", loop);
+        this.instruction("Loop", tag);
+    }
 
-        public BoomboxButton(int x, int y, BoomboxMode nummode, IPressable pressedAction, IMode mode) {
+    protected void insStop() {
+        this.instruction("Stop", new CompoundNBT());
+    }
+
+    private ItemStack getCassetteTape() {
+        return ((BoomboxTileEntity) getTileEntity()).getCassetteTape();
+    }
+
+    private static class BoomboxButton extends Button {
+        private final int buttunNum;
+        private final IWhetherPresseble whetherpresseble;
+
+        public BoomboxButton(int x, int y, int buttonNum, IPressable pressedAction, IWhetherPresseble whetherpresseble) {
             super(x, y, 22, 17, new TranslationTextComponent("narrator.button.boombox"), pressedAction);
-            this.nummode = nummode;
-            this.mode = mode;
+            this.buttunNum = buttonNum;
+            this.whetherpresseble = whetherpresseble;
         }
 
         public void renderButton(MatrixStack matx, int mouseX, int mouseY, float partialTicks) {
-            boolean flag = nummode == mode.getMode();
-            int zure = nummode == BoomboxMode.PAUSE ? 0 : nummode == BoomboxMode.STOP ? 1 : nummode == BoomboxMode.PLAY ? 2 : 3;
-            IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, this.x, this.y, zure * 22, (this.isHovered() ? 17 : 0) + (flag ? 34 : 0) + 165, 22, 17, 256, 256);
+            IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, this.x, this.y, buttunNum * 22, (this.isHovered() ? 17 : 0) + (whetherpresseble.isPresseble() ? 34 : 0) + 165, 22, 17, 256, 256);
         }
 
         @OnlyIn(Dist.CLIENT)
-        public interface IMode {
-            BoomboxMode getMode();
+        public interface IWhetherPresseble {
+            boolean isPresseble();
         }
     }
 }

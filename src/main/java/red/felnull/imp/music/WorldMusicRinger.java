@@ -73,6 +73,8 @@ public class WorldMusicRinger {
     public void pause() {
         playing = false;
         ringin = false;
+        playWaitingPrev = false;
+        playWaiting = false;
         playingPlayers.stream().filter(n -> IKSGServerUtil.isOnlinePlayer(n.toString())).forEach(n -> {
             ResponseSender.sendToClient(n.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 1, uuid.toString(), new CompoundNBT());
         });
@@ -121,8 +123,8 @@ public class WorldMusicRinger {
             listenPlayers.filter(n -> !(loadingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || loadWaitingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) || waitingMiddlePlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))))).forEach(n -> {
                 loadingPlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
                 PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
-                playWaitingPrev = false;
             });
+            playWaitingPrev = false;
         } else if (playWaiting && loadingPlayers.isEmpty()) {
             loadWaitingPlayers.stream().filter(n -> canListen(IKSGPlayerUtil.getPlayerByUUID(n.toString()))).forEach(n -> {
                 ResponseSender.sendToClient(n.toString(), IKSGServerUtil.getMinecraftServer(), IMPWorldData.WORLD_RINGD, 0, uuid.toString(), new CompoundNBT());
@@ -136,8 +138,14 @@ public class WorldMusicRinger {
         if (ringin) {
             long cur = ringStartElapsedTime + System.currentTimeMillis() - ringStartTime;
             if (cur >= playMusic.getLengthInMilliseconds()) {
-                stop();
-                whether.setCurrentMusicPlayPosition(0);
+                if (whether.isMusicLoop()) {
+                    pause();
+                    whether.setCurrentMusicPlayPosition(0);
+                    play();
+                } else {
+                    stop();
+                    whether.setCurrentMusicPlayPosition(0);
+                }
             } else {
                 whether.setCurrentMusicPlayPosition(cur);
             }

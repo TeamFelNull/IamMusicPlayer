@@ -16,4 +16,6 @@ public interface IWorldRingWhether {
     Vector3d getMusicPos();
 
     float getMusicVolume();
+
+    boolean isMusicLoop();
 }
