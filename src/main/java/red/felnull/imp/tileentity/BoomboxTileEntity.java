@@ -25,11 +25,14 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     private UUID mPlayerUUID;
     private long currentPlayPos;
     private boolean playWaiting;
-    private boolean playLoop;
+    private boolean musicLoop;
+    private int musicVolume;
+    private boolean musicVolumeMute;
 
     public BoomboxTileEntity() {
         super(IMPTileEntityTypes.BOOMBOX);
         this.mPlayerUUID = UUID.randomUUID();
+        this.musicVolume = 100;
     }
 
     @Override
@@ -49,7 +52,15 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         } else if (s.equals("Stop")) {
             musciPlayStop();
         } else if (s.equals("Loop")) {
-            setLoop(tag.getBoolean("enble"));
+            setMusicLoop(tag.getBoolean("enble"));
+        } else if (s.equals("VolumeUp")) {
+            if (getMusicVolumeN() + 10 <= 200)
+                setMusicVolume(getMusicVolumeN() + 10);
+        } else if (s.equals("VolumeDown")) {
+            if (getMusicVolumeN() - 10 >= 0)
+                setMusicVolume(getMusicVolumeN() - 10);
+        } else if (s.equals("VolumeMute")) {
+            setMusicVolumeMute(tag.getBoolean("enble"));
         }
         return super.instructionFromClient(player, s, tag);
     }
@@ -72,14 +83,18 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         super.readByIKSG(state, tag);
         this.currentPlayPos = tag.getLong("CurrentPlayPos");
         this.playWaiting = tag.getBoolean("PlayWaiting");
-        this.playLoop = tag.getBoolean("PlayLoop");
+        this.musicLoop = tag.getBoolean("MusicLoop");
+        this.musicVolume = tag.getInt("MusicVolume");
+        this.musicVolumeMute = tag.getBoolean("MusicVolumeMute");
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tag) {
         tag.putLong("CurrentPlayPos", currentPlayPos);
         tag.putBoolean("PlayWaiting", playWaiting);
-        tag.putBoolean("PlayLoop", playLoop);
+        tag.putBoolean("MusicLoop", musicLoop);
+        tag.putInt("MusicVolume", musicVolume);
+        tag.putBoolean("MusicVolumeMute", musicVolumeMute);
         return super.write(tag);
     }
 
@@ -120,13 +135,29 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         return playWaiting;
     }
 
-    public void setLoop(boolean loop) {
-        this.playLoop = loop;
+    public void setMusicVolume(int musicVolume) {
+        this.musicVolume = musicVolume;
+    }
+
+    public int getMusicVolumeN() {
+        return this.musicVolume;
+    }
+
+    public void setMusicLoop(boolean loop) {
+        this.musicLoop = loop;
     }
 
     @Override
     public boolean canMusicPlay() {
         return getWorld().loadedTileEntityList.contains(this) && getWorld().isBlockLoaded(getPos()) && getMode() == BoomboxMode.PLAY && !getCassetteTape().isEmpty() && isOn();
+    }
+
+    public void setMusicVolumeMute(boolean musicVolumeMute) {
+        this.musicVolumeMute = musicVolumeMute;
+    }
+
+    public boolean isMusicVolumeMute() {
+        return musicVolumeMute;
     }
 
     @Override
@@ -162,8 +193,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
 
     @Override
     public Vector3d getMusicPos() {
-        Vector3d v3 = new Vector3d(getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f);
-        return v3;
+        return new Vector3d(getPos().getX() + 0.5f, getPos().getY() + 0.5f, getPos().getZ() + 0.5f);
     }
 
     @Override
@@ -173,11 +203,11 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
 
     @Override
     public boolean isMusicLoop() {
-        return playLoop;
+        return musicLoop;
     }
 
     @Override
     public float getMusicVolume() {
-        return 1f;
+        return isMusicVolumeMute() ? 0 : (float) getMusicVolumeN() / 100f;
     }
 }

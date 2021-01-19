@@ -8,6 +8,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.packet.MusicRingMessage;
+import red.felnull.imp.packet.MusicRingUpdateMessage;
 import red.felnull.imp.packet.PacketHandler;
 import red.felnull.otyacraftengine.api.ResponseSender;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -154,6 +155,9 @@ public class WorldMusicRinger {
                 if (!playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n))) && !waitingMiddlePlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n)))) {
                     PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingMessage(uuid, getMusicPos(), getPlayMusic(), getCurrentMusicPlayPosition()));
                     waitingMiddlePlayers.add(UUID.fromString(IKSGPlayerUtil.getUUID(n)));
+                }
+                if (playingPlayers.contains(UUID.fromString(IKSGPlayerUtil.getUUID(n)))) {
+                    PacketHandler.INSTANCE.send(PacketDistributor.PLAYER.with(() -> n), new MusicRingUpdateMessage(uuid, getMusicPos(), getMusicVolume()));
                 }
             });
 

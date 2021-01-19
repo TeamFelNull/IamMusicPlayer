@@ -68,6 +68,13 @@ public class ClientWorldMusicManager {
         mplayers.values().forEach(MusicRinger::volumeUpdate);
     }
 
+    public MusicRinger getMusicRinger(UUID uuid) {
+        if (mplayers.containsKey(uuid))
+            return mplayers.get(uuid);
+
+        return null;
+    }
+
     public double getMusicVolume() {
         return musicVolume;
     }

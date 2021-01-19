@@ -55,9 +55,23 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
             BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
             return boomboxTile.isMusicLoop();
         });
-        this.volDownButton = addBoomboxButton(119, 17, 4, n -> System.out.println("dwon"));
-        this.volUpButton = addBoomboxButton(141, 17, 5, n -> System.out.println("up"));
-        this.volMuteButton = addBoomboxButton(163, 17, 6, n -> System.out.println("mute"));
+        this.volDownButton = addBoomboxButton(119, 17, 4, n -> {
+            BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
+            if (!boomboxTile.isMusicVolumeMute())
+                insVolumeDown();
+        });
+        this.volUpButton = addBoomboxButton(141, 17, 5, n -> {
+            BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
+            if (!boomboxTile.isMusicVolumeMute())
+                insVolumeUp();
+        });
+        this.volMuteButton = addBoomboxButton(163, 17, 6, n -> {
+            BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
+            insVolumeMute(!boomboxTile.isMusicVolumeMute());
+        }, () -> {
+            BoomboxTileEntity boomboxTile = (BoomboxTileEntity) getTileEntity();
+            return boomboxTile.isMusicVolumeMute();
+        });
     }
 
     private BoomboxButton addBoomboxButton(int x, int y, int btnnum, Button.IPressable pressedAction) {
@@ -87,7 +101,6 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
         if (boomboxTile.isOn()) {
 
             if (boomboxTile.getMusic() != null) {
-                IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 116, getTexturStartY() + 47, 154, 165, 8, 8, 256, 256);
 
                 IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 36, getTexturStartY() + 58, 154, 173, 91, 3, 256, 256);
 
@@ -101,14 +114,20 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
                 IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 128, getTexturStartY() + 55, 154 + (boomboxTile.isMusicLoop() ? 0 : 11), 176, 11, 8, 256, 256);
 
 
-                IKSGRenderUtil.matrixPush(matx);
-                float fs = 0.75f;
-                IKSGRenderUtil.matrixScalf(matx, fs);
-                int fx = getTexturStartX() + 126;
-                float fy = getTexturStartY() + 47.5f;
-                IKSGRenderUtil.matrixTranslatef(matx, (fx / fs) - fx, (fy / fs) - fy, 0);
-                IKSGRenderUtil.drawString(this.font, matx, new StringTextComponent("100"), fx, (int) fy, 2722312);
-                IKSGRenderUtil.matrixPop(matx);
+                if (!boomboxTile.isMusicVolumeMute()) {
+                    IKSGRenderUtil.matrixPush(matx);
+                    float fs = 0.75f;
+                    IKSGRenderUtil.matrixScalf(matx, fs);
+                    int fx = getTexturStartX() + 126;
+                    float fy = getTexturStartY() + 47.5f;
+                    IKSGRenderUtil.matrixTranslatef(matx, (fx / fs) - fx, (fy / fs) - fy, 0);
+                    IKSGRenderUtil.drawString(this.font, matx, new StringTextComponent(String.valueOf(boomboxTile.getMusicVolumeN())), fx, (int) fy, 2722312);
+                    IKSGRenderUtil.matrixPop(matx);
+
+                    IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 116, getTexturStartY() + 47, 154, 165, 8, 8, 256, 256);
+                } else {
+                    IKSGRenderUtil.guiBindAndBlit(BOOMBOX_GUI_TEXTURES, matx, getTexturStartX() + 116, getTexturStartY() + 47, 154, 188, 10, 8, 256, 256);
+                }
 
                 if (boomboxTile.isPlayWaiting()) {
                     IKSGRenderUtil.drawString(this.font, matx, new TranslationTextComponent("boombox.loading"), getTexturStartX() + 29, getTexturStartY() + 47, 2722312);
@@ -129,6 +148,20 @@ public class BoomboxScreen extends IMPAbstractEquipmentScreen<BoomboxContainer> 
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("enble", loop);
         this.instruction("Loop", tag);
+    }
+
+    protected void insVolumeMute(boolean mute) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putBoolean("enble", mute);
+        this.instruction("VolumeMute", tag);
+    }
+
+    protected void insVolumeDown() {
+        this.instruction("VolumeDown", new CompoundNBT());
+    }
+
+    protected void insVolumeUp() {
+        this.instruction("VolumeUp", new CompoundNBT());
     }
 
     protected void insStop() {

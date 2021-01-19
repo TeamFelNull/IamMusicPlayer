@@ -18,6 +18,7 @@ public class MusicRinger {
     private Vector3d positionVec;
     private IMusicPlayer musicPlayer;
     private boolean readyPlay;
+    private float volume;
 
     public MusicRinger(UUID uuid, PlayMusic playMusic, Vector3d positionVec) {
         this.uuid = uuid;
@@ -56,9 +57,13 @@ public class MusicRinger {
         }
     }
 
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
     public void volumeUpdate() {
         if (musicPlayer != null) {
-            float vol = 1f - (float) getDistance() / 30f;
+            float vol = 1f - (float) getDistance() / (30f * volume);
             musicPlayer.setVolume((float) (Math.max(vol, 0f) * ClientWorldMusicManager.instance().getEventuallyMusicVolume()));
         }
     }
