@@ -261,7 +261,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
     @Override
     public void tickByIKSG() {
         super.tickByIKSG();
-        //  IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+     //   IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.writeButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.eraseButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.copyButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
