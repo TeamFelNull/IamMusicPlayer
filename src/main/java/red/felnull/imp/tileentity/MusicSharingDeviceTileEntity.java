@@ -23,16 +23,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
-    protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private Map<String, CompoundNBT> plyerDatas = new HashMap<>();
 
     public MusicSharingDeviceTileEntity() {
         super(IMPTileEntityTypes.MUSIC_SHARING_DEVICE);
-    }
-
-    @Override
-    public NonNullList<ItemStack> getItems() {
-        return this.items;
     }
 
     @Override
@@ -46,6 +40,11 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         super.write(tag);
         tag.put("plyerDatas", IKSGNBTUtil.writeNBTMap(new CompoundNBT(), this.plyerDatas));
         return tag;
+    }
+
+    @Override
+    protected int getInventorySize() {
+        return 1;
     }
 
     @Override

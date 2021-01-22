@@ -20,6 +20,7 @@
   "block.iammusicplayer.music_sharing_device": "Music Sharing Device",
   "block.iammusicplayer.cassette_deck": "Cassette Deck",
   "block.iammusicplayer.boombox": "Boombox",
+  "block.iammusicplayer.cassette_storage": "Cassette Storage",
   "_comment.s": "gui",
   "container.music_sharing_device": "Music Sharing Device",
   "container.cassette_deck": "Cassette Deck",

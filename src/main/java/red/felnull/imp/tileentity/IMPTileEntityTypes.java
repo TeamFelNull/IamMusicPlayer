@@ -27,6 +27,9 @@ public class IMPTileEntityTypes {
     @ObjectHolder(IamMusicPlayer.MODID + ":" + "boombox")
     public static TileEntityType<BoomboxTileEntity> BOOMBOX = register(BoomboxTileEntity::new, new ResourceLocation(IamMusicPlayer.MODID, "boombox"), IMPBlocks.BOOMBOX);
 
+    @ObjectHolder(IamMusicPlayer.MODID + ":" + "cassette_storage")
+    public static TileEntityType<CassetteStorageTileEntity> CASSETTE_STORAGE = register(CassetteStorageTileEntity::new, new ResourceLocation(IamMusicPlayer.MODID, "cassette_storage"), IMPBlocks.CASSETTE_STORAGE);
+
 
     private static <T extends TileEntityType<?>> T register(Supplier<? extends TileEntity> factoryIn, ResourceLocation location, Block... blocks) {
         T tile = IKSGRegistryUtil.craeteTileEntityType(factoryIn, location, blocks);

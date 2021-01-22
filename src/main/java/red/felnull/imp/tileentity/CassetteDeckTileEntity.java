@@ -17,7 +17,6 @@ import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.util.ItemHelper;
 
 public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
-    protected NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     private PlayMusic writePlayMusic = PlayMusic.EMPTY;
     private Screen currentScreen = Screen.OFF;
     private int progres;
@@ -28,11 +27,6 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     }
 
     @Override
-    public NonNullList<ItemStack> getItems() {
-        return this.items;
-    }
-
-    @Override
     protected ITextComponent getDefaultName() {
         return new TranslationTextComponent("container.cassette_deck");
     }
@@ -40,6 +34,11 @@ public class CassetteDeckTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
     @Override
     protected Container createMenu(int id, PlayerInventory player) {
         return new CassetteDeckContainer(id, player, this, getPos());
+    }
+
+    @Override
+    protected int getInventorySize() {
+        return 4;
     }
 
     @Override

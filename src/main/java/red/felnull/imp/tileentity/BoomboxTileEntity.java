@@ -21,7 +21,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements IMusicPlayerTileEntity {
-    protected NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private UUID mPlayerUUID;
     private long currentPlayPos;
     private boolean playWaiting;
@@ -33,11 +32,6 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         super(IMPTileEntityTypes.BOOMBOX);
         this.mPlayerUUID = UUID.randomUUID();
         this.musicVolume = 100;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getItems() {
-        return items;
     }
 
     @Override
@@ -96,6 +90,11 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         tag.putInt("MusicVolume", musicVolume);
         tag.putBoolean("MusicVolumeMute", musicVolumeMute);
         return super.write(tag);
+    }
+
+    @Override
+    protected int getInventorySize() {
+        return 1;
     }
 
     @Override

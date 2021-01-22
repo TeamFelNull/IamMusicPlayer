@@ -20,6 +20,7 @@
   "block.iammusicplayer.music_sharing_device": "音楽共有デバイス",
   "block.iammusicplayer.cassette_deck": "カセットデッキ",
   "block.iammusicplayer.boombox": "ラジカセ",
+  "block.iammusicplayer.cassette_storage": "カセット収納ケース",
   "_comment.s": "gui",
   "container.music_sharing_device": "音楽共有デバイス",
   "container.cassette_deck": "カセットデッキ",
