@@ -2,10 +2,7 @@ package red.felnull.imp.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ActionResultType;
@@ -15,8 +12,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
-import red.felnull.imp.tileentity.IMPAbstractEquipmentTileEntity;
-import red.felnull.otyacraftengine.util.IKSGEntityUtil;
 
 public abstract class IMPAbstractEquipmentBlock extends IMPAbstractBlock {
     public static final BooleanProperty ON = IMPBlockStateProperties.ON;
@@ -39,17 +34,15 @@ public abstract class IMPAbstractEquipmentBlock extends IMPAbstractBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-        if (worldIn.isRemote) {
-            return ActionResultType.SUCCESS;
-        } else {
+        if (!worldIn.isRemote) {
             FFmpegManeger maneger = FFmpegManeger.instance();
             if (maneger.canUseFFmpeg()) {
                 this.interactWith(worldIn, pos, playerIn);
             } else {
                 maneger.cantFFmpegCaution(playerIn);
             }
-            return ActionResultType.CONSUME;
         }
+        return ActionResultType.func_233537_a_(worldIn.isRemote);
     }
 
     protected abstract void interactWith(World worldIn, BlockPos pos, PlayerEntity player);

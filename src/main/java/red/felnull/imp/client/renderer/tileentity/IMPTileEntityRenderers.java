@@ -7,5 +7,6 @@ public class IMPTileEntityRenderers {
     public static void registerTileEntityRenderer() {
         ClientRegistry.bindTileEntityRenderer(IMPTileEntityTypes.MUSIC_SHARING_DEVICE, MusicSharingDeviceTileEntityRenderer::new);
         ClientRegistry.bindTileEntityRenderer(IMPTileEntityTypes.CASSETTE_DECK, CassetteDeckTileEntityRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(IMPTileEntityTypes.CASSETTE_STORAGE, CassetteStorageTileEntityRenderer::new);
     }
 }

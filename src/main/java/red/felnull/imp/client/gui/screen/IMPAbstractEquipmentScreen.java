@@ -19,7 +19,7 @@ import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScr
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
-public abstract class IMPAbstractEquipmentScreen<T extends Container> extends AbstractIkisugiContainerScreen<T> {
+public abstract class IMPAbstractEquipmentScreen<T extends Container> extends IMPAbstractScreen<T> {
     public static final Style smart_fontStyle = IKSGStyles.withFont(new ResourceLocation(IamMusicPlayer.MODID, "imp_fonts"));
     public static final ResourceLocation EQUIPMENT_WIDGETS_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/equipment_widgets.png");
 

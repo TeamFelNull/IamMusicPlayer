@@ -17,11 +17,12 @@ public class CassetteDeckTileEntityRenderer extends IMPAbstractPAEquipmentTileEn
     }
 
     @Override
-    public void render(CassetteDeckTileEntity tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        super.render(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
+    protected void horizontalRender(CassetteDeckTileEntity tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        super.horizontalRender(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
         if (tileEntityIn.isOn()) {
             IKSGRenderUtil.matrixPush(matrix);
-            IKSGRenderUtil.matrixTranslatef(matrix, 0, 0, 1);
+            IKSGRenderUtil.matrixRotateDegreefY(matrix, 90);
+            IKSGRenderUtil.matrixTranslatef(matrix, -1, 0, 1);
             IKSGRenderUtil.matrixTranslatef16Divisions(matrix, 6.175f, 1.6f, -3.49f);
             float pix = 1f / 16f;
             IKSGRenderUtil.renderSpritePanel(tileEntityIn.getScreen().getTexLocation(), matrix, bufferIn, 0, 0, 0, 0, 0, 0, pix * 3.7f, pix * 1.325f, 0, 0, 199, 122, 199, 122, combinedOverlayIn, combinedLightIn);

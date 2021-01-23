@@ -22,13 +22,7 @@ public abstract class IMPAbstractPAEquipmentTileEntityRenderer<T extends IMPAbst
     }
 
     @Override
-    public void render(T tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        super.render(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
-        IKSGRenderUtil.matrixPush(matrix);
-        IKSGRenderUtil.matrixRotateHorizontal(tileEntityIn.getBlockState(), matrix);
-        IKSGRenderUtil.matrixPush(matrix);
-        horizontalRender(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
-        IKSGRenderUtil.matrixPop(matrix);
+    protected void horizontalRender(T tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
         IVertexBuilder ivb = bufferIn.getBuffer(RenderType.getSolid());
         if (!tileEntityIn.getPAntenna().isEmpty()) {
             float yaw = IKSGRenderUtil.partialTicksMisalignment(tileEntityIn.getPARotationYaw(), tileEntityIn.getPrevPARotationYaw(), partialTicks);
@@ -60,10 +54,5 @@ public abstract class IMPAbstractPAEquipmentTileEntityRenderer<T extends IMPAbst
                 IKSGRenderUtil.matrixPop(matrix);
             }
         }
-        IKSGRenderUtil.matrixPop(matrix);
-    }
-
-    protected void horizontalRender(T tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-
     }
 }

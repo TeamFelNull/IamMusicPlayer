@@ -11,6 +11,7 @@ import red.felnull.otyacraftengine.container.IkisugiContainer;
 public class BoomboxContainer extends IkisugiContainer {
     public BoomboxContainer(int windowId, PlayerInventory playerInventory, IInventory inventory, BlockPos pos) {
         super(IMPContainerTypes.BOOMBOX, windowId, playerInventory, inventory, pos, 8, 83);
+
     }
 
     @Override

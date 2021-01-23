@@ -18,6 +18,7 @@ public class MusicSharingDeviceTileEntityRenderer extends IMPAbstractPAEquipment
 
     @Override
     protected void horizontalRender(MusicSharingDeviceTileEntity tileEntityIn, float partialTicks, MatrixStack matrix, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
+        super.horizontalRender(tileEntityIn, partialTicks, matrix, bufferIn, combinedLightIn, combinedOverlayIn);
         if (tileEntityIn.isOn()) {
             IKSGRenderUtil.matrixPush(matrix);
             IKSGRenderUtil.matrixRotateDegreefY(matrix, 90);
