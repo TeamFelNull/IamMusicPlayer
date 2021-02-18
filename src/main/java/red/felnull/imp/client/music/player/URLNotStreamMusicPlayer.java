@@ -35,7 +35,8 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private long readyTime;
     private float frameSecond;
 
-    public URLNotStreamMusicPlayer(URL url) throws IOException, BitstreamException, EncoderException, IMPFFmpegException {
+    public URLNotStreamMusicPlayer(long rery, URL url) throws IOException, BitstreamException, EncoderException, IMPFFmpegException {
+        this.readyTime = rery;
         MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
         this.duration = FFmpegUtils.getInfo(mo).getDuration();
         this.inputURL = url;
@@ -47,7 +48,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         try {
             this.startPosition = startMiliSecond;
             if (!this.isReady && player == null) {
-                this.readyTime = System.currentTimeMillis();
                 this.cont = 0;
                 this.streamEnumeration.clear();
                 String fristname = UUID.randomUUID().toString();

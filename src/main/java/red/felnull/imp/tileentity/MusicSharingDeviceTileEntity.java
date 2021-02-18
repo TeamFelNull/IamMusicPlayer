@@ -5,21 +5,21 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGServerUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
@@ -154,13 +154,15 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         OFF("off"),
         ON("on"),
         PLAYLIST("playlist"),
+        NOTEXIST("notexist"),
         NO_ANTENNA("no_antenna"),
         CREATE_PLAYLIST("create_playlist"),
         ADD_PLAYLIST("add_playlist"),
         JOIN_PLAYLIST("join_playlist"),
         ADD_PLAYMUSIC_1("add_playmusic_1"),
         ADD_PLAYMUSIC_2("add_playmusic_2"),
-        YOUTUBE_SEARCH("youtube_search");
+        YOUTUBE_SEARCH("youtube_search"),
+        PLAYLIST_DETAILS("playlist_details");
         private final String name;
 
         private Screen(String name) {

@@ -63,8 +63,15 @@ public class MusicRinger {
 
     public void volumeUpdate() {
         if (musicPlayer != null) {
-            float vol = 1f - (float) getDistance() / (30f * volume);
-            musicPlayer.setVolume((float) (Math.max(vol, 0f) * ClientWorldMusicManager.instance().getEventuallyMusicVolume()));
+            float vl = volume;
+            float rarnge = 30f * volume;
+            float distance = (float) getDistance();
+            float zure = rarnge / 5f;
+            float atzure = rarnge / 10f;
+            float nn = Math.min((vl / (distance - zure)) * 3f, 1f);
+            float at = Math.min((vl / (rarnge - zure)) * 3f, 1f);
+            float volume = distance <= zure ? 1f : distance <= (rarnge - atzure) ? nn : at * ((distance - rarnge) * -1 / atzure);
+            musicPlayer.setVolume((float) (volume * ClientWorldMusicManager.instance().getEventuallyMusicVolume()));
         }
     }
 
@@ -85,6 +92,7 @@ public class MusicRinger {
             if (!readyPlay) {
                 try {
                     musicPlayer = MusicSourceClientReferencesType.getMusicPlayer(music);
+                    musicPlayer.setVolume(0);
                     musicPlayer.ready(startPos);
                 } catch (Exception ex) {
                     ex.printStackTrace();

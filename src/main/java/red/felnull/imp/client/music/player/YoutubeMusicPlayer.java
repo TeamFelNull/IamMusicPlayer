@@ -13,8 +13,8 @@ public class YoutubeMusicPlayer extends URLNotStreamMusicPlayer {
 
     private final String videoID;
 
-    public YoutubeMusicPlayer(String videoID) throws IOException, BitstreamException, EncoderException, YoutubeException, IMPFFmpegException {
-        super(new URL(YoutubeUtils.getYoutubeMa4DirectLink(videoID)));
+    public YoutubeMusicPlayer(long rery, String videoID) throws IOException, BitstreamException, EncoderException, YoutubeException, IMPFFmpegException {
+        super(rery, new URL(YoutubeUtils.getYoutubeMa4DirectLink(videoID)));
         this.videoID = videoID;
     }
 

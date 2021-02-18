@@ -25,7 +25,7 @@ public class MusicThread extends Thread {
         LOGGER.info("Music thread Start");
         while (!stoped) {
             try {
-                sleep(20);
+                sleep(1);
                 loop();
             } catch (Exception ex) {
                 LOGGER.error("Music thread Error", ex);

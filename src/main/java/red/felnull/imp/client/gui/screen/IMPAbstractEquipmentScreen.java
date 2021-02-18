@@ -15,7 +15,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.IMPAbstractEquipmentBlock;
 import red.felnull.imp.ffmpeg.FFmpegManeger;
-import red.felnull.otyacraftengine.client.gui.screen.AbstractIkisugiContainerScreen;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
@@ -57,6 +56,12 @@ public abstract class IMPAbstractEquipmentScreen<T extends Container> extends IM
         IKSGRenderUtil.drawString(this.font, matx, IKSGStyles.withStyle(text, smart_fontStyle), x, y, 0);
     }
 
+    protected void drawMiniFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
+        IKSGRenderUtil.matrixPush(matx);
+        IKSGRenderUtil.matrixScalf(matx, 0.5f);
+        IKSGRenderUtil.drawString(this.font, matx, IKSGStyles.withStyle(text, smart_fontStyle), x * 2, y * 2, 0);
+        IKSGRenderUtil.matrixPop(matx);
+    }
 
     @Override
     public boolean mouseDragged(double p_231045_1_, double p_231045_3_, int p_231045_5_, double p_231045_6_, double p_231045_8_) {

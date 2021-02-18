@@ -26,8 +26,8 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     private boolean isReady;
     private long readyTime;
 
-    public LocalFileMusicPlayer(File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException, IMPFFmpegException, BitstreamException {
-
+    public LocalFileMusicPlayer(long rery, File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException, IMPFFmpegException, BitstreamException {
+        this.readyTime = rery;
         if (!file.exists())
             throw new FileNotFoundException();
 
@@ -40,7 +40,6 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     public void ready(long startMiliSecond) {
         try {
             if (!this.isReady && player == null) {
-                this.readyTime = System.currentTimeMillis();
                 this.startFrame = (int) (startMiliSecond / frameSecond);
                 this.startPosition = startMiliSecond;
                 this.player = new AdvancedPlayer(new FileInputStream(inputFile));

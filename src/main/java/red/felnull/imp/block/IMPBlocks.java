@@ -19,9 +19,8 @@ public class IMPBlocks {
 
     public static final Block MUSIC_SHARING_DEVICE = register("music_sharing_device", new MusicSharingDeviceBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)));
     public static final Block CASSETTE_DECK = register("cassette_deck", new CassetteDeckBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)));
-    public static final Block BOOMBOX = register("boombox", new BoomboxBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)), (n, m) -> new BoomboxBlockItem(m, new Item.Properties().group(IMPItemGroup.MOD_TAB)).setRegistryName(IamMusicPlayer.MODID, n));
+    public static final Block BOOMBOX = register("boombox", new BoomboxBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)), (n, m) -> new BoomboxBlockItem(m, new Item.Properties().group(IMPItemGroup.MOD_TAB).maxStackSize(1)).setRegistryName(IamMusicPlayer.MODID, n));
     public static final Block CASSETTE_STORAGE = register("cassette_storage", new CassetteStorageBlock(AbstractBlock.Properties.create(Material.IRON).sound(SoundType.METAL).setRequiresTool().hardnessAndResistance(3.0F)));
-    ;
 
     private static Block register(String name, Block block) {
         return register(name, block, (n, m) -> new BlockItem(m, new Item.Properties().group(IMPItemGroup.MOD_TAB)).setRegistryName(IamMusicPlayer.MODID, n));

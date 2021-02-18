@@ -23,7 +23,8 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     private int startZureFrame;
     private long readyTime;
 
-    public WorldFileMusicPlayer(String uuid) throws InterruptedException, IMPWorldMusicException {
+    public WorldFileMusicPlayer(long rery, String uuid) throws InterruptedException, IMPWorldMusicException {
+        this.readyTime = rery;
         this.uuid = uuid;
         this.worldMusicInfo = MusicDownloader.instance().getWorldMusicFileDataInfo(uuid);
         this.byteEnumeration = new InputStreamArrayEnumeration();
@@ -33,7 +34,6 @@ public class WorldFileMusicPlayer implements IMusicPlayer {
     public void ready(long startMiliSecond) {
         try {
             if (!this.isReady && player == null) {
-                this.readyTime = System.currentTimeMillis();
                 this.startPosition = startMiliSecond;
                 this.byteEnumeration.clear();
                 MusicReceiveThread mrt = new MusicReceiveThread(startMiliSecond);

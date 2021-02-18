@@ -47,13 +47,15 @@ public enum MusicSourceClientReferencesType {
     }
 
     public IMusicPlayer getMusicPlayer(String src) throws YoutubeException, EncoderException, BitstreamException, IOException, IMPWorldMusicException, InterruptedException, IMPFFmpegException {
+        long rerytime = System.currentTimeMillis();
+
         switch (this) {
             case YOUTUBE:
-                return new YoutubeMusicPlayer(src);
+                return new YoutubeMusicPlayer(rerytime, src);
             case URL:
-                return new URLNotStreamMusicPlayer(new URL(src));
+                return new URLNotStreamMusicPlayer(rerytime, new URL(src));
             case LOCAL_FILE:
-                return new WorldFileMusicPlayer(src);
+                return new WorldFileMusicPlayer(rerytime, src);
             default:
                 return null;
         }

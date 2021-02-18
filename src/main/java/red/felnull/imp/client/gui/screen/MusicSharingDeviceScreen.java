@@ -122,6 +122,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private ScrollBarSlider addPlayMusicYoutubeSearchlistbar;
     private ChangeableImageButton addPlayMusicYoutubeSearchButton;
     private YoutubeSearchResultScrollListButton addPlayMusicYoutubeSearchFileListButton;
+    private StringImageButton playlistDetails;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -466,6 +467,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, false);
 
+        this.playlistDetails = addStringImageButton((TranslationTextComponent) IkisugiDialogTexts.BACK, 156, 1, 32, 10, 109, 0, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+
         if (!initFrist) {
             if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
                 Path picPath = getPicturPath();
@@ -485,6 +488,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
         }
         this.initFrist = true;
+
+
     }
 
     @Override
@@ -518,6 +523,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             case YOUTUBE_SEARCH:
                 drawAddPlayMusicYoutubeSelect(matx, partTick, mouseX, mouseY);
                 break;
+            case NOTEXIST:
+                drawNotexist(matx, partTick, mouseX, mouseY);
+                break;
+            case PLAYLIST_DETAILS:
+                drawPlaylistDetails(matx, partTick, mouseX, mouseY);
+                break;
         }
     }
 
@@ -525,6 +536,14 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     @Override
     public void tickByIKSG() {
         super.tickByIKSG();
+
+        if (getJonedAllPlayLists().isEmpty()) {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST))
+                insMode(MusicSharingDeviceTileEntity.Screen.NOTEXIST);
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.NOTEXIST))
+                insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
+        }
 
         if (getCurrentSelectedPlayList() == PlayList.ALL)
             addPlayMusicButton.setTextuer(244, 40, 18, 256, 256);
@@ -571,16 +590,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.addPlayMusic2BackButton, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
         IKSGScreenUtil.setVisible(this.addPlayMusic2CrateButton, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
         IKSGScreenUtil.setActive(this.addPlayMusic2CrateButton, !this.addPlayMusicSourceField.getText().isEmpty() && !this.addPlayMusicNameField.getText().isEmpty() && musicLoadResult == MusicLoadResult.AVAILABLE);
-        //  IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectWorld, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
-        //  IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectWorld, this.musicSourceClientReferencesType == MusicSourceClientReferencesType.URL || this.musicSourceClientReferencesType == MusicSourceClientReferencesType.LOCAL_FILE);
-        //  IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectURL, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
-        // IKSGScreenUtil.setActive(this.addPlayMusic2UploadSelectURL, this.musicSourceClientReferencesType == MusicSourceClientReferencesType.URL && this.formattype != null && this.formattype.equals("mp3"));
-        // IKSGScreenUtil.setVisible(this.addPlayMusic2UploadSelectGitHub, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_2));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSerchBackButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchField, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchlistbar, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
+        IKSGScreenUtil.setVisible(this.playlistDetails,isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST)&&getCurrentSelectedPlayList() != PlayList.ALL);
     }
 
     private void fieldTick() {
@@ -640,6 +655,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     }
 
     public void insMode(MusicSharingDeviceTileEntity.Screen moniter) {
+
         CompoundNBT tag = new CompoundNBT();
         tag.putString("name", moniter.getName());
 
@@ -714,6 +730,17 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         stopPlayMusic();
     }
 
+    protected void drawPlaylistDetails(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawFontString(matrx, new TranslationTextComponent("msd.playlistdetails"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        drawMiniFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 13);
+        drawMiniFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 47, getMonitorStartY() + 13);
+
+    }
+
+    protected void drawNotexist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawFontString(matrx, new TranslationTextComponent("msd.addplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+
+    }
 
     protected void drawAddPlayMusicYoutubeSelect(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.youtubesearch"), getMonitorStartX() + 2, getMonitorStartY() + 2);

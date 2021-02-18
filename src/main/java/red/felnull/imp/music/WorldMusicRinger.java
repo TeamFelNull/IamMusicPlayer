@@ -196,7 +196,7 @@ public class WorldMusicRinger {
     }
 
     private boolean canListen(ServerPlayerEntity player) {
-        return player.world.getDimensionKey().getLocation().equals(getDimension()) && Math.sqrt(player.getDistanceSq(getMusicPos())) <= getListenRange();
+        return player.world.getDimensionKey().getLocation().equals(getDimension()) && Math.sqrt(player.getDistanceSq(getMusicPos())) <= getListenRange() + 30;
     }
 
     public void musicLoadingFinish(UUID playerUUID) {
