@@ -12,14 +12,12 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
-import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGServerUtil;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEntity {
@@ -65,6 +63,8 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
             setPath(player, tag.getString("path"));
         } else if (s.equals("CanJoinPlayListUpdate")) {
             return getUpdateCanJoinPlayListTag(player);
+        } else if (s.equals("PlaylistDetailsSet")) {
+            setLastPLDetalsName(player, tag.getString("PLName"));
         }
         return super.instructionFromClient(player, s, tag);
     }
@@ -117,12 +117,20 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
             getPlayerData(pl).putString("Path", path);
     }
 
+    public String getPLDetalsName(PlayerEntity pl) {
+        return getPlayerData(pl).getString("PlaylistDetailsName");
+    }
+
     public String getPlayerPath(PlayerEntity pl) {
         return getPlayerData(pl).getString("Path");
     }
 
     public void setScreen(String pluuid, Screen screen) {
         getPlayerData(pluuid).putString("PlayerCurrentScreen", screen.getName());
+    }
+
+    public void setLastPLDetalsName(PlayerEntity pl, String lastDetalsPLname) {
+        getPlayerData(pl).putString("PlaylistDetailsName", lastDetalsPLname);
     }
 
     public void setScreen(PlayerEntity pl, Screen screen) {

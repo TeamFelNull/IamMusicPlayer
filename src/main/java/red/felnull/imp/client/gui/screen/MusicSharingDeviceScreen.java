@@ -123,6 +123,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private ChangeableImageButton addPlayMusicYoutubeSearchButton;
     private YoutubeSearchResultScrollListButton addPlayMusicYoutubeSearchFileListButton;
     private StringImageButton playlistDetails;
+    private StringImageButton playlistDetailsBack;
+    private StringImageButton playlistDetailsSave;
+    public TextFieldWidget playlistDetailsNameChangeField;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -467,7 +470,42 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, false);
 
-        this.playlistDetails = addStringImageButton((TranslationTextComponent) IkisugiDialogTexts.BACK, 156, 1, 32, 10, 109, 0, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        this.playlistDetails = addStringImageButton(new TranslationTextComponent("msd.details"), 156, 1, 32, 10, 109, 0, n -> {
+            this.playlistDetailsNameChangeField.setText(getCurrentSelectedPlayList().getName());
+            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS);
+        });
+
+        this.playlistDetailsBack = addSmartStringButton(new TranslationTextComponent("msd.nosave"), getMonitorXsize() / 2 - 48 - 5, 106, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
+        this.playlistDetailsSave = addSmartStringButton(new TranslationTextComponent("msd.save"), getMonitorXsize() / 2 + 5, 106, n -> {
+            savePlayListDetails();
+            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
+        });
+
+        String DetailsNameChangeField = "";
+        if (this.playlistDetailsNameChangeField != null) {
+            DetailsNameChangeField = this.playlistDetailsNameChangeField.getText();
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS) && getCurrentSelectedPlayList() != null) {
+                if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                    DetailsNameChangeField = ((MusicSharingDeviceTileEntity) getTileEntity()).getPLDetalsName(getMinecraft().player);
+                }
+            }
+        }
+
+        this.playlistDetailsNameChangeField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 50, getMonitorStartY() + 20, 137, 12, new StringTextComponent("test")));
+        this.playlistDetailsNameChangeField.setEnableBackgroundDrawing(false);
+        this.playlistDetailsNameChangeField.setMaxStringLength(30);
+        this.playlistDetailsNameChangeField.setTextColor(-1);
+        this.playlistDetailsNameChangeField.setDisabledTextColour(-1);
+        this.playlistDetailsNameChangeField.setText(DetailsNameChangeField);
+        this.playlistDetailsNameChangeField.setResponder(n -> {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST) && image.getImageType() == PlayImage.ImageType.STRING) {
+                setImage(PlayImage.ImageType.STRING, n);
+            }
+        });
+        IKSGScreenUtil.setVisible(this.playlistDetailsNameChangeField, false);
+
+//        getMonitorStartX() + 95, getMonitorStartY() + 29
 
         if (!initFrist) {
             if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
@@ -595,10 +633,17 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchlistbar, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
-        IKSGScreenUtil.setVisible(this.playlistDetails,isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST)&&getCurrentSelectedPlayList() != PlayList.ALL);
+        IKSGScreenUtil.setVisible(this.playlistDetails, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST) && getCurrentSelectedPlayList() != PlayList.ALL);
+        IKSGScreenUtil.setVisible(this.playlistDetailsBack, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsSave, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsNameChangeField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
     }
 
     private void fieldTick() {
+        if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS)) {
+            playlistDetailsNameChangeField.tick();
+        }
+
         if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST)) {
             createGuildNameField.tick();
         }
@@ -730,10 +775,17 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         stopPlayMusic();
     }
 
+    protected void savePlayListDetails() {
+
+    }
+
     protected void drawPlaylistDetails(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.playlistdetails"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawMiniFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 13);
         drawMiniFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 47, getMonitorStartY() + 13);
+
+        RenderUtil.drwPlayImage(matrx, getCurrentSelectedPlayList().getImage(), getMonitorStartX() + 7, getMonitorStartY() + 18, 34);
+
 
     }
 
@@ -886,6 +938,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     @Override
     public void onCloseByIKSG() {
         super.onCloseByIKSG();
+
+        if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS) && getCurrentSelectedPlayList() != null) {
+            CompoundNBT tag = new CompoundNBT();
+            tag.putString("PLName", getCurrentSelectedPlayList().getName());
+            instruction("PlaylistDetailsSet", tag);
+        }
         stopPlayMusic();
     }
 

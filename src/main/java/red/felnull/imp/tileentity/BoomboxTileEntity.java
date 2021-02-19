@@ -6,12 +6,12 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.block.BoomboxBlock;
+import red.felnull.imp.block.IMPAbstractEquipmentBlock;
 import red.felnull.imp.block.propertie.BoomboxMode;
 import red.felnull.imp.container.BoomboxContainer;
 import red.felnull.imp.music.resource.PlayMusic;
@@ -27,6 +27,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
     private boolean musicLoop;
     private int musicVolume;
     private boolean musicVolumeMute;
+    private boolean isRedStoneOn;
 
     public BoomboxTileEntity() {
         super(IMPTileEntityTypes.BOOMBOX);
@@ -80,6 +81,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         this.musicLoop = tag.getBoolean("MusicLoop");
         this.musicVolume = tag.getInt("MusicVolume");
         this.musicVolumeMute = tag.getBoolean("MusicVolumeMute");
+        this.isRedStoneOn = tag.getBoolean("RedStoneOn");
     }
 
     @Override
@@ -89,6 +91,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
         tag.putBoolean("MusicLoop", musicLoop);
         tag.putInt("MusicVolume", musicVolume);
         tag.putBoolean("MusicVolumeMute", musicVolumeMute);
+        tag.putBoolean("RedStoneOn", isRedStoneOn);
         return super.write(tag);
     }
 
@@ -119,6 +122,19 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
             }
 
             playWaiting = isMusicPlayWaiting();
+
+            if ((!isOn() || getMode() != BoomboxMode.PLAY) && getWorld().isBlockPowered(getPos())) {
+                setBlockState(getBlockState().with(IMPAbstractEquipmentBlock.ON, true));
+                setMusicLoop(true);
+                setMode(BoomboxMode.PLAY);
+                isRedStoneOn = true;
+            }
+
+            if (isRedStoneOn && !getWorld().isBlockPowered(getPos())) {
+                setMusicLoop(false);
+                setMode(BoomboxMode.NONE);
+                isRedStoneOn = false;
+            }
         }
     }
 

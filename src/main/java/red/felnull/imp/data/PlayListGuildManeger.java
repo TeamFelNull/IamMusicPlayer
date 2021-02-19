@@ -14,6 +14,7 @@ import red.felnull.otyacraftengine.data.WorldDataManager;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,9 @@ public class PlayListGuildManeger {
 
     public void createPlayList(ServerPlayerEntity player, String name, PlayImage image, boolean anyone) {
         String plUUID = UUID.randomUUID().toString();
-        PlayList playList = new PlayList(plUUID, name, image, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone);
+        List<String> ows = new ArrayList<>();
+        ows.add(IKSGPlayerUtil.getUUID(player));
+        PlayList playList = new PlayList(plUUID, name, image, IKSGPlayerUtil.getUserName(player), IKSGPlayerUtil.getUUID(player), IKSGStringUtil.getTimeStamp(), anyone, ows);
         PlayList.addPlayList(playList);
         playList.addPlayerToPlayList(player);
     }

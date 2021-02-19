@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayList implements INBTReadWriter {
-    public static final PlayList EMPTY = new PlayList("3b88748c-a1a4-4819-aa75-0e175682c47b", "empty", PlayImage.EMPTY, "", "", "", false);
-    public static final PlayList ALL = new PlayList("6681f205-ea7c-4fee-9149-fbe8226143c6", "all", new PlayImage(PlayImage.ImageType.STRING, "all"), "", "", "", false);
+    public static final PlayList EMPTY = new PlayList("3b88748c-a1a4-4819-aa75-0e175682c47b", "empty", PlayImage.EMPTY, "", "", "", false, new ArrayList<>());
+    public static final PlayList ALL = new PlayList("6681f205-ea7c-4fee-9149-fbe8226143c6", "all", new PlayImage(PlayImage.ImageType.STRING, "all"), "", "", "", false, new ArrayList<>());
     private final String UUID;
     private String name;
     private String createPlayerName;
@@ -22,13 +22,14 @@ public class PlayList implements INBTReadWriter {
     private String timeStamp;
     private boolean Anyone;
     private PlayImage image;
+    private List<String> ownerPlayerUUIDs;
 
     public PlayList(String UUID, CompoundNBT tag) {
         this.UUID = UUID;
         read(tag);
     }
 
-    public PlayList(String UUID, String name, PlayImage image, String createPlayerName, String createPlayerUUID, String timeStamp, boolean anyone) {
+    public PlayList(String UUID, String name, PlayImage image, String createPlayerName, String createPlayerUUID, String timeStamp, boolean anyone, List<String> ownerPlayerUUIDs) {
         this.UUID = UUID;
         this.name = name;
         this.createPlayerName = createPlayerName;
@@ -36,6 +37,7 @@ public class PlayList implements INBTReadWriter {
         this.timeStamp = timeStamp;
         this.Anyone = anyone;
         this.image = image;
+        this.ownerPlayerUUIDs = ownerPlayerUUIDs;
     }
 
     @Override
@@ -46,6 +48,7 @@ public class PlayList implements INBTReadWriter {
         this.timeStamp = tag.getString("TimeStamp");
         this.Anyone = tag.getBoolean("Anyone");
         this.image = new PlayImage(tag.getCompound("Image"));
+        this.ownerPlayerUUIDs = IKSGNBTUtil.readStringList(tag.getCompound("OwnerPlayerUUID"));
     }
 
     @Override
@@ -56,9 +59,13 @@ public class PlayList implements INBTReadWriter {
         tag.putString("TimeStamp", this.timeStamp);
         tag.putBoolean("Anyone", this.Anyone);
         tag.put("Image", this.image.write(new CompoundNBT()));
+        tag.put("OwnerPlayerUUID", IKSGNBTUtil.writeStringList(new CompoundNBT(), this.ownerPlayerUUIDs));
         return tag;
     }
 
+    public List<String> getOwnerPlayerUUIDs() {
+        return ownerPlayerUUIDs;
+    }
 
     public String getName() {
         return name;
