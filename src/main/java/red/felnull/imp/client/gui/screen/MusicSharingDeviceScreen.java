@@ -126,6 +126,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private StringImageButton playlistDetailsBack;
     private StringImageButton playlistDetailsSave;
     public TextFieldWidget playlistDetailsNameChangeField;
+    private Checkbox playlistDetailsAnyoneCheckbox;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -472,11 +473,13 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
         this.playlistDetails = addStringImageButton(new TranslationTextComponent("msd.details"), 156, 1, 32, 10, 109, 0, n -> {
             this.playlistDetailsNameChangeField.setText(getCurrentSelectedPlayList().getName());
+            this.playlistDetailsAnyoneCheckbox.setCheck(getCurrentSelectedPlayList().isAnyone());
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS);
         });
 
         this.playlistDetailsBack = addSmartStringButton(new TranslationTextComponent("msd.nosave"), getMonitorXsize() / 2 - 48 - 5, 106, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
         this.playlistDetailsSave = addSmartStringButton(new TranslationTextComponent("msd.save"), getMonitorXsize() / 2 + 5, 106, n -> {
+            updatePlayList();
             savePlayListDetails();
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
         });
@@ -505,7 +508,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         });
         IKSGScreenUtil.setVisible(this.playlistDetailsNameChangeField, false);
 
-//        getMonitorStartX() + 95, getMonitorStartY() + 29
+        this.playlistDetailsAnyoneCheckbox = this.addWidgetByIKSG(new Checkbox(getMonitorStartX() + 47, getMonitorStartY() + 38, 15, 15, 215, 96, 256, 256, MSD_GUI_TEXTURES));
+        IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, false);
+
 
         if (!initFrist) {
             if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
@@ -637,6 +642,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.playlistDetailsBack, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsSave, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsNameChangeField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
     }
 
     private void fieldTick() {
@@ -776,17 +782,21 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     }
 
     protected void savePlayListDetails() {
-
+        PlayList cul = getCurrentSelectedPlayList();
+        PlayListGuildManeger.instance().changePlayListRequest(cul.getUUID(), playlistDetailsNameChangeField.getText(), PlayImage.EMPTY, picturImage, playlistDetailsAnyoneCheckbox.isCheck());
     }
 
     protected void drawPlaylistDetails(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.playlistdetails"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawMiniFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 13);
         drawMiniFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 47, getMonitorStartY() + 13);
-
+        drawFontString(matrx, new TranslationTextComponent("msd.anyonecheck"), getMonitorStartX() + 47 + 17, getMonitorStartY() + 41);
         RenderUtil.drwPlayImage(matrx, getCurrentSelectedPlayList().getImage(), getMonitorStartX() + 7, getMonitorStartY() + 18, 34);
 
-
+     /*   if (image != null) {
+            RenderUtil.drwPlayImage(matrx, image, picturImage, getMonitorStartX() + 7, getMonitorStartY() + 27, 79);
+        }
+*/
     }
 
     protected void drawNotexist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {

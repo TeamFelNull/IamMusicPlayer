@@ -117,8 +117,17 @@ public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends 
     public void instructionReturn(String name, CompoundNBT tag) {
         if (name.equals("PlayListUpdate")) {
             jonedAllPlaylists.clear();
+            boolean nonslflg = false;
             for (String pltagst : tag.keySet()) {
-                jonedAllPlaylists.add(new PlayList(pltagst, tag.getCompound(pltagst)));
+                PlayList pl = new PlayList(pltagst, tag.getCompound(pltagst));
+                jonedAllPlaylists.add(pl);
+                if (pl.equals(getCurrentSelectedPlayList())) {
+                    nonslflg = true;
+                    setCurrentSelectedPlayList(pl);
+                }
+            }
+            if (!nonslflg) {
+                setCurrentSelectedPlayList(PlayList.ALL);
             }
             if (!isFristMLUpdate) {
                 String lastPlayMusic = getLastPlayListUUID();

@@ -80,7 +80,7 @@ public class PlayList implements INBTReadWriter {
     }
 
     public boolean isAnyone() {
-        return true;
+        return Anyone;
     }
 
     public String getCreatePlayerName() {
@@ -95,8 +95,45 @@ public class PlayList implements INBTReadWriter {
         return timeStamp;
     }
 
+    public void setAnyone(boolean anyone) {
+        Anyone = anyone;
+    }
+
+    public void setCreatePlayerName(String createPlayerName) {
+        this.createPlayerName = createPlayerName;
+    }
+
+    public void setCreatePlayerUUID(String createPlayerUUID) {
+        this.createPlayerUUID = createPlayerUUID;
+    }
+
+    public void setImage(PlayImage image) {
+        this.image = image;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOwnerPlayerUUIDs(List<String> ownerPlayerUUIDs) {
+        this.ownerPlayerUUIDs = ownerPlayerUUIDs;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
     public static void addPlayList(PlayList plst) {
         WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists").put(plst.getUUID(), plst.write(new CompoundNBT()));
+    }
+
+    public static void setPlayList(PlayList plst) {
+        removePlayList(plst);
+        addPlayList(plst);
+    }
+
+    public static void removePlayList(PlayList plst) {
+        WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists").remove(plst.getUUID());
     }
 
     public static void addPlayerToPlayList(ServerPlayerEntity player, PlayList list) {

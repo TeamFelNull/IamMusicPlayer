@@ -11,6 +11,7 @@ public class IMPWorldData {
     public static final ResourceLocation PLAYMUSIC_DATA = new ResourceLocation(IamMusicPlayer.MODID, "playmusic_data");
     public static final ResourceLocation IMAGE = new ResourceLocation(IamMusicPlayer.MODID, "image");
     public static final ResourceLocation PLAYLIST_REQUEST = new ResourceLocation(IamMusicPlayer.MODID, "playlist_request");
+    public static final ResourceLocation PLAYLIST_CHANGE_REQUEST = new ResourceLocation(IamMusicPlayer.MODID, "playlist_change_request");
     public static final ResourceLocation SERVER_MUSIC_DATA = new ResourceLocation(IamMusicPlayer.MODID, "server_music_data");
     public static final ResourceLocation SEND_MUSIC_RESPONSE = new ResourceLocation(IamMusicPlayer.MODID, "send_music_response");
     public static final ResourceLocation WORLDMUSICFILEDATA = new ResourceLocation(IamMusicPlayer.MODID, "worldmusicfiledatainfo");

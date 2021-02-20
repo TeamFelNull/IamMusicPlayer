@@ -123,7 +123,7 @@ public class BoomboxTileEntity extends IMPAbstractEquipmentTileEntity implements
 
             playWaiting = isMusicPlayWaiting();
 
-            if ((!isOn() || getMode() != BoomboxMode.PLAY) && getWorld().isBlockPowered(getPos())) {
+            if ((!isOn() || getMode() != BoomboxMode.PLAY) && getWorld().isBlockPowered(getPos()) && !getCassetteTape().isEmpty()) {
                 setBlockState(getBlockState().with(IMPAbstractEquipmentBlock.ON, true));
                 setMusicLoop(true);
                 setMode(BoomboxMode.PLAY);

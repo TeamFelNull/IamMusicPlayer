@@ -7,6 +7,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.handler.MusicRingMessageHandler;
 import red.felnull.imp.client.handler.MusicRingUpdateMessageHandlerr;
 import red.felnull.imp.client.handler.WorldMusicSendByteMessageHandler;
+import red.felnull.imp.handler.PlayListChangeRequestMessageHandler;
 import red.felnull.imp.handler.PlayListCreateRequestMessageHandler;
 import red.felnull.imp.handler.PlayMusicCreateRequestMessageHandler;
 
@@ -31,6 +32,8 @@ public class PacketHandler {
         INSTANCE.registerMessage(next(), MusicRingMessage.class, MusicRingMessage::encodeMessege, MusicRingMessage::decodeMessege, MusicRingMessageHandler::reversiveMessage);
         //ワールドの音源をクライアントに同期
         INSTANCE.registerMessage(next(), MusicRingUpdateMessage.class, MusicRingUpdateMessage::encodeMessege, MusicRingUpdateMessage::decodeMessege, MusicRingUpdateMessageHandlerr::reversiveMessage);
+        //プレイリスト変更リクエスト
+        INSTANCE.registerMessage(next(), PlayListChangeRequestMessage.class, PlayListChangeRequestMessage::encodeMessege, PlayListChangeRequestMessage::decodeMessege, PlayListChangeRequestMessageHandler::reversiveMessage);
 
     }
 }

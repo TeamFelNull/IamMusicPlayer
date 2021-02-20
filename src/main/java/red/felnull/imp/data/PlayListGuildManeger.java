@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.music.resource.PlayImage;
 import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.packet.PacketHandler;
+import red.felnull.imp.packet.PlayListChangeRequestMessage;
 import red.felnull.imp.packet.PlayListCreateRequestMessage;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.api.ResponseSender;
@@ -90,5 +91,34 @@ public class PlayListGuildManeger {
         List<PlayList> jpl = PlayList.getJoinedPlayLists(player);
         jpl.forEach(n -> tag.put(n.getUUID(), n.write(new CompoundNBT())));
         return tag;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void changePlayListRequest(String uuid, String name, PlayImage image, byte[] imageData, boolean anyone) {
+
+        if (image.getImageType() == PlayImage.ImageType.IMGAE)
+            DataSendReceiverManager.instance().sendToServer(IMPWorldData.IMAGE, image.getName(), imageData);
+
+        PacketHandler.INSTANCE.sendToServer(new PlayListChangeRequestMessage(uuid, name, image, anyone));
+
+    }
+
+    public void changePlayList(String uuid, String name, PlayImage image, boolean anyone) {
+
+        PlayList list = PlayList.getPlayListByUUID(uuid);
+
+        if (list == null)
+            return;
+
+        if (!name.isEmpty())
+            list.setName(name);
+
+        list.setAnyone(anyone);
+
+        if (!PlayImage.EMPTY.equals(image))
+            list.setImage(image);
+
+        PlayList.setPlayList(list);
+
     }
 }
