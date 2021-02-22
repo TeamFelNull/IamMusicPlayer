@@ -54,6 +54,7 @@
   "msd.save": "Save",
   "msd.nosave": "Not Save",
   "msd.details": "Details",
+  "msd.noplaylist": "There seems to be no music list",
   "cd.operationselection": "Operation selection",
   "cd.play": "Play",
   "cd.write": "Write",

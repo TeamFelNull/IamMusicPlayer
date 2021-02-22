@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -65,6 +66,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     public static final ResourceLocation MSD_GUI_TEXTURES2 = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_2.png");
     private static final ResourceLocation YOUTUBE_ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/youtube_icon.png");
     private final List<PlayList> jonPlaylists = new ArrayList<>();
+    private final List<String> playListPlayers = new ArrayList<>();
     private final boolean canOpenFileChooser;
     public List<AudioTrack> youtubeResilts = new ArrayList<>();
     public TextFieldWidget addPlayMusicSourceField;
@@ -160,6 +162,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     public void initByIKSG() {
         super.initByIKSG();
         updateAll();
+        updatePlayListPlayers();
         timerSet();
 
         if (musicSourceClientReferencesType == null)
@@ -611,8 +614,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.openImage, isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1) && canOpenFileChooser);
         IKSGScreenUtil.setVisible(this.createAnyoneCheckbox, isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST));
         IKSGScreenUtil.setActive(this.createGuid, image != null && !createGuildNameField.getText().isEmpty());
-        IKSGScreenUtil.setVisible(this.createJoinGuid, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYLIST));
-        IKSGScreenUtil.setVisible(this.addJoinGuid, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYLIST));
+        IKSGScreenUtil.setVisible(this.createJoinGuid, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYLIST, MusicSharingDeviceTileEntity.Screen.NOTEXIST));
+        IKSGScreenUtil.setVisible(this.addJoinGuid, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYLIST, MusicSharingDeviceTileEntity.Screen.NOTEXIST));
         IKSGScreenUtil.setVisible(this.backJoinGuid, isMonitor(MusicSharingDeviceTileEntity.Screen.ADD_PLAYLIST));
         IKSGScreenUtil.setVisible(this.joinplaylistbar, isMonitor(MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST));
         IKSGScreenUtil.setVisible(this.JoinPlayListScrollButtons, isMonitor(MusicSharingDeviceTileEntity.Screen.JOIN_PLAYLIST));
@@ -731,6 +734,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         stopPlayMusic();
     }
 
+    private void updatePlayListPlayers() {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("uuid", getCurrentSelectedPlayList().getUUID());
+        instruction("AllPlayListPlayersUpdate", tag);
+    }
+
     private void updateCanJoinPlayList() {
         instruction("CanJoinPlayListUpdate", new CompoundNBT());
     }
@@ -739,6 +748,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     public void updateAll() {
         super.updateAll();
         updateCanJoinPlayList();
+        updatePlayListPlayers();
     }
 
 
@@ -772,6 +782,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             for (String pltagst : tag.keySet()) {
                 jonPlaylists.add(new PlayList(pltagst, tag.getCompound(pltagst)));
             }
+        } else if (name.equals("AllPlayListPlayersUpdate")) {
+            playListPlayers.clear();
+            playListPlayers.addAll(IKSGNBTUtil.readStringList(tag.getCompound("list").getCompound("players")));
         }
     }
 
@@ -801,6 +814,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
     protected void drawNotexist(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.addplaylist"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        drawCenterFontString(matrx, new TranslationTextComponent("msd.noplaylist"), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + getMonitorYsize() / 2 - 25);
+        drawCenterFontString(matrx, new TranslationTextComponent("msd.addplaylistInfo"), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + getMonitorYsize() / 2 - 25 + this.font.FONT_HEIGHT + 3);
 
     }
 
@@ -908,6 +923,22 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
     protected void drawPlayList(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new StringTextComponent(getCurrentSelectedPlayList().getName()), getMonitorStartX() + 31, getMonitorStartY() + 2);
+
+        if (!playListPlayers.isEmpty()) {
+            int isze = 0;
+            if (playListPlayers.size() > 2) {
+                IFormattableTextComponent stc = new StringTextComponent("+").appendString(String.valueOf(playListPlayers.size() - 2));
+                isze = font.getStringPropertyWidth(stc);
+                drawFontString(matrx, stc, getMonitorStartX() + 155 - isze, getMonitorStartY() + 2);
+            }
+
+            if (playListPlayers.size() != 1) {
+                IKSGRenderUtil.drawPlayerFase(matrx, "katyou", getMonitorStartX() + 155 - isze - 10, getMonitorStartY() + 2);
+            }
+
+            IKSGRenderUtil.drawPlayerFase(matrx, "MoriMori_0317_jp", getMonitorStartX() + 155 - isze - 20 + (playListPlayers.size() != 1 ? 0 : 10), getMonitorStartY() + 2);
+
+        }
     }
 
     protected void drawNoAntenna(MatrixStack matrx, float partTick, int mouseX, int mouseY) {

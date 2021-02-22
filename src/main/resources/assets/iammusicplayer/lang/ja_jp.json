@@ -54,6 +54,7 @@
   "msd.save": "保存",
   "msd.nosave": "保存しない",
   "msd.details": "詳細",
+  "msd.noplaylist": "プレイリストが無いようです",
   "cd.operationselection": "操作を選択",
   "cd.play": "再生",
   "cd.write": "書き込み",

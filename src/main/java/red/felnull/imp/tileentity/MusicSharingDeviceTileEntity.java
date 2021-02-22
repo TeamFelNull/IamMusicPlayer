@@ -12,6 +12,8 @@ import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
+import red.felnull.imp.data.PlayMusicManeger;
+import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -65,8 +67,17 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
             return getUpdateCanJoinPlayListTag(player);
         } else if (s.equals("PlaylistDetailsSet")) {
             setLastPLDetalsName(player, tag.getString("PLName"));
+        } else if (s.equals("AllPlayListPlayersUpdate")) {
+            return getUpdatePlayListPlayersTag(player, tag.getString("uuid"));
         }
         return super.instructionFromClient(player, s, tag);
+    }
+
+    private CompoundNBT getUpdatePlayListPlayersTag(ServerPlayerEntity playerEntity, String uuid) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("uuid", uuid);
+        tag.put("list", PlayMusicManeger.instance().getAllPlayerNBT(playerEntity, PlayList.getPlayListByUUID(uuid)));
+        return tag;
     }
 
     private CompoundNBT getUpdateCanJoinPlayListTag(ServerPlayerEntity player) {

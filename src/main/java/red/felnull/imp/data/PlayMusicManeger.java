@@ -18,7 +18,9 @@ import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.data.SendReceiveLogger;
+import red.felnull.otyacraftengine.data.WorldDataManager;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
+import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
@@ -29,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PlayMusicManeger {
     private static PlayMusicManeger INSTANCE;
@@ -141,6 +144,19 @@ public class PlayMusicManeger {
             jpl.forEach(n -> tag.put(n.getUUID(), n.write(new CompoundNBT())));
             return tag;
         }
+    }
+
+    public CompoundNBT getAllPlayerNBT(ServerPlayerEntity playerEntity, PlayList list) {
+        CompoundNBT tag = new CompoundNBT();
+        if (list != null && !list.equals(PlayList.ALL)) {
+            CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("players");
+            List<String> pls = pltag.keySet().stream().filter(n -> {
+                List<String> sts = IKSGNBTUtil.readStringList(pltag.getCompound(n).getCompound("playlist"));
+                return sts.stream().anyMatch(n2 -> n2.equals(list.getUUID()));
+            }).collect(Collectors.toList());
+            tag.put("players", IKSGNBTUtil.writeStringList(new CompoundNBT(), pls));
+        }
+        return tag;
     }
 
     public class PlayMusicEntry {
