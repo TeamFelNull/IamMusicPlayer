@@ -933,13 +933,17 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             }
 
             if (playListPlayers.size() != 1) {
-                IKSGRenderUtil.drawPlayerFase(matrx, "katyou", getMonitorStartX() + 155 - isze - 10, getMonitorStartY() + 2);
+
+                String uuid = playListPlayers.get(0);
+
+                if (uuid.equals(getCurrentSelectedPlayList().getCreatePlayerUUID())) {
+                    uuid = playListPlayers.get(1);
+                }
+
+                IKSGRenderUtil.drawPlayerFaseByUUID(matrx, uuid, getMonitorStartX() + 155 - isze - 10, getMonitorStartY() + 2);
             }
 
             IKSGRenderUtil.drawPlayerFase(matrx, getCurrentSelectedPlayList().getCreatePlayerName(), getMonitorStartX() + 155 - isze - 20 + (playListPlayers.size() != 1 ? 0 : 10), getMonitorStartY() + 2);
-
-
-            IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getPlayerSkinTextureByUUID("81e56089-370c-4ed8-8ffb-df0635ae0762"), matrx, 0, 0, 0, 0, 256, 256);
 
         }
     }
