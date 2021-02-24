@@ -129,6 +129,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private StringImageButton playlistDetailsSave;
     public TextFieldWidget playlistDetailsNameChangeField;
     private Checkbox playlistDetailsAnyoneCheckbox;
+    private ScrollBarSlider playlistDetailsPlayerslListbar;
+    private DetailsPlayersScrollButton playlistDetailsPlayersButtons;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -437,6 +439,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         {
         });
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchField, false);
+
         this.addPlayMusicYoutubeSearchlistbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 189, getMonitorStartY() + 28, 93, 100, 0, -189, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchlistbar, false);
 
@@ -513,6 +516,15 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
         this.playlistDetailsAnyoneCheckbox = this.addWidgetByIKSG(new Checkbox(getMonitorStartX() + 47, getMonitorStartY() + 38, 15, 15, 215, 96, 256, 256, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, false);
+
+
+        this.playlistDetailsPlayerslListbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 183, getMonitorStartY() + 59, 45, 100, 0, -177, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
+        IKSGScreenUtil.setVisible(this.playlistDetailsPlayerslListbar, false);
+
+        this.playlistDetailsPlayersButtons = this.addWidgetByIKSG(new DetailsPlayersScrollButton(getMonitorStartX() + 7, getMonitorStartY() + 59, 175, 45, 10, playlistDetailsPlayerslListbar, playListPlayers, (n,m)->{
+            System.out.println("test");
+        }));
+        IKSGScreenUtil.setVisible(this.playlistDetailsPlayersButtons, false);
 
 
         if (!initFrist) {
@@ -646,6 +658,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.playlistDetailsSave, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsNameChangeField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsPlayerslListbar, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsPlayersButtons, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+
     }
 
     private void fieldTick() {
