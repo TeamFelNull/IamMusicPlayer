@@ -14,6 +14,7 @@ import red.felnull.imp.container.MusicSharingDeviceContainer;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
 import red.felnull.imp.music.resource.PlayList;
+import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.util.ItemHelper;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -70,6 +71,8 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
             setPLDetalsACheckbox(player, tag.getBoolean("Checked"));
         } else if (s.equals("AllPlayListPlayersUpdate")) {
             return getUpdatePlayListPlayersTag(player, tag.getString("uuid"));
+        } else if (s.equals("LastPlayMusicSet")) {
+            setLastPlayMusic(player, tag.getString("uuid"));
         }
         return super.instructionFromClient(player, s, tag);
     }
@@ -141,12 +144,23 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         return getPlayerData(pl).getString("Path");
     }
 
+    public PlayMusic getLastPlayMusic(PlayerEntity pl) {
+        CompoundNBT tag = getPlayerData(IKSGPlayerUtil.getUUID(pl));
+        return new PlayMusic(tag.getString("LastPlayMusicUUID"), tag.getCompound("LastPlayMusic"));
+    }
+
     public void setScreen(String pluuid, Screen screen) {
         getPlayerData(pluuid).putString("PlayerCurrentScreen", screen.getName());
     }
 
     public void setLastPLDetalsName(PlayerEntity pl, String lastDetalsPLname) {
         getPlayerData(pl).putString("PlaylistDetailsName", lastDetalsPLname);
+    }
+
+    public void setLastPlayMusic(PlayerEntity pl, String uuid) {
+        PlayMusic music = PlayMusic.getPlayMusicByUUID(uuid);
+        getPlayerData(pl).putString("LastPlayMusicUUID", uuid);
+        getPlayerData(pl).put("LastPlayMusic", music.write(new CompoundNBT()));
     }
 
     public void setPLDetalsACheckbox(PlayerEntity pl, boolean cheked) {
@@ -191,7 +205,8 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         ADD_PLAYMUSIC_2("add_playmusic_2"),
         YOUTUBE_SEARCH("youtube_search"),
         PLAYLIST_DETAILS("playlist_details"),
-        PLAYLIST_REMOVE("playlist_remove");
+        PLAYLIST_REMOVE("playlist_remove"),
+        PLAYMUSIC_DETAILS("playmusic_details");
         private final String name;
 
         private Screen(String name) {

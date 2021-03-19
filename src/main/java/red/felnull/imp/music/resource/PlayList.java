@@ -128,21 +128,23 @@ public class PlayList implements INBTReadWriter {
     }
 
     public static void setPlayList(PlayList plst) {
-        removePlayList(plst);
+        removePlayList(plst, false);
         addPlayList(plst);
     }
 
-    public static void removePlayList(PlayList plst) {
-        CompoundNBT plutag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("players");
-        List<String> stars = new ArrayList<>(plutag.keySet());
-        stars.forEach(n -> {
-            CompoundNBT tag = plutag.getCompound(n).getCompound("playlist");
-            for (int i = 0; i < tag.keySet().size(); ++i) {
-                if (tag.getString(String.valueOf(i)).equals(plst.getUUID())) {
-                    tag.remove(String.valueOf(i));
+    public static void removePlayList(PlayList plst, boolean rejoin) {
+        if (rejoin) {
+            CompoundNBT plutag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("players");
+            List<String> stars = new ArrayList<>(plutag.keySet());
+            stars.forEach(n -> {
+                CompoundNBT tag = plutag.getCompound(n).getCompound("playlist");
+                for (int i = 0; i < tag.keySet().size(); ++i) {
+                    if (tag.getString(String.valueOf(i)).equals(plst.getUUID())) {
+                        tag.remove(String.valueOf(i));
+                    }
                 }
-            }
-        });
+            });
+        }
         WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists").remove(plst.getUUID());
     }
 

@@ -111,7 +111,7 @@ public class PlayListGuildManeger {
 
     public void removePlayList(String uuid) {
         PlayList list = PlayList.getPlayListByUUID(uuid);
-        PlayList.removePlayList(list);
+        PlayList.removePlayList(list, true);
     }
 
     public void changePlayList(String uuid, String name, PlayImage image, boolean anyone) {

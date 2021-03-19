@@ -18,7 +18,7 @@ public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends 
     private final List<PlayMusic> currentPlayMusics = new ArrayList<>();
     private PlayList currentPlayList;
     private ClockTimer updateTimer;
-    private boolean isFristMLUpdate;
+    public boolean isFristMLUpdate;
 
     public IMPAbstractPLEquipmentScreen(T screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.ImageButton;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -79,6 +80,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private boolean pictuerLoading;
     private boolean musicLoading;
     private MusicLoadResult musicLoadResult;
+    private PlayMusic selectedPlayMusic;
     //   public UploadLocation uploadLocation;
     public IMusicPlayer musicPlayer;
     public MusicPlayThread musicPlayThread;
@@ -200,7 +202,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
         this.playlistButtons = this.addWidgetByIKSG(new PlayMusicScrollButton(getMonitorStartX() + 30, getMonitorStartY() + 20, 158, 101, playlistbar, (n, m) -> {
             PlayMusic music = getCurrentPLPlayMusic().get(m);
-            playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
+            if (IKSGClientUtil.isKeyInput(Minecraft.getInstance().gameSettings.keyBindSneak, false)) {
+                playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
+            } else {
+                selectedPlayMusic = music;
+                insMode(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS);
+            }
         }, this, this, false));
         IKSGScreenUtil.setVisible(this.playlistButtons, false);
 
@@ -618,6 +625,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             case PLAYLIST_REMOVE:
                 drawPlaylistRemove(matx, partTick, mouseX, mouseY);
                 break;
+            case PLAYMUSIC_DETAILS:
+                drawPlaymusicDetails(matx, partTick, mouseX, mouseY);
+                break;
         }
     }
 
@@ -827,6 +837,11 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
     @Override
     public void instructionReturn(String name, CompoundNBT tag) {
+
+        if (!isFristMLUpdate) {
+            selectedPlayMusic = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player);
+        }
+
         super.instructionReturn(name, tag);
         if (name.equals("CanJoinPlayListUpdate")) {
             jonPlaylists.clear();
@@ -850,10 +865,27 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         PlayListGuildManeger.instance().removePlayListRequest(cul.getUUID());
     }
 
+
     protected void savePlayListDetails() {
         PlayList cul = getCurrentSelectedPlayList();
         PlayListGuildManeger.instance().changePlayListRequest(cul.getUUID(), playlistDetailsNameChangeField.getText(), PlayImage.EMPTY, picturImage, playlistDetailsAnyoneCheckbox.isCheck());
     }
+
+    public void insLastPlayMusic() {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("uuid", selectedPlayMusic.getUUID());
+        instruction("LastPlayMusicSet", tag);
+    }
+
+    protected void drawPlaymusicDetails(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawFontString(matrx, new TranslationTextComponent("msd.playmusicdetails"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        drawMiniFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 13);
+        drawMiniFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 47, getMonitorStartY() + 13);
+        if (selectedPlayMusic != null) {
+            RenderUtil.drwPlayImage(matrx, selectedPlayMusic.getImage(), getMonitorStartX() + 7, getMonitorStartY() + 18, 34);
+        }
+    }
+
 
     protected void drawPlaylistRemove(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("msd.playlistremove"), getMonitorStartX() + 2, getMonitorStartY() + 2);
@@ -1051,6 +1083,10 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     @Override
     public void onCloseByIKSG() {
         super.onCloseByIKSG();
+
+        if (selectedPlayMusic != null)
+            insLastPlayMusic();
+
 
         if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS) && getCurrentSelectedPlayList() != null) {
             CompoundNBT tag = new CompoundNBT();
