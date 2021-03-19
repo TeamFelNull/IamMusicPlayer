@@ -2,9 +2,10 @@ package red.felnull.imp.client.util;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.function.Consumer;
 
 public class FileUtils {
-    public static void openFileChoser(String title, OpenFile op) {
+    public static void openFileChoser(String title, Consumer<File> op) {
         try {
          /*   javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
             fc.setTitle(title);
@@ -27,7 +28,7 @@ public class FileUtils {
                     Method sodMethod = fcClass.getDeclaredMethod("showOpenDialog", wdClass);
                     Object nullble = null;
                     File file = (File) sodMethod.invoke(fcIns, nullble);
-                    op.openFile(file);
+                    op.accept(file);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -47,9 +48,5 @@ public class FileUtils {
         } catch (Exception ex) {
             return false;
         }
-    }
-
-    public interface OpenFile {
-        void openFile(File file);
     }
 }

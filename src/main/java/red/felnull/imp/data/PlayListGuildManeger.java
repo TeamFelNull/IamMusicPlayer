@@ -9,6 +9,7 @@ import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.packet.PacketHandler;
 import red.felnull.imp.packet.PlayListChangeRequestMessage;
 import red.felnull.imp.packet.PlayListCreateRequestMessage;
+import red.felnull.imp.packet.PlayListRemoveRequestMessage;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.api.ResponseSender;
 import red.felnull.otyacraftengine.data.WorldDataManager;
@@ -94,6 +95,11 @@ public class PlayListGuildManeger {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public void removePlayListRequest(String uuid) {
+        PacketHandler.INSTANCE.sendToServer(new PlayListRemoveRequestMessage(uuid));
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public void changePlayListRequest(String uuid, String name, PlayImage image, byte[] imageData, boolean anyone) {
 
         if (image.getImageType() == PlayImage.ImageType.IMGAE)
@@ -101,6 +107,11 @@ public class PlayListGuildManeger {
 
         PacketHandler.INSTANCE.sendToServer(new PlayListChangeRequestMessage(uuid, name, image, anyone));
 
+    }
+
+    public void removePlayList(String uuid) {
+        PlayList list = PlayList.getPlayListByUUID(uuid);
+        PlayList.removePlayList(list);
     }
 
     public void changePlayList(String uuid, String name, PlayImage image, boolean anyone) {

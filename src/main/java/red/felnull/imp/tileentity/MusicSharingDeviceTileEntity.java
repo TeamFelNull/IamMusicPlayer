@@ -67,6 +67,7 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
             return getUpdateCanJoinPlayListTag(player);
         } else if (s.equals("PlaylistDetailsSet")) {
             setLastPLDetalsName(player, tag.getString("PLName"));
+            setPLDetalsACheckbox(player, tag.getBoolean("Checked"));
         } else if (s.equals("AllPlayListPlayersUpdate")) {
             return getUpdatePlayListPlayersTag(player, tag.getString("uuid"));
         }
@@ -132,6 +133,10 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         return getPlayerData(pl).getString("PlaylistDetailsName");
     }
 
+    public boolean getPLDetalsACheckbox(PlayerEntity pl) {
+        return getPlayerData(pl).getBoolean("PlaylistDetailsACheckbox");
+    }
+
     public String getPlayerPath(PlayerEntity pl) {
         return getPlayerData(pl).getString("Path");
     }
@@ -142,6 +147,10 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
 
     public void setLastPLDetalsName(PlayerEntity pl, String lastDetalsPLname) {
         getPlayerData(pl).putString("PlaylistDetailsName", lastDetalsPLname);
+    }
+
+    public void setPLDetalsACheckbox(PlayerEntity pl, boolean cheked) {
+        getPlayerData(pl).putBoolean("PlaylistDetailsACheckbox", cheked);
     }
 
     public void setScreen(PlayerEntity pl, Screen screen) {
@@ -181,7 +190,8 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         ADD_PLAYMUSIC_1("add_playmusic_1"),
         ADD_PLAYMUSIC_2("add_playmusic_2"),
         YOUTUBE_SEARCH("youtube_search"),
-        PLAYLIST_DETAILS("playlist_details");
+        PLAYLIST_DETAILS("playlist_details"),
+        PLAYLIST_REMOVE("playlist_remove");
         private final String name;
 
         private Screen(String name) {

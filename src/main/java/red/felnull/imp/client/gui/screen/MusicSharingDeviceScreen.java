@@ -131,6 +131,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private Checkbox playlistDetailsAnyoneCheckbox;
     private ScrollBarSlider playlistDetailsPlayerslListbar;
     private DetailsPlayersScrollButton playlistDetailsPlayersButtons;
+    private ImageButton removePlayListButton;
+    private StringImageButton playlistRemoveBack;
+    private StringImageButton playlistRemoveRemoved;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -477,6 +480,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         }));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, false);
 
+
         this.playlistDetails = addStringImageButton(new TranslationTextComponent("msd.details"), 156, 1, 32, 10, 109, 0, n -> {
             this.playlistDetailsNameChangeField.setText(getCurrentSelectedPlayList().getName());
             this.playlistDetailsAnyoneCheckbox.setCheck(getCurrentSelectedPlayList().isAnyone());
@@ -517,15 +521,39 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         this.playlistDetailsAnyoneCheckbox = this.addWidgetByIKSG(new Checkbox(getMonitorStartX() + 47, getMonitorStartY() + 38, 15, 15, 215, 96, 256, 256, MSD_GUI_TEXTURES));
         IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, false);
 
+        if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS) && getCurrentSelectedPlayList() != null) {
+            if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                playlistDetailsAnyoneCheckbox.setCheck(((MusicSharingDeviceTileEntity) getTileEntity()).getPLDetalsACheckbox(getMinecraft().player));
+            }
+        }
 
         this.playlistDetailsPlayerslListbar = this.addWidgetByIKSG(new ScrollBarSlider(getMonitorStartX() + 183, getMonitorStartY() + 59, 45, 100, 0, -177, 0, 76, EQUIPMENT_WIDGETS_TEXTURES));
         IKSGScreenUtil.setVisible(this.playlistDetailsPlayerslListbar, false);
 
-        this.playlistDetailsPlayersButtons = this.addWidgetByIKSG(new DetailsPlayersScrollButton(getMonitorStartX() + 7, getMonitorStartY() + 59, 175, 45, 10, playlistDetailsPlayerslListbar, playListPlayers, (n,m)->{
+        this.playlistDetailsPlayersButtons = this.addWidgetByIKSG(new DetailsPlayersScrollButton(getMonitorStartX() + 7, getMonitorStartY() + 59, 175, 45, 10, playlistDetailsPlayerslListbar, playListPlayers, (n, m) -> {
             System.out.println("test");
         }));
         IKSGScreenUtil.setVisible(this.playlistDetailsPlayersButtons, false);
 
+        this.removePlayListButton = this.addWidgetByIKSG(new ImageButton(getMonitorStartX() + 160, getMonitorStartY() + 106, 15, 15, 71, 30, 15, EQUIPMENT_WIDGETS_TEXTURES, n -> {
+            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_REMOVE);
+        }));
+        IKSGScreenUtil.setVisible(this.removePlayListButton, false);
+
+
+        this.playlistDetails = addStringImageButton(new TranslationTextComponent("msd.details"), 156, 1, 32, 10, 109, 0, n -> {
+            this.playlistDetailsNameChangeField.setText(getCurrentSelectedPlayList().getName());
+            this.playlistDetailsAnyoneCheckbox.setCheck(getCurrentSelectedPlayList().isAnyone());
+            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS);
+        });
+
+        this.playlistRemoveBack = addSmartStringButton((TranslationTextComponent) IkisugiDialogTexts.BACK, getMonitorXsize() / 2 - 48 - 5, 106, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        this.playlistRemoveRemoved = addSmartStringButton(new TranslationTextComponent("msd.playlistremoved"), getMonitorXsize() / 2 + 5, 106, n -> {
+            removePlayListDetails();
+            updatePlayList();
+            setCurrentSelectedPlayList(PlayList.ALL);
+            insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
+        });
 
         if (!initFrist) {
             if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
@@ -586,6 +614,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                 break;
             case PLAYLIST_DETAILS:
                 drawPlaylistDetails(matx, partTick, mouseX, mouseY);
+                break;
+            case PLAYLIST_REMOVE:
+                drawPlaylistRemove(matx, partTick, mouseX, mouseY);
                 break;
         }
     }
@@ -660,7 +691,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsPlayerslListbar, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsPlayersButtons, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
-
+        IKSGScreenUtil.setVisible(this.removePlayListButton, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistRemoveBack, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_REMOVE));
+        IKSGScreenUtil.setVisible(this.playlistRemoveRemoved, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_REMOVE));
     }
 
     private void fieldTick() {
@@ -720,6 +753,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     }
 
     public MusicSharingDeviceTileEntity.Screen getCurrentScreen() {
+        if (getTileEntity() == null)
+            return MusicSharingDeviceTileEntity.Screen.PLAYLIST;
+
         return ((MusicSharingDeviceTileEntity) getTileEntity()).getScreen(IamMusicPlayer.proxy.getMinecraft().player);
     }
 
@@ -809,9 +845,23 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         stopPlayMusic();
     }
 
+    protected void removePlayListDetails() {
+        PlayList cul = getCurrentSelectedPlayList();
+        PlayListGuildManeger.instance().removePlayListRequest(cul.getUUID());
+    }
+
     protected void savePlayListDetails() {
         PlayList cul = getCurrentSelectedPlayList();
         PlayListGuildManeger.instance().changePlayListRequest(cul.getUUID(), playlistDetailsNameChangeField.getText(), PlayImage.EMPTY, picturImage, playlistDetailsAnyoneCheckbox.isCheck());
+    }
+
+    protected void drawPlaylistRemove(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
+        drawFontString(matrx, new TranslationTextComponent("msd.playlistremove"), getMonitorStartX() + 2, getMonitorStartY() + 2);
+        if (getCurrentSelectedPlayList() != null) {
+            drawCenterFontString(matrx, new TranslationTextComponent("msd.playlistremove.warn.1"), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + 57);
+            drawCenterFontString(matrx, new TranslationTextComponent("msd.playlistremove.warn.2", getCurrentSelectedPlayList().getName()), getMonitorStartX() + getMonitorXsize() / 2, getMonitorStartY() + 70);
+            RenderUtil.drwPlayImage(matrx, getCurrentSelectedPlayList().getImage(), (getMonitorStartX() + getMonitorXsize() / 2) - 34 / 2, getMonitorStartY() + 18, 34);
+        }
     }
 
     protected void drawPlaylistDetails(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
@@ -1005,6 +1055,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS) && getCurrentSelectedPlayList() != null) {
             CompoundNBT tag = new CompoundNBT();
             tag.putString("PLName", getCurrentSelectedPlayList().getName());
+            tag.putBoolean("Checked", getCurrentSelectedPlayList().isAnyone());
             instruction("PlaylistDetailsSet", tag);
         }
         stopPlayMusic();

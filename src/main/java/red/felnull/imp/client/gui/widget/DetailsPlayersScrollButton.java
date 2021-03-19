@@ -8,6 +8,7 @@ import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.ScrollListButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class DetailsPlayersScrollButton extends ScrollListButton {
         FontRenderer font = minecraft.fontRenderer;
 
         IKSGRenderUtil.drawPlayerFaseByUUID(matrix, uuid, x + 1, y + 1);
-        IKSGRenderUtil.drawString(font, matrix, new StringTextComponent("TEST"), x + 10, y + 1, 0);
+        IKSGRenderUtil.drawString(font, matrix, new StringTextComponent(IKSGPlayerUtil.getPlayerName(uuid)), x + 10, y + 1, 0);
 
     }
 

@@ -33,6 +33,9 @@ public abstract class IMPAbstractEquipmentScreen<T extends Container> extends IM
     }
 
     public boolean isStateOn() {
+        if (getTileEntity() == null)
+            return false;
+
         return getTileEntity().getBlockState().get(IMPAbstractEquipmentBlock.ON);
     }
 
