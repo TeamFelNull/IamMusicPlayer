@@ -7,10 +7,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.handler.MusicRingMessageHandler;
 import red.felnull.imp.client.handler.MusicRingUpdateMessageHandlerr;
 import red.felnull.imp.client.handler.WorldMusicSendByteMessageHandler;
-import red.felnull.imp.handler.PlayListChangeRequestMessageHandler;
-import red.felnull.imp.handler.PlayListCreateRequestMessageHandler;
-import red.felnull.imp.handler.PlayListRemoveRequestMessageHandler;
-import red.felnull.imp.handler.PlayMusicCreateRequestMessageHandler;
+import red.felnull.imp.handler.*;
 
 public class PacketHandler {
     public static final String PROTOCOL_VERSION = "1";
@@ -37,5 +34,7 @@ public class PacketHandler {
         INSTANCE.registerMessage(next(), PlayListChangeRequestMessage.class, PlayListChangeRequestMessage::encodeMessege, PlayListChangeRequestMessage::decodeMessege, PlayListChangeRequestMessageHandler::reversiveMessage);
         //プレイリスト削除リクエスト
         INSTANCE.registerMessage(next(), PlayListRemoveRequestMessage.class, PlayListRemoveRequestMessage::encodeMessege, PlayListRemoveRequestMessage::decodeMessege, PlayListRemoveRequestMessageHandler::reversiveMessage);
+        //音楽変更リクエスト
+        INSTANCE.registerMessage(next(), PlayMusicChangeRequestMessage.class, PlayMusicChangeRequestMessage::encodeMessege, PlayMusicChangeRequestMessage::decodeMessege, PlayMusicChangeRequestMessageHandler::reversiveMessage);
     }
 }

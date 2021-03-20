@@ -136,6 +136,11 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private ImageButton removePlayListButton;
     private StringImageButton playlistRemoveBack;
     private StringImageButton playlistRemoveRemoved;
+    public TextFieldWidget playmusicDetailsNameChangeField;
+    private TextFieldWidget playmusicDetailsAddPlayMusicArtistField;
+    private TextFieldWidget playmusicDetailsAddPlayMusicAlbumField;
+    private TextFieldWidget playmusicDetailsAddPlayMusicYearField;
+    private TextFieldWidget playmusicDetailsAddPlayMusicGenreField;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -206,6 +211,11 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                 playMusic(MusicSourceClientReferencesType.getTypeByLocationType(music.getMusicLocation().getLocationType()), music.getMusicLocation().getIdOrURL());
             } else {
                 selectedPlayMusic = music;
+                this.playmusicDetailsNameChangeField.setText(selectedPlayMusic.getName());
+                this.playmusicDetailsAddPlayMusicArtistField.setText(selectedPlayMusic.getArtist());
+                this.playmusicDetailsAddPlayMusicAlbumField.setText(selectedPlayMusic.getAlbum());
+                this.playmusicDetailsAddPlayMusicGenreField.setText(selectedPlayMusic.getGenre());
+                this.playmusicDetailsAddPlayMusicYearField.setText(selectedPlayMusic.getYear());
                 insMode(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS);
             }
         }, this, this, false));
@@ -497,7 +507,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         this.playlistDetailsBack = addSmartStringButton(new TranslationTextComponent("msd.nosave"), getMonitorXsize() / 2 - 48 - 5, 106, n -> insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
         this.playlistDetailsSave = addSmartStringButton(new TranslationTextComponent("msd.save"), getMonitorXsize() / 2 + 5, 106, n -> {
             updatePlayList();
-            savePlayListDetails();
+            updatePlayMusic();
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS)) {
+                savePlayListDetails();
+            } else if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
+                savePlayMusicDetails();
+            }
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
         });
 
@@ -561,6 +576,113 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             setCurrentSelectedPlayList(PlayList.ALL);
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
         });
+
+
+        String MusicDetailsNameChangeField = "";
+        if (this.playmusicDetailsNameChangeField != null) {
+            MusicDetailsNameChangeField = this.playmusicDetailsNameChangeField.getText();
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
+                if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                    MusicDetailsNameChangeField = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player).getName();
+                }
+            }
+        }
+
+        this.playmusicDetailsNameChangeField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 50, getMonitorStartY() + 20, 137, 12, new StringTextComponent("test")));
+        this.playmusicDetailsNameChangeField.setEnableBackgroundDrawing(false);
+        this.playmusicDetailsNameChangeField.setMaxStringLength(30);
+        this.playmusicDetailsNameChangeField.setTextColor(-1);
+        this.playmusicDetailsNameChangeField.setDisabledTextColour(-1);
+        this.playmusicDetailsNameChangeField.setText(MusicDetailsNameChangeField);
+        this.playmusicDetailsNameChangeField.setResponder(n -> {
+            //      if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST) && image.getImageType() == PlayImage.ImageType.STRING) {
+            //          setImage(PlayImage.ImageType.STRING, n);
+            //      }
+        });
+        IKSGScreenUtil.setVisible(this.playmusicDetailsNameChangeField, false);
+
+
+        String PlaymusicDetailsMusicArtistField = "";
+        if (this.playmusicDetailsAddPlayMusicArtistField != null) {
+            PlaymusicDetailsMusicArtistField = this.playmusicDetailsAddPlayMusicArtistField.getText();
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
+                if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                    PlaymusicDetailsMusicArtistField = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player).getArtist();
+                }
+            }
+        }
+        this.playmusicDetailsAddPlayMusicArtistField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 9, getMonitorStartY() + 29 + 38, 76, 12, new StringTextComponent("test")));
+        this.playmusicDetailsAddPlayMusicArtistField.setEnableBackgroundDrawing(false);
+        this.playmusicDetailsAddPlayMusicArtistField.setMaxStringLength(300);
+        this.playmusicDetailsAddPlayMusicArtistField.setTextColor(-1);
+        this.playmusicDetailsAddPlayMusicArtistField.setDisabledTextColour(-1);
+        this.playmusicDetailsAddPlayMusicArtistField.setText(PlaymusicDetailsMusicArtistField);
+        this.playmusicDetailsAddPlayMusicArtistField.setResponder(n -> {
+        });
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicArtistField, false);
+
+        String PlaymusicDetailsMusicAlbumField = "";
+        if (this.playmusicDetailsAddPlayMusicAlbumField != null) {
+            PlaymusicDetailsMusicAlbumField = this.playmusicDetailsAddPlayMusicAlbumField.getText();
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
+                if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                    PlaymusicDetailsMusicAlbumField = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player).getAlbum();
+                }
+            }
+        }
+        this.playmusicDetailsAddPlayMusicAlbumField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 110, getMonitorStartY() + 29 + 38, 76, 12, new StringTextComponent("test")));
+        this.playmusicDetailsAddPlayMusicAlbumField.setEnableBackgroundDrawing(false);
+        this.playmusicDetailsAddPlayMusicAlbumField.setMaxStringLength(300);
+        this.playmusicDetailsAddPlayMusicAlbumField.setTextColor(-1);
+        this.playmusicDetailsAddPlayMusicAlbumField.setDisabledTextColour(-1);
+        this.playmusicDetailsAddPlayMusicAlbumField.setText(PlaymusicDetailsMusicAlbumField);
+        this.playmusicDetailsAddPlayMusicAlbumField.setResponder(n -> {
+        });
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicAlbumField, false);
+
+        String PlaymusicDetailsMusicYearField = "";
+        if (this.playmusicDetailsAddPlayMusicYearField != null) {
+            PlaymusicDetailsMusicYearField = this.playmusicDetailsAddPlayMusicYearField.getText();
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
+                if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                    PlaymusicDetailsMusicYearField = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player).getYear();
+                }
+            }
+        }
+        this.playmusicDetailsAddPlayMusicYearField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 9, getMonitorStartY() + 55 + 38, 76, 12, new StringTextComponent("test")));
+        this.playmusicDetailsAddPlayMusicYearField.setEnableBackgroundDrawing(false);
+        this.playmusicDetailsAddPlayMusicYearField.setMaxStringLength(300);
+        this.playmusicDetailsAddPlayMusicYearField.setTextColor(-1);
+        this.playmusicDetailsAddPlayMusicYearField.setDisabledTextColour(-1);
+        this.playmusicDetailsAddPlayMusicYearField.setText(PlaymusicDetailsMusicYearField);
+        this.playmusicDetailsAddPlayMusicYearField.setResponder(n -> {
+        });
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicYearField, false);
+
+        String PlaymusicDetailsMusicGenreField = "";
+        if (this.playmusicDetailsAddPlayMusicGenreField != null) {
+            PlaymusicDetailsMusicGenreField = this.playmusicDetailsAddPlayMusicGenreField.getText();
+        } else {
+            if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
+                if (getTileEntity() instanceof MusicSharingDeviceTileEntity) {
+                    PlaymusicDetailsMusicGenreField = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player).getGenre();
+                }
+            }
+        }
+        this.playmusicDetailsAddPlayMusicGenreField = this.addWidgetByIKSG(new TextFieldWidget(this.font, getMonitorStartX() + 110, getMonitorStartY() + 55 + 38, 76, 12, new StringTextComponent("test")));
+        this.playmusicDetailsAddPlayMusicGenreField.setEnableBackgroundDrawing(false);
+        this.playmusicDetailsAddPlayMusicGenreField.setMaxStringLength(300);
+        this.playmusicDetailsAddPlayMusicGenreField.setTextColor(-1);
+        this.playmusicDetailsAddPlayMusicGenreField.setDisabledTextColour(-1);
+        this.playmusicDetailsAddPlayMusicGenreField.setText(PlaymusicDetailsMusicGenreField);
+        this.playmusicDetailsAddPlayMusicGenreField.setResponder(n -> {
+        });
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicGenreField, false);
+
 
         if (!initFrist) {
             if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
@@ -695,8 +817,8 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.addPlayMusicYoutubeSearchFileListButton, isMonitor(MusicSharingDeviceTileEntity.Screen.YOUTUBE_SEARCH));
         IKSGScreenUtil.setVisible(this.playlistDetails, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST) && getCurrentSelectedPlayList() != PlayList.ALL);
-        IKSGScreenUtil.setVisible(this.playlistDetailsBack, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
-        IKSGScreenUtil.setVisible(this.playlistDetailsSave, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsBack, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS, MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+        IKSGScreenUtil.setVisible(this.playlistDetailsSave, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS, MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsNameChangeField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsAnyoneCheckbox, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistDetailsPlayerslListbar, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
@@ -704,6 +826,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.removePlayListButton, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS));
         IKSGScreenUtil.setVisible(this.playlistRemoveBack, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_REMOVE));
         IKSGScreenUtil.setVisible(this.playlistRemoveRemoved, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_REMOVE));
+        IKSGScreenUtil.setVisible(this.playmusicDetailsNameChangeField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicArtistField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicAlbumField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicYearField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+        IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicGenreField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+
     }
 
     private void fieldTick() {
@@ -837,11 +965,9 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
     @Override
     public void instructionReturn(String name, CompoundNBT tag) {
-
         if (!isFristMLUpdate) {
             selectedPlayMusic = ((MusicSharingDeviceTileEntity) getTileEntity()).getLastPlayMusic(getMinecraft().player);
         }
-
         super.instructionReturn(name, tag);
         if (name.equals("CanJoinPlayListUpdate")) {
             jonPlaylists.clear();
@@ -865,6 +991,10 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         PlayListGuildManeger.instance().removePlayListRequest(cul.getUUID());
     }
 
+    protected void savePlayMusicDetails() {
+        PlayMusic music = selectedPlayMusic;
+        PlayMusicManeger.instance().changePlayMusicRequest(music.getUUID(), playmusicDetailsNameChangeField.getText(), PlayImage.EMPTY, picturImage, playmusicDetailsAddPlayMusicArtistField.getText(), playmusicDetailsAddPlayMusicAlbumField.getText(), playmusicDetailsAddPlayMusicYearField.getText(), playmusicDetailsAddPlayMusicGenreField.getText());
+    }
 
     protected void savePlayListDetails() {
         PlayList cul = getCurrentSelectedPlayList();
@@ -881,6 +1011,10 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         drawFontString(matrx, new TranslationTextComponent("msd.playmusicdetails"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         drawMiniFontString(matrx, new TranslationTextComponent("msd.image"), getMonitorStartX() + 6, getMonitorStartY() + 13);
         drawMiniFontString(matrx, new TranslationTextComponent("msd.name"), getMonitorStartX() + 47, getMonitorStartY() + 13);
+        drawFontString(matrx, new TranslationTextComponent("msd.artist"), getMonitorStartX() + 6, getMonitorStartY() + 17 + 38);
+        drawFontString(matrx, new TranslationTextComponent("msd.album"), getMonitorStartX() + 107, getMonitorStartY() + 17 + 38);
+        drawFontString(matrx, new TranslationTextComponent("msd.year"), getMonitorStartX() + 6, getMonitorStartY() + 43 + 38);
+        drawFontString(matrx, new TranslationTextComponent("msd.genre"), getMonitorStartX() + 107, getMonitorStartY() + 43 + 38);
         if (selectedPlayMusic != null) {
             RenderUtil.drwPlayImage(matrx, selectedPlayMusic.getImage(), getMonitorStartX() + 7, getMonitorStartY() + 18, 34);
         }

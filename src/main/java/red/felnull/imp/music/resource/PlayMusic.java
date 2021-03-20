@@ -132,6 +132,30 @@ public class PlayMusic implements INBTReadWriter {
         WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playmusics").put(music.getUUID(), music.write(new CompoundNBT()));
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAlbum(String album) {
+        this.album = album;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
+    public void setImage(PlayImage image) {
+        this.image = image;
+    }
+
     public static void addPlayMusicToPlayList(PlayList plst, PlayMusic pmusci) {
         IamMusicPlayer.LOGGER.info(pmusci.getCreatePlayerName() + " Add PlayMusic(" + pmusci.getName() + ") to PlayList(" + plst.getName() + ")");
         String listuuid = plst.getUUID();
@@ -164,6 +188,17 @@ public class PlayMusic implements INBTReadWriter {
         return list;
     }
 
+    public static void setPlayMusic(PlayMusic plst) {
+        removePlayMusic(plst, false);
+        addPlayMusic(plst);
+    }
+
+    public static void removePlayMusic(PlayMusic plst, boolean rejoin) {
+        if (rejoin) {
+
+        }
+        WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playmusics").remove(plst.getUUID());
+    }
     public boolean equals(Object obj) {
 
         if (obj == this)

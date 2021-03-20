@@ -179,6 +179,22 @@ public class PlayList implements INBTReadWriter {
         return new PlayList(uuid, pltag.getCompound(uuid));
     }
 
+    public static PlayList getPlayListByMusic(PlayMusic music) {
+        List<PlayList> lists = getAllPlayList();
+        for (PlayList list : lists) {
+            if (PlayMusic.getIncludedPlayMusics(list).contains(music))
+                return list;
+        }
+        return null;
+    }
+
+    public static List<PlayList> getAllPlayList() {
+        List<PlayList> list = new ArrayList<>();
+        CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("playlists");
+        pltag.keySet().forEach(n -> list.add(getPlayListByUUID(n)));
+        return list;
+    }
+
     public static List<PlayList> getJoinedPlayLists(ServerPlayerEntity player) {
         List<PlayList> list = new ArrayList<>();
         CompoundNBT pltag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYLIST_DATA).getCompound("players");

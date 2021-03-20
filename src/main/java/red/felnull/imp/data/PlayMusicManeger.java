@@ -13,6 +13,7 @@ import red.felnull.imp.music.resource.PlayList;
 import red.felnull.imp.music.resource.PlayLocation;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.packet.PacketHandler;
+import red.felnull.imp.packet.PlayMusicChangeRequestMessage;
 import red.felnull.imp.packet.PlayMusicCreateRequestMessage;
 import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtils;
@@ -51,6 +52,34 @@ public class PlayMusicManeger {
         PlayListCreateRequestThread plcr = new PlayListCreateRequestThread(name, playList, image, imageData, location, uploadtype, pathOrURL, artist, album, year, genre);
         plcr.start();
     }
+
+    @OnlyIn(Dist.CLIENT)
+    public void changePlayMusicRequest(String uuid, String name, PlayImage image, byte[] imageData, String artist, String album, String year, String genre) {
+        if (image.getImageType() == PlayImage.ImageType.IMGAE)
+            DataSendReceiverManager.instance().sendToServer(IMPWorldData.IMAGE, image.getName(), imageData);
+
+        PacketHandler.INSTANCE.sendToServer(new PlayMusicChangeRequestMessage(uuid, name, image, artist, album, year, genre));
+    }
+
+    public void changePlayMusic(String uuid, String name, PlayImage image, String artist, String album, String year, String genre) {
+        PlayMusic music = PlayMusic.getPlayMusicByUUID(uuid);
+        if (music == null)
+            return;
+
+        if (!name.isEmpty())
+            music.setName(name);
+
+        music.setArtist(artist);
+        music.setGenre(genre);
+        music.setAlbum(album);
+        music.setYear(year);
+
+        if (!PlayImage.EMPTY.equals(image))
+            music.setImage(image);
+
+        PlayMusic.setPlayMusic(music);
+    }
+
 
     public class PlayListCreateRequestThread extends Thread {
         private final String name;
