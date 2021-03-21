@@ -141,6 +141,10 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
     private TextFieldWidget playmusicDetailsAddPlayMusicAlbumField;
     private TextFieldWidget playmusicDetailsAddPlayMusicYearField;
     private TextFieldWidget playmusicDetailsAddPlayMusicGenreField;
+    private StringImageButton playListSortName;
+    private StringImageButton playListSortTime;
+    private StringImageButton playListSortLength;
+    private StringImageButton playListSortPlayer;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceContainer screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
@@ -691,6 +695,45 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         });
         IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicGenreField, false);
 
+        this.playListSortName = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
+            setSorts(Sort.NAME);
+            updatePlayMusic();
+        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.name"), smart_fontStyle)));
+        this.playListSortName.setSizeAdjustment(true);
+        this.playListSortName.setShadwString(false);
+        this.playListSortName.setStringColor(0);
+        this.playListSortName.setScale(0.5f);
+        IKSGScreenUtil.setVisible(this.playListSortName, false);
+
+        this.playListSortTime = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30 + 20, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
+            setSorts(Sort.TIME);
+            updatePlayMusic();
+        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.time"), smart_fontStyle)));
+        this.playListSortTime.setSizeAdjustment(true);
+        this.playListSortTime.setShadwString(false);
+        this.playListSortTime.setStringColor(0);
+        this.playListSortTime.setScale(0.5f);
+        IKSGScreenUtil.setVisible(this.playListSortTime, false);
+
+        this.playListSortLength = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30 + 20 * 2, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
+            setSorts(Sort.LENGTH);
+            updatePlayMusic();
+        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.length"), smart_fontStyle)));
+        this.playListSortLength.setSizeAdjustment(true);
+        this.playListSortLength.setShadwString(false);
+        this.playListSortLength.setStringColor(0);
+        this.playListSortLength.setScale(0.5f);
+        IKSGScreenUtil.setVisible(this.playListSortLength, false);
+
+        this.playListSortPlayer = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30 + 20 * 3, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
+            setSorts(Sort.PLAYER);
+            updatePlayMusic();
+        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.player"), smart_fontStyle)));
+        this.playListSortPlayer.setSizeAdjustment(true);
+        this.playListSortPlayer.setShadwString(false);
+        this.playListSortPlayer.setStringColor(0);
+        this.playListSortPlayer.setScale(0.5f);
+        IKSGScreenUtil.setVisible(this.playListSortPlayer, false);
 
         if (!initFrist) {
             if (isMonitor(MusicSharingDeviceTileEntity.Screen.CREATE_PLAYLIST, MusicSharingDeviceTileEntity.Screen.ADD_PLAYMUSIC_1)) {
@@ -842,6 +885,10 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicAlbumField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
         IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicYearField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
         IKSGScreenUtil.setVisible(this.playmusicDetailsAddPlayMusicGenreField, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS));
+        IKSGScreenUtil.setVisible(this.playListSortName, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
+        IKSGScreenUtil.setVisible(this.playListSortTime, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
+        IKSGScreenUtil.setVisible(this.playListSortLength, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
+        IKSGScreenUtil.setVisible(this.playListSortPlayer, isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST));
 
         if (isMonitor(MusicSharingDeviceTileEntity.Screen.PLAYLIST_DETAILS, MusicSharingDeviceTileEntity.Screen.PLAYMUSIC_DETAILS)) {
             boolean cw = isCurrentPlayListOwner();
@@ -1345,6 +1392,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             musicPlayer = null;
         }
     }
+
 
     public enum MusicLoadResult {
         AVAILABLE("available"),

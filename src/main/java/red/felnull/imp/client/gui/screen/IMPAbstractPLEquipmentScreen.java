@@ -10,7 +10,10 @@ import red.felnull.imp.tileentity.IMPAbstractPAPLEquipmentTileEntity;
 import red.felnull.otyacraftengine.util.ClockTimer;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends IMPAbstractMonitorEquipmentScreen<T> implements IMusicPlayListScreen {
 
@@ -19,10 +22,12 @@ public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends 
     private PlayList currentPlayList;
     private ClockTimer updateTimer;
     public boolean isFristMLUpdate;
+    private Sort sorts;
 
     public IMPAbstractPLEquipmentScreen(T screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
         super(screenContainer, playerInventory, titleIn);
         currentPlayList = PlayList.ALL;
+        sorts = Sort.NAME;
     }
 
     @Override
@@ -152,10 +157,41 @@ public abstract class IMPAbstractPLEquipmentScreen<T extends Container> extends 
             if (currentPlayList.getUUID().equals(tag.getString("uuid"))) {
                 CompoundNBT taga = tag.getCompound("list");
                 currentPlayMusics.clear();
+                List<PlayMusic> addMusic = new ArrayList<>();
                 for (String pmtagst : taga.keySet()) {
-                    currentPlayMusics.add(new PlayMusic(pmtagst, taga.getCompound(pmtagst)));
+                    addMusic.add(new PlayMusic(pmtagst, taga.getCompound(pmtagst)));
                 }
+                currentPlayMusics.addAll(sorts.listsf.apply(addMusic));
             }
+        }
+    }
+
+    public void setSorts(Sort sorts) {
+        this.sorts = sorts;
+    }
+
+    public enum Sort {
+        NAME(n -> {
+            return n.stream().sorted(Comparator.comparing(PlayMusic::getName)).collect(Collectors.toList());
+        }),
+        TIME(n -> {
+            return n.stream().sorted(Comparator.comparing(PlayMusic::getTimeStamp)).collect(Collectors.toList());
+        }),
+        LENGTH(n -> {
+            return n.stream().sorted(Comparator.comparing(PlayMusic::getLengthInMilliseconds)).collect(Collectors.toList());
+        }),
+        PLAYER(n -> {
+            return n.stream().sorted(Comparator.comparing(PlayMusic::getCreatePlayerName)).collect(Collectors.toList());
+        });
+
+        private final Function<List<PlayMusic>, List<PlayMusic>> listsf;
+
+        Sort(Function<List<PlayMusic>, List<PlayMusic>> listsf) {
+            this.listsf = listsf;
+        }
+
+        public Function<List<PlayMusic>, List<PlayMusic>> getListsf() {
+            return listsf;
         }
     }
 }
