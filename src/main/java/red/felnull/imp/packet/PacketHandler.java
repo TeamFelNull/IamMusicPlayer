@@ -36,5 +36,7 @@ public class PacketHandler {
         INSTANCE.registerMessage(next(), PlayListRemoveRequestMessage.class, PlayListRemoveRequestMessage::encodeMessege, PlayListRemoveRequestMessage::decodeMessege, PlayListRemoveRequestMessageHandler::reversiveMessage);
         //音楽変更リクエスト
         INSTANCE.registerMessage(next(), PlayMusicChangeRequestMessage.class, PlayMusicChangeRequestMessage::encodeMessege, PlayMusicChangeRequestMessage::decodeMessege, PlayMusicChangeRequestMessageHandler::reversiveMessage);
+        //音楽削除リクエスト
+        INSTANCE.registerMessage(next(), PlayMusicRemoveRequestMessage.class, PlayMusicRemoveRequestMessage::encodeMessege, PlayMusicRemoveRequestMessage::decodeMessege, PlayMusicRemoveRequestMessageHandler::reversiveMessage);
     }
 }

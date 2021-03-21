@@ -15,6 +15,7 @@ import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.imp.packet.PacketHandler;
 import red.felnull.imp.packet.PlayMusicChangeRequestMessage;
 import red.felnull.imp.packet.PlayMusicCreateRequestMessage;
+import red.felnull.imp.packet.PlayMusicRemoveRequestMessage;
 import red.felnull.imp.util.MusicUtils;
 import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
@@ -54,11 +55,21 @@ public class PlayMusicManeger {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public void removePlayMusicRequest(String uuid) {
+        PacketHandler.INSTANCE.sendToServer(new PlayMusicRemoveRequestMessage(uuid));
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public void changePlayMusicRequest(String uuid, String name, PlayImage image, byte[] imageData, String artist, String album, String year, String genre) {
         if (image.getImageType() == PlayImage.ImageType.IMGAE)
             DataSendReceiverManager.instance().sendToServer(IMPWorldData.IMAGE, image.getName(), imageData);
 
         PacketHandler.INSTANCE.sendToServer(new PlayMusicChangeRequestMessage(uuid, name, image, artist, album, year, genre));
+    }
+
+    public void removePlayMusic(String uuid) {
+        PlayMusic list = PlayMusic.getPlayMusicByUUID(uuid);
+        PlayMusic.removePlayMusic(list, true);
     }
 
     public void changePlayMusic(String uuid, String name, PlayImage image, String artist, String album, String year, String genre) {

@@ -195,7 +195,16 @@ public class PlayMusic implements INBTReadWriter {
 
     public static void removePlayMusic(PlayMusic plst, boolean rejoin) {
         if (rejoin) {
-
+            CompoundNBT plutag = WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playlists");
+            List<String> stars = new ArrayList<>(plutag.keySet());
+            stars.forEach(n -> {
+                CompoundNBT tag = plutag.getCompound(n).getCompound("playmusic");
+                for (int i = 0; i < tag.keySet().size(); ++i) {
+                    if (tag.getString(String.valueOf(i)).equals(plst.getUUID())) {
+                        tag.remove(String.valueOf(i));
+                    }
+                }
+            });
         }
         WorldDataManager.instance().getWorldData(IMPWorldData.PLAYMUSIC_DATA).getCompound("playmusics").remove(plst.getUUID());
     }

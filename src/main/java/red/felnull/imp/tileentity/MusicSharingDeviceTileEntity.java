@@ -206,7 +206,8 @@ public class MusicSharingDeviceTileEntity extends IMPAbstractPAPLEquipmentTileEn
         YOUTUBE_SEARCH("youtube_search"),
         PLAYLIST_DETAILS("playlist_details"),
         PLAYLIST_REMOVE("playlist_remove"),
-        PLAYMUSIC_DETAILS("playmusic_details");
+        PLAYMUSIC_DETAILS("playmusic_details"),
+        PLAYMUSIC_REMOVE("playmusic_remove");
         private final String name;
 
         private Screen(String name) {
