@@ -1,10 +1,10 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "iammusicplayer:block/music_sharing_device_1",
-		"1": "iammusicplayer:block/music_sharing_device_2",
+		"0": "iammusicplayer:block/music_sharing_device/music_sharing_device_1",
+		"1": "iammusicplayer:block/music_sharing_device/music_sharing_device_2",
 		"2": "iammusicplayer:block/power_button_on",
-		"particle": "iammusicplayer:block/music_sharing_device_1"
+		"particle": "iammusicplayer:block/music_sharing_device/music_sharing_device_1"
 	},
 	"elements": [
 		{

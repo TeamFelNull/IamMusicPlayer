@@ -18,6 +18,9 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<MusicSharingDeviceBlockEntity> {
     private static final ResourceLocation MSD_PWBTN_ON = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_button_on");
     private static final ResourceLocation MSD_PWBTN_OFF = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_button_off");
+    private static final ResourceLocation MSD_PWMS_ON = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_on");
+    private static final ResourceLocation MSD_PWMS_OFF = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_off");
+    private static final ResourceLocation MSD_MONITOR = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/monitor");
 
     public MusicSharingDeviceRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -36,6 +39,11 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         BakedModel modelPwBtn = IKSGRenderUtil.getBakedModel(power ? MSD_PWBTN_ON : MSD_PWBTN_OFF);
+        BakedModel modelPwMS = IKSGRenderUtil.getBakedModel(power ? MSD_PWMS_ON : MSD_PWMS_OFF);
+        BakedModel modelMonitor = IKSGRenderUtil.getBakedModel(MSD_MONITOR);
+
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelPwBtn, combinedLight, combinedOverlay);
+        IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelPwMS, combinedLight, combinedOverlay);
+        IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelMonitor, combinedLight, combinedOverlay);
     }
 }
