@@ -10,7 +10,7 @@ import red.felnull.imp.block.IMPBlocks;
 import red.felnull.otyacraftengine.util.IKSGBlockEntityUtil;
 
 public class IMPBlockEntitys {
-    public static final DeferredRegister<BlockEntityType<?>> ENTITY_TYPES = DeferredRegister.create(IamMusicPlayer.MODID, Registry.BLOCK_ENTITY_TYPE_REGISTRY);
+    private static final DeferredRegister<BlockEntityType<?>> ENTITY_TYPES = DeferredRegister.create(IamMusicPlayer.MODID, Registry.BLOCK_ENTITY_TYPE_REGISTRY);
     public static final BlockEntityType<MusicSharingDeviceBlockEntity> MUSIC_SHARING_DEVICE = register("music_sharing_device", MusicSharingDeviceBlockEntity::new, IMPBlocks.MUSIC_SHARING_DEVICE);
 
     private static <T extends BlockEntity> BlockEntityType<T> register(String name, IKSGBlockEntityUtil.IKSGBlockEntitySupplier<? extends BlockEntity> blockEntitySupplier, Block... blocks) {

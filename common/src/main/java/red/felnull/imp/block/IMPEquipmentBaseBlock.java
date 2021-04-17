@@ -8,14 +8,17 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import red.felnull.imp.block.propertie.IMPBlockStateProperties;
 
 public abstract class IMPEquipmentBaseBlock extends IMPBaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty ON = IMPBlockStateProperties.ON;
 
     public IMPEquipmentBaseBlock(Properties properties) {
-        super(properties);
-        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH));
+        super(properties.lightLevel((state) -> state.getValue(ON) ? 13 : 0));
+        this.registerDefaultState(this.defaultBlockState().setValue(FACING, Direction.NORTH).setValue(ON, false));
     }
 
     @Override
@@ -36,7 +39,7 @@ public abstract class IMPEquipmentBaseBlock extends IMPBaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING);
+        builder.add(FACING, ON);
     }
 
 }

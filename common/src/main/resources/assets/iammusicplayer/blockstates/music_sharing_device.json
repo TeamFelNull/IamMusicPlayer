@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "iammusicplayer:block/music_sharing_device/base",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "iammusicplayer:block/music_sharing_device/base"
+    },
+    "facing=south": {
+      "model": "iammusicplayer:block/music_sharing_device/base",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "iammusicplayer:block/music_sharing_device/base",
+      "y": 270
+    }
+  }
+}
