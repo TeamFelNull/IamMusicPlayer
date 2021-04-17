@@ -5,13 +5,8 @@ The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
 # Using Library
 
-[JLayer](http://www.javazoom.net/javalayer/javalayer.html) ([Custom](https://github.com/TeamFelnull/JLayerIMPCustom)) - mp3 playback
+[LavaPlayer](https://github.com/sedmelluq/lavaplayer) - music playback
 
-[Mp3agic](https://github.com/mpatric/mp3agic) - Read ID3 tag of mp3
-
-[Jave2](https://github.com/a-schild/jave2) - Sound File Encode
-
-etc...
 
 # Download
 https://www.curseforge.com/minecraft/mc-mods/iammusicplayer

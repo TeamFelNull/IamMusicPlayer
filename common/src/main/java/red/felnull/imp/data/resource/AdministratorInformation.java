@@ -33,6 +33,10 @@ public class AdministratorInformation implements ITAGSerializable {
         NbtUtils.readAdminData(tag, "AdminData", adminData);
     }
 
+    public Map<UUID, AuthorityType> getAdminData() {
+        return adminData;
+    }
+
     public static enum AuthorityType {
         OWNER("owner", true, true, true),
         ADMINISTRATOR("administrator", false, true, true),

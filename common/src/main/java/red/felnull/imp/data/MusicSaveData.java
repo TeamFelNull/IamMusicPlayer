@@ -46,21 +46,11 @@ public class MusicSaveData extends IkisugiSaveData {
         return tag;
     }
 
-    private Map<UUID, Music> getMusics() {
+    public Map<UUID, Music> getMusics() {
         return MUSICS;
     }
 
-    private Map<UUID, MusicPlayList> getMusicPlaylists() {
+    public Map<UUID, MusicPlayList> getMusicPlaylists() {
         return MUSIC_PLAYLISTS;
-    }
-
-    public void addMusic(Music music) {
-        setDirty();
-        getMusics().put(music.getUUID(), music);
-    }
-
-    public void addPlayList(MusicPlayList playList) {
-        setDirty();
-        getMusicPlaylists().put(playList.getUUID(), playList);
     }
 }
