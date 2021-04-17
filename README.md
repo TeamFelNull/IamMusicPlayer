@@ -1,7 +1,7 @@
 # IamMusicPlayer (IMP)
 The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
-<img alt="GitHub" src="https://img.shields.io/github/license/teamfelnull/iammusicplayer?style=for-the-badge"> <img alt="Minecraft 1.16.3" src="https://img.shields.io/badge/Minecraft-1.16.3-green.svg?style=for-the-badge"> <img alt="CurseForge" src="https://cf.way2muchnoise.eu/versions/386380.svg">
+<img alt="GitHub" src="https://img.shields.io/github/license/teamfelnull/iammusicplayer?style=for-the-badge"> <img alt="Minecraft 21w14a" src="https://img.shields.io/badge/Minecraft-21w14a-green.svg?style=for-the-badge"> <img alt="CurseForge" src="https://cf.way2muchnoise.eu/versions/386380.svg">
 
 # Using Library
 

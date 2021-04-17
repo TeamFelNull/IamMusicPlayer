@@ -1,6 +1,0 @@
-{
-	"parent": "iammusicplayer:block/boombox_on",
-	"textures": {
-		"1": "iammusicplayer:block/boombox_off"
-	}
-}

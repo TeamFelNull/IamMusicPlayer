@@ -1,0 +1,17 @@
+{
+  "_comment.i": "Item",
+  "item.iammusicplayer.iron_bowl": "鉄のボウル",
+  "item.iammusicplayer.iron_stick": "鉄の棒",
+  "item.iammusicplayer.receiver": "受信部",
+  "item.iammusicplayer.speaker": "スピーカー",
+  "item.iammusicplayer.acoustic_amplifier": "音響アンプ",
+  "item.iammusicplayer.monitor": "モニター",
+  "item.iammusicplayer.keyboard": "キーボード",
+  "item.iammusicplayer.computer": "コンピューター",
+  "item.iammusicplayer.cassette_player": "カセットプレーヤー",
+  "item.iammusicplayer.magnetic_tape": "磁気テープ",
+  "_comment.b": "Block",
+  "_comment.c": "CreativeTab",
+  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
+  "_comment.la": "Last"
+}

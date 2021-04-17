@@ -1,6 +1,0 @@
-{
-	"parent": "iammusicplayer:block/cassette_deck_on",
-	"textures": {
-		"2": "iammusicplayer:block/power_button_off"
-	}
-}

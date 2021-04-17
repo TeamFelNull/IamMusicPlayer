@@ -1,0 +1,90 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "5.0.0"
+}
+
+configurations {
+    shadowCommon
+}
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+minecraft {
+    accessWidener = file("src/main/resources/iammusicplayer.accesswidener")
+}
+repositories {
+    maven { url "https://maven.terraformersmc.com/releases/" }
+}
+dependencies {
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modApi "me.shedaniel:architectury-fabric:${rootProject.architectury_version}"
+    modApi "com.terraformersmc:modmenu:${modmenu_version}"
+    modApi "de.javagl:obj:0.3.0"
+    implementation files("libs/OtyacraftEngine-${rootProject.oe_version}-dev-shadow.jar")
+
+    modApi include("me.shedaniel.cloth:cloth-config:${cloth_config_version}:fabric") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    implementation(project(path: ":common")) {
+        transitive = false
+    }
+    developmentFabric(project(path: ":common")) {
+        transitive = false
+    }
+    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) {
+        transitive = false
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowCommon]
+    classifier "dev-shadow"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    classifier "fabric"
+}
+
+jar {
+    classifier "dev"
+}
+
+java {
+    withSourcesJar()
+}
+
+sourcesJar {
+    def commonSources = project(":common").remapSourcesJar
+    dependsOn commonSources
+    from zipTree(commonSources.output)
+}
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            artifactId = rootProject.archives_base_name + "-" + project.name
+            artifact(remapJar) {
+                classifier null
+            }
+            artifact(sourcesJar) {
+                builtBy remapSourcesJar
+            }
+        }
+    }
+
+    repositories {
+    }
+}

@@ -1,5 +1,0 @@
-{
-  "parent": "iammusicplayer:item/parabolic_antenna_base",
-  "loader": "forge:obj",
-  "model": "iammusicplayer:models/item/katyou_antenna.obj"
-}

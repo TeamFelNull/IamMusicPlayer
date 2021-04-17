@@ -1,0 +1,17 @@
+{
+  "_comment.i": "Item",
+  "item.iammusicplayer.iron_bowl": "Cuenco de hierro",
+  "item.iammusicplayer.iron_stick": "Palo de hierro",
+  "item.iammusicplayer.receiver": "Receptor",
+  "item.iammusicplayer.speaker": "Altavoz",
+  "item.iammusicplayer.acoustic_amplifier": "Amplificador acústico",
+  "item.iammusicplayer.monitor": "Monitor",
+  "item.iammusicplayer.keyboard": "Teclado",
+  "item.iammusicplayer.computer": "Gabinete",
+  "item.iammusicplayer.cassette_player": "Reproductor de casetes",
+  "item.iammusicplayer.magnetic_tape": "Cinta magnética",
+  "_comment.b": "Block",
+  "_comment.c": "CreativeTab",
+  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
+  "_comment.la": "Last"
+}
