@@ -33,12 +33,12 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
         BlockState state = blockEntity.getBlockState();
         poseStack.pushPose();
         IKSGRenderUtil.matrixRotateDirection(poseStack, state.getValue(BlockStateProperties.HORIZONTAL_FACING).getClockWise());
-        renderMSD(poseStack, multiBufferSource, i, j, state.getValue(IMPEquipmentBaseBlock.ON));
+        renderMSD(poseStack, multiBufferSource, i, j, state.getValue(IMPEquipmentBaseBlock.ON), 1f, 1f);
         poseStack.popPose();
     }
 
 
-    public static void renderMSD(PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay, boolean power) {
+    public static void renderMSD(PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay, boolean power, float mouseX, float mouseY) {
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         BakedModel modelPwBtn = IKSGRenderUtil.getBakedModel(power ? MSD_PWBTN_ON : MSD_PWBTN_OFF);

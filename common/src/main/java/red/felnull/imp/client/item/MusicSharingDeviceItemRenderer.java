@@ -21,6 +21,6 @@ public class MusicSharingDeviceItemRenderer implements ICustomBEWLRenderer {
         BakedModel model = IKSGRenderUtil.getBakedModel(MSD_MODEL);
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, model, i, i1);
-        MusicSharingDeviceRenderer.renderMSD(poseStack, multiBufferSource, i, i1, false);
+        MusicSharingDeviceRenderer.renderMSD(poseStack, multiBufferSource, i, i1, false, 0f, 0f);
     }
 }
