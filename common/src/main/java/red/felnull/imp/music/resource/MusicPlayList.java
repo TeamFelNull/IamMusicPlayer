@@ -6,6 +6,7 @@ import red.felnull.imp.data.resource.ImageLocation;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 import red.felnull.otyacraftengine.util.IKSGNbtUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public class MusicPlayList implements ITAGSerializable {
     private MusicPlayListDetailed detailed;
     private ImageLocation image;
     private AdministratorInformation administrator;
-    private List<UUID> musicList;
+    private List<UUID> musicList = new ArrayList<>();
 
     public MusicPlayList(CompoundTag tag) {
         load(tag);

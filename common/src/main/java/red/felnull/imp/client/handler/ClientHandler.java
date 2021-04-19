@@ -11,5 +11,8 @@ public class ClientHandler {
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_on"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_off"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/monitor"));
+        e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mousepad"));
+        e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mouse_hontai"));
+        e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mouse_wheel"));
     }
 }

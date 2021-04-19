@@ -21,6 +21,8 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
     private static final ResourceLocation MSD_PWMS_ON = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_on");
     private static final ResourceLocation MSD_PWMS_OFF = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_off");
     private static final ResourceLocation MSD_MONITOR = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/monitor");
+    private static final ResourceLocation MSD_MOUSEPAD = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mousepad");
+    private static final ResourceLocation MSD_MOUSE = new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mouse");
 
     public MusicSharingDeviceRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -36,17 +38,23 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
     }
 
 
-
-
     public static void renderMSD(PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay, boolean power) {
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         BakedModel modelPwBtn = IKSGRenderUtil.getBakedModel(power ? MSD_PWBTN_ON : MSD_PWBTN_OFF);
         BakedModel modelPwMS = IKSGRenderUtil.getBakedModel(power ? MSD_PWMS_ON : MSD_PWMS_OFF);
         BakedModel modelMonitor = IKSGRenderUtil.getBakedModel(MSD_MONITOR);
+        BakedModel modelMousepad = IKSGRenderUtil.getBakedModel(MSD_MOUSEPAD);
+        BakedModel modelMouse = IKSGRenderUtil.getBakedModel(MSD_MOUSE);
 
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelPwBtn, combinedLight, combinedOverlay);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelPwMS, combinedLight, combinedOverlay);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelMonitor, combinedLight, combinedOverlay);
+        IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelMousepad, combinedLight, combinedOverlay);
+
+        poseStack.pushPose();
+        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 2f, 0.1f, 2f);
+        IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelMouse, combinedLight, combinedOverlay);
+        poseStack.popPose();
     }
 }

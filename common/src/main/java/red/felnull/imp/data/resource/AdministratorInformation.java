@@ -4,12 +4,13 @@ import net.minecraft.nbt.CompoundTag;
 import red.felnull.imp.util.NbtUtils;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class AdministratorInformation implements ITAGSerializable {
     private boolean publiced;
-    private Map<UUID, AuthorityType> adminData;
+    private Map<UUID, AuthorityType> adminData = new HashMap<>();
 
     public AdministratorInformation(CompoundTag tag) {
         this.load(tag);

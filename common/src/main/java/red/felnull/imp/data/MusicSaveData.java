@@ -6,8 +6,6 @@ import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.imp.util.NbtUtils;
 import red.felnull.otyacraftengine.data.IkisugiSaveData;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class MusicSaveData extends IkisugiSaveData {
@@ -23,11 +21,6 @@ public class MusicSaveData extends IkisugiSaveData {
         List<MusicPlayList> playLists = new ArrayList<>();
         NbtUtils.readMusicPlayLists(tag, "PlayList", playLists);
         playLists.forEach(n -> MUSIC_PLAYLISTS.put(n.getUUID(), n));
-    }
-
-    @Override
-    public Path getSavePath() {
-        return Paths.get("musicdata.dat");
     }
 
     @Override

@@ -1,0 +1,4 @@
+{
+	"loader": "forge:obj",
+	"model": "iammusicplayer:models/block/music_sharing_device/mousepad.obj"
+}

@@ -37,6 +37,7 @@ public class NbtUtils {
 
     public static void readAdminData(CompoundTag tag, String name, Map<UUID, AdministratorInformation.AuthorityType> adminData) {
         IKSGNbtUtil.readMap(tag, name, adminData, net.minecraft.nbt.NbtUtils::loadUUID, n -> AdministratorInformation.AuthorityType.getAuthorityTypeByName(((CompoundTag) n).getString("at")), 10);
+
     }
 
 }
