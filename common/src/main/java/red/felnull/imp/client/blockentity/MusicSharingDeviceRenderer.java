@@ -35,6 +35,9 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
         poseStack.popPose();
     }
 
+
+
+
     public static void renderMSD(PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLight, int combinedOverlay, boolean power) {
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 

@@ -10,5 +10,6 @@ public class ClientHandler {
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_button_off"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_on"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/power_miniscreen_off"));
+        e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/monitor"));
     }
 }
