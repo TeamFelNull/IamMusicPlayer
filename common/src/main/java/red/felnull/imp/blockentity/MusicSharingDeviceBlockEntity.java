@@ -2,9 +2,11 @@ package red.felnull.imp.blockentity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import red.felnull.imp.inventory.MusicSharingDeviceMenu;
 import red.felnull.otyacraftengine.blockentity.container.IkisugiItemContainerBlockEntity;
 
 public class MusicSharingDeviceBlockEntity extends IkisugiItemContainerBlockEntity {
@@ -15,16 +17,16 @@ public class MusicSharingDeviceBlockEntity extends IkisugiItemContainerBlockEnti
 
     @Override
     protected Component getDefaultName() {
-        return null;
+        return new TranslatableComponent("container.music_sharing_device");
     }
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-        return null;
+        return new MusicSharingDeviceMenu(i, getBlockPos(), this, inventory);
     }
 
     @Override
     public int getContainerSize() {
-        return 0;
+        return 1;
     }
 }
