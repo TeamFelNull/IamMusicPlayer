@@ -10,7 +10,8 @@ public class AntennaSlot extends Slot {
         super(container, index, xPosition, yPosition);
     }
 
-    public boolean isItemValid(ItemStack stack) {
+    @Override
+    public boolean mayPlace(ItemStack stack) {
         return stack.getItem() == Items.APPLE;
     }
 }

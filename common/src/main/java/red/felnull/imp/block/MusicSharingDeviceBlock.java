@@ -1,6 +1,5 @@
 package red.felnull.imp.block;
 
-import me.shedaniel.architectury.registry.MenuRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import red.felnull.imp.block.shape.MusicSharingDeviceShape;
 import red.felnull.imp.blockentity.IMPBlockEntitys;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
+import red.felnull.otyacraftengine.util.IKSGMenuUtil;
 
 public class MusicSharingDeviceBlock extends IMPEquipmentBaseBlock {
     public MusicSharingDeviceBlock(Properties properties) {
@@ -59,10 +59,7 @@ public class MusicSharingDeviceBlock extends IMPEquipmentBaseBlock {
         if (!level.isClientSide) {
             BlockEntity be = level.getBlockEntity(blockPos);
             if (be instanceof MusicSharingDeviceBlockEntity) {
-                MenuRegistry.openExtendedMenu((ServerPlayer) player, (MenuProvider) be, n -> {
-                    n.writeBlockPos(blockPos);
-                    n.writeInt(((MusicSharingDeviceBlockEntity) be).getContainerSize());
-                });
+                IKSGMenuUtil.openMenu((ServerPlayer) player, (MenuProvider) be, blockPos, ((MusicSharingDeviceBlockEntity) be).getContainerSize());
             }
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

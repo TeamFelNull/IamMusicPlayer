@@ -16,5 +16,4 @@ public class MusicSharingDeviceMenu extends IkisugiBaseContainerMenu {
         this.addSlot(new AntennaSlot(getContainer(), 0, 183, 178));
     }
 
-
 }
