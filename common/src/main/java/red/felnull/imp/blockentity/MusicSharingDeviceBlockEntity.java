@@ -1,15 +1,26 @@
 package red.felnull.imp.blockentity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
-import red.felnull.otyacraftengine.blockentity.container.IkisugiItemContainerBlockEntity;
+import red.felnull.imp.util.NbtUtils;
 
-public class MusicSharingDeviceBlockEntity extends IkisugiItemContainerBlockEntity {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
+    private final Map<UUID, Screen> playerScreens = new HashMap<>();
+    private Screen currentScreen;
 
     public MusicSharingDeviceBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.MUSIC_SHARING_DEVICE, blockPos, blockState);
@@ -26,7 +37,66 @@ public class MusicSharingDeviceBlockEntity extends IkisugiItemContainerBlockEnti
     }
 
     @Override
+    public CompoundTag save(CompoundTag tag) {
+        NbtUtils.writeMSDPlayerScreenData(tag, "PlayerScreens", playerScreens);
+        return super.save(tag);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        NbtUtils.readMSDPlayerScreenData(tag, "PlayerScreens", playerScreens);
+        super.load(tag);
+    }
+
+    @Override
     public int getContainerSize() {
         return 1;
+    }
+
+    @Override
+    public CompoundTag clientSyncbleData(ServerPlayer player, CompoundTag tag) {
+        ContainerHelper.saveAllItems(tag, this.getItems());
+        tag.putString("CurrentScreen", getCurrentScreen(player).getSerializedName());
+        return tag;
+    }
+
+    @Override
+    public void clientSyncble(CompoundTag tag) {
+        this.getItems().clear();
+        ContainerHelper.loadAllItems(tag, this.getItems());
+        this.currentScreen = Screen.getScreenByName(tag.getString("CurrentScreen"));
+    }
+
+    public Screen getCurrentScreen(Player player) {
+        if (level.isClientSide()) {
+            if (currentScreen != null)
+                return currentScreen;
+        } else {
+            if (playerScreens.containsKey(player.getGameProfile().getId()))
+                return playerScreens.get(player.getGameProfile().getId());
+        }
+        return Screen.OFF;
+    }
+
+    public static enum Screen implements StringRepresentable {
+        OFF("off");
+        private final String name;
+
+        Screen(String name) {
+            this.name = name;
+        }
+
+        public static Screen getScreenByName(String name) {
+            for (Screen sc : values()) {
+                if (sc.getSerializedName().equals(name))
+                    return sc;
+            }
+            return OFF;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return name;
+        }
     }
 }
