@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
@@ -56,7 +55,7 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
     @Override
     public CompoundTag clientSyncbleData(ServerPlayer player, CompoundTag tag) {
         ContainerHelper.saveAllItems(tag, this.getItems());
-        tag.putString("CurrentScreen", getCurrentScreen(player).getSerializedName());
+        tag.putString("CurrentScreen", getCurrentScreen(player.getGameProfile().getId()).getSerializedName());
         return tag;
     }
 
@@ -67,19 +66,56 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         this.currentScreen = Screen.getScreenByName(tag.getString("CurrentScreen"));
     }
 
-    public Screen getCurrentScreen(Player player) {
+    @Override
+    public CompoundTag instructionFromClient(ServerPlayer player, String name, CompoundTag data) {
+        if (name.equals("Screen")) {
+            setCurrentScreen(player.getGameProfile().getId(), Screen.getScreenByName(data.getString("Name")));
+        } else if (name.equals("Open")) {
+            if (!playerScreens.containsKey(player.getGameProfile().getId()))
+                setCurrentScreen(player.getGameProfile().getId(), Screen.OFF);
+        }
+        return super.instructionFromClient(player, name, data);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level.isClientSide()) {
+            if (isPowerOn()) {
+                playerScreens.forEach((n, m) -> {
+                    if (getCurrentScreen(n) == Screen.OFF)
+                        setCurrentScreen(n, Screen.PLAYLIST);
+                });
+            } else {
+                setCurrentScreen(Screen.OFF);
+            }
+        }
+    }
+
+    public void setCurrentScreen(Screen screen) {
+        playerScreens.keySet().forEach(n -> {
+            setCurrentScreen(n, screen);
+        });
+    }
+
+    public void setCurrentScreen(UUID playerUUID, Screen screen) {
+        playerScreens.put(playerUUID, screen);
+    }
+
+    public Screen getCurrentScreen(UUID playerUUID) {
         if (level.isClientSide()) {
             if (currentScreen != null)
                 return currentScreen;
         } else {
-            if (playerScreens.containsKey(player.getGameProfile().getId()))
-                return playerScreens.get(player.getGameProfile().getId());
+            if (playerScreens.containsKey(playerUUID))
+                return playerScreens.get(playerUUID);
         }
-        return Screen.OFF;
+        return isPowerOn() ? Screen.PLAYLIST : Screen.OFF;
     }
 
     public static enum Screen implements StringRepresentable {
-        OFF("off");
+        OFF("off"),
+        PLAYLIST("playlist");
         private final String name;
 
         Screen(String name) {

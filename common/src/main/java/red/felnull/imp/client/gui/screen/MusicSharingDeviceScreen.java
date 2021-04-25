@@ -1,11 +1,14 @@
 package red.felnull.imp.client.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.screen.msdscreen.MSDOffScreen;
+import red.felnull.imp.client.gui.screen.msdscreen.MSDPlayListScreen;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
 
 import java.util.HashMap;
@@ -27,20 +30,22 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     @Override
     protected void init() {
         super.init();
-        this.lastScreen = getMonitorScreen();
+        insFristOpen();
+        this.lastScreen = getCurrentMonitorScreen();
         getCurrentScreen().enabled();
     }
 
     protected void addScreens() {
         addScreen(MusicSharingDeviceBlockEntity.Screen.OFF, new MSDOffScreen(this));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, new MSDPlayListScreen(this));
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (lastScreen != getMonitorScreen()) {
+        if (lastScreen != getCurrentMonitorScreen()) {
             SCREENS.get(lastScreen).disable();
-            this.lastScreen = getMonitorScreen();
+            this.lastScreen = getCurrentMonitorScreen();
             getCurrentScreen().enabled();
         }
     }
@@ -54,15 +59,49 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         SCREENS.put(msdscreen, screen);
     }
 
-    public MusicSharingDeviceBlockEntity.Screen getMonitorScreen() {
+    protected MusicSharingDeviceBlockEntity.Screen getCurrentMonitorScreen() {
         return getMSDEntity().getCurrentScreen(null);
     }
 
-    public MonitorScreen getCurrentScreen() {
-        return SCREENS.get(getMonitorScreen());
+    protected MonitorScreen getCurrentScreen() {
+        return SCREENS.get(getCurrentMonitorScreen());
     }
 
-    public MusicSharingDeviceBlockEntity getMSDEntity() {
+    protected MusicSharingDeviceBlockEntity getMSDEntity() {
         return (MusicSharingDeviceBlockEntity) getBlockEntity();
+    }
+
+    public void insMonitorScreen(MusicSharingDeviceBlockEntity.Screen screen) {
+        CompoundTag tag = new CompoundTag();
+        tag.putString("Name", screen.getSerializedName());
+        this.instruction("Screen", tag);
+    }
+
+    public void insFristOpen() {
+        this.instruction("Open", new CompoundTag());
+    }
+
+    @Override
+    protected void renderBg(PoseStack poseStack, float f, int i, int j) {
+        super.renderBg(poseStack, f, i, j);
+        if (getCurrentScreen().isActive()) {
+            getCurrentScreen().render(poseStack, i, j, f);
+        }
+    }
+
+    public int getMonitorLeftPos() {
+        return leftPos + 8;
+    }
+
+    public int getMonitorTopPos() {
+        return topPos + 20;
+    }
+
+    public int getMonitorWidth() {
+        return 199;
+    }
+
+    public int getMonitorHeight() {
+        return 122;
     }
 }

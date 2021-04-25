@@ -15,9 +15,14 @@ public abstract class IMPEquipmentBaseBlockEntity extends IkisugiItemContainerBl
 
     @Override
     public CompoundTag instructionFromClient(ServerPlayer player, String name, CompoundTag data) {
-        if (name.equals("power")) {
-            this.level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(IMPEquipmentBaseBlock.ON, data.getBoolean("on")));
+        if (name.equals("Power")) {
+            setBlockStated(getBlockState().setValue(IMPEquipmentBaseBlock.ON, data.getBoolean("On")));
         }
         return super.instructionFromClient(player, name, data);
     }
+
+    public boolean isPowerOn() {
+        return getBlockState().getValue(IMPEquipmentBaseBlock.ON);
+    }
+
 }

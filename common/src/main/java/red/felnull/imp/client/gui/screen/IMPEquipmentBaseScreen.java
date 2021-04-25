@@ -28,8 +28,8 @@ public abstract class IMPEquipmentBaseScreen<T extends IkisugiContainerMenu> ext
 
     protected void insPower(boolean on) {
         CompoundTag tag = new CompoundTag();
-        tag.putBoolean("on", on);
-        this.instruction("power", tag);
+        tag.putBoolean("On", on);
+        this.instruction("Power", tag);
     }
 
     public boolean isPowerOn() {
