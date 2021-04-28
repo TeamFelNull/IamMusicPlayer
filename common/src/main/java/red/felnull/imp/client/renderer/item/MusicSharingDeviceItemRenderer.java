@@ -1,4 +1,4 @@
-package red.felnull.imp.client.item;
+package red.felnull.imp.client.renderer.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -9,7 +9,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.blockentity.MusicSharingDeviceRenderer;
+import red.felnull.imp.client.renderer.blockentity.MusicSharingDeviceRenderer;
 import red.felnull.otyacraftengine.client.renderer.item.ICustomBEWLRenderer;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 

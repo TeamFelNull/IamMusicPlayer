@@ -1,4 +1,4 @@
-package red.felnull.imp.client.blockentity;
+package red.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

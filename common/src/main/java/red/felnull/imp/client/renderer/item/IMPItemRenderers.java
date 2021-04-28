@@ -1,4 +1,4 @@
-package red.felnull.imp.client.item;
+package red.felnull.imp.client.renderer.item;
 
 import red.felnull.imp.block.IMPBlocks;
 import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
