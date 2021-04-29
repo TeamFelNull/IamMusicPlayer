@@ -23,7 +23,10 @@
       "red.felnull.imp.client.IamMusicPlayerClientFabric"
     ],
     "otyacraftengine": [
-      "red.felnull.imp.integration.IamMusicPlayerOEIntegration"
+      "red.felnull.imp.integration.IMPOEIntegration"
+    ],
+    "iammusicplayer": [
+      "red.felnull.imp.integration.DefaltIMPIntegration"
     ]
   },
   "depends": {
@@ -31,7 +34,7 @@
     "fabric": "*",
     "minecraft": ">=1.17-",
     "architectury": ">=2.0.141",
-    "otyacraftengine": ">=2.0"
+    "otyacraftengine": ">=2.0-"
   },
   "accessWidener": "iammusicplayer.accesswidener",
   "mixins": [

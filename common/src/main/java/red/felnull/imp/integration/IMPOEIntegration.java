@@ -6,15 +6,15 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.handler.ClientHandler;
 import red.felnull.otyacraftengine.api.IOEIntegration;
 import red.felnull.otyacraftengine.api.OEIntegration;
-import red.felnull.otyacraftengine.api.register.OEHandlerRegister;
+import red.felnull.otyacraftengine.api.register.OEClientHandlerRegister;
 import red.felnull.otyacraftengine.api.register.OEModelLoaderPathRegister;
 
 @OEIntegration
-public class IamMusicPlayerOEIntegration implements IOEIntegration {
+public class IMPOEIntegration implements IOEIntegration {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public void registrationClientHandler(OEHandlerRegister reg) {
+    public void registrationClientHandler(OEClientHandlerRegister reg) {
         reg.register(ClientHandler.class);
     }
 

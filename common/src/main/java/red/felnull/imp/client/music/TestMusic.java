@@ -44,21 +44,22 @@ public class TestMusic {
             @Override
             public void trackLoaded(AudioTrack track) {
                 player.startTrack(track, false);
+                System.out.println("test1");
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-
+                System.out.println("test2");
             }
 
             @Override
             public void noMatches() {
-
+                System.out.println("test3");
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-
+                System.out.println("test4");
             }
         });
         AudioInputStream stream = AudioPlayerInputStream.createStream(player, dataformat, dataformat.frameDuration(), false);
@@ -83,41 +84,6 @@ public class TestMusic {
             ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
             float ang = 0;
 
-/*
-            try {
-                AudioInputStream stream = AudioSystem.getAudioInputStream(new File("D:\\pcdatas\\music\\素材\\Discord着信.wav"));
-                AudioFormat format = stream.getFormat();
-                int alFormat = -1;
-                if (format.getChannels() == 1) {
-                    if (format.getSampleSizeInBits() == 8) {
-                        alFormat = AL_FORMAT_MONO8;
-                    } else if (format.getSampleSizeInBits() == 16) {
-                        alFormat = AL_FORMAT_MONO16;
-                    }
-                } else if (format.getChannels() == 2) {
-                    if (format.getSampleSizeInBits() == 8) {
-                        alFormat = AL_FORMAT_STEREO8;
-                    } else if (format.getSampleSizeInBits() == 16) {
-                        alFormat = AL_FORMAT_STEREO16;
-                    }
-                }
-                if (alFormat == -1) throw new RuntimeException("can't handle format");
-                byte[] byteArray = new byte[stream.available()];
-                stream.read(byteArray);
-                ByteBuffer audioBuffer = BufferUtils.createByteBuffer(byteArray.length);
-                audioBuffer.put(byteArray);
-                byteArray = null;
-                stream.close();
-                audioBuffer.flip();
-
-                ang = fillBuffer(ang, pcm);
-                int b = alGenBuffers();
-                alBufferData(b, alFormat, audioBuffer, (int) format.getSampleRate());
-                alSourceQueueBuffers(source, b);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
- */
             long frameDuration = audioDataFormat.frameDuration();
 
             while (true) {

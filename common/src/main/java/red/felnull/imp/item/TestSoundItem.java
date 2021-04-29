@@ -1,12 +1,17 @@
 package red.felnull.imp.item;
 
+import com.mojang.math.Vector3f;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import red.felnull.imp.client.music.TestMusic;
+import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.music.MusicPlayerRegistry;
+import red.felnull.imp.client.music.factory.IMusicPlayerFactory;
+import red.felnull.imp.client.music.player.IMusicPlayer;
 
 public class TestSoundItem extends Item {
     public TestSoundItem(Properties properties) {
@@ -18,7 +23,17 @@ public class TestSoundItem extends Item {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (level.isClientSide()) {
             //  player.displayClientMessage(new TextComponent(itemStack.getHoverName().getString()), false);
-            TestMusic.playStart(itemStack.getHoverName().getString());
+            // TestMusic.playStart(itemStack.getHoverName().getString());
+            IMusicPlayerFactory factory = MusicPlayerRegistry.getFactory(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
+            IMusicPlayer musicPlayer = factory.createMusicPlayer(itemStack.getHoverName().getString());
+            musicPlayer.setPos(new Vector3f((float) player.position().x, (float) player.position().y, (float) player.position().z));
+            try {
+                musicPlayer.ready(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            musicPlayer.play();
+
         } else {
      /*       Map<UUID, AdministratorInformation.AuthorityType> players = new HashMap<>();
             players.put(player.getGameProfile().getId(), AdministratorInformation.AuthorityType.READ_ONLY);
