@@ -8,13 +8,13 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.api.IIMPIntegration;
 import red.felnull.imp.api.IMPIntegration;
 import red.felnull.imp.api.register.IMPMusicPlayerRegister;
-import red.felnull.imp.client.music.factory.LavaPlayerFactory;
+import red.felnull.imp.client.music.loader.LavaPlayerLoader;
 
 @IMPIntegration
 public class DefaltIMPIntegration implements IIMPIntegration {
     @Override
     @Environment(EnvType.CLIENT)
-    public void registrationMusicPlayerFactory(IMPMusicPlayerRegister reg) {
-        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new LavaPlayerFactory(new YoutubeAudioSourceManager(true)));
+    public void registrationMusicPlayerLoader(IMPMusicPlayerRegister reg) {
+        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new LavaPlayerLoader(new YoutubeAudioSourceManager(true)));
     }
 }

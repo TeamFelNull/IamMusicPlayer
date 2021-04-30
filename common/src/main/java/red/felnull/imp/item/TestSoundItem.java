@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.music.MusicPlayerRegistry;
-import red.felnull.imp.client.music.factory.IMusicPlayerFactory;
+import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 
 public class TestSoundItem extends Item {
@@ -23,8 +23,8 @@ public class TestSoundItem extends Item {
         if (level.isClientSide()) {
             //  player.displayClientMessage(new TextComponent(itemStack.getHoverName().getString()), false);
             // TestMusic.playStart(itemStack.getHoverName().getString());
-            IMusicPlayerFactory factory = MusicPlayerRegistry.getFactory(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
-            IMusicPlayer musicPlayer = factory.createMusicPlayer(itemStack.getHoverName().getString());
+            IMusicPlayerLoader loader = MusicPlayerRegistry.getLoader(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
+            IMusicPlayer musicPlayer = loader.createMusicPlayer(itemStack.getHoverName().getString());
             try {
                 musicPlayer.ready(0);
             } catch (Exception e) {
@@ -34,7 +34,7 @@ public class TestSoundItem extends Item {
             musicPlayer.setSelfPosition(player.position());
             musicPlayer.linearAttenuation(32f);
 
-            musicPlayer.play();
+            musicPlayer.play(0);
 
         } else {
      /*       Map<UUID, AdministratorInformation.AuthorityType> players = new HashMap<>();

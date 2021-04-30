@@ -6,6 +6,6 @@ import red.felnull.imp.api.register.IMPMusicPlayerRegister;
 
 public interface IIMPIntegration {
     @Environment(EnvType.CLIENT)
-    default void registrationMusicPlayerFactory(IMPMusicPlayerRegister reg) {
+    default void registrationMusicPlayerLoader(IMPMusicPlayerRegister reg) {
     }
 }

@@ -5,7 +5,7 @@ import net.minecraft.world.phys.Vec3;
 public interface IMusicPlayer {
     void ready(long position) throws Exception;
 
-    void play();
+    void play(long delay);
 
     void stop();
 
@@ -23,7 +23,6 @@ public interface IMusicPlayer {
 
     void setSelfPosition(Vec3 vec3);
 
-    void setLooping(boolean bl);
 
     void setVolume(float f);
 

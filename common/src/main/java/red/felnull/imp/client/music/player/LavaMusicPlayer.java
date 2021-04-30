@@ -1,6 +1,5 @@
 package red.felnull.imp.client.music.player;
 
-import com.mojang.blaze3d.audio.OpenAlUtil;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -13,8 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL10;
-import red.felnull.imp.api.IamMusicPlayerAPI;
+import org.lwjgl.openal.AL11;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 import red.felnull.otyacraftengine.client.util.IKSGOpenALUtil;
 import red.felnull.otyacraftengine.throwable.OpenALException;
@@ -24,7 +22,7 @@ import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.AL11.*;
 
 public class LavaMusicPlayer implements IMusicPlayer {
     private static final Logger LOGGER = LogManager.getLogger(LavaMusicPlayer.class);
@@ -90,7 +88,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
 
         alSourcef(source, AL_PITCH, 1f);
         alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
-        setLooping(false);
+        alSourcei(source, AL_LOOPING, AL_FALSE);
         setVolume(1f);
         setSelfPosition(Vec3.ZERO);
         linearAttenuation(0f);
@@ -101,7 +99,22 @@ public class LavaMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void play() {
+    public void play(long delay) {
+
+        if (!ready)
+            return;
+
+/*
+        new Thread(() -> {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            alSourcei(source, AL_SEC_OFFSET, 30);
+        }).start();
+*/
+
         if (playing)
             return;
 
@@ -112,7 +125,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
     @Override
     public void stop() {
         if (ready)
-            AL10.alSourceStop(this.source);
+            AL11.alSourceStop(this.source);
     }
 
     @Override
@@ -125,7 +138,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
     @Override
     public void destroy() {
         if (ready) {
-            AL10.alSourceStop(source);
+            AL11.alSourceStop(source);
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {
@@ -145,20 +158,20 @@ public class LavaMusicPlayer implements IMusicPlayer {
     }
 
     private int getPlayState() {
-        return !ready ? AL_STOPPED : AL10.alGetSourcei(this.source, AL_SOURCE_STATE);
+        return !ready ? AL_STOPPED : AL11.alGetSourcei(this.source, AL_SOURCE_STATE);
     }
 
     @Override
     public void pause() {
         if (getPlayState() == AL_PLAYING) {
-            AL10.alSourcePause(this.source);
+            AL11.alSourcePause(this.source);
         }
     }
 
     @Override
     public void unpause() {
         if (getPlayState() == AL_PAUSED) {
-            AL10.alSourcePlay(this.source);
+            AL11.alSourcePlay(this.source);
         }
     }
 
@@ -175,11 +188,6 @@ public class LavaMusicPlayer implements IMusicPlayer {
     @Override
     public void setSelfPosition(Vec3 sp) {
         alSource3f(source, AL_POSITION, (float) sp.x, (float) sp.y, (float) sp.z);
-    }
-
-    @Override
-    public void setLooping(boolean bl) {
-        alSourcei(source, AL_LOOPING, bl ? AL_TRUE : AL_FALSE);
     }
 
     @Override
@@ -206,16 +214,16 @@ public class LavaMusicPlayer implements IMusicPlayer {
     }
 
     private int removeProcessedBuffers() {
-        int i = AL10.alGetSourcei(this.source, 4118);
+        int i = AL11.alGetSourcei(this.source, 4118);
         if (i > 0) {
             int[] is = new int[i];
-            AL10.alSourceUnqueueBuffers(this.source, is);
+            AL11.alSourceUnqueueBuffers(this.source, is);
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {
                 e.printStackTrace();
             }
-            AL10.alDeleteBuffers(is);
+            AL11.alDeleteBuffers(is);
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {

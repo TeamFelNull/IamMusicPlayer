@@ -1,4 +1,4 @@
-package red.felnull.imp.client.music.factory;
+package red.felnull.imp.client.music.loader;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
@@ -11,13 +11,13 @@ import red.felnull.imp.client.music.player.LavaMusicPlayer;
 
 import java.util.Arrays;
 
-public class LavaPlayerFactory implements IMusicPlayerFactory {
+public class LavaPlayerLoader implements IMusicPlayerLoader {
     public static final AudioDataFormat COMMON_PCM_S16_LE_C1 = new Pcm16AudioDataFormat(1, 44100, 960, false);
     private final AudioSourceManager[] sourceManagers;
     private AudioPlayerManager audioPlayerManager;
     private AudioDataFormat dataformat;
 
-    public LavaPlayerFactory(AudioSourceManager... sourceManagers) {
+    public LavaPlayerLoader(AudioSourceManager... sourceManagers) {
         this.sourceManagers = sourceManagers;
     }
 
@@ -35,6 +35,6 @@ public class LavaPlayerFactory implements IMusicPlayerFactory {
 
     @Override
     public IMusicPlayer createMusicPlayer(String identifier) {
-        return new LavaMusicPlayer(identifier, audioPlayerManager,dataformat);
+        return new LavaMusicPlayer(identifier, audioPlayerManager, dataformat);
     }
 }

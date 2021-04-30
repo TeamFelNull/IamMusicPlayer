@@ -3,7 +3,7 @@ package red.felnull.imp.client.music;
 import net.minecraft.resources.ResourceLocation;
 import red.felnull.imp.api.IamMusicPlayerAPI;
 import red.felnull.imp.api.register.IMPMusicPlayerRegister;
-import red.felnull.imp.client.music.factory.IMusicPlayerFactory;
+import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
 import red.felnull.otyacraftengine.api.register.OERegistries;
 
 public class MusicPlayerRegistry {
@@ -11,13 +11,18 @@ public class MusicPlayerRegistry {
         IMPMusicPlayerRegister musicPlayerRegister = new IMPMusicPlayerRegister();
         OERegistries.setRegistry(IMPMusicPlayerRegister.class, musicPlayerRegister);
         IamMusicPlayerAPI.getInstance().integrationConsumer(n -> {
-            n.registrationMusicPlayerFactory(musicPlayerRegister);
+            n.registrationMusicPlayerLoader(musicPlayerRegister);
         });
 
-        OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().values().forEach(IMusicPlayerFactory::init);
+        OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().values().forEach(IMusicPlayerLoader::init);
     }
 
-    public static IMusicPlayerFactory getFactory(ResourceLocation location) {
+    public static IMusicPlayerLoader getLoader(ResourceLocation location) {
         return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().get(location);
     }
+
+    public static boolean isContains(ResourceLocation location) {
+        return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().containsKey(location);
+    }
+
 }
