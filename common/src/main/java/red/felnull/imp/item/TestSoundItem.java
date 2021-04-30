@@ -1,6 +1,5 @@
 package red.felnull.imp.item;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -26,12 +25,15 @@ public class TestSoundItem extends Item {
             // TestMusic.playStart(itemStack.getHoverName().getString());
             IMusicPlayerFactory factory = MusicPlayerRegistry.getFactory(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
             IMusicPlayer musicPlayer = factory.createMusicPlayer(itemStack.getHoverName().getString());
-            musicPlayer.setPos(new Vector3f((float) player.position().x, (float) player.position().y, (float) player.position().z));
             try {
                 musicPlayer.ready(0);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            musicPlayer.setSelfPosition(player.position());
+            musicPlayer.linearAttenuation(32f);
+
             musicPlayer.play();
 
         } else {
