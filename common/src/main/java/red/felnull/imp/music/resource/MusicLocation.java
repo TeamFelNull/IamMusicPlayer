@@ -2,9 +2,11 @@ package red.felnull.imp.music.resource;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import red.felnull.imp.IamMusicPlayer;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
 public class MusicLocation implements ITAGSerializable {
+    public static final MusicLocation EMPTY = new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "empty"), "");
     private ResourceLocation loaderName;
     private String identifier;
 

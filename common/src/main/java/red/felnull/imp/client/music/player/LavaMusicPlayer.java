@@ -12,12 +12,10 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL11;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 import red.felnull.otyacraftengine.client.util.IKSGOpenALUtil;
 import red.felnull.otyacraftengine.throwable.OpenALException;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -26,28 +24,36 @@ import static org.lwjgl.openal.AL11.*;
 
 public class LavaMusicPlayer implements IMusicPlayer {
     private static final Logger LOGGER = LogManager.getLogger(LavaMusicPlayer.class);
-
+    private final int source;
     private final String identifier;
     private final AudioPlayerManager audioPlayerManager;
     private final AudioDataFormat dataformat;
     private final AudioPlayer audioPlayer;
+    private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
+    private byte[] buffer = new byte[1024];
     private AudioInputStream stream;
     private boolean trackLoaded;
-    private boolean playing;
     private Exception exception;
-    private int source;
     private boolean ready;
+    private float ang;
+    private int trig;
 
     public LavaMusicPlayer(String identifier, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
         this.identifier = identifier;
         this.audioPlayerManager = audioPlayerManager;
         this.dataformat = dataformat;
         this.audioPlayer = audioPlayerManager.createPlayer();
+        this.source = alGenSources();
     }
 
 
     @Override
     public void ready(long position) throws Exception {
+        alSourcef(source, AL_PITCH, 1f);
+        alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
+        alSourcei(source, AL_LOOPING, AL_FALSE);
+
+        IKSGOpenALUtil.checkErrorThrower();
         this.trackLoaded = false;
         audioPlayerManager.loadItem(identifier, new AudioLoadResultHandler() {
             @Override
@@ -84,48 +90,34 @@ public class LavaMusicPlayer implements IMusicPlayer {
             throw exception;
 
         stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
-        source = alGenSources();
 
-        alSourcef(source, AL_PITCH, 1f);
-        alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
-        alSourcei(source, AL_LOOPING, AL_FALSE);
-        setVolume(1f);
-        setSelfPosition(Vec3.ZERO);
-        linearAttenuation(0f);
+        if (stream.read(buffer) >= 0) {
+            int bff = alGenBuffers();
+            ang = fillBuffer(ang, pcm);
+            alBufferData(bff, AL_FORMAT_MONO16, getBuffer(buffer), (int) stream.getFormat().getSampleRate() * 2);
+            alSourceQueueBuffers(source, bff);
+        }
 
-        IKSGOpenALUtil.checkErrorThrower();
+        LoadThread lt = new LoadThread();
+        lt.start();
 
         ready = true;
     }
 
     @Override
     public void play(long delay) {
-
         if (!ready)
             return;
 
-/*
-        new Thread(() -> {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            alSourcei(source, AL_SEC_OFFSET, 30);
-        }).start();
-*/
+//  alSourcei(source, AL_SEC_OFFSET, 30);
+        alSourcePlay(this.source);
 
-        if (playing)
-            return;
-
-        PlayThread pt = new PlayThread();
-        pt.start();
     }
 
     @Override
     public void stop() {
         if (ready)
-            AL11.alSourceStop(this.source);
+            alSourceStop(this.source);
     }
 
     @Override
@@ -138,7 +130,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
     @Override
     public void destroy() {
         if (ready) {
-            AL11.alSourceStop(source);
+            alSourceStop(source);
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {
@@ -158,20 +150,20 @@ public class LavaMusicPlayer implements IMusicPlayer {
     }
 
     private int getPlayState() {
-        return !ready ? AL_STOPPED : AL11.alGetSourcei(this.source, AL_SOURCE_STATE);
+        return !ready ? AL_STOPPED : alGetSourcei(this.source, AL_SOURCE_STATE);
     }
 
     @Override
     public void pause() {
         if (getPlayState() == AL_PLAYING) {
-            AL11.alSourcePause(this.source);
+            alSourcePause(this.source);
         }
     }
 
     @Override
     public void unpause() {
         if (getPlayState() == AL_PAUSED) {
-            AL11.alSourcePlay(this.source);
+            alSourcePlay(this.source);
         }
     }
 
@@ -214,84 +206,66 @@ public class LavaMusicPlayer implements IMusicPlayer {
     }
 
     private int removeProcessedBuffers() {
-        int i = AL11.alGetSourcei(this.source, 4118);
+        int i = alGetSourcei(this.source, AL_BUFFERS_PROCESSED);
         if (i > 0) {
             int[] is = new int[i];
-            AL11.alSourceUnqueueBuffers(this.source, is);
+            alSourceUnqueueBuffers(this.source, is);
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {
                 e.printStackTrace();
             }
-            AL11.alDeleteBuffers(is);
+            alDeleteBuffers(is);
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {
                 e.printStackTrace();
             }
         }
-
         return i;
     }
 
+    public class LoadThread extends Thread {
+        public LoadThread() {
+            setName("LavaPlayer Load Thread");
+        }
 
-    public class PlayThread extends Thread {
         @Override
         public void run() {
             try {
-                float ang = 0;
-                ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
-                AudioFormat format = stream.getFormat();
-                byte[] buffer = new byte[1024];
-                boolean statted = false;
-
-                while (true) {
-                    if (stream.read(buffer) >= 0) {
-                        int b = alGenBuffers();
-                        ang = fillBuffer(ang, pcm);
-                        alBufferData(b, AL_FORMAT_MONO16, getBuffer(buffer), (int) format.getSampleRate() * 2);
-                        alSourceQueueBuffers(source, b);
-
-                        if (!statted) {
-                            alSourcePlay(source);
-                            statted = true;
-                        }
-                    }
-                    int state = alGetSourcei(source, AL_SOURCE_STATE);
-                    if (state == AL_STOPPED)
-                        break;
+                while (stream.read(buffer) >= 0) {
+                    int b = alGenBuffers();
+                    ang = fillBuffer(ang, pcm);
+                    alBufferData(b, AL_FORMAT_MONO16, getBuffer(buffer), (int) stream.getFormat().getSampleRate() * 2);
+                    alSourceQueueBuffers(source, b);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
-                playing = false;
                 System.out.println("finished");
             }
         }
+    }
 
-        private int trig = 0;
-
-        public float fillBuffer(float ang, ByteBuffer buff) {
-            int size = buff.capacity();
-            trig++;
-            for (int i = 0; i < size; i++) {
-                int source1 = (int) (Math.sin(ang) * 127 + 128);
-                int source2 = 0;
-                if (trig > 3) source2 = (int) (Math.sin(ang * 3) * 127 + 128);
-                if (trig > 4) trig = 0;
-                buff.put(i, (byte) ((source1 + source2) / 2));
-                ang += 0.1f;
-            }
-            return ang;
+    public float fillBuffer(float ang, ByteBuffer buff) {
+        int size = buff.capacity();
+        trig++;
+        for (int i = 0; i < size; i++) {
+            int source1 = (int) (Math.sin(ang) * 127 + 128);
+            int source2 = 0;
+            if (trig > 3) source2 = (int) (Math.sin(ang * 3) * 127 + 128);
+            if (trig > 4) trig = 0;
+            buff.put(i, (byte) ((source1 + source2) / 2));
+            ang += 0.1f;
         }
+        return ang;
+    }
 
 
-        public ByteBuffer getBuffer(byte[] array) {
-            ByteBuffer audioBuffer2 = BufferUtils.createByteBuffer(array.length);
-            audioBuffer2.put(array);
-            audioBuffer2.flip();
-            return audioBuffer2;
-        }
-
+    public ByteBuffer getBuffer(byte[] array) {
+        ByteBuffer audioBuffer2 = BufferUtils.createByteBuffer(array.length);
+        audioBuffer2.put(array);
+        audioBuffer2.flip();
+        return audioBuffer2;
     }
 }

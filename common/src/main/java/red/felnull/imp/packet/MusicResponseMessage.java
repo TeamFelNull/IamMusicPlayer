@@ -1,28 +1,24 @@
 package red.felnull.imp.packet;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.StringRepresentable;
-import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.otyacraftengine.packet.IPacketMessage;
 
 import java.util.UUID;
 
-public class MusicInstructionMessage implements IPacketMessage {
+public class MusicResponseMessage implements IPacketMessage {
     public Type type;
     public UUID uuid;
     public long time;
-    public MusicLocation location;
 
-    public MusicInstructionMessage() {
+    public MusicResponseMessage() {
 
     }
 
-    public MusicInstructionMessage(Type type, UUID uuid, long time, MusicLocation location) {
+    public MusicResponseMessage(Type type, UUID uuid, long time) {
         this.type = type;
         this.uuid = uuid;
         this.time = time;
-        this.location = location;
     }
 
     @Override
@@ -30,7 +26,6 @@ public class MusicInstructionMessage implements IPacketMessage {
         this.type = Type.getTypeByName(byteBuf.readUtf(32767));
         this.uuid = byteBuf.readUUID();
         this.time = byteBuf.readLong();
-        this.location = new MusicLocation(byteBuf.readAnySizeNbt());
     }
 
     @Override
@@ -38,13 +33,12 @@ public class MusicInstructionMessage implements IPacketMessage {
         byteBuf.writeUtf(this.type.getSerializedName());
         byteBuf.writeUUID(this.uuid);
         byteBuf.writeLong(this.time);
-        byteBuf.writeNbt(this.location.save(new CompoundTag()));
     }
 
     public static enum Type implements StringRepresentable {
         NONE("none"),
-        READY("ready"),
-        PLAY("play");
+        READY_COMPLETE("ready_complete"),
+        READY_FAILURE("ready_failure");
         private final String name;
 
         Type(String name) {

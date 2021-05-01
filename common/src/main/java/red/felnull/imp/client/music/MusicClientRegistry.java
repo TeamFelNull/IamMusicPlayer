@@ -6,7 +6,7 @@ import red.felnull.imp.api.register.IMPMusicPlayerRegister;
 import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
 import red.felnull.otyacraftengine.api.register.OERegistries;
 
-public class MusicPlayerRegistry {
+public class MusicClientRegistry {
     public static void init() {
         IMPMusicPlayerRegister musicPlayerRegister = new IMPMusicPlayerRegister();
         OERegistries.setRegistry(IMPMusicPlayerRegister.class, musicPlayerRegister);

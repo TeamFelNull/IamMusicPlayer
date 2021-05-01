@@ -1,6 +1,7 @@
 package red.felnull.imp.item;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -8,9 +9,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.music.MusicPlayerRegistry;
-import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
-import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.packet.MusicClientInstructionMessage;
+import red.felnull.otyacraftengine.util.IKSGPacketUtil;
+
+import java.util.UUID;
 
 public class TestSoundItem extends Item {
     public TestSoundItem(Properties properties) {
@@ -23,7 +26,7 @@ public class TestSoundItem extends Item {
         if (level.isClientSide()) {
             //  player.displayClientMessage(new TextComponent(itemStack.getHoverName().getString()), false);
             // TestMusic.playStart(itemStack.getHoverName().getString());
-            IMusicPlayerLoader loader = MusicPlayerRegistry.getLoader(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
+           /* IMusicPlayerLoader loader = MusicPlayerRegistry.getLoader(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
             IMusicPlayer musicPlayer = loader.createMusicPlayer(itemStack.getHoverName().getString());
             try {
                 musicPlayer.ready(0);
@@ -34,9 +37,10 @@ public class TestSoundItem extends Item {
             musicPlayer.setSelfPosition(player.position());
             musicPlayer.linearAttenuation(32f);
 
-            musicPlayer.play(0);
+            musicPlayer.play(0);*/
 
         } else {
+            IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), itemStack.getHoverName().getString())));
      /*       Map<UUID, AdministratorInformation.AuthorityType> players = new HashMap<>();
             players.put(player.getGameProfile().getId(), AdministratorInformation.AuthorityType.READ_ONLY);
 
