@@ -1,4 +1,4 @@
-package red.felnull.imp.client.music;
+package red.felnull.imp.api.client;
 
 import net.minecraft.resources.ResourceLocation;
 import red.felnull.imp.api.IamMusicPlayerAPI;
