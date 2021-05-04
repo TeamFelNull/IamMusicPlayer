@@ -40,7 +40,7 @@ public class TestSoundItem extends Item {
             musicPlayer.play(0);*/
 
         } else {
-            IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), itemStack.getHoverName().getString())));
+            IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "http"), itemStack.getHoverName().getString())));
      /*       Map<UUID, AdministratorInformation.AuthorityType> players = new HashMap<>();
             players.put(player.getGameProfile().getId(), AdministratorInformation.AuthorityType.READ_ONLY);
 

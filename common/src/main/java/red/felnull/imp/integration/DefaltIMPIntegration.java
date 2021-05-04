@@ -1,5 +1,7 @@
 package red.felnull.imp.integration;
 
+import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,6 +21,8 @@ public class DefaltIMPIntegration implements IIMPIntegration {
     @Environment(EnvType.CLIENT)
     public void registrationMusicPlayerLoader(IMPMusicPlayerRegister reg) {
         reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new LavaPlayerLoader(new YoutubeAudioSourceManager(true)));
+        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "http"), new LavaPlayerLoader(new HttpAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY)));
+
     }
 
     @Override

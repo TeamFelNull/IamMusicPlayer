@@ -55,7 +55,8 @@ public class MusicEngine {
         updateInfos.clear();
         musicPlayers.values().forEach(n -> {
             n.musicPlayer.update();
-            n.musicPlayer.setSelfPosition(n.musicTracker.getTrackingPosition(mc.level));
+            if (n.musicTracker != null)
+                n.musicPlayer.setSelfPosition(n.musicTracker.getTrackingPosition(mc.level));
         });
     }
 
