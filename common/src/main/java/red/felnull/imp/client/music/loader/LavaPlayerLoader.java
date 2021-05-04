@@ -12,7 +12,7 @@ import red.felnull.imp.client.music.player.LavaMusicPlayer;
 import java.util.Arrays;
 
 public class LavaPlayerLoader implements IMusicPlayerLoader {
-    public static final AudioDataFormat COMMON_PCM_S16_LE_C1 = new Pcm16AudioDataFormat(1, 44100, 960, false);
+    public static final AudioDataFormat COMMON_PCM_S16_LE_C1 = new Pcm16AudioDataFormat(1, 48000, 960, false);
     private final AudioSourceManager[] sourceManagers;
     private AudioPlayerManager audioPlayerManager;
     private AudioDataFormat dataformat;

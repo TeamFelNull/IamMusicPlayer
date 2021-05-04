@@ -37,7 +37,7 @@ public class EntityMusicTracker extends MusicTracker {
 
     @Override
     public Vec3 getTrackingPosition(Level level) {
-        if (level.getEntity(entityID) != null) {
+        if (level != null && level.getEntity(entityID) != null) {
             return level.getEntity(entityID).position();
         }
         return super.getTrackingPosition(level);

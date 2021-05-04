@@ -16,6 +16,7 @@ import red.felnull.imp.throwable.InvalidIdentifierException;
 import red.felnull.otyacraftengine.client.util.IKSGOpenALUtil;
 import red.felnull.otyacraftengine.throwable.OpenALException;
 
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -25,6 +26,7 @@ import static org.lwjgl.openal.AL11.*;
 public class LavaMusicPlayer implements IMusicPlayer {
     private static final Logger LOGGER = LogManager.getLogger(LavaMusicPlayer.class);
     private final int source;
+    private boolean stoped;
     private final String identifier;
     private final AudioPlayerManager audioPlayerManager;
     private final AudioDataFormat dataformat;
@@ -94,7 +96,11 @@ public class LavaMusicPlayer implements IMusicPlayer {
         if (stream.read(buffer) >= 0) {
             int bff = alGenBuffers();
             ang = fillBuffer(ang, pcm);
-            alBufferData(bff, AL_FORMAT_MONO16, getBuffer(buffer), (int) stream.getFormat().getSampleRate() * 2);
+
+            AudioFormat format = stream.getFormat();
+            int fomatId = audioFormatToOpenAl(format);
+            alBufferData(bff, fomatId, getBuffer(buffer), (int) format.getSampleRate());
+
             alSourceQueueBuffers(source, bff);
         }
 
@@ -129,6 +135,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
 
     @Override
     public void destroy() {
+        stoped = true;
         if (ready) {
             alSourceStop(source);
             try {
@@ -234,15 +241,17 @@ public class LavaMusicPlayer implements IMusicPlayer {
         public void run() {
             try {
                 while (stream.read(buffer) >= 0) {
+                    if (stoped)
+                        return;
                     int b = alGenBuffers();
                     ang = fillBuffer(ang, pcm);
-                    alBufferData(b, AL_FORMAT_MONO16, getBuffer(buffer), (int) stream.getFormat().getSampleRate() * 2);
+                    AudioFormat format = stream.getFormat();
+                    int fomatId = audioFormatToOpenAl(format);
+                    alBufferData(b, fomatId, getBuffer(buffer), (int) format.getSampleRate());
                     alSourceQueueBuffers(source, b);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-            } finally {
-                System.out.println("finished");
             }
         }
     }
@@ -267,5 +276,32 @@ public class LavaMusicPlayer implements IMusicPlayer {
         audioBuffer2.put(array);
         audioBuffer2.flip();
         return audioBuffer2;
+    }
+
+    private static int audioFormatToOpenAl(AudioFormat audioFormat) {
+        AudioFormat.Encoding encoding = audioFormat.getEncoding();
+        int i = audioFormat.getChannels();
+        int j = audioFormat.getSampleSizeInBits();
+        if (encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED) || encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
+            if (i == 1) {
+                if (j == 8) {
+                    return AL_FORMAT_MONO8;
+                }
+
+                if (j == 16) {
+                    return AL_FORMAT_MONO16;
+                }
+            } else if (i == 2) {
+                if (j == 8) {
+                    return AL_FORMAT_STEREO8;
+                }
+
+                if (j == 16) {
+                    return AL_FORMAT_STEREO16;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid audio format: " + audioFormat);
     }
 }
