@@ -1,12 +1,11 @@
 package red.felnull.imp.music.info;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.phys.Vec3;
 import red.felnull.imp.music.info.tracker.MusicTracker;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
 public class MusicPlayInfo implements ITAGSerializable {
-    public static final MusicPlayInfo EMPTY = new MusicPlayInfo(Vec3.ZERO, 0, 0);
+    public static final MusicPlayInfo EMPTY = new MusicPlayInfo(MusicTracker.EMPTY, 0, 0);
     private MusicTracker tracker;
     private float volume;
     private float maxDistance;
@@ -23,7 +22,7 @@ public class MusicPlayInfo implements ITAGSerializable {
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        tag.put("Tracker", tracker.save(new CompoundTag()));
+        tag.put("Tracker", MusicTracker.saveTracker(tracker, new CompoundTag()));
         tag.putFloat("Volume", volume);
         tag.putFloat("MaxDistance", maxDistance);
         return tag;
@@ -31,7 +30,7 @@ public class MusicPlayInfo implements ITAGSerializable {
 
     @Override
     public void load(CompoundTag tag) {
-       //
+        this.tracker = MusicTracker.loadTracker(tag.getCompound("Tracker"));
         this.volume = tag.getFloat("Volume");
         this.maxDistance = tag.getFloat("MaxDistance");
     }

@@ -1,8 +1,8 @@
 package red.felnull.imp.client.music;
 
-import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.felnull.imp.api.client.IMPClientRegistry;
 import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.music.resource.MusicLocation;
@@ -26,13 +26,13 @@ public class MusicLoaderThread extends Thread {
 
     @Override
     public void run() {
-        if (!MusicPlayerRegistry.isContains(location.getLoaderName())) {
+        if (!IMPClientRegistry.isLoaderContains(location.getLoaderName())) {
             LOGGER.error("Non existent music loader: " + location.getLoaderName());
             IKSGPacketUtil.sendToServerPacket(new MusicResponseMessage(MusicResponseMessage.Type.READY_FAILURE, uuid, 0));
             return;
         }
 
-        IMusicPlayerLoader loader = MusicPlayerRegistry.getLoader(location.getLoaderName());
+        IMusicPlayerLoader loader = IMPClientRegistry.getLoader(location.getLoaderName());
         IMusicPlayer player = null;
         long startTime = System.currentTimeMillis();
         try {
@@ -48,6 +48,6 @@ public class MusicLoaderThread extends Thread {
         }
         long eqTime = System.currentTimeMillis() - startTime;
         IKSGPacketUtil.sendToServerPacket(new MusicResponseMessage(MusicResponseMessage.Type.READY_COMPLETE, uuid, eqTime));
-        MusicEngine.getInstance().musicPlayers.put(uuid, player);
+        MusicEngine.getInstance().musicPlayers.put(uuid, new MusicEngine.MusicPlayingEntry(player, null));
     }
 }

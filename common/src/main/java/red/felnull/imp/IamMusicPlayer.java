@@ -5,7 +5,7 @@ import red.felnull.imp.blockentity.IMPBlockEntitys;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.inventory.IMPMenus;
 import red.felnull.imp.item.IMPItems;
-import red.felnull.imp.music.MusicRegistry;
+import red.felnull.imp.api.IMPRegistry;
 import red.felnull.imp.packet.IMPPackets;
 
 public class IamMusicPlayer {
@@ -16,7 +16,7 @@ public class IamMusicPlayer {
         IMPItems.init();
         IMPBlocks.init();
         IMPBlockEntitys.init();
-        MusicRegistry.init();
+        IMPRegistry.init();
         IMPWorldData.init();
         IMPMenus.init();
     }

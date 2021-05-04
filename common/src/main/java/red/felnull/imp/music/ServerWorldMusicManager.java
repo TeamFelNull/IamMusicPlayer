@@ -2,7 +2,7 @@ package red.felnull.imp.music;
 
 import me.shedaniel.architectury.utils.GameInstance;
 import red.felnull.imp.music.info.MusicPlayInfo;
-import red.felnull.imp.music.info.tracker.FixedMusicTracker;
+import red.felnull.imp.music.info.tracker.EntityMusicTracker;
 import red.felnull.imp.packet.MusicClientInstructionMessage;
 import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 
@@ -20,7 +20,7 @@ public class ServerWorldMusicManager {
 
 
     public void readyComplete(UUID playerId, UUID musicId, long time) {
-        IKSGPacketUtil.sendToClientPacket(GameInstance.getServer().getPlayerList().getPlayer(playerId), new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.PLAY, musicId, 0, new MusicPlayInfo(new FixedMusicTracker(GameInstance.getServer().getPlayerList().getPlayer(playerId).position()), 1, 32)));
+        IKSGPacketUtil.sendToClientPacket(GameInstance.getServer().getPlayerList().getPlayer(playerId), new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.PLAY, musicId, 0, new MusicPlayInfo(new EntityMusicTracker(GameInstance.getServer().getPlayerList().getPlayer(playerId).position(), GameInstance.getServer().getPlayerList().getPlayer(playerId).getId()), 1, 32)));
         System.out.println(time);
     }
 

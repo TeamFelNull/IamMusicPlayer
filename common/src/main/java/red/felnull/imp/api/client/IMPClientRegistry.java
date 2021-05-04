@@ -6,7 +6,7 @@ import red.felnull.imp.api.register.IMPMusicPlayerRegister;
 import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
 import red.felnull.otyacraftengine.api.register.OERegistries;
 
-public class MusicClientRegistry {
+public class IMPClientRegistry {
     public static void init() {
         IMPMusicPlayerRegister musicPlayerRegister = new IMPMusicPlayerRegister();
         OERegistries.setRegistry(IMPMusicPlayerRegister.class, musicPlayerRegister);
@@ -21,7 +21,7 @@ public class MusicClientRegistry {
         return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().get(location);
     }
 
-    public static boolean isContains(ResourceLocation location) {
+    public static boolean isLoaderContains(ResourceLocation location) {
         return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().containsKey(location);
     }
 
