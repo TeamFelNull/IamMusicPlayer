@@ -20,9 +20,8 @@ public class DefaltIMPIntegration implements IIMPIntegration {
     @Override
     @Environment(EnvType.CLIENT)
     public void registrationMusicPlayerLoader(IMPMusicPlayerRegister reg) {
-        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new LavaPlayerLoader(new YoutubeAudioSourceManager(true)));
-        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "http"), new LavaPlayerLoader(new HttpAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY)));
-
+        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "http"), new LavaPlayerLoader("http", "https://cdn.discordapp.com/attachments/358878159615164416/839483788177702952/ikisugi.mp3", new HttpAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY)));
+        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new LavaPlayerLoader("youtube", "WQ8xRIHg9nU", new YoutubeAudioSourceManager(true)));
     }
 
     @Override

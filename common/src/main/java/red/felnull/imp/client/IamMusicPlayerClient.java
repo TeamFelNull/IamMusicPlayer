@@ -7,9 +7,9 @@ import red.felnull.imp.client.renderer.item.IMPItemRenderers;
 
 public class IamMusicPlayerClient {
     public static void clientInit() {
+        IMPClientRegistry.init();
         IMPBERenderers.init();
         IMPItemRenderers.init();
         IMPScreenFactoryRegister.init();
-        IMPClientRegistry.init();
     }
 }
