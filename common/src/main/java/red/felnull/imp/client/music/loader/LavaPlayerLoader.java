@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.LavaMusicPlayer;
+import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
     public void init() {
         audioPlayerManager = new DefaultAudioPlayerManager();
         dataformat = COMMON_PCM_S16_LE_C1;
-        audioPlayerManager.setFrameBufferDuration(1000);
+        audioPlayerManager.setFrameBufferDuration(15000);
         audioPlayerManager.setPlayerCleanupThreshold(Long.MAX_VALUE);
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
@@ -48,8 +49,8 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
     }
 
     @Override
-    public IMusicPlayer createMusicPlayer(String identifier) {
-        return new LavaMusicPlayer(identifier, audioPlayerManager, dataformat);
+    public IMusicPlayer createMusicPlayer(MusicLocation location) {
+        return new LavaMusicPlayer(location, audioPlayerManager, dataformat);
     }
 
     public class LoadTestThread extends Thread {

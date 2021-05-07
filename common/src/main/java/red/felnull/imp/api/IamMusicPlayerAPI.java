@@ -31,7 +31,6 @@ public class IamMusicPlayerAPI {
             LOGGER.info("API Initialize");
             long startTime = System.currentTimeMillis();
             INSTANCE = api;
-
             LOGGER.info("API Initialize elapsed time: " + (System.currentTimeMillis() - startTime) + "ms");
         }
     }

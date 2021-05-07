@@ -10,8 +10,8 @@ public class FixedMusicTracker extends MusicTracker {
 
     }
 
-    public FixedMusicTracker(Vec3 position) {
-        super(position);
+    public FixedMusicTracker(Vec3 position, float volume, float maxDistance) {
+        super(position, volume, maxDistance);
     }
 
     @Override

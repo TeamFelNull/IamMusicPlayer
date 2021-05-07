@@ -13,8 +13,8 @@ public class EntityMusicTracker extends MusicTracker {
 
     }
 
-    public EntityMusicTracker(Vec3 position, int entityID) {
-        super(position);
+    public EntityMusicTracker(Vec3 position, float volume, float maxDistance, int entityID) {
+        super(position, volume, maxDistance);
         this.entityID = entityID;
     }
 

@@ -16,7 +16,7 @@ import red.felnull.imp.music.info.tracker.EntityMusicTracker;
 import red.felnull.imp.music.info.tracker.FixedMusicTracker;
 
 @IMPIntegration
-public class DefaltIMPIntegration implements IIMPIntegration {
+public class DefaultIMPIntegration implements IIMPIntegration {
     @Override
     @Environment(EnvType.CLIENT)
     public void registrationMusicPlayerLoader(IMPMusicPlayerRegister reg) {

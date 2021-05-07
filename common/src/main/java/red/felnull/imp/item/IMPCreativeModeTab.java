@@ -7,5 +7,5 @@ import net.minecraft.world.item.ItemStack;
 import red.felnull.imp.IamMusicPlayer;
 
 public class IMPCreativeModeTab {
-    public static final CreativeModeTab MOD_TAB = CreativeTabs.create(new ResourceLocation(IamMusicPlayer.MODID, IamMusicPlayer.MODID), () -> new ItemStack(IMPItems.SPEAKER));
+    public static final CreativeModeTab MOD_TAB = CreativeTabs.create(new ResourceLocation(IamMusicPlayer.MODID, IamMusicPlayer.MODID), () -> new ItemStack(IMPItems.MAGNETIC_TAPE));
 }

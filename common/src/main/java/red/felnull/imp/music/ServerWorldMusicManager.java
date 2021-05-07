@@ -29,7 +29,7 @@ public class ServerWorldMusicManager {
 
         entityList.stream().findAny().ifPresent(n -> {
             System.out.println(n.getName().getString());
-            IKSGPacketUtil.sendToClientPacket(player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.PLAY, musicId, 0, new MusicPlayInfo(new EntityMusicTracker(player.position(), n.getId()), 1, 32)));
+            IKSGPacketUtil.sendToClientPacket(player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.PLAY, musicId, 0, new MusicPlayInfo(new EntityMusicTracker(player.position(), 1, 32, n.getId()))));
         });
 
 

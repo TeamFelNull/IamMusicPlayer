@@ -26,7 +26,10 @@
       "red.felnull.imp.integration.IMPOEIntegration"
     ],
     "iammusicplayer": [
-      "red.felnull.imp.integration.DefaltIMPIntegration"
+      "red.felnull.imp.integration.DefaultIMPIntegration"
+    ],
+    "modmenu": [
+      "red.felnull.imp.fabric.integration.ModMenuIntegration"
     ]
   },
   "depends": {
