@@ -16,6 +16,7 @@ public class MusicEngine {
     protected final Map<UUID, MusicPlayInfo> updateInfos = new HashMap<>();
     private final Map<UUID, MusicPlayStartEntry> playedMusicIds = new HashMap<>();
     protected final Map<UUID, MusicLoaderThread> loaders = new HashMap<>();
+    private boolean reload;
     private ResourceLocation lastLocation;
 
     public static MusicEngine getInstance() {
@@ -23,15 +24,7 @@ public class MusicEngine {
     }
 
     public void reload() {
-        Map<UUID, MusicPlayingEntry> oldMPlayers = new HashMap<>(musicPlayers);
-        Map<UUID, Long> times = new HashMap<>();
-        musicPlayers.forEach((n, m) -> times.put(n, m.musicPlayer.getPosition()));
-        stopAll();
-        Map<UUID, MusicLoaderThread> oldLoaders = new HashMap<>(loaders);
-        oldLoaders.forEach((n, m) -> times.put(n, m.getCurrentDelayStartPosition()));
-        stopReady();
-        oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker)));
-        oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo()));
+        reload = true;
     }
 
     public void readyAndPlay(UUID uuid, MusicLocation musicLocation, long startPosition, MusicPlayInfo info) {
@@ -76,6 +69,18 @@ public class MusicEngine {
     }
 
     public void tickNonPaused() {
+        if (reload) {
+            Map<UUID, MusicPlayingEntry> oldMPlayers = new HashMap<>(musicPlayers);
+            Map<UUID, Long> times = new HashMap<>();
+            musicPlayers.forEach((n, m) -> times.put(n, m.musicPlayer.getPosition()));
+            stopAll();
+            Map<UUID, MusicLoaderThread> oldLoaders = new HashMap<>(loaders);
+            oldLoaders.forEach((n, m) -> times.put(n, m.getCurrentDelayStartPosition()));
+            stopReady();
+            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker)));
+            oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo()));
+            reload = false;
+        }
         playedMusicIds.forEach((n, m) -> {
             musicPlayers.get(n).musicTracker = m.info.getTracker();
             MusicPlayingEntry entry = musicPlayers.get(n);

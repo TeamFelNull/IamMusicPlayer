@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class ServerWorldMusicManager {
     private static final ServerWorldMusicManager INSTANCE = new ServerWorldMusicManager();
-    private Map<UUID, MusicRinger> ringers = new HashMap<>();
+    private final Map<UUID, MusicRinger> ringers = new HashMap<>();
 
     public static ServerWorldMusicManager getInstance() {
         return INSTANCE;
@@ -31,7 +31,6 @@ public class ServerWorldMusicManager {
             System.out.println(n.getName().getString());
             IKSGPacketUtil.sendToClientPacket(player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.PLAY, musicId, 0, new MusicPlayInfo(new EntityMusicTracker(player.position(), 1, 32, n.getId()))));
         });
-
 
         System.out.println(eqtime);
     }

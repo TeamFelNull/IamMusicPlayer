@@ -37,7 +37,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
     private final AudioDataFormat dataformat;
     private final AudioPlayer audioPlayer;
     private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
-    private byte[] buffer = new byte[1024];
+    private byte[] buffer = new byte[1024 * 3];
     private AudioInputStream stream;
     private long startTime;
     private long startPosition;
@@ -104,16 +104,17 @@ public class LavaMusicPlayer implements IMusicPlayer {
 
         stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
 
-        if (stream.read(buffer) >= 0) {
-            int bff = alGenBuffers();
-            ang = fillBuffer(ang, pcm);
-            AudioFormat format = stream.getFormat();
-            int fomatId = audioFormatToOpenAl(format);
-            alBufferData(bff, fomatId, getBuffer(buffer), (int) format.getSampleRate());
-            buffers.add(bff);
-            alSourceQueueBuffers(source, bff);
+        for (int i = 0; i < 500; i++) {
+            if (stream.read(buffer) >= 0) {
+                int bff = alGenBuffers();
+                ang = fillBuffer(ang, pcm);
+                AudioFormat format = stream.getFormat();
+                int fomatId = audioFormatToOpenAl(format);
+                alBufferData(bff, fomatId, getBuffer(buffer), (int) format.getSampleRate());
+                buffers.add(bff);
+                alSourceQueueBuffers(source, bff);
+            }
         }
-
         LoadThread lt = new LoadThread();
         lt.start();
 
@@ -130,7 +131,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
 
         if (duration == 0 || duration >= startPosition) {
             float secdelay = delay / 1000f;
-            alSourcef(source, AL_MAX_DISTANCE, secdelay);
+            alSourcef(source, AL_SEC_OFFSET, secdelay);
             alSourcePlay(this.source);
         }
     }

@@ -38,7 +38,7 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
     public void init() {
         audioPlayerManager = new DefaultAudioPlayerManager();
         dataformat = COMMON_PCM_S16_LE_C1;
-        audioPlayerManager.setFrameBufferDuration(15000);
+        audioPlayerManager.setFrameBufferDuration(1000);
         audioPlayerManager.setPlayerCleanupThreshold(Long.MAX_VALUE);
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
