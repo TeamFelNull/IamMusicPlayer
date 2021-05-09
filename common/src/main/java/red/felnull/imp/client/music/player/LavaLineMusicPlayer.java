@@ -5,7 +5,11 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import net.minecraft.world.phys.Vec3;
 import red.felnull.imp.music.resource.MusicLocation;
 
+import javax.sound.sampled.*;
+import java.io.IOException;
+
 public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
+    private SourceDataLine line;
     private boolean ready;
 
     public LavaLineMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
@@ -16,6 +20,12 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
     public void ready(long position) throws Exception {
         super.ready(position);
 
+        AudioFormat format = stream.getFormat();
+        DataLine.Info speakerInfo = new DataLine.Info(SourceDataLine.class, format);
+        Mixer mixer = AudioSystem.getMixer(AudioSystem.getMixerInfo()[0]);
+        line = (SourceDataLine) mixer.getLine(speakerInfo);
+        AudioDataFormat dataFormat = dataformat;
+        line.open(format, dataFormat.chunkSampleCount * dataFormat.channelCount * 2 * 5);
 
         ready = true;
     }
@@ -45,7 +55,11 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
 
     @Override
     public void destroy() {
-
+        if (line != null) {
+            line.flush();
+            line.stop();
+            line.close();
+        }
     }
 
     @Override
@@ -95,8 +109,26 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
 
         @Override
         public void run() {
-
-
+            long frameDuration = dataformat.frameDuration();
+            line.start();
+            final byte[] buffer = new byte[dataformat.chunkSampleCount * dataformat.channelCount * 2];
+            int chunkSize;
+            try {
+                while (true) {
+                    if (!audioPlayer.isPaused()) {
+                        if ((chunkSize = stream.read(buffer)) >= 0) {
+                            line.write(buffer, 0, chunkSize);
+                        } else {
+                            throw new IllegalStateException("Audiostream ended. This should not happen.");
+                        }
+                    } else {
+                        line.drain();
+                        sleep(frameDuration);
+                    }
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -2,7 +2,6 @@ package red.felnull.imp.client.music.loader;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
-import com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -25,7 +24,9 @@ import java.util.Arrays;
 
 public class LavaPlayerLoader implements IMusicPlayerLoader {
     private static final Logger LOGGER = LogManager.getLogger(LavaPlayerLoader.class);
-    public static final AudioDataFormat COMMON_PCM_S16_LE_C1 = new Pcm16AudioDataFormat(1, 48000, 960, false);
+    private static final AudioDataFormat COMMON_PCM_S16_LE_C1 = new Pcm16AudioDataFormat(1, 48000, 960, false);
+    private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
+    private static final AudioDataFormat COMMON_PCM_S16_BE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, true);
     private final AudioSourceManager[] sourceManagers;
     private final String name;
     private final String testIdentifier;
@@ -51,7 +52,18 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicLocation location) {
-        AudioDataFormat format = IamMusicPlayerClient.CLIENT_CONFIG.playSystem == MusicPlaySystem.OPEN_AL_MONO ? COMMON_PCM_S16_LE_C1 : StandardAudioDataFormats.COMMON_PCM_S16_LE;
+        AudioDataFormat format = null;
+        switch (IamMusicPlayerClient.CLIENT_CONFIG.playSystem) {
+            case OPEN_AL_MONO:
+                format = COMMON_PCM_S16_LE_C1;
+                break;
+            case OPEN_AL_STEREO:
+                format = COMMON_PCM_S16_LE_C2;
+                break;
+            case JAVA_SOUND_API:
+                format = COMMON_PCM_S16_BE_C2;
+                break;
+        }
         audioPlayerManager.getConfiguration().setOutputFormat(format);
         return IamMusicPlayerClient.CLIENT_CONFIG.playSystem == MusicPlaySystem.JAVA_SOUND_API ? new LavaLineMusicPlayer(location, audioPlayerManager, format) : new LavaALMusicPlayer(location, audioPlayerManager, format);
     }
