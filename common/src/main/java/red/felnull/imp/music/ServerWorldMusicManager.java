@@ -22,7 +22,7 @@ public class ServerWorldMusicManager {
 
     public void readyComplete(UUID playerId, UUID musicId, long eqtime) {
         ServerPlayer player = GameInstance.getServer().getPlayerList().getPlayer(playerId);
-        
+
         IKSGPacketUtil.sendToClientPacket(player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.PLAY, musicId, 0, new MusicPlayInfo(new FixedMusicTracker(player.position(), 1, 32))));
 
         System.out.println(eqtime);

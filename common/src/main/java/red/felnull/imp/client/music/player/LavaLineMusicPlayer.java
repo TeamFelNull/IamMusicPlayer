@@ -6,6 +6,8 @@ import net.minecraft.world.phys.Vec3;
 import red.felnull.imp.music.resource.MusicLocation;
 
 public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
+    private boolean ready;
+
     public LavaLineMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
         super(location, audioPlayerManager, dataformat);
     }
@@ -13,11 +15,22 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
     @Override
     public void ready(long position) throws Exception {
         super.ready(position);
+
+
+        ready = true;
     }
 
     @Override
     public void play(long delay) {
+        if (!ready)
+            return;
 
+        super.play(delay);
+
+        if (duration == 0 || duration >= startPosition) {
+            PlayThread pt = new PlayThread();
+            pt.start();
+        }
     }
 
     @Override
@@ -73,5 +86,17 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
     @Override
     public void disableAttenuation() {
 
+    }
+
+    public class PlayThread extends Thread {
+        public PlayThread() {
+            setName("LavaPlayer Play Thread");
+        }
+
+        @Override
+        public void run() {
+
+
+        }
     }
 }

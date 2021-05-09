@@ -36,11 +36,11 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
 
     @Override
     public void ready(long position) throws Exception {
+        super.ready(position);
         alSourcef(source, AL_PITCH, 1f);
         alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
         alSourcei(source, AL_LOOPING, AL_FALSE);
         IKSGOpenALUtil.checkErrorThrower();
-        super.ready(position);
 
         AudioFormat format = stream.getFormat();
         for (int i = 0; i < 500; i++) {

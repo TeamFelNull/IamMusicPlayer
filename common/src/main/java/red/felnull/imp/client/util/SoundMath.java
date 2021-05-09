@@ -4,7 +4,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.AL11;
 import red.felnull.imp.client.IamMusicPlayerClient;
-import red.felnull.otyacraftengine.util.IKSGMath;
 
 import static org.lwjgl.openal.AL10.AL_POSITION;
 
