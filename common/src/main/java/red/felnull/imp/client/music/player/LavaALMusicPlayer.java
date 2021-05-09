@@ -1,116 +1,55 @@
 package red.felnull.imp.client.music.player;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
-import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
+import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.music.resource.MusicLocation;
-import red.felnull.imp.throwable.InvalidIdentifierException;
 import red.felnull.otyacraftengine.client.util.IKSGOpenALUtil;
 import red.felnull.otyacraftengine.throwable.OpenALException;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.openal.AL11.*;
 
-public class LavaMusicPlayer implements IMusicPlayer {
-    private static final Logger LOGGER = LogManager.getLogger(LavaMusicPlayer.class);
+public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
     private final List<Integer> buffers = new ArrayList<>();
-    private final int source;
-    private final MusicLocation musicLocation;
-    private boolean stopped;
-    private final AudioPlayerManager audioPlayerManager;
-    private final AudioDataFormat dataformat;
-    private final AudioPlayer audioPlayer;
     private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
+    private Vec3 position = Vec3.ZERO;
     private byte[] buffer = new byte[1024 * 3];
-    private AudioInputStream stream;
-    private long startTime;
-    private long startPosition;
-    private boolean trackLoaded;
-    private Exception exception;
+    private final int source;
+    private boolean stopped;
     private boolean ready;
-    private long duration;
     private float ang;
     private int trig;
+    private float attenuation;
 
-
-    public LavaMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
-        this.musicLocation = location;
-        this.audioPlayerManager = audioPlayerManager;
-        this.dataformat = dataformat;
-        this.audioPlayer = audioPlayerManager.createPlayer();
+    public LavaALMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
+        super(location, audioPlayerManager, dataformat);
         this.source = alGenSources();
     }
-
 
     @Override
     public void ready(long position) throws Exception {
         alSourcef(source, AL_PITCH, 1f);
         alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
         alSourcei(source, AL_LOOPING, AL_FALSE);
-        startPosition = position;
         IKSGOpenALUtil.checkErrorThrower();
-        this.trackLoaded = false;
-        audioPlayerManager.loadItem(musicLocation.getIdentifier(), new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                track.setPosition(position);
-                audioPlayer.startTrack(track, false);
-                if (!track.getInfo().isStream)
-                    duration = track.getDuration();
-                trackLoaded = true;
-            }
+        super.ready(position);
 
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                exception = new InvalidIdentifierException("ambiguous");
-                trackLoaded = true;
-            }
-
-            @Override
-            public void noMatches() {
-                exception = new InvalidIdentifierException("nomatche");
-                trackLoaded = true;
-            }
-
-            @Override
-            public void loadFailed(FriendlyException ex) {
-                exception = ex;
-                trackLoaded = true;
-            }
-        });
-
-        while (!trackLoaded) {
-            Thread.sleep(20);
-        }
-
-        if (exception != null)
-            throw exception;
-
-        stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
-
+        AudioFormat format = stream.getFormat();
         for (int i = 0; i < 500; i++) {
             if (stream.read(buffer) >= 0) {
                 int bff = alGenBuffers();
                 ang = fillBuffer(ang, pcm);
-                AudioFormat format = stream.getFormat();
-                int fomatId = audioFormatToOpenAl(format);
-                alBufferData(bff, fomatId, getBuffer(buffer), (int) format.getSampleRate());
+
+                int formatId = audioFormatToOpenAl(format);
+                alBufferData(bff, formatId, getBuffer(buffer), (int) format.getSampleRate());
                 buffers.add(bff);
                 alSourceQueueBuffers(source, bff);
             }
@@ -126,8 +65,7 @@ public class LavaMusicPlayer implements IMusicPlayer {
         if (!ready)
             return;
 
-        startTime = System.currentTimeMillis();
-        startPosition += delay;
+        super.play(delay);
 
         if (duration == 0 || duration >= startPosition) {
             float secdelay = delay / 1000f;
@@ -152,25 +90,17 @@ public class LavaMusicPlayer implements IMusicPlayer {
     @Override
     public void destroy() {
         stopped = true;
-        startTime = 0;
-        startPosition = 0;
+        super.destroy();
         if (ready) {
             alSourceStop(source);
             alDeleteSources(source);
             List<Integer> bffs = new ArrayList<>(buffers);
             bffs.forEach(AL11::alDeleteBuffers);
+            buffers.clear();
             try {
                 IKSGOpenALUtil.checkErrorThrower();
             } catch (OpenALException e) {
                 e.printStackTrace();
-            }
-            if (this.stream != null) {
-                try {
-                    this.stream.close();
-                } catch (IOException var2) {
-                    LOGGER.error("Failed to close audio stream", var2);
-                }
-                this.stream = null;
             }
         }
     }
@@ -205,16 +135,21 @@ public class LavaMusicPlayer implements IMusicPlayer {
 
     @Override
     public void setSelfPosition(Vec3 sp) {
+        position = sp;
         alSource3f(source, AL_POSITION, (float) sp.x, (float) sp.y, (float) sp.z);
     }
 
     @Override
     public void setVolume(float f) {
+        if (stereo) {
+            f = SoundMath.calculatePseudoAttenuation(position, attenuation, f);
+        }
         alSourcef(source, AL_GAIN, f);
     }
 
     @Override
     public void linearAttenuation(float f) {
+        attenuation = f;
         alSourcei(source, AL_DISTANCE_MODEL, 53251);
         alSourcef(source, AL_MAX_DISTANCE, f);
         alSourcef(source, AL_ROLLOFF_FACTOR, 1.0F);
@@ -224,21 +159,6 @@ public class LavaMusicPlayer implements IMusicPlayer {
     @Override
     public void disableAttenuation() {
         alSourcei(this.source, AL_DISTANCE_MODEL, AL_FALSE);
-    }
-
-    @Override
-    public void update() {
-
-    }
-
-    @Override
-    public MusicLocation getMusicLocation() {
-        return musicLocation;
-    }
-
-    @Override
-    public long getPosition() {
-        return System.currentTimeMillis() - startTime + startPosition;
     }
 
 

@@ -2,6 +2,7 @@ package red.felnull.imp.client.music.loader;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
+import com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -12,8 +13,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.felnull.imp.client.IamMusicPlayerClient;
+import red.felnull.imp.client.music.MusicPlaySystem;
 import red.felnull.imp.client.music.player.IMusicPlayer;
-import red.felnull.imp.client.music.player.LavaMusicPlayer;
+import red.felnull.imp.client.music.player.LavaALMusicPlayer;
+import red.felnull.imp.client.music.player.LavaLineMusicPlayer;
 import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
@@ -26,7 +30,6 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
     private final String name;
     private final String testIdentifier;
     private AudioPlayerManager audioPlayerManager;
-    private AudioDataFormat dataformat;
 
     public LavaPlayerLoader(String name, String testIdentifier, AudioSourceManager... sourceManagers) {
         this.sourceManagers = sourceManagers;
@@ -37,12 +40,10 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
     @Override
     public void init() {
         audioPlayerManager = new DefaultAudioPlayerManager();
-        dataformat = COMMON_PCM_S16_LE_C1;
         audioPlayerManager.setFrameBufferDuration(1000);
         audioPlayerManager.setPlayerCleanupThreshold(Long.MAX_VALUE);
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
-        audioPlayerManager.getConfiguration().setOutputFormat(dataformat);
         Arrays.stream(sourceManagers).forEach(n -> audioPlayerManager.registerSourceManager(n));
         LoadTestThread ltt = new LoadTestThread();
         ltt.start();
@@ -50,7 +51,9 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicLocation location) {
-        return new LavaMusicPlayer(location, audioPlayerManager, dataformat);
+        AudioDataFormat format = IamMusicPlayerClient.CLIENT_CONFIG.playSystem == MusicPlaySystem.OPEN_AL_MONO ? COMMON_PCM_S16_LE_C1 : StandardAudioDataFormats.COMMON_PCM_S16_LE;
+        audioPlayerManager.getConfiguration().setOutputFormat(format);
+        return IamMusicPlayerClient.CLIENT_CONFIG.playSystem == MusicPlaySystem.JAVA_SOUND_API ? new LavaLineMusicPlayer(location, audioPlayerManager, format) : new LavaALMusicPlayer(location, audioPlayerManager, format);
     }
 
     public class LoadTestThread extends Thread {

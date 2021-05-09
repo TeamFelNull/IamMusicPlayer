@@ -3,6 +3,7 @@ package red.felnull.imp.client.music;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.info.tracker.MusicTracker;
 import red.felnull.imp.music.resource.MusicLocation;
@@ -16,6 +17,7 @@ public class MusicEngine {
     protected final Map<UUID, MusicPlayInfo> updateInfos = new HashMap<>();
     private final Map<UUID, MusicPlayStartEntry> playedMusicIds = new HashMap<>();
     protected final Map<UUID, MusicLoaderThread> loaders = new HashMap<>();
+    private final List<UUID> stoppedPlays = new ArrayList<>();
     private boolean reload;
     private ResourceLocation lastLocation;
 
@@ -54,53 +56,6 @@ public class MusicEngine {
             updateInfos.put(uuid, info);
     }
 
-    public void tick(boolean paused) {
-        if (mc.level == null) {
-            stopAll();
-            stopReady();
-            lastLocation = null;
-        } else {
-            if (!mc.level.dimension().location().equals(lastLocation)) {
-                lastLocation = mc.level.dimension().location();
-                stopAll();
-                stopReady();
-            }
-        }
-    }
-
-    public void tickNonPaused() {
-        if (reload) {
-            Map<UUID, MusicPlayingEntry> oldMPlayers = new HashMap<>(musicPlayers);
-            Map<UUID, Long> times = new HashMap<>();
-            musicPlayers.forEach((n, m) -> times.put(n, m.musicPlayer.getPosition()));
-            stopAll();
-            Map<UUID, MusicLoaderThread> oldLoaders = new HashMap<>(loaders);
-            oldLoaders.forEach((n, m) -> times.put(n, m.getCurrentDelayStartPosition()));
-            stopReady();
-            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker)));
-            oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo()));
-            reload = false;
-        }
-        playedMusicIds.forEach((n, m) -> {
-            musicPlayers.get(n).musicTracker = m.info.getTracker();
-            MusicPlayingEntry entry = musicPlayers.get(n);
-            entry.musicPlayer.play(m.delay);
-        });
-        playedMusicIds.clear();
-        updateInfos.forEach((n, m) -> {
-            musicPlayers.get(n).musicTracker = m.getTracker();
-        });
-        updateInfos.clear();
-        musicPlayers.values().forEach(n -> {
-            n.musicPlayer.update();
-            if (n.musicTracker != null) {
-                n.musicPlayer.setSelfPosition(n.musicTracker.getTrackingPosition(mc.level));
-                n.musicPlayer.setVolume(n.musicTracker.getTrackingVolume(mc.level));
-                n.musicPlayer.linearAttenuation(n.musicTracker.getMaxDistance(mc.level));
-            }
-        });
-    }
-
     public void pause() {
         musicPlayers.values().forEach(n -> n.musicPlayer.pause());
     }
@@ -117,11 +72,63 @@ public class MusicEngine {
 
     public void stop(UUID musicID) {
         if (musicPlayers.containsKey(musicID)) {
-            musicPlayers.get(musicID).musicPlayer.stop();
-            musicPlayers.get(musicID).musicPlayer.destroy();
-            musicPlayers.remove(musicID);
+            stoppedPlays.add(musicID);
         }
     }
+
+    public void tick(boolean paused) {
+        if (mc.level == null) {
+            stopAll();
+            stopReady();
+            lastLocation = null;
+        } else {
+            if (!mc.level.dimension().location().equals(lastLocation)) {
+                lastLocation = mc.level.dimension().location();
+                stopAll();
+                stopReady();
+            }
+        }
+        if (reload) {
+            Map<UUID, MusicPlayingEntry> oldMPlayers = new HashMap<>(musicPlayers);
+            Map<UUID, Long> times = new HashMap<>();
+            musicPlayers.forEach((n, m) -> times.put(n, m.musicPlayer.getPosition()));
+            stopAll();
+            Map<UUID, MusicLoaderThread> oldLoaders = new HashMap<>(loaders);
+            oldLoaders.forEach((n, m) -> times.put(n, m.getCurrentDelayStartPosition()));
+            stopReady();
+            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker)));
+            oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo()));
+            reload = false;
+        }
+        stoppedPlays.forEach(n -> {
+            musicPlayers.get(n).musicPlayer.stop();
+            musicPlayers.get(n).musicPlayer.destroy();
+            musicPlayers.remove(n);
+        });
+        stoppedPlays.clear();
+    }
+
+    public void tickNonPaused() {
+        playedMusicIds.forEach((n, m) -> {
+            musicPlayers.get(n).musicTracker = m.info.getTracker();
+            MusicPlayingEntry entry = musicPlayers.get(n);
+            entry.musicPlayer.play(m.delay);
+        });
+        playedMusicIds.clear();
+        updateInfos.forEach((n, m) -> {
+            musicPlayers.get(n).musicTracker = m.getTracker();
+        });
+        updateInfos.clear();
+        musicPlayers.values().forEach(n -> {
+            n.musicPlayer.update();
+            if (n.musicTracker != null) {
+                n.musicPlayer.setSelfPosition(n.musicTracker.getTrackingPosition(mc.level));
+                n.musicPlayer.linearAttenuation(n.musicTracker.getMaxDistance(mc.level));
+                n.musicPlayer.setVolume(SoundMath.calculateVolume(n.musicTracker.getTrackingVolume(mc.level)));
+            }
+        });
+    }
+
 
     public static class MusicPlayStartEntry {
         public final long delay;
