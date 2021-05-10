@@ -1,6 +1,7 @@
 package red.felnull.imp.client.music.player;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
+import com.sedmelluq.discord.lavaplayer.format.AudioDataFormatTools;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.BufferUtils;
@@ -19,19 +20,19 @@ import static org.lwjgl.openal.AL11.*;
 
 public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
     private final List<Integer> buffers = new ArrayList<>();
+    private final boolean intentionallyMono;
     private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
-    private Vec3 position = Vec3.ZERO;
     private byte[] buffer = new byte[1024 * 3];
     private final int source;
     private boolean stopped;
     private boolean ready;
     private float ang;
     private int trig;
-    private float attenuation;
 
-    public LavaALMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
+    public LavaALMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat, boolean intentionallyMono) {
         super(location, audioPlayerManager, dataformat);
         this.source = alGenSources();
+        this.intentionallyMono = intentionallyMono;
     }
 
     @Override
@@ -42,14 +43,14 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
         alSourcei(source, AL_LOOPING, AL_FALSE);
         IKSGOpenALUtil.checkErrorThrower();
 
-        AudioFormat format = stream.getFormat();
+        AudioFormat format = AudioDataFormatTools.toAudioFormat(dataformat);
         for (int i = 0; i < 500; i++) {
             if (stream.read(buffer) >= 0) {
                 int bff = alGenBuffers();
                 ang = fillBuffer(ang, pcm);
 
                 int formatId = audioFormatToOpenAl(format);
-                alBufferData(bff, formatId, getBuffer(buffer), (int) format.getSampleRate());
+                alBufferData(bff, formatId, getBuffer(buffer), (int) format.getSampleRate() * (intentionallyMono ? 2 : 1));
                 buffers.add(bff);
                 alSourceQueueBuffers(source, bff);
             }
@@ -80,12 +81,6 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
             alSourceStop(this.source);
     }
 
-    @Override
-    public void setPosition(long position) {
-        if (audioPlayer.getPlayingTrack() != null) {
-            audioPlayer.getPlayingTrack().setPosition(position);
-        }
-    }
 
     @Override
     public void destroy() {
@@ -135,7 +130,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
 
     @Override
     public void setSelfPosition(Vec3 sp) {
-        position = sp;
+        super.setSelfPosition(sp);
         alSource3f(source, AL_POSITION, (float) sp.x, (float) sp.y, (float) sp.z);
     }
 
@@ -149,7 +144,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
 
     @Override
     public void linearAttenuation(float f) {
-        attenuation = f;
+        super.linearAttenuation(f);
         alSourcei(source, AL_DISTANCE_MODEL, 53251);
         alSourcef(source, AL_MAX_DISTANCE, f);
         alSourcef(source, AL_ROLLOFF_FACTOR, 1.0F);
@@ -179,13 +174,13 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
                     ang = fillBuffer(ang, pcm);
                     if (stopped)
                         return;
-                    AudioFormat format = stream.getFormat();
+                    AudioFormat format = AudioDataFormatTools.toAudioFormat(dataformat);
                     if (stopped)
                         return;
                     int formatId = audioFormatToOpenAl(format);
                     if (stopped)
                         return;
-                    alBufferData(b, formatId, getBuffer(buffer), (int) format.getSampleRate());
+                    alBufferData(b, formatId, getBuffer(buffer), (int) format.getSampleRate() * (intentionallyMono ? 2 : 1));
                     if (stopped)
                         return;
                     alSourceQueueBuffers(source, b);
@@ -221,30 +216,36 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
         return audioBuffer2;
     }
 
-    private static int audioFormatToOpenAl(AudioFormat audioFormat) {
+    private int audioFormatToOpenAl(AudioFormat audioFormat) {
+
         AudioFormat.Encoding encoding = audioFormat.getEncoding();
         int i = audioFormat.getChannels();
         int j = audioFormat.getSampleSizeInBits();
         if (encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED) || encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
-            if (i == 1) {
-                if (j == 8) {
-                    return AL_FORMAT_MONO8;
-                }
-
-                if (j == 16) {
-                    return AL_FORMAT_MONO16;
-                }
-            } else if (i == 2) {
-                if (j == 8) {
-                    return AL_FORMAT_STEREO8;
-                }
-
-                if (j == 16) {
-                    return AL_FORMAT_STEREO16;
-                }
-            }
+            return getOpenALFormat(intentionallyMono ? 1 : 2, j);
         }
 
         throw new IllegalArgumentException("Invalid audio format: " + audioFormat);
     }
+
+    public static int getOpenALFormat(int channel, int bit) {
+        if (channel == 1) {
+            if (bit == 8) {
+                return AL_FORMAT_MONO8;
+            }
+            if (bit == 16) {
+                return AL_FORMAT_MONO16;
+            }
+        } else if (channel == 2) {
+            if (bit == 8) {
+                return AL_FORMAT_STEREO8;
+            }
+
+            if (bit == 16) {
+                return AL_FORMAT_STEREO16;
+            }
+        }
+        return AL_FORMAT_MONO16;
+    }
+
 }

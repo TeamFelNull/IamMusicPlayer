@@ -14,10 +14,7 @@ public class SoundEngineMixin {
         MusicEngine.getInstance().tick(bl);
     }
 
-    @Inject(method = "tickNonPaused", at = @At("HEAD"))
-    private void tickNonPaused(CallbackInfo ci) {
-        MusicEngine.getInstance().tickNonPaused();
-    }
+
 
     @Inject(method = "pause", at = @At("HEAD"))
     private void pause(CallbackInfo ci) {

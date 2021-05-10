@@ -22,9 +22,9 @@ public class SoundMath {
     }
 
     private static float calculatePseudoAttenuation(float distance, float range, float volume) {
-        float curve = (float) -Math.log10(9f/10f*distance/range+1f/10f);
+        float curve = (float) -Math.log10(9f / 10f * distance / range + 1f / 10f);
         //https://cdn.discordapp.com/attachments/465465434641006593/840981921068875857/unknown.png
         //distanceがrange越えると0になる対数関数
-        return curve>=0 ? volume*curve : 0;
+        return curve >= 0 ? volume * curve : 0;
     }
 }

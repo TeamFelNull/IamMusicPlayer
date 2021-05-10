@@ -13,7 +13,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.client.IamMusicPlayerClient;
-import red.felnull.imp.client.music.MusicPlaySystem;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.LavaALMusicPlayer;
 import red.felnull.imp.client.music.player.LavaLineMusicPlayer;
@@ -24,7 +23,6 @@ import java.util.Arrays;
 
 public class LavaPlayerLoader implements IMusicPlayerLoader {
     private static final Logger LOGGER = LogManager.getLogger(LavaPlayerLoader.class);
-    private static final AudioDataFormat COMMON_PCM_S16_LE_C1 = new Pcm16AudioDataFormat(1, 48000, 960, false);
     private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
     private static final AudioDataFormat COMMON_PCM_S16_BE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, true);
     private final AudioSourceManager[] sourceManagers;
@@ -52,20 +50,19 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicLocation location) {
-        AudioDataFormat format = null;
         switch (IamMusicPlayerClient.CLIENT_CONFIG.playSystem) {
             case OPEN_AL_MONO:
-                format = COMMON_PCM_S16_LE_C1;
-                break;
+                audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
+                return new LavaALMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_LE_C2, true);
             case OPEN_AL_STEREO:
-                format = COMMON_PCM_S16_LE_C2;
-                break;
+                audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
+                return new LavaALMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_LE_C2, false);
             case JAVA_SOUND_API:
-                format = COMMON_PCM_S16_BE_C2;
-                break;
+                audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_BE_C2);
+                return new LavaLineMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_BE_C2);
         }
-        audioPlayerManager.getConfiguration().setOutputFormat(format);
-        return IamMusicPlayerClient.CLIENT_CONFIG.playSystem == MusicPlaySystem.JAVA_SOUND_API ? new LavaLineMusicPlayer(location, audioPlayerManager, format) : new LavaALMusicPlayer(location, audioPlayerManager, format);
+
+        throw new IllegalArgumentException("No sound play system.");
     }
 
     public class LoadTestThread extends Thread {

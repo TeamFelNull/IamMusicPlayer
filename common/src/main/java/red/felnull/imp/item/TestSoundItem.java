@@ -9,7 +9,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.music.MusicEngine;
 import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.imp.packet.MusicClientInstructionMessage;
 import red.felnull.otyacraftengine.util.IKSGPacketUtil;
@@ -39,12 +38,12 @@ public class TestSoundItem extends Item {
             musicPlayer.linearAttenuation(32f);
 
             musicPlayer.play(0);*/
-            if (player.isCrouching()) {
-                MusicEngine.getInstance().reload();
-            }
+
         } else {
             if (!player.isCrouching()) {
                 IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), itemStack.getHoverName().getString())));
+            } else {
+                IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "http"), itemStack.getHoverName().getString())));
             }
 
 

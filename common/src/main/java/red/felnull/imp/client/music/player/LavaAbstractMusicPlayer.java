@@ -9,12 +9,12 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 
@@ -31,6 +31,8 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     protected long duration;
     protected AudioInputStream stream;
     protected boolean stereo;
+    protected float attenuation;
+    protected Vec3 position = Vec3.ZERO;
 
     public LavaAbstractMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
         this.musicLocation = location;
@@ -50,6 +52,13 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
                 audioPlayer.startTrack(track, false);
                 if (!track.getInfo().isStream)
                     duration = track.getDuration();
+
+                try {
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
                 trackLoaded = true;
             }
 
@@ -81,7 +90,7 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
 
         stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
 
-        stereo = stream.getFormat().getChannels() >= 2;
+        stereo = AudioDataFormatTools.toAudioFormat(dataformat).getChannels() >= 2;
     }
 
     @Override
@@ -106,6 +115,13 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     }
 
     @Override
+    public void setPosition(long position) {
+        if (audioPlayer.getPlayingTrack() != null) {
+            audioPlayer.getPlayingTrack().setPosition(position);
+        }
+    }
+
+    @Override
     public void destroy() {
         startTime = 0;
         startPosition = 0;
@@ -117,5 +133,16 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
             }
             this.stream = null;
         }
+        audioPlayer.destroy();
+    }
+
+    @Override
+    public void setSelfPosition(Vec3 vec3) {
+        position = vec3;
+    }
+
+    @Override
+    public void linearAttenuation(float f) {
+        attenuation = f;
     }
 }
