@@ -51,10 +51,10 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
     @Override
     public IMusicPlayer createMusicPlayer(MusicLocation location) {
         switch (IamMusicPlayerClient.CLIENT_CONFIG.playSystem) {
-            case OPEN_AL_MONO:
+            case OPEN_AL_SPATIAL:
                 audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
                 return new LavaALMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_LE_C2, true);
-            case OPEN_AL_STEREO:
+            case OPEN_AL_NONSPATIAL:
                 audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
                 return new LavaALMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_LE_C2, false);
             case JAVA_SOUND_API:

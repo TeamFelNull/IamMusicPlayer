@@ -25,6 +25,6 @@ public class SoundMath {
         float curve = (float) -Math.log10(9f / 10f * distance / range + 1f / 10f);
         //https://cdn.discordapp.com/attachments/465465434641006593/840981921068875857/unknown.png
         //distanceがrange越えると0になる対数関数
-        return curve >= 0 ? volume * curve : 0;
+        return Mth.clamp(volume*curve, 0, 1);
     }
 }

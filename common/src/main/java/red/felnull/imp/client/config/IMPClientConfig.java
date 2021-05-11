@@ -11,5 +11,5 @@ public class IMPClientConfig implements ConfigData {
 
     public float volume = 1f;
 
-    public MusicPlaySystem playSystem = MusicPlaySystem.OPEN_AL_MONO;
+    public MusicPlaySystem playSystem = MusicPlaySystem.OPEN_AL_SPATIAL;
 }
