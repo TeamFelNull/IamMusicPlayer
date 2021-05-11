@@ -31,8 +31,11 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     protected long duration;
     protected AudioInputStream stream;
     protected boolean stereo;
+    protected boolean disableAttenuation;
     protected float attenuation;
     protected Vec3 position = Vec3.ZERO;
+    private long lastPausedTime;
+    private long pausedTime;
 
     public LavaAbstractMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
         this.musicLocation = location;
@@ -95,7 +98,7 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
 
     @Override
     public long getPosition() {
-        return System.currentTimeMillis() - startTime + startPosition;
+        return System.currentTimeMillis() - startTime + startPosition - pausedTime;
     }
 
     @Override
@@ -104,8 +107,26 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void update() {
+    public void pause() {
+        lastPausedTime = System.currentTimeMillis();
+    }
 
+    @Override
+    public void unpause() {
+        lastPausedTime = 0;
+    }
+
+    @Override
+    public void update() {
+        if (paused()) {
+            pausedTime += System.currentTimeMillis() - lastPausedTime;
+            lastPausedTime = System.currentTimeMillis();
+        }
+    }
+
+    @Override
+    public void disableAttenuation() {
+        disableAttenuation = true;
     }
 
     @Override

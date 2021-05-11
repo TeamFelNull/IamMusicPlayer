@@ -22,8 +22,9 @@ public interface IMusicPlayer {
 
     boolean stopped();
 
-    void setSelfPosition(Vec3 vec3);
+    boolean paused();
 
+    void setSelfPosition(Vec3 vec3);
 
     void setVolume(float f);
 

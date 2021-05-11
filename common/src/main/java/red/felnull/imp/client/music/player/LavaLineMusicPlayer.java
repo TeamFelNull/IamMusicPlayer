@@ -70,13 +70,20 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
     }
 
     @Override
+    public boolean paused() {
+        return paused;
+    }
+
+    @Override
     public void pause() {
+        super.pause();
         audioPlayer.setPaused(true);
         paused = true;
     }
 
     @Override
     public void unpause() {
+        super.unpause();
         audioPlayer.setPaused(false);
         paused = false;
     }
@@ -94,16 +101,13 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
     @Override
     public void setVolume(float f) {
         if (line.isOpen()) {
-            f = SoundMath.calculatePseudoAttenuation(position, attenuation, f) * Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MASTER);
+            if (!disableAttenuation)
+                f = SoundMath.calculatePseudoAttenuation(position, attenuation, f) * Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MASTER);
             FloatControl control = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
             control.setValue(IKSGMath.clamp((float) (20d * Math.log10(f)), control.getMinimum(), control.getMaximum()));
         }
     }
 
-    @Override
-    public void disableAttenuation() {
-
-    }
 
     public class PlayThread extends Thread {
         public PlayThread() {

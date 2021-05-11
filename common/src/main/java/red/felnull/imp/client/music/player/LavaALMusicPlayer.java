@@ -107,6 +107,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
     @Override
     public void pause() {
         if (getPlayState() == AL_PLAYING) {
+            super.pause();
             alSourcePause(this.source);
         }
     }
@@ -114,6 +115,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
     @Override
     public void unpause() {
         if (getPlayState() == AL_PAUSED) {
+            super.unpause();
             alSourcePlay(this.source);
         }
     }
@@ -129,6 +131,11 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
     }
 
     @Override
+    public boolean paused() {
+        return getPlayState() == AL_PAUSED;
+    }
+
+    @Override
     public void setSelfPosition(Vec3 sp) {
         super.setSelfPosition(sp);
         alSource3f(source, AL_POSITION, (float) sp.x, (float) sp.y, (float) sp.z);
@@ -136,7 +143,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
 
     @Override
     public void setVolume(float f) {
-        if (stereo) {
+        if (stereo && !disableAttenuation) {
             f = SoundMath.calculatePseudoAttenuation(position, attenuation, f);
         }
         alSourcef(source, AL_GAIN, f);
@@ -153,6 +160,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
 
     @Override
     public void disableAttenuation() {
+        super.disableAttenuation();
         alSourcei(this.source, AL_DISTANCE_MODEL, AL_FALSE);
     }
 
