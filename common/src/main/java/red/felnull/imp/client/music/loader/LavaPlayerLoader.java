@@ -16,12 +16,14 @@ import red.felnull.imp.client.IamMusicPlayerClient;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.LavaALMusicPlayer;
 import red.felnull.imp.client.music.player.LavaLineMusicPlayer;
+import red.felnull.imp.client.music.subtitle.IMusicSubtitle;
+import red.felnull.imp.client.music.subtitle.YoutubeSubtitle;
 import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
 import java.util.Arrays;
 
-public class LavaPlayerLoader implements IMusicPlayerLoader {
+public class LavaPlayerLoader implements IMusicLoader {
     private static final Logger LOGGER = LogManager.getLogger(LavaPlayerLoader.class);
     private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
     private static final AudioDataFormat COMMON_PCM_S16_BE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, true);
@@ -46,6 +48,14 @@ public class LavaPlayerLoader implements IMusicPlayerLoader {
         Arrays.stream(sourceManagers).forEach(n -> audioPlayerManager.registerSourceManager(n));
         LoadTestThread ltt = new LoadTestThread();
         ltt.start();
+    }
+
+    @Override
+    public IMusicSubtitle createMusicSubtitle(MusicLocation location) {
+        if ("youtube".equals(name)) {
+            return new YoutubeSubtitle(location.getIdentifier());
+        }
+        return IMusicLoader.super.createMusicSubtitle(location);
     }
 
     @Override

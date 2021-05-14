@@ -3,7 +3,7 @@ package red.felnull.imp.client.music;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.api.client.IMPClientRegistry;
-import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
+import red.felnull.imp.client.music.loader.IMusicLoader;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.resource.MusicLocation;
@@ -42,7 +42,7 @@ public class MusicLoaderThread extends Thread {
             return;
         }
 
-        IMusicPlayerLoader loader = IMPClientRegistry.getLoader(location.getLoaderName());
+        IMusicLoader loader = IMPClientRegistry.getLoader(location.getLoaderName());
         IMusicPlayer player = null;
         long startTime = System.currentTimeMillis();
         try {

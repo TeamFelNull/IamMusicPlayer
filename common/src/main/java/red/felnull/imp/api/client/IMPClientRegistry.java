@@ -3,7 +3,7 @@ package red.felnull.imp.api.client;
 import net.minecraft.resources.ResourceLocation;
 import red.felnull.imp.api.IamMusicPlayerAPI;
 import red.felnull.imp.api.register.IMPMusicPlayerRegister;
-import red.felnull.imp.client.music.loader.IMusicPlayerLoader;
+import red.felnull.imp.client.music.loader.IMusicLoader;
 import red.felnull.otyacraftengine.api.register.OERegistries;
 
 public class IMPClientRegistry {
@@ -14,10 +14,10 @@ public class IMPClientRegistry {
             n.registrationMusicPlayerLoader(musicPlayerRegister);
         });
 
-        OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().values().forEach(IMusicPlayerLoader::init);
+        OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().values().forEach(IMusicLoader::init);
     }
 
-    public static IMusicPlayerLoader getLoader(ResourceLocation location) {
+    public static IMusicLoader getLoader(ResourceLocation location) {
         return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().get(location);
     }
 

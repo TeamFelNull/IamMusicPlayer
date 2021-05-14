@@ -5,9 +5,9 @@ import com.sedmelluq.discord.lavaplayer.format.AudioDataFormatTools;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.music.resource.MusicLocation;
-import red.felnull.otyacraftengine.util.IKSGMath;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -104,7 +104,7 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
             if (!disableAttenuation)
                 f = SoundMath.calculatePseudoAttenuation(position, attenuation, f) * Minecraft.getInstance().options.getSoundSourceVolume(SoundSource.MASTER);
             FloatControl control = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
-            control.setValue(IKSGMath.clamp((float) (20d * Math.log10(f)), control.getMinimum(), control.getMaximum()));
+            control.setValue(Mth.clamp((float) (20d * Math.log10(f)), control.getMinimum(), control.getMaximum()));
         }
     }
 
