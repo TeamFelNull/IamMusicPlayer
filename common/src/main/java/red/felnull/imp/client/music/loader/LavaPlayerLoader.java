@@ -51,11 +51,11 @@ public class LavaPlayerLoader implements IMusicLoader {
     }
 
     @Override
-    public IMusicSubtitle createMusicSubtitle(MusicLocation location) {
+    public IMusicSubtitle createMusicSubtitle(IMusicPlayer musicPlayer, MusicLocation location) {
         if ("youtube".equals(name)) {
-            return new YoutubeSubtitle(location.getIdentifier());
+            return new YoutubeSubtitle(musicPlayer, location.getIdentifier());
         }
-        return IMusicLoader.super.createMusicSubtitle(location);
+        return IMusicLoader.super.createMusicSubtitle(musicPlayer, location);
     }
 
     @Override

@@ -11,6 +11,10 @@
   "item.iammusicplayer.cassette_player": "Cassette Player",
   "item.iammusicplayer.magnetic_tape": "Magnetic Tape",
   "_comment.b": "Block",
+  "_comment.m": "Music",
+  "musicPlaySystem.spatial": "Spatial",
+  "musicPlaySystem.non_spatial": "Non Spatial",
+  "musicPlaySystem.jsa": "Java Sound API",
   "_comment.c": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
   "_comment.la": "Last"

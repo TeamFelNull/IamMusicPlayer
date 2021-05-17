@@ -26,6 +26,8 @@ public interface IMusicPlayer {
 
     void setSelfPosition(Vec3 vec3);
 
+    Vec3 getSelfPosition();
+
     void setVolume(float f);
 
     void linearAttenuation(float f);

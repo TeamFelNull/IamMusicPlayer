@@ -9,7 +9,7 @@ public interface IMusicLoader {
 
     IMusicPlayer createMusicPlayer(MusicLocation location);
 
-    default IMusicSubtitle createMusicSubtitle(MusicLocation location) {
+    default IMusicSubtitle createMusicSubtitle(IMusicPlayer musicPlayer, MusicLocation location) {
         return null;
     }
 

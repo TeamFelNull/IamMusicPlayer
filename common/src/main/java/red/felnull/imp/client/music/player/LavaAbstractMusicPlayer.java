@@ -166,4 +166,9 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     public void linearAttenuation(float f) {
         attenuation = f;
     }
+
+    @Override
+    public Vec3 getSelfPosition() {
+        return position;
+    }
 }

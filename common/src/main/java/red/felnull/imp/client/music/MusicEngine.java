@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.client.music.subtitle.SubtitleManager;
 import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.info.tracker.MusicTracker;
@@ -145,6 +146,11 @@ public class MusicEngine {
                 n.musicPlayer.setVolume(SoundMath.calculateVolume(n.musicTracker.getTrackingVolume(mc.level)));
             }
         });
+        SubtitleManager.getInstance().tick(paused);
+    }
+
+    public boolean isExist(UUID uuid) {
+        return musicPlayers.containsKey(uuid);
     }
 
     public static class MusicPlayingEntry {

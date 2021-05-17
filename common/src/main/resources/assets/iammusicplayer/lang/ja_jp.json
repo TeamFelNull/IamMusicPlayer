@@ -11,6 +11,10 @@
   "item.iammusicplayer.cassette_player": "カセットプレーヤー",
   "item.iammusicplayer.magnetic_tape": "磁気テープ",
   "_comment.b": "Block",
+  "_comment.m": "Music",
+  "musicPlaySystem.spatial": "空間的",
+  "musicPlaySystem.non_spatial": "非空間的",
+  "musicPlaySystem.jsa": "Java Sound API",
   "_comment.c": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
   "_comment.la": "Last"

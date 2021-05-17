@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import red.felnull.imp.api.client.IMPClientRegistry;
 import red.felnull.imp.client.music.loader.IMusicLoader;
 import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.client.music.subtitle.IMusicSubtitle;
+import red.felnull.imp.client.music.subtitle.SubtitleLoaderThread;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.resource.MusicLocation;
 import red.felnull.imp.packet.MusicResponseMessage;
@@ -43,12 +45,12 @@ public class MusicLoaderThread extends Thread {
         }
 
         IMusicLoader loader = IMPClientRegistry.getLoader(location.getLoaderName());
+
         IMusicPlayer player = null;
         long startTime = System.currentTimeMillis();
         try {
             player = loader.createMusicPlayer(location);
             player.ready(startPosition);
-
         } catch (Exception ex) {
             LOGGER.error("Failed to load music: " + location.getIdentifier(), ex);
             if (!stop && !autPlay)
@@ -59,6 +61,14 @@ public class MusicLoaderThread extends Thread {
         }
 
         long eqTime = System.currentTimeMillis() - startTime;
+
+        IMusicSubtitle subtitle = loader.createMusicSubtitle(player, location);
+
+        if (subtitle != null) {
+            SubtitleLoaderThread slt = new SubtitleLoaderThread(uuid, location, subtitle, () -> stop);
+            slt.start();
+        }
+
         if (!stop && !autPlay)
             IKSGPacketUtil.sendToServerPacket(new MusicResponseMessage(MusicResponseMessage.Type.READY_COMPLETE, uuid, eqTime));
         if (stop)
