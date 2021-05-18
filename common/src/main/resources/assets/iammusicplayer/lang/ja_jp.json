@@ -23,6 +23,7 @@
   "text.autoconfig.iammusicplayer.option.volume": "音量",
   "text.autoconfig.iammusicplayer.option.playSystem": "再生方式",
   "text.autoconfig.iammusicplayer.option.subtitleSystem": "字幕",
+  "text.autoconfig.iammusicplayer.option.subtitleLanguage": "字幕の言語",
   "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
   "_comment.la": "Last",

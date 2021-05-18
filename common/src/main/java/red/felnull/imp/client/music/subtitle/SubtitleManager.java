@@ -1,11 +1,13 @@
 package red.felnull.imp.client.music.subtitle;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.IamMusicPlayerClient;
 import red.felnull.imp.client.gui.components.MusicSubtitleOverlay;
 import red.felnull.imp.client.music.MusicEngine;
+import red.felnull.imp.client.util.SubtitleUtil;
 import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 
 import java.util.*;
@@ -22,7 +24,19 @@ public class SubtitleManager {
     }
 
     public Optional<String> getDefaultSubtitle(List<String> langCodes) {
-        return langCodes.stream().filter(n -> mc.getLanguageManager().getSelected().getCode().contains(n)).findFirst();
+
+        if (langCodes.contains(IamMusicPlayer.CONFIG.subtitleLanguage))
+            return Optional.of(IamMusicPlayer.CONFIG.subtitleLanguage);
+
+        Optional<String> al = langCodes.stream().filter(n -> mc.getLanguageManager().getSelected().getCode().contains(n)).findFirst();
+
+        if (al.isPresent())
+            return al;
+
+        if (langCodes.contains("en"))
+            return Optional.of("en");
+
+        return Optional.empty();
     }
 
     public void tick(boolean paused) {
@@ -50,7 +64,7 @@ public class SubtitleManager {
                     if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.OVERLAY) {
                         overlay.addSubtitle(l);
                     } else if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.VANILLA) {
-                        IKSGClientUtil.addSubtitle(new TextComponent(l.getText()), l.getDuration(), () -> m.getMusicPlayer().getSelfPosition());
+                        IKSGClientUtil.addSubtitle(l.getText(), l.getDuration(), () -> m.getMusicPlayer().getSelfPosition());
                     }
                 });
             }
@@ -65,13 +79,39 @@ public class SubtitleManager {
             overlay.clear();
     }
 
+    public Component createSubtitle(String text) {
+
+        try {
+            if (!SubtitleUtil.getFirstCodes(text).isEmpty()) {
+                List<Component> comps = SubtitleUtil.getHTMLSubtitleComponents(text);
+
+                MutableComponent component = null;
+
+                for (Component comp : comps) {
+                    if (component == null)
+                        component = comp.copy();
+                    else
+                        component.append(comp);
+                }
+
+                if (component != null)
+                    return component;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        text = SubtitleUtil.convertDisplayableSubtitle(text);
+
+        return new TextComponent(text);
+    }
 
     public static class MusicSubtitleEntry {
         private final long startTime;
         private final long duration;
-        private final String text;
+        private final Component text;
 
-        public MusicSubtitleEntry(long startTime, long duration, String text) {
+        public MusicSubtitleEntry(long startTime, long duration, Component text) {
             this.startTime = startTime;
             this.duration = duration;
             this.text = text;
@@ -85,7 +125,7 @@ public class SubtitleManager {
             return startTime;
         }
 
-        public String getText() {
+        public Component getText() {
             return text;
         }
     }

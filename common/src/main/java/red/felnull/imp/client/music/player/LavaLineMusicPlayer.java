@@ -44,6 +44,8 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
         super.play(delay);
 
         if (duration == 0 || duration >= startPosition) {
+            long cp = audioPlayer.getPlayingTrack().getPosition();
+            audioPlayer.getPlayingTrack().setPosition(cp + delay);
             PlayThread pt = new PlayThread();
             pt.start();
         }

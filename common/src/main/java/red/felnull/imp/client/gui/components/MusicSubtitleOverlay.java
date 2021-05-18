@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import red.felnull.imp.client.gui.IMPFonts;
 import red.felnull.imp.client.music.subtitle.SubtitleManager;
 
@@ -32,7 +32,7 @@ public class MusicSubtitleOverlay extends GuiComponent {
 
             int h = getMinHeight() + (2 + font.lineHeight) * num;
             if (h <= getMaxHeight()) {
-                Component text = new TextComponent(entry.getKey().getText()).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
+                Component text = entry.getKey().getText().copy().setStyle(entry.getKey().getText().getStyle().withFont(IMPFonts.FLOPDE_SIGN_FONT));
                 drawText(poseStack, font.lineHeight, getWidth() / 2, getHeight() - h, text);
             }
 
@@ -65,8 +65,13 @@ public class MusicSubtitleOverlay extends GuiComponent {
     private int getMinHeight() {
         int h = 0;
 
-        if (mc.screen == null)
+        if (mc.screen == null) {
             h += 22;
+            if (!mc.player.isSpectator() && !mc.player.isCreative())
+                h += 18;
+        } else if (mc.screen instanceof ChatScreen) {
+            h += 15;
+        }
 
         return h;
     }

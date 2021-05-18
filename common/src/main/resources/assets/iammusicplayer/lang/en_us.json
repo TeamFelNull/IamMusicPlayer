@@ -25,6 +25,7 @@
   "text.autoconfig.iammusicplayer.option.playSystem": "Play System",
   "text.autoconfig.iammusicplayer.option.playSystem.@Tooltip": "The Music Play System",
   "text.autoconfig.iammusicplayer.option.subtitleSystem": "Subtitle",
+  "text.autoconfig.iammusicplayer.option.subtitleLanguage": "Subtitle Language",
   "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
   "_comment.la": "Last"

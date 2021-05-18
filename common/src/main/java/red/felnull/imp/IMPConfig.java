@@ -19,4 +19,7 @@ public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("client")
     public SubtitleSystem subtitleSystem = SubtitleSystem.VANILLA;
+
+    @ConfigEntry.Category("client")
+    public String subtitleLanguage = "";
 }
