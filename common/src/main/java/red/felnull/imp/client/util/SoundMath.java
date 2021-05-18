@@ -3,13 +3,13 @@ package red.felnull.imp.client.util;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.AL11;
-import red.felnull.imp.client.IamMusicPlayerClient;
+import red.felnull.imp.IamMusicPlayer;
 
 import static org.lwjgl.openal.AL10.AL_POSITION;
 
 public class SoundMath {
     public static float calculateVolume(float playerVolume) {
-        return Mth.clamp(playerVolume * IamMusicPlayerClient.CLIENT_CONFIG.volume, 0.0F, 1.0F);
+        return Mth.clamp(playerVolume * IamMusicPlayer.CONFIG.volume, 0.0F, 1.0F);
     }
 
     public static float calculatePseudoAttenuation(Vec3 position, float range, float volume) {
@@ -25,6 +25,6 @@ public class SoundMath {
         float curve = (float) -Math.log10(9f / 10f * distance / range + 1f / 10f);
         //https://cdn.discordapp.com/attachments/465465434641006593/840981921068875857/unknown.png
         //distanceがrange越えると0になる対数関数
-        return Mth.clamp(volume*curve, 0, 1);
+        return Mth.clamp(volume * curve, 0, 1);
     }
 }

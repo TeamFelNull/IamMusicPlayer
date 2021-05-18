@@ -1,13 +1,8 @@
 package red.felnull.imp.api;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraft.world.InteractionResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.config.IMPClientConfig;
-import red.felnull.imp.client.music.MusicEngine;
-import red.felnull.otyacraftengine.api.OtyacraftEngineAPI;
 import red.felnull.otyacraftengine.util.IKSGModUtil;
 
 import java.util.List;

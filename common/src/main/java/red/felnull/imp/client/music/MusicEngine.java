@@ -4,8 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.IamMusicPlayerClient;
+import red.felnull.imp.client.music.loader.MusicLoaderThread;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.subtitle.SubtitleManager;
+import red.felnull.imp.client.music.subtitle.SubtitleSystem;
 import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.info.tracker.MusicTracker;
@@ -17,8 +21,8 @@ public class MusicEngine {
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final Minecraft mc = Minecraft.getInstance();
     private static final MusicEngine INSTANCE = new MusicEngine();
-    protected final Map<UUID, MusicPlayingEntry> musicPlayers = new HashMap<>();
-    protected final Map<UUID, MusicLoaderThread> loaders = new HashMap<>();
+    public final Map<UUID, MusicPlayingEntry> musicPlayers = new HashMap<>();
+    public final Map<UUID, MusicLoaderThread> loaders = new HashMap<>();
     private boolean reload;
     private ResourceLocation lastLocation;
 
@@ -146,7 +150,8 @@ public class MusicEngine {
                 n.musicPlayer.setVolume(SoundMath.calculateVolume(n.musicTracker.getTrackingVolume(mc.level)));
             }
         });
-        SubtitleManager.getInstance().tick(paused);
+        if (IamMusicPlayer.CONFIG.subtitleSystem != SubtitleSystem.OFF)
+            SubtitleManager.getInstance().tick(paused);
     }
 
     public boolean isExist(UUID uuid) {

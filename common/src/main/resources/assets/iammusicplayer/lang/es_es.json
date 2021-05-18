@@ -12,7 +12,8 @@
   "item.iammusicplayer.magnetic_tape": "Cinta magnética",
   "_comment.b": "Block",
   "_comment.m": "Music",
-  "_comment.c": "CreativeTab",
+  "_comment.co": "Config",
+  "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
   "_comment.la": "Last"
 }

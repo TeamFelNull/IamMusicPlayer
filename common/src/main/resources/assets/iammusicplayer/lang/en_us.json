@@ -15,7 +15,17 @@
   "musicPlaySystem.spatial": "Spatial",
   "musicPlaySystem.non_spatial": "Non Spatial",
   "musicPlaySystem.jsa": "Java Sound API",
-  "_comment.c": "CreativeTab",
+  "subtitleSystem.off": "Off",
+  "subtitleSystem.vanilla": "Vanilla",
+  "subtitleSystem.overlay": "Overlay",
+  "_comment.co": "Config",
+  "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
+  "text.autoconfig.iammusicplayer.category.client": "Client",
+  "text.autoconfig.iammusicplayer.option.volume": "Volume",
+  "text.autoconfig.iammusicplayer.option.playSystem": "Play System",
+  "text.autoconfig.iammusicplayer.option.playSystem.@Tooltip": "The Music Play System",
+  "text.autoconfig.iammusicplayer.option.subtitleSystem": "Subtitle",
+  "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
   "_comment.la": "Last"
 }

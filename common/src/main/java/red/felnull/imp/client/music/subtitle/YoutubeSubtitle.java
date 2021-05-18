@@ -73,6 +73,7 @@ public class YoutubeSubtitle implements IMusicSubtitle {
                         float st = Float.parseFloat(att.getNamedItem("start").getNodeValue());
                         float dr = Float.parseFloat(att.getNamedItem("dur").getNodeValue());
                         String text = node2.getTextContent();
+                        text = text.replace("\u3000", " ");
                         SubtitleManager.MusicSubtitleEntry entry = new SubtitleManager.MusicSubtitleEntry((long) (st * 1000), (long) (dr * 1000), text);
                         subtitleEntries.add(entry);
                     } catch (Exception ex) {

@@ -2,6 +2,9 @@ package red.felnull.imp.client.music.subtitle;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
+import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.IamMusicPlayerClient;
+import red.felnull.imp.client.gui.components.MusicSubtitleOverlay;
 import red.felnull.imp.client.music.MusicEngine;
 import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 
@@ -12,6 +15,7 @@ public class SubtitleManager {
     private static final Minecraft mc = Minecraft.getInstance();
     protected final Map<UUID, IMusicSubtitle> subtitles = new HashMap<>();
     protected final Map<UUID, Long> subtitleLastTimes = new HashMap<>();
+    public final MusicSubtitleOverlay overlay = new MusicSubtitleOverlay();
 
     public static SubtitleManager getInstance() {
         return INSTANCE;
@@ -42,7 +46,13 @@ public class SubtitleManager {
 
                 subtitleLastTimes.put(n, po);
 
-                addSubs.forEach(l -> IKSGClientUtil.addSubtitle(new TextComponent(l.getText()), l.getDuration(), () -> m.getMusicPlayer().getSelfPosition()));
+                addSubs.forEach(l -> {
+                    if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.OVERLAY) {
+                        overlay.addSubtitle(l);
+                    } else if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.VANILLA) {
+                        IKSGClientUtil.addSubtitle(new TextComponent(l.getText()), l.getDuration(), () -> m.getMusicPlayer().getSelfPosition());
+                    }
+                });
             }
         });
 
@@ -50,6 +60,9 @@ public class SubtitleManager {
             subtitles.remove(n);
             subtitleLastTimes.remove(n);
         });
+
+        if (mc.level == null)
+            overlay.clear();
     }
 
 

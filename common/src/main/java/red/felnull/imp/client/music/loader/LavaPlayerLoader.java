@@ -12,6 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.IamMusicPlayerClient;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.LavaALMusicPlayer;
@@ -60,7 +61,7 @@ public class LavaPlayerLoader implements IMusicLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicLocation location) {
-        switch (IamMusicPlayerClient.CLIENT_CONFIG.playSystem) {
+        switch (IamMusicPlayer.CONFIG.playSystem) {
             case OPEN_AL_SPATIAL:
                 audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
                 return new LavaALMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_LE_C2, true);

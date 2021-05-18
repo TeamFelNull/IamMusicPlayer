@@ -12,10 +12,19 @@
   "item.iammusicplayer.magnetic_tape": "磁気テープ",
   "_comment.b": "Block",
   "_comment.m": "Music",
-  "musicPlaySystem.spatial": "空間的",
-  "musicPlaySystem.non_spatial": "非空間的",
+  "musicPlaySystem.spatial": "Spatial",
+  "musicPlaySystem.non_spatial": "Non Spatial",
   "musicPlaySystem.jsa": "Java Sound API",
-  "_comment.c": "CreativeTab",
+  "subtitleSystem.off": "オフ",
+  "subtitleSystem.vanilla": "バニラ",
+  "subtitleSystem.overlay": "オーバーレイ",
+  "_comment.co": "Config",
+  "text.autoconfig.iammusicplayer.title": "Iam Music Playerの設定",
+  "text.autoconfig.iammusicplayer.option.volume": "音量",
+  "text.autoconfig.iammusicplayer.option.playSystem": "再生方式",
+  "text.autoconfig.iammusicplayer.option.subtitleSystem": "字幕",
+  "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
-  "_comment.la": "Last"
+  "_comment.la": "Last",
+  "text.autoconfig.iammusicplayer.option.playSystem.@Tooltip": "The Music Play System"
 }
