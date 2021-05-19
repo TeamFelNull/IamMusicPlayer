@@ -10,6 +10,7 @@ public class MSDPlayListMonitor extends MSDBaseMonitor {
 
     public MSDPlayListMonitor(MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdscreen.playlist.title"), parentScreen, x, y, width, height);
+        this.renderHeader = false;
     }
 
     @Override

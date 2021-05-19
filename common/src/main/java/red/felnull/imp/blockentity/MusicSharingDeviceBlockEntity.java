@@ -69,7 +69,9 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
     @Override
     public CompoundTag instructionFromClient(ServerPlayer player, String name, CompoundTag data) {
         if (name.equals("Screen")) {
-            setCurrentScreen(player.getGameProfile().getId(), Screen.getScreenByName(data.getString("Name")));
+            Screen sc = Screen.getScreenByName(data.getString("Name"));
+            if (isPowerOn() || sc == Screen.OFF)
+                setCurrentScreen(player.getGameProfile().getId(), sc);
         } else if (name.equals("Open")) {
             if (!playerScreens.containsKey(player.getGameProfile().getId()))
                 setCurrentScreen(player.getGameProfile().getId(), Screen.OFF);
@@ -115,6 +117,7 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
 
     public static enum Screen implements StringRepresentable {
         OFF("off"),
+        DEBUG("debug"),
         PLAYLIST("playlist");
         private final String name;
 

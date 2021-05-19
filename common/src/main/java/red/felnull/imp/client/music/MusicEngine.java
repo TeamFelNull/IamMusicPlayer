@@ -150,6 +150,7 @@ public class MusicEngine {
                 n.musicPlayer.setVolume(SoundMath.calculateVolume(n.musicTracker.getTrackingVolume(mc.level)));
             }
         });
+
         if (IamMusicPlayer.CONFIG.subtitleSystem != SubtitleSystem.OFF)
             SubtitleManager.getInstance().tick(paused);
     }

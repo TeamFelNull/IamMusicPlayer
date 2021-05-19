@@ -7,5 +7,6 @@ public class MSDOffMonitor extends MSDBaseMonitor {
     public MSDOffMonitor(MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdscreen.off.title"), parentScreen, x, y, width, height);
         this.renderBackGround = false;
+        this.renderHeader = false;
     }
 }

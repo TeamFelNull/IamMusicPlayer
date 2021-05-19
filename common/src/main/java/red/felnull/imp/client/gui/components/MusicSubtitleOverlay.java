@@ -32,7 +32,7 @@ public class MusicSubtitleOverlay extends GuiComponent {
 
             int h = getMinHeight() + (2 + font.lineHeight) * num;
             if (h <= getMaxHeight()) {
-                Component text = entry.getKey().getText().copy().setStyle(entry.getKey().getText().getStyle().withFont(IMPFonts.FLOPDE_SIGN_FONT));
+                Component text = entry.getKey().getText().copy().withStyle(IMPFonts.FLOPDE_SIGN_FONT);
                 drawText(poseStack, font.lineHeight, getWidth() / 2, getHeight() - h, text);
             }
 
