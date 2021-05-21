@@ -57,7 +57,7 @@ public class SubtitleUtil {
             for (String s : n.getValue()) {
                 Style style = getStyleByCode(s);
                 if (style != null)
-                    tc.setStyle(tc.getStyle().applyTo(style));
+                    tc.withStyle(style);
             }
             comps.add(tc);
         });
@@ -79,6 +79,8 @@ public class SubtitleUtil {
 
     private static Style getStyleByCode(String code) {
 
+        Style style = Style.EMPTY;
+
         String[] codes = code.split(" ");
         String firstCode = codes[0];
 
@@ -89,12 +91,12 @@ public class SubtitleUtil {
                     Matcher matcher = colorCordPattern.matcher(fonts[1]);
                     if (matcher.find()) {
                         int c = Integer.parseInt(matcher.group(1), 16);
-                        return Style.EMPTY.withColor(c);
+                        style.withColor(c);
                     }
                 }
             }
         }
-        return null;
+        return style;
     }
 
     private static List<String> getCodes(String text) {
