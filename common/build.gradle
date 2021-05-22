@@ -1,9 +1,9 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 configurations {
     shadow
-    compile.extendsFrom(shadow)
+    implementation.extendsFrom(shadow)
 }
 repositories {
     maven {

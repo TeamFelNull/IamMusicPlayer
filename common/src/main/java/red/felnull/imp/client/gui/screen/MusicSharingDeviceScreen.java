@@ -38,7 +38,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         addScreens();
 
         if (OtyacraftEngineAPI.getInstance().isDebugMode())
-            this.addButton(new Button(leftPos + imageWidth - 34, topPos + imageHeight - 40 + 20, 20, 20, new TextComponent("Debug"), n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG)));
+            this.addRenderableWidget(new Button(leftPos + imageWidth - 34, topPos + imageHeight - 40 + 20, 20, 20, new TextComponent("Debug"), n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG)));
 
 
     }

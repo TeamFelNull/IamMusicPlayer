@@ -3,16 +3,17 @@ package red.felnull.imp.client.gui.components.monitor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.TickableWidget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import red.felnull.otyacraftengine.client.gui.screen.IkisugiContainerScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractContainerEventHandler implements TickableWidget {
+public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractContainerEventHandler implements NarratableEntry {
     protected final List<GuiEventListener> children = new ArrayList<>();
     protected final List<AbstractWidget> buttons = new ArrayList<>();
     protected final PS parentScreen;
@@ -92,8 +93,18 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         return Minecraft.getInstance();
     }
 
-    @Override
+
     public void tick() {
+
+    }
+
+    @Override
+    public NarrationPriority narrationPriority() {
+        return NarrationPriority.NONE;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 }

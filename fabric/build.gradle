@@ -1,10 +1,10 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
 }
 
 configurations {
     shadow
-    compile.extendsFrom(shadow)
+    implementation.extendsFrom(shadow)
 }
 
 architectury {
@@ -24,7 +24,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
     modApi "me.shedaniel:architectury-fabric:${rootProject.architectury_version}"
-    modApi "com.terraformersmc:modmenu:${modmenu_version}"
+   // modApi "com.terraformersmc:modmenu:${modmenu_version}"
     modApi "de.javagl:obj:0.3.0"
     implementation files("libs/OtyacraftEngine-${rootProject.oe_version}-dev-shadow.jar")
     shadow 'com.sedmelluq:lavaplayer:1.3.75'

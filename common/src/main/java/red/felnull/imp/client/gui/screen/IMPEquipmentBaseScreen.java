@@ -23,7 +23,7 @@ public abstract class IMPEquipmentBaseScreen<T extends IkisugiContainerMenu> ext
     @Override
     protected void init() {
         super.init();
-        this.addButton(new PowerButton(leftPos + imageWidth - 34, topPos + imageHeight - 40, n -> insPower(!isPowerOn())));
+        this.addRenderableWidget(new PowerButton(leftPos + imageWidth - 34, topPos + imageHeight - 40, n -> insPower(!isPowerOn())));
     }
 
     protected void insPower(boolean on) {
