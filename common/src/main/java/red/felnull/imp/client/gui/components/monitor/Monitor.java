@@ -1,19 +1,20 @@
 package red.felnull.imp.client.gui.components.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.Nullable;
+import red.felnull.otyacraftengine.client.gui.components.IIkisugibleWidget;
 import red.felnull.otyacraftengine.client.gui.screen.IkisugiContainerScreen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractContainerEventHandler implements NarratableEntry {
+public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractContainerEventHandler implements NarratableEntry, IIkisugibleWidget {
     protected final List<GuiEventListener> children = new ArrayList<>();
     protected final List<AbstractWidget> buttons = new ArrayList<>();
     protected final PS parentScreen;
@@ -31,11 +32,10 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         this.height = height;
         this.parentScreen = parentScreen;
         this.title = component;
-        init();
     }
 
     public void init() {
-
+        active = true;
     }
 
     public void render(PoseStack poseStack, int mousX, int mousY, float parTick) {
@@ -55,7 +55,7 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         return guiEventListener;
     }
 
-    protected <T extends AbstractWidget> T addButton(T abstractWidget) {
+    protected <T extends AbstractWidget> T addRenderableWidget(T abstractWidget) {
         this.buttons.add(abstractWidget);
         return this.addWidget(abstractWidget);
     }
@@ -69,13 +69,13 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         return parentScreen;
     }
 
-    public void enabled() {
+    /*public void enabled() {
         active = true;
         buttons.forEach(n -> {
             n.visible = true;
             n.active = true;
         });
-    }
+    }*/
 
     public void disable() {
         active = false;
@@ -88,11 +88,6 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     public boolean isActive() {
         return active;
     }
-
-    protected Minecraft getMinecraft() {
-        return Minecraft.getInstance();
-    }
-
 
     public void tick() {
 

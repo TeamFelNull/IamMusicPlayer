@@ -56,7 +56,7 @@ public class SubtitleManager {
                 long sa = po - subtitleLastTimes.get(n);
                 List<MusicSubtitleEntry> addSubs = new ArrayList<>();
 
-                m.getSubtitles().stream().filter(l -> l.getStartTime() >= po && l.getStartTime() <= po + sa).forEach(addSubs::add);
+                m.getSubtitles().stream().filter(l -> l.startTime() >= po && l.startTime() <= po + sa).forEach(addSubs::add);
 
                 subtitleLastTimes.put(n, po);
 
@@ -64,7 +64,7 @@ public class SubtitleManager {
                     if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.OVERLAY) {
                         overlay.addSubtitle(l);
                     } else if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.VANILLA) {
-                        IKSGClientUtil.addSubtitle(l.getText(), l.getDuration(), () -> m.getMusicPlayer().getSelfPosition());
+                        IKSGClientUtil.addSubtitle(l.text(), l.duration(), () -> m.getMusicPlayer().getSelfPosition());
                     }
                 });
             }
@@ -106,28 +106,7 @@ public class SubtitleManager {
         return new TextComponent(text);
     }
 
-    public static class MusicSubtitleEntry {
-        private final long startTime;
-        private final long duration;
-        private final Component text;
-
-        public MusicSubtitleEntry(long startTime, long duration, Component text) {
-            this.startTime = startTime;
-            this.duration = duration;
-            this.text = text;
-        }
-
-        public long getDuration() {
-            return duration;
-        }
-
-        public long getStartTime() {
-            return startTime;
-        }
-
-        public Component getText() {
-            return text;
-        }
+    public static record MusicSubtitleEntry(long startTime, long duration, Component text) {
     }
 
 }

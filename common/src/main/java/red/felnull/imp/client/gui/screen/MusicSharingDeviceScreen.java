@@ -9,18 +9,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
-import red.felnull.imp.client.gui.components.monitor.*;
+import red.felnull.imp.client.gui.components.monitor.MSDBaseMonitor;
+import red.felnull.imp.client.gui.components.monitor.MSDDebugMonitor;
+import red.felnull.imp.client.gui.components.monitor.MSDOffMonitor;
+import red.felnull.imp.client.gui.components.monitor.MSDPlayListMonitor;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
 import red.felnull.otyacraftengine.api.OtyacraftEngineAPI;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharingDeviceMenu> {
     private static final ResourceLocation MSD_LOCATION = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device.png");
-    private static final Map<MusicSharingDeviceBlockEntity.Screen, Monitor<? extends MusicSharingDeviceScreen>> SCREENS = new HashMap<>();
+    private static final Map<MusicSharingDeviceBlockEntity.Screen, Supplier<MSDBaseMonitor>> SCREEN_CRATER = new HashMap<>();
     public List<MusicSharingDeviceBlockEntity.Screen> screenHistory = new ArrayList();
-    private MusicSharingDeviceBlockEntity.Screen lastScreen;
+    private MSDBaseMonitor currentScreens;
 
     public MusicSharingDeviceScreen(MusicSharingDeviceMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -33,8 +40,8 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     protected void init() {
         super.init();
         insFristOpen();
-        this.lastScreen = null;
-        SCREENS.clear();
+        this.currentScreens = null;
+        SCREEN_CRATER.clear();
         addScreens();
 
         if (OtyacraftEngineAPI.getInstance().isDebugMode())
@@ -44,23 +51,30 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     }
 
     protected void addScreens() {
-        addScreen(MusicSharingDeviceBlockEntity.Screen.OFF, new MSDOffMonitor(this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
-        addScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG, new MSDDebugMonitor(this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
-        addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, new MSDPlayListMonitor(this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.OFF, () -> new MSDOffMonitor(MusicSharingDeviceBlockEntity.Screen.OFF, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG, () -> new MSDDebugMonitor(MusicSharingDeviceBlockEntity.Screen.DEBUG, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, () -> new MSDPlayListMonitor(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
     }
 
     @Override
     public void tick() {
         super.tick();
-        getCurrentScreen().ifPresent(n -> {
-            if (lastScreen != getCurrentMonitorScreen()) {
-                if (lastScreen != null)
-                    SCREENS.get(lastScreen).disable();
-                this.lastScreen = getCurrentMonitorScreen();
-                n.enabled();
+
+        if (getCurrentScreen() == null || getCurrentScreen().getMSDScreen() != getCurrentMonitorScreen()) {
+            if (getCurrentScreen() != null) {
+                getCurrentScreen().disable();
+                removeWidget(getCurrentScreen());
             }
-            n.tick();
-        });
+
+            currentScreens = SCREEN_CRATER.get(getCurrentMonitorScreen()).get();
+            getCurrentScreen().init();
+            addWidget(getCurrentScreen());
+        }
+
+        if (getCurrentScreen().isActive()) {
+            getCurrentScreen().tick();
+        }
+
         if (getCurrentMonitorScreen() == MusicSharingDeviceBlockEntity.Screen.OFF || getCurrentMonitorScreen() == MusicSharingDeviceBlockEntity.Screen.PLAYLIST) {
             screenHistory.clear();
         }
@@ -71,22 +85,18 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         return MSD_LOCATION;
     }
 
-    protected void addScreen(MusicSharingDeviceBlockEntity.Screen msdscreen, Monitor<? extends MusicSharingDeviceScreen> screen) {
-        this.addWidget(screen);
-        SCREENS.put(msdscreen, screen);
+    protected void addScreen(MusicSharingDeviceBlockEntity.Screen msdscreen, Supplier<MSDBaseMonitor> screen) {
+        SCREEN_CRATER.put(msdscreen, screen);
     }
 
     protected MusicSharingDeviceBlockEntity.Screen getCurrentMonitorScreen() {
         return getMSDEntity().getCurrentScreen(null);
     }
 
-    protected Optional<Monitor<? extends MusicSharingDeviceScreen>> getCurrentScreen() {
-
-        if (SCREENS.containsKey(getCurrentMonitorScreen()))
-            return Optional.of(SCREENS.get(getCurrentMonitorScreen()));
-
-        return Optional.empty();
+    protected MSDBaseMonitor getCurrentScreen() {
+        return currentScreens;
     }
+
 
     protected MusicSharingDeviceBlockEntity getMSDEntity() {
         return (MusicSharingDeviceBlockEntity) getBlockEntity();
@@ -117,23 +127,26 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     @Override
     protected void renderBg(PoseStack poseStack, float f, int i, int j) {
         super.renderBg(poseStack, f, i, j);
-
-        Optional<Monitor<? extends MusicSharingDeviceScreen>> op = getCurrentScreen().filter(Monitor::isActive);
-        if (op.isPresent()) {
-            op.get().render(poseStack, i, j, f);
+        if (getCurrentScreen() != null && getCurrentScreen().isActive()) {
+            getCurrentScreen().render(poseStack, i, j, f);
         } else {
-            IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_BACKGROUND, poseStack, getMonitorLeftPos(), getMonitorTopPos(), 0, 0, getMonitorWidth(), getMonitorHeight(), getMonitorWidth(), getMonitorHeight());
+            if (isPowerOn())
+                IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_BACKGROUND, poseStack, getMonitorLeftPos(), getMonitorTopPos(), 0, 0, getMonitorWidth(), getMonitorHeight(), getMonitorWidth(), getMonitorHeight());
         }
     }
 
     @Override
     public boolean mouseScrolled(double d, double e, double f) {
-        return super.mouseScrolled(d, e, f) && getCurrentScreen().filter(Monitor::isActive).map(n -> n.mouseScrolled(d, e, f)).orElse(true);
+        boolean f1 = super.mouseScrolled(d, e, f);
+        boolean f2 = getCurrentScreen() == null || !getCurrentScreen().isActive() || getCurrentScreen().mouseScrolled(d, e, f);
+        return f1 && f2;
     }
 
     @Override
     public boolean mouseClicked(double d, double e, int i) {
-        return super.mouseClicked(d, e, i) && getCurrentScreen().filter(Monitor::isActive).map(n -> n.mouseClicked(d, e, i)).orElse(true);
+        boolean f1 = super.mouseClicked(d, e, i);
+        boolean f2 = getCurrentScreen() == null || !getCurrentScreen().isActive() || getCurrentScreen().mouseClicked(d, e, i);
+        return f1 && f2;
     }
 
     public int getMonitorLeftPos() {
@@ -151,4 +164,5 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     public int getMonitorHeight() {
         return 122;
     }
+
 }

@@ -15,26 +15,28 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
     private static final Minecraft mc = Minecraft.getInstance();
     public static final ResourceLocation MSD_BACKGROUND = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_screen/background.png");
-    private static final ResourceLocation MSD_WIDGETS = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_screen/widgets.png");
+    public static final ResourceLocation MSD_WIDGETS = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device_screen/widgets.png");
+    private MusicSharingDeviceBlockEntity.Screen msdScreen;
     protected boolean renderBackGround = true;
     protected boolean renderHeader = true;
-
     protected Button closeButton;
     protected Button backButton;
     protected boolean enableCloseButton = true;
     protected boolean enableBackButton = true;
 
-    public MSDBaseMonitor(Component component, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
+
+    public MSDBaseMonitor(Component component, MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(component, parentScreen, x, y, width, height);
+        this.msdScreen = msdScreen;
     }
 
     @Override
     public void init() {
         super.init();
 
-        this.closeButton = this.addButton(new ImageButton(x + width - 15, y + 1, 14, 10, 0, 12, 10, MSD_WIDGETS, width, width, n -> getParentScreen().insMonitorScreenNoHistory(MusicSharingDeviceBlockEntity.Screen.PLAYLIST)));
+        this.closeButton = this.addRenderableWidget(new ImageButton(x + width - 15, y + 1, 14, 10, 0, 12, 10, MSD_WIDGETS, width, width, n -> getParentScreen().insMonitorScreenNoHistory(MusicSharingDeviceBlockEntity.Screen.PLAYLIST)));
 
-        this.backButton = this.addButton(new ImageButton(x + width - 29, y + 1, 14, 10, 14, 12, 10, MSD_WIDGETS, width, width, n -> {
+        this.backButton = this.addRenderableWidget(new ImageButton(x + width - 29, y + 1, 14, 10, 14, 12, 10, MSD_WIDGETS, width, width, n -> {
             if (getLastScreen() != null) {
                 MusicSharingDeviceBlockEntity.Screen last = getLastScreen();
                 getParentScreen().screenHistory.remove(getParentScreen().screenHistory.size() - 1);
@@ -74,5 +76,9 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
             return getParentScreen().screenHistory.get(getParentScreen().screenHistory.size() - 1);
         }
         return null;
+    }
+
+    public MusicSharingDeviceBlockEntity.Screen getMSDScreen() {
+        return msdScreen;
     }
 }

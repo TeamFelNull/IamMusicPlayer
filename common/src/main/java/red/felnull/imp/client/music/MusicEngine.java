@@ -5,7 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.IamMusicPlayerClient;
 import red.felnull.imp.client.music.loader.MusicLoaderThread;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.subtitle.SubtitleManager;
@@ -153,6 +152,7 @@ public class MusicEngine {
 
         if (IamMusicPlayer.CONFIG.subtitleSystem != SubtitleSystem.OFF)
             SubtitleManager.getInstance().tick(paused);
+
     }
 
     public boolean isExist(UUID uuid) {
@@ -169,16 +169,7 @@ public class MusicEngine {
         }
     }
 
-    public static class MusicRunnerEntry {
-        private final Priority priority;
-        private final Runnable runnable;
-        private final boolean nonPaused;
-
-        public MusicRunnerEntry(Priority priority, boolean nonPaused, Runnable runnable) {
-            this.priority = priority;
-            this.runnable = runnable;
-            this.nonPaused = nonPaused;
-        }
+    public static record MusicRunnerEntry(Priority priority, boolean nonPaused, Runnable runnable) {
     }
 
     public enum Priority {
@@ -187,7 +178,7 @@ public class MusicEngine {
         LOW(2);
         private final int num;
 
-        private Priority(int num) {
+        Priority(int num) {
             this.num = num;
         }
     }
