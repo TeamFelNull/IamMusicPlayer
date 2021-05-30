@@ -1,6 +1,6 @@
 package red.felnull.imp.item;
 
-import me.shedaniel.architectury.registry.DeferredRegister;
+import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 import red.felnull.imp.IamMusicPlayer;

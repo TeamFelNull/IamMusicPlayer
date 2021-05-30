@@ -1,6 +1,6 @@
 package red.felnull.imp.client.renderer.blockentity.gui;
 
-import me.shedaniel.architectury.registry.MenuRegistry;
+import dev.architectury.registry.menu.MenuRegistry;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.inventory.IMPMenus;
 

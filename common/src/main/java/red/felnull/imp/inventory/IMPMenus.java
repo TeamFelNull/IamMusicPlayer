@@ -1,6 +1,6 @@
 package red.felnull.imp.inventory;
 
-import me.shedaniel.architectury.registry.DeferredRegister;
+import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.core.Registry;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;

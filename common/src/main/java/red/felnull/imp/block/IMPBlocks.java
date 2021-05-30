@@ -1,6 +1,6 @@
 package red.felnull.imp.block;
 
-import me.shedaniel.architectury.registry.DeferredRegister;
+import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

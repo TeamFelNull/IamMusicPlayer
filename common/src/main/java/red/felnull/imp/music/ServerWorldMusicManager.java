@@ -1,6 +1,6 @@
 package red.felnull.imp.music;
 
-import me.shedaniel.architectury.utils.GameInstance;
+import dev.architectury.utils.GameInstance;
 import net.minecraft.server.level.ServerPlayer;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.info.tracker.FixedMusicTracker;
