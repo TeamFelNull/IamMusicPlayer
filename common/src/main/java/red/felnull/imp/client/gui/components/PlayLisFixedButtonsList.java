@@ -13,5 +13,4 @@ public class PlayLisFixedButtonsList extends FixedButtonsList<MusicPlayList> {
     public PlayLisFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<MusicPlayList> list, Function<MusicPlayList, Component> listName, Consumer<PressState<MusicPlayList>> onPress) {
         super(x, y, w, h, MSDBaseMonitor.MSD_WIDGETS, 0, 32, 199, 199, num, name, list, listName, onPress);
     }
-
 }

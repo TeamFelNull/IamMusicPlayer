@@ -9,6 +9,7 @@ import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.inventory.IMPMenus;
 import red.felnull.imp.item.IMPItems;
 import red.felnull.imp.packet.IMPPackets;
+import red.felnull.imp.recipe.IMPRecipes;
 
 public class IamMusicPlayer {
     public static final IMPConfig CONFIG = AutoConfig.register(IMPConfig.class, Toml4jConfigSerializer::new).getConfig();
@@ -19,6 +20,7 @@ public class IamMusicPlayer {
         IMPPackets.init();
         IMPItems.init();
         IMPBlocks.init();
+        IMPRecipes.init();
         IMPBlockEntitys.init();
         IMPRegistry.init();
         IMPWorldData.init();

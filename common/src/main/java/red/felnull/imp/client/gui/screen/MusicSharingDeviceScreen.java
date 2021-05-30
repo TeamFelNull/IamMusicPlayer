@@ -9,10 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
-import red.felnull.imp.client.gui.components.monitor.MSDBaseMonitor;
-import red.felnull.imp.client.gui.components.monitor.MSDDebugMonitor;
-import red.felnull.imp.client.gui.components.monitor.MSDOffMonitor;
-import red.felnull.imp.client.gui.components.monitor.MSDPlayListMonitor;
+import red.felnull.imp.client.gui.components.monitor.*;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
 import red.felnull.otyacraftengine.api.OtyacraftEngineAPI;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -54,6 +51,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         addScreen(MusicSharingDeviceBlockEntity.Screen.OFF, () -> new MSDOffMonitor(MusicSharingDeviceBlockEntity.Screen.OFF, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG, () -> new MSDDebugMonitor(MusicSharingDeviceBlockEntity.Screen.DEBUG, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, () -> new MSDPlayListMonitor(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, () -> new NoAntennaMonitor(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
     }
 
     @Override

@@ -81,4 +81,8 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
     public MusicSharingDeviceBlockEntity.Screen getMSDScreen() {
         return msdScreen;
     }
+
+    public void insMonitorScreen(MusicSharingDeviceBlockEntity.Screen screen) {
+        getParentScreen().insMonitorScreen(screen);
+    }
 }

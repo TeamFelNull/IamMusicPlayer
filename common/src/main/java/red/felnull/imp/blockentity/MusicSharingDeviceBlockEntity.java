@@ -118,7 +118,8 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
     public static enum Screen implements StringRepresentable {
         OFF("off"),
         DEBUG("debug"),
-        PLAYLIST("playlist");
+        PLAYLIST("playlist"),
+        NO_ANTENNA("no_antenna");
         private final String name;
 
         Screen(String name) {
