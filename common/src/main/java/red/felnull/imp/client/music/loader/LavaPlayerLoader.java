@@ -2,7 +2,6 @@ package red.felnull.imp.client.music.loader;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
-import com.sedmelluq.discord.lavaplayer.format.StandardAudioDataFormats;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -70,8 +69,8 @@ public class LavaPlayerLoader implements IMusicLoader {
                 audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
                 return new LavaALMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_LE_C2, false);
             case JAVA_SOUND_API:
-                audioPlayerManager.getConfiguration().setOutputFormat(StandardAudioDataFormats.COMMON_PCM_S16_BE);
-                return new LavaLineMusicPlayer(location, audioPlayerManager, StandardAudioDataFormats.COMMON_PCM_S16_BE);
+                audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_BE_C2);
+                return new LavaLineMusicPlayer(location, audioPlayerManager, COMMON_PCM_S16_BE_C2);
         }
 
         throw new IllegalArgumentException("No sound play system.");

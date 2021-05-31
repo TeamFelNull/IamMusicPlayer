@@ -1,9 +1,9 @@
 package red.felnull.imp.client.gui.components.monitor;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.TextComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
-import red.felnull.otyacraftengine.client.gui.components.TestFixedButtonsList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +21,16 @@ public class MSDDebugMonitor extends MSDBaseMonitor {
     @Override
     public void init() {
         super.init();
-        this.addRenderableWidget(new TestFixedButtonsList(x + 1, y + 10, 29, 100, 5, new TextComponent("Go To Screen"), this.goToScreen, TextComponent::new, (n) -> {
+        /*this.addRenderableWidget(new TestFixedButtonsList(x + 1, y + 10, 29, 100, 5, new TextComponent("Go To Screen"), this.goToScreen, TextComponent::new, (n) -> {
             insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.getScreenByName(n.item()));
-        }));
+        }));*/
+    }
+
+    @Override
+    public void render(PoseStack poseStack, int i, int j, float f) {
+        super.render(poseStack, i, j, f);
+        drawPrettyString(poseStack, new TextComponent("ｳｧｧ!!ｵﾚﾓｲｯﾁｬｳｩｩｩ!!!ｳｳｳｳｳｳｳｳｳｩｩｩｩｩｩｩｩｳｳｳｳｳｳｳ!ｲｨｨｲｨｨｨｲｲｲｨｲｲｲ!!"), x + 0, y + 100, 0);
+
+        fillXGrayLine(poseStack, x + 1, y + 19, 197);
     }
 }

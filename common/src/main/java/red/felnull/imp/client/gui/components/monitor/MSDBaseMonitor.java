@@ -34,9 +34,9 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
     public void init() {
         super.init();
 
-        this.closeButton = this.addRenderableWidget(new ImageButton(x + width - 15, y + 1, 14, 10, 0, 12, 10, MSD_WIDGETS, width, width, n -> getParentScreen().insMonitorScreenNoHistory(MusicSharingDeviceBlockEntity.Screen.PLAYLIST)));
+        this.closeButton = this.addRenderableWidget(new ImageButton(x + width - 15, y + 1, 14, 10, 0, 0, 10, MSD_WIDGETS, 256, 256, n -> getParentScreen().insMonitorScreenNoHistory(MusicSharingDeviceBlockEntity.Screen.PLAYLIST)));
 
-        this.backButton = this.addRenderableWidget(new ImageButton(x + width - 29, y + 1, 14, 10, 14, 12, 10, MSD_WIDGETS, width, width, n -> {
+        this.backButton = this.addRenderableWidget(new ImageButton(x + width - 29, y + 1, 14, 10, 14, 0, 10, MSD_WIDGETS, 256, 256, n -> {
             if (getLastScreen() != null) {
                 MusicSharingDeviceBlockEntity.Screen last = getLastScreen();
                 getParentScreen().screenHistory.remove(getParentScreen().screenHistory.size() - 1);
@@ -53,14 +53,18 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
         }
 
         if (renderHeader) {
-            IKSGRenderUtil.drawBindTextuer(MSD_WIDGETS, poseStack, x, y, 0, 0, width, 12, width, width);
-            drawPrettyString(poseStack, getTitle(), x + 2, y + 2, 0);
+            fillXGrayLine(poseStack, x + 1, y + 11, 197);
+            fillLightGray(poseStack, x + 1, y + 1, 197, 10);
         }
 
         super.render(poseStack, i, j, f);
     }
 
-    public static void drawPrettyString(PoseStack poseStack, Component component, int i, int j, int k) {
+    public void drawPrettyCenteredString(PoseStack poseStack, Component component, int i, int j, int k) {
+        mc.font.draw(poseStack, component.copy().withStyle(IMPFonts.FLOPDE_SIGN_FONT), (float) (i - getFont().width(component) / 2), j, k);
+    }
+
+    public void drawPrettyString(PoseStack poseStack, Component component, int i, int j, int k) {
         mc.font.draw(poseStack, component.copy().withStyle(IMPFonts.FLOPDE_SIGN_FONT), i, j, k);
     }
 
@@ -85,4 +89,5 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
     public void insMonitorScreen(MusicSharingDeviceBlockEntity.Screen screen) {
         getParentScreen().insMonitorScreen(screen);
     }
+
 }

@@ -7,9 +7,9 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 import red.felnull.otyacraftengine.client.gui.components.IIkisugibleWidget;
 import red.felnull.otyacraftengine.client.gui.screen.IkisugiContainerScreen;
+import red.felnull.otyacraftengine.util.IKSGColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,5 +101,17 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     @Override
     public void updateNarration(NarrationElementOutput narrationElementOutput) {
 
+    }
+
+    protected void fillXGrayLine(PoseStack ps, int x, int y, int l) {
+        fill(ps, x, y, x + l, y + 1, IKSGColorUtil.toSRGB(14474460));
+    }
+
+    protected void fillYGrayLine(PoseStack ps, int x, int y, int l) {
+        fill(ps, x, y, x + 1, y + l, IKSGColorUtil.toSRGB(14474460));
+    }
+
+    protected void fillLightGray(PoseStack poseStack, int x, int y, int w, int h) {
+        fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(16119543));
     }
 }

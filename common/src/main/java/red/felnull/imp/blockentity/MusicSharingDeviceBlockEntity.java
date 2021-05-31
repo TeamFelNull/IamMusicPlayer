@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
+import red.felnull.imp.util.ItemHelper;
 import red.felnull.imp.util.NbtUtils;
 
 import java.util.HashMap;
@@ -87,6 +88,12 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
                 playerScreens.forEach((n, m) -> {
                     if (getCurrentScreen(n) == Screen.OFF)
                         setCurrentScreen(n, Screen.PLAYLIST);
+
+                    if (!isExistAntenna())
+                        setCurrentScreen(n, Screen.NO_ANTENNA);
+                    else if (getCurrentScreen(n) == Screen.NO_ANTENNA)
+                        setCurrentScreen(n, Screen.PLAYLIST);
+
                 });
             } else {
                 setCurrentScreen(Screen.OFF);
@@ -100,19 +107,23 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         });
     }
 
+    public boolean isExistAntenna() {
+        return ItemHelper.isAntenna(getItem(0));
+    }
+
     public void setCurrentScreen(UUID playerUUID, Screen screen) {
         playerScreens.put(playerUUID, screen);
     }
 
     public Screen getCurrentScreen(UUID playerUUID) {
-        if (level.isClientSide()) {
+        if (getLevel().isClientSide()) {
             if (currentScreen != null)
                 return currentScreen;
         } else {
             if (playerScreens.containsKey(playerUUID))
                 return playerScreens.get(playerUUID);
         }
-        return isPowerOn() ? Screen.PLAYLIST : Screen.OFF;
+        return isPowerOn() ? isExistAntenna() ? Screen.PLAYLIST : Screen.NO_ANTENNA : Screen.OFF;
     }
 
     public static enum Screen implements StringRepresentable {
