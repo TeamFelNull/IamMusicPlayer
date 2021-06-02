@@ -1,4 +1,4 @@
-package red.felnull.imp.client.gui.components.monitor;
+package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractWidget;
