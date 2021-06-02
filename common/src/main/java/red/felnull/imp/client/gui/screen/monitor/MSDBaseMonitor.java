@@ -1,14 +1,16 @@
-package red.felnull.imp.client.gui.components.monitor;
+package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.IMPFonts;
+import red.felnull.imp.client.gui.components.MSDSmartButton;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
@@ -55,17 +57,20 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
         if (renderHeader) {
             fillXGrayLine(poseStack, x + 1, y + 11, 197);
             fillLightGray(poseStack, x + 1, y + 1, 197, 10);
+            drawPrettyString(poseStack, getTitle().copy(), x + 2, y + 2, 0);
         }
 
         super.render(poseStack, i, j, f);
     }
 
-    public void drawPrettyCenteredString(PoseStack poseStack, Component component, int i, int j, int k) {
-        mc.font.draw(poseStack, component.copy().withStyle(IMPFonts.FLOPDE_SIGN_FONT), (float) (i - getFont().width(component) / 2), j, k);
+    public void drawPrettyCenteredString(PoseStack poseStack, MutableComponent component, int i, int j, int k) {
+        component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
+        getFont().draw(poseStack, component, (float) (i - getFont().width(component) / 2), j, k);
     }
 
-    public void drawPrettyString(PoseStack poseStack, Component component, int i, int j, int k) {
-        mc.font.draw(poseStack, component.copy().withStyle(IMPFonts.FLOPDE_SIGN_FONT), i, j, k);
+    public void drawPrettyString(PoseStack poseStack, MutableComponent component, int i, int j, int k) {
+        component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
+        getFont().draw(poseStack, component, i, j, k);
     }
 
     @Override
@@ -90,4 +95,12 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> {
         getParentScreen().insMonitorScreen(screen);
     }
 
+    public MSDSmartButton addCreateSmartButton(MutableComponent component, int x, int y, Button.OnPress onPress) {
+        return addCreateSmartButton(component, x, y, 48, 15, onPress);
+    }
+
+    public MSDSmartButton addCreateSmartButton(MutableComponent component, int x, int y, int w, int h, Button.OnPress onPress) {
+        component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
+        return addRenderableWidget(new MSDSmartButton(x, y, w, h, component, onPress));
+    }
 }

@@ -1,4 +1,4 @@
-package red.felnull.imp.client.gui.components.monitor;
+package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.ImageButton;
@@ -6,6 +6,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.components.PlayListFixedButtonsList;
+import red.felnull.imp.client.gui.components.MusicFixedButtonsList;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.MusicPlayList;
@@ -20,7 +21,7 @@ public class MSDPlayListMonitor extends MSDBaseMonitor {
 
 
     public MSDPlayListMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
-        super(new TranslatableComponent("imp.msdscreen.playlist.title"), msdScreen, parentScreen, x, y, width, height);
+        super(new TranslatableComponent("imp.msdmonitor.playlist"), msdScreen, parentScreen, x, y, width, height);
         this.renderHeader = false;
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
@@ -52,7 +53,7 @@ public class MSDPlayListMonitor extends MSDBaseMonitor {
         this.addRenderableWidget(new PlayListFixedButtonsList(x + 1, y + 21, 29, 100, 5, new TextComponent("Play List"), this.playList, n -> new TextComponent(n.getName()), (n) -> {
             System.out.println(n.item().getName());
         }));
-        this.addRenderableWidget(new PlayMusicFixedButtonsList(x + 30, y + 21, 169, 100, 5, new TextComponent("Musics"), this.musics, n -> new TextComponent(n.getName()), (n) -> {
+        this.addRenderableWidget(new MusicFixedButtonsList(x + 30, y + 21, 169, 100, 5, new TextComponent("Musics"), this.musics, n -> new TextComponent(n.getName()), (n) -> {
             System.out.println(n.item().getName());
         }));
 
@@ -60,9 +61,7 @@ public class MSDPlayListMonitor extends MSDBaseMonitor {
 
         }));
 
-        this.addRenderableWidget(new ImageButton(x + 22, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> {
-
-        }));
+        this.addRenderableWidget(new ImageButton(x + 22, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST)));
 
         this.addRenderableWidget(new ImageButton(x + 191, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> {
 

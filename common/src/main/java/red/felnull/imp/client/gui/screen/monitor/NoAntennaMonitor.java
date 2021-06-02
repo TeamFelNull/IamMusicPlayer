@@ -1,4 +1,4 @@
-package red.felnull.imp.client.gui.components.monitor;
+package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -14,7 +14,7 @@ public class NoAntennaMonitor extends MSDBaseMonitor {
     protected ItemRenderer itemRenderer;
 
     public NoAntennaMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
-        super(new TranslatableComponent("imp.msdscreen.noantenna"), msdScreen, parentScreen, x, y, width, height);
+        super(new TranslatableComponent("imp.msdmonitor.noantenna"), msdScreen, parentScreen, x, y, width, height);
         this.renderHeader = false;
     }
 

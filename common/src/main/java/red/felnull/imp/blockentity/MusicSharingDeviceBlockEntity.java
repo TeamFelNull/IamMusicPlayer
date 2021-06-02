@@ -130,7 +130,8 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         OFF("off"),
         DEBUG("debug"),
         PLAYLIST("playlist"),
-        NO_ANTENNA("no_antenna");
+        NO_ANTENNA("no_antenna"),
+        ADD_PLAYLIST("add_playlist");
         private final String name;
 
         Screen(String name) {
