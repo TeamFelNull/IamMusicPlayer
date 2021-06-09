@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.imp.util.NbtUtils;
-import red.felnull.otyacraftengine.data.IkisugiSaveData;
+import red.felnull.otyacraftengine.data.save.IkisugiSaveData;
 
 import java.util.*;
 
