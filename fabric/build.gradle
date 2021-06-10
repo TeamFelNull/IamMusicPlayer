@@ -38,11 +38,11 @@ dependencies {
         transitive = false
     }
 
-    //   modApi "de.javagl:obj:0.3.0"
+    modApi "de.javagl:obj:0.3.0"
 
     shadow 'com.sedmelluq:lavaplayer:1.3.75'
 
-     modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:${rootProject.rei_version}"
+    modApi "me.shedaniel:RoughlyEnoughItems-api-fabric:${rootProject.rei_version}"
 }
 
 processResources {
