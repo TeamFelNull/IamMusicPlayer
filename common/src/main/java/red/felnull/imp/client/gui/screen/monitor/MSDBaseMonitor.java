@@ -38,9 +38,9 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> implements
     public void init() {
         super.init();
 
-        this.closeButton = this.addRenderableWidget(new ImageButton(x + width - 15, y + 1, 14, 10, 0, 0, 10, MSD_WIDGETS, 256, 256, n -> getParentScreen().insMonitorScreenNoHistory(MusicSharingDeviceBlockEntity.Screen.PLAYLIST)));
+        this.closeButton = this.addRenderableWidget(new ImageButton(x + width - 15, y + 1, 14, 10, 0, 0, 10, MSD_WIDGETS, n -> getParentScreen().insMonitorScreenNoHistory(MusicSharingDeviceBlockEntity.Screen.PLAYLIST)));
 
-        this.backButton = this.addRenderableWidget(new ImageButton(x + width - 29, y + 1, 14, 10, 14, 0, 10, MSD_WIDGETS, 256, 256, n -> {
+        this.backButton = this.addRenderableWidget(new ImageButton(x + width - 29, y + 1, 14, 10, 14, 0, 10, MSD_WIDGETS, n -> {
             if (getLastScreen() != null) {
                 MusicSharingDeviceBlockEntity.Screen last = getLastScreen();
                 getParentScreen().screenHistory.remove(getParentScreen().screenHistory.size() - 1);

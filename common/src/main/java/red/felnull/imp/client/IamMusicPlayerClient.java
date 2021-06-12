@@ -9,9 +9,12 @@ import red.felnull.imp.client.renderer.blockentity.IMPBERenderers;
 import red.felnull.imp.client.renderer.blockentity.gui.IMPScreenFactoryRegister;
 import red.felnull.imp.client.renderer.item.IMPItemRenderers;
 
+import java.util.Properties;
+
 public class IamMusicPlayerClient {
 
     public static void clientInit() {
+
         IMPClientRegistry.init();
         IMPBERenderers.init();
         IMPItemRenderers.init();

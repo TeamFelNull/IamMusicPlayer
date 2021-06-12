@@ -37,7 +37,7 @@ public interface IMSDSmartRender extends IIkisugibleWidget {
         getFont().draw(poseStack, component, (float) (i - getFont().width(component) / 2), j, k);
     }
 
-    default void drawPrettyString(PoseStack poseStack, MutableComponent component, int i, int j, int k) {
+    default void drawPrettyString(PoseStack poseStack, MutableComponent component, float i, float j, int k) {
         component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         getFont().draw(poseStack, component, i, j, k);
     }

@@ -14,6 +14,7 @@ import red.felnull.imp.inventory.MusicSharingDeviceMenu;
 import red.felnull.otyacraftengine.api.OtyacraftEngineAPI;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -176,7 +177,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
 
     @Override
     public boolean keyPressed(int i, int j, int k) {
-        
+
         if (i == 256) {
             this.minecraft.player.closeContainer();
             return super.keyPressed(i, j, k);
@@ -194,5 +195,13 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         if (getCurrentScreen() != null)
             return getCurrentScreen().keyReleased(i, j, k) || super.keyReleased(i, j, k);
         return super.keyReleased(i, j, k);
+    }
+
+    @Override
+    public void onFilesDrop(List<Path> list) {
+        if (getCurrentScreen() != null)
+            getCurrentScreen().onFilesDrop(list);
+
+        super.onFilesDrop(list);
     }
 }

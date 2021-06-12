@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import red.felnull.otyacraftengine.client.gui.components.IIkisugibleWidget;
 import red.felnull.otyacraftengine.client.gui.screen.IkisugiContainerScreen;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,5 +109,9 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         boolean all = children.stream().filter(n -> n instanceof EditBox).anyMatch(n -> ((EditBox) n).canConsumeInput());
 
         return super.keyPressed(i, j, k) || all;
+    }
+
+    public void onFilesDrop(List<Path> list) {
+
     }
 }
