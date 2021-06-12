@@ -53,7 +53,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, () -> new MSDPlayListMonitor(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, () -> new NoAntennaMonitor(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST, () -> new AddPlaylistMonitor(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
-
+        addScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST, () -> new CreatePlaylistMonitor(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
     }
 
     @Override
@@ -149,6 +149,15 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         return f1 && f2;
     }
 
+    @Override
+    public boolean charTyped(char c, int i) {
+
+        if (getCurrentScreen() != null)
+            return getCurrentScreen().charTyped(c, i) || super.charTyped(c, i);
+
+        return super.charTyped(c, i);
+    }
+
     public int getMonitorLeftPos() {
         return leftPos + 8;
     }
@@ -165,4 +174,25 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         return 122;
     }
 
+    @Override
+    public boolean keyPressed(int i, int j, int k) {
+        
+        if (i == 256) {
+            this.minecraft.player.closeContainer();
+            return super.keyPressed(i, j, k);
+        }
+
+        if (getCurrentScreen() != null && getCurrentScreen().keyPressed(i, j, k)) {
+            return true;
+        }
+
+        return super.keyPressed(i, j, k);
+    }
+
+    @Override
+    public boolean keyReleased(int i, int j, int k) {
+        if (getCurrentScreen() != null)
+            return getCurrentScreen().keyReleased(i, j, k) || super.keyReleased(i, j, k);
+        return super.keyReleased(i, j, k);
+    }
 }

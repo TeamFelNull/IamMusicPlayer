@@ -2,6 +2,7 @@ package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
@@ -9,7 +10,6 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import red.felnull.otyacraftengine.client.gui.components.IIkisugibleWidget;
 import red.felnull.otyacraftengine.client.gui.screen.IkisugiContainerScreen;
-import red.felnull.otyacraftengine.util.IKSGColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,8 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
 
     public void render(PoseStack poseStack, int mousX, int mousY, float parTick) {
         buttons.forEach(n -> n.render(poseStack, mousX, mousY, parTick));
+
+        children.stream().filter(n -> n instanceof EditBox).forEach(n -> ((EditBox) n).render(poseStack, mousX, mousY, parTick));
     }
 
     public Component getTitle() {
@@ -69,14 +71,6 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         return parentScreen;
     }
 
-    /*public void enabled() {
-        active = true;
-        buttons.forEach(n -> {
-            n.visible = true;
-            n.active = true;
-        });
-    }*/
-
     public void disable() {
         active = false;
         buttons.forEach(n -> {
@@ -90,7 +84,12 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     }
 
     public void tick() {
+        children.stream().filter(n -> n instanceof EditBox).forEach(n -> ((EditBox) n).tick());
+    }
 
+    @Override
+    public boolean charTyped(char c, int i) {
+        return super.charTyped(c, i);
     }
 
     @Override
@@ -103,15 +102,11 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
 
     }
 
-    protected void fillXGrayLine(PoseStack ps, int x, int y, int l) {
-        fill(ps, x, y, x + l, y + 1, IKSGColorUtil.toSRGB(14474460));
-    }
+    @Override
+    public boolean keyPressed(int i, int j, int k) {
 
-    protected void fillYGrayLine(PoseStack ps, int x, int y, int l) {
-        fill(ps, x, y, x + 1, y + l, IKSGColorUtil.toSRGB(14474460));
-    }
+        boolean all = children.stream().filter(n -> n instanceof EditBox).anyMatch(n -> ((EditBox) n).canConsumeInput());
 
-    protected void fillLightGray(PoseStack poseStack, int x, int y, int w, int h) {
-        fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(16119543));
+        return super.keyPressed(i, j, k) || all;
     }
 }

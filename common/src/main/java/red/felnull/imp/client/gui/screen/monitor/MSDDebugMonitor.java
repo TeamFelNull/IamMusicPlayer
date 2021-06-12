@@ -1,12 +1,11 @@
 package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
-import red.felnull.imp.data.resource.ImageLocation;
+import red.felnull.imp.data.resource.ImageInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +32,7 @@ public class MSDDebugMonitor extends MSDBaseMonitor {
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
         drawPrettyString(poseStack, new TextComponent("ｳｧｧ!!ｵﾚﾓｲｯﾁｬｳｩｩｩ!!!ｳｳｳｳｳｳｳｳｳｩｩｩｩｩｩｩｩｳｳｳｳｳｳｳ!ｲｨｨｲｨｨｨｲｲｲｨｲｲｲ!!"), x, y + 100, 0);
-        CompoundTag tag = new CompoundTag();
-        tag.putFloat("w", 0.3f);
-        tag.putFloat("h", 0.6f);
-        PlayImageRenderer.getInstance().render(new ImageLocation(ImageLocation.ImageType.URL, "https://cdn.discordapp.com/attachments/358878159615164416/850625064130969630/microbroken.gif", tag), poseStack, x + 10, y + 10, 100);
+        PlayImageRenderer.getInstance().render(new ImageInfo(ImageInfo.ImageType.STRING, "https://cdn.discordapp.com/attachments/358878159615164416/850625064130969630/microbroken.gif", 0.6f, 0.3f), poseStack, x + 10, y + 10, 100);
         //   fillXGrayLine(poseStack, x + 1, y + 19, 197);
     }
 }

@@ -2,7 +2,7 @@ package red.felnull.imp.music.resource;
 
 import net.minecraft.nbt.CompoundTag;
 import red.felnull.imp.data.resource.AdministratorInformation;
-import red.felnull.imp.data.resource.ImageLocation;
+import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 import red.felnull.otyacraftengine.util.IKSGNbtUtil;
 
@@ -14,7 +14,7 @@ public class MusicPlayList implements ITAGSerializable {
     private UUID uuid;
     private String name;
     private MusicPlayListDetailed detailed;
-    private ImageLocation image;
+    private ImageInfo image;
     private AdministratorInformation administrator;
     private List<UUID> musicList = new ArrayList<>();
 
@@ -22,7 +22,7 @@ public class MusicPlayList implements ITAGSerializable {
         load(tag);
     }
 
-    public MusicPlayList(UUID uuid, String name, MusicPlayListDetailed detailed, ImageLocation image, AdministratorInformation administrator, List<UUID> musicList) {
+    public MusicPlayList(UUID uuid, String name, MusicPlayListDetailed detailed, ImageInfo image, AdministratorInformation administrator, List<UUID> musicList) {
         this.uuid = uuid;
         this.name = name;
         this.detailed = detailed;
@@ -47,7 +47,7 @@ public class MusicPlayList implements ITAGSerializable {
         this.uuid = tag.getUUID("UUID");
         this.name = tag.getString("Name");
         this.detailed = new MusicPlayListDetailed(tag.getCompound("MusicPlayListDetailed"));
-        this.image = new ImageLocation(tag.getCompound("ImageLocation"));
+        this.image = new ImageInfo(tag.getCompound("ImageLocation"));
         this.administrator = new AdministratorInformation(tag.getCompound("AdministratorInformation"));
         IKSGNbtUtil.readUUIDList(tag, "MusicList", musicList);
     }
@@ -60,7 +60,7 @@ public class MusicPlayList implements ITAGSerializable {
         return name;
     }
 
-    public ImageLocation getImage() {
+    public ImageInfo getImage() {
         return image;
     }
 

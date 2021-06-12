@@ -2,7 +2,7 @@ package red.felnull.imp.music.resource;
 
 import net.minecraft.nbt.CompoundTag;
 import red.felnull.imp.data.resource.AdministratorInformation;
-import red.felnull.imp.data.resource.ImageLocation;
+import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
 import java.util.UUID;
@@ -13,14 +13,14 @@ public class Music implements ITAGSerializable {
     private long duration;
     private MusicLocation location;
     private MusicDetailed detailed;
-    private ImageLocation image;
+    private ImageInfo image;
     private AdministratorInformation administrator;
 
     public Music(CompoundTag tag) {
         this.load(tag);
     }
 
-    public Music(UUID uuid, String name, long duration, MusicLocation location, MusicDetailed detailed, ImageLocation image, AdministratorInformation administrator) {
+    public Music(UUID uuid, String name, long duration, MusicLocation location, MusicDetailed detailed, ImageInfo image, AdministratorInformation administrator) {
         this.uuid = uuid;
         this.name = name;
         this.duration = duration;
@@ -50,7 +50,7 @@ public class Music implements ITAGSerializable {
         this.duration = tag.getLong("Duration");
         this.location = new MusicLocation(tag.getCompound("MusicLocation"));
         this.detailed = new MusicDetailed(tag.getCompound("MusicDetailed"));
-        this.image = new ImageLocation(tag.getCompound("ImageLocation"));
+        this.image = new ImageInfo(tag.getCompound("ImageLocation"));
         this.administrator = new AdministratorInformation(tag.getCompound("AdministratorInformation"));
     }
 
@@ -58,7 +58,7 @@ public class Music implements ITAGSerializable {
         return administrator;
     }
 
-    public ImageLocation getImage() {
+    public ImageInfo getImage() {
         return image;
     }
 

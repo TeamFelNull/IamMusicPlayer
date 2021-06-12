@@ -3,31 +3,34 @@ package red.felnull.imp.data.resource;
 import net.minecraft.nbt.CompoundTag;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
-public class ImageLocation implements ITAGSerializable {
-    public static final ImageLocation EMPTY = new ImageLocation(ImageType.STRING, "empty");
+public class ImageInfo implements ITAGSerializable {
+    public static final ImageInfo EMPTY = new ImageInfo(ImageType.STRING, "empty");
     private ImageType imageType;
     private String identifier;
-    private CompoundTag data;
+    private float widthScale;
+    private float heightScale;
 
-    public ImageLocation(CompoundTag tag) {
+    public ImageInfo(CompoundTag tag) {
         this.load(tag);
     }
 
-    public ImageLocation(ImageType imageType, String identifier) {
-        this(imageType, identifier, new CompoundTag());
+    public ImageInfo(ImageType imageType, String identifier) {
+        this(imageType, identifier, 1, 1);
     }
 
-    public ImageLocation(ImageType imageType, String identifier, CompoundTag data) {
+    public ImageInfo(ImageType imageType, String identifier, float widthScale, float heightScale) {
         this.imageType = imageType;
         this.identifier = identifier;
-        this.data = data;
+        this.widthScale = widthScale;
+        this.heightScale = heightScale;
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         tag.putString("ImageType", this.imageType.getNmae());
         tag.putString("Identifier", this.identifier);
-        tag.put("Data", data);
+        tag.putFloat("WidthScale", widthScale);
+        tag.putFloat("HeightScale", heightScale);
         return tag;
     }
 
@@ -35,7 +38,8 @@ public class ImageLocation implements ITAGSerializable {
     public void load(CompoundTag tag) {
         this.imageType = ImageType.getImageTypeByName(tag.getString("ImageType"));
         this.identifier = tag.getString("Identifier");
-        this.data = tag.getCompound("Data");
+        this.widthScale = tag.getFloat("WidthScale");
+        this.heightScale = tag.getFloat("HeightScale");
     }
 
     public ImageType getImageType() {
@@ -46,8 +50,12 @@ public class ImageLocation implements ITAGSerializable {
         return identifier;
     }
 
-    public CompoundTag getData() {
-        return data;
+    public float getWidthScale() {
+        return widthScale;
+    }
+
+    public float getHeightScale() {
+        return heightScale;
     }
 
     public static enum ImageType {

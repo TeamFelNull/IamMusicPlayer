@@ -35,7 +35,7 @@ public class AddPlaylistMonitor extends MSDBaseMonitor {
         }));
 
         addCreateSmartButton(new TranslatableComponent("imp.msdbutton.create"), x + 175, y + 12, 23, 8, n -> {
-
+            insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST);
         });
 
     }

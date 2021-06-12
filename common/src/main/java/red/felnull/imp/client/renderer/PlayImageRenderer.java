@@ -3,13 +3,12 @@ package red.felnull.imp.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.gui.IMPFonts;
-import red.felnull.imp.data.resource.ImageLocation;
+import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
 
@@ -24,24 +23,9 @@ public class PlayImageRenderer {
         return INSTANCE;
     }
 
-    public void render(ImageLocation location, PoseStack poseStack, int x, int y, int size) {
-        switch (location.getImageType()) {
-            case URL -> renderURLImage(location.getIdentifier(), location.getData(), poseStack, x, y, size);
-            case STRING -> renderStringImage(location.getIdentifier(), poseStack, x, y, size);
-            case PLAYER_FACE -> renderPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
-        }
-    }
-
-    private void renderURLImage(String url, CompoundTag data, PoseStack poseStack, int x, int y, int size) {
-
-        float w = data.getFloat("w");
-        float h = data.getFloat("h");
-
-        if (w == 0)
-            w = 1;
-
-        if (h == 0)
-            h = 1;
+    public void render(ImageInfo location, PoseStack poseStack, int x, int y, int size) {
+        float w = location.getWidthScale();
+        float h = location.getHeightScale();
 
         if (w > h) {
             h *= 1f / w;
@@ -54,18 +38,24 @@ public class PlayImageRenderer {
 
         float ws = size * w;
         float hs = size * h;
+        switch (location.getImageType()) {
+            case URL -> renderURLImage(location.getIdentifier(), poseStack, x, y, ws, hs, size);
+            case STRING -> renderStringImage(location.getIdentifier(), poseStack, x, y, ws, hs, size);
+            case PLAYER_FACE -> renderPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
+        }
+    }
 
+    private void renderURLImage(String url, PoseStack poseStack, int x, int y, float width, float height, float size) {
         try {
-            IKSGRenderUtil.drawBindTextuer(IKSGTextureUtil.getURLTexture(url, true), poseStack, x + (size - ws) / 2, y + (size - hs) / 2, 0, 0, ws, hs, ws, hs);
+            IKSGRenderUtil.drawBindTextuer(IKSGTextureUtil.getURLTexture(url, true), poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    private void renderStringImage(String str, PoseStack poseStack, int x, int y, int size) {
+    private void renderStringImage(String str, PoseStack poseStack, int x, int y, float width, float height, int size) {
         Random r = new Random(str.hashCode());
-        IKSGRenderUtil.drawBindColorTextuer(PLAY_IMAGE, poseStack, x, y, 0, 0, size, size, size, size, r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
+        IKSGRenderUtil.drawBindColorTextuer(PLAY_IMAGE, poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height, r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
         Component text = new TextComponent(str).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         int txSize = Math.max(mc.font.width(text), mc.font.lineHeight);
         poseStack.pushPose();

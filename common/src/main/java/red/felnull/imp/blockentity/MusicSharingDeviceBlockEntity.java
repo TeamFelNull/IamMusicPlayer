@@ -131,7 +131,8 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         DEBUG("debug"),
         PLAYLIST("playlist"),
         NO_ANTENNA("no_antenna"),
-        ADD_PLAYLIST("add_playlist");
+        ADD_PLAYLIST("add_playlist"),
+        CREATE_PLAYLIST("create_playlist");
         private final String name;
 
         Screen(String name) {
