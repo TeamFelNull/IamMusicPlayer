@@ -11,6 +11,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.IMPFonts;
+import red.felnull.imp.client.gui.components.MSDSmartButton;
 import red.felnull.imp.client.gui.components.MSDSmartEditBox;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
@@ -42,6 +43,7 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
     private ImageOptimizationThread optimizationThread;
     private ImageLoadState loadState = ImageLoadState.NONE;
     private String errorMessage;
+    private MSDSmartButton createButton;
 
     public MSDCreateBaseMonitor(Component component, MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(component, msdScreen, parentScreen, x, y, width, height);
@@ -78,7 +80,7 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
             setImageInfo(new ImageInfo(ImageInfo.ImageType.STRING, nameTextBox.getValue()));
         }));
 
-        addCreateSmartButton(new TranslatableComponent("imp.msdButton.create"), x + 148, y + 104, n -> created());
+        this.createButton = addCreateSmartButton(new TranslatableComponent("imp.msdButton.create"), x + 148, y + 104, n -> created());
     }
 
     abstract protected void created();
@@ -116,6 +118,9 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
 
     }
 
+    protected boolean canCreate() {
+        return imageInfo != ImageInfo.EMPTY && !nameTextBox.getValue().isEmpty();
+    }
 
     public void setImageInfo(ImageInfo info) {
         if (optimizationThread != null) {
@@ -176,6 +181,11 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
         optimizationThread.start();
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        createButton.active = canCreate();
+    }
 
     private class ImageOptimizationThread extends Thread {
         private boolean stopped;
@@ -281,14 +291,14 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
                 if (gd.length > maxL) {
                     int fc = IKSGImageUtil.gifDivide(gd).length;
                     int reframe = (int) (((double) maxL / (double) gd.length) * (double) fc);
-                    gd = IKSGImageUtil.setFrameContGif(gd, reframe);
+                    gd = IKSGImageUtil.reframeGif(gd, reframe);
                 }
             }
             for (int i = 0; i < 3; i++) {
                 if (gd.length > maxL) {
                     int fc = IKSGImageUtil.gifDivide(gd).length;
                     int reframe = (int) ((double) fc / 2d);
-                    gd = IKSGImageUtil.setFrameContGif(gd, reframe);
+                    gd = IKSGImageUtil.reframeGif(gd, reframe);
                 }
             }
             if (gd.length > maxL) {

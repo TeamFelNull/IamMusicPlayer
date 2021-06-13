@@ -6,18 +6,23 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.data.IMPServerSyncManager;
+import red.felnull.imp.client.gui.components.AdminInfoData;
+import red.felnull.imp.client.gui.components.AdminPlayersFixedButtonsList;
 import red.felnull.imp.client.gui.components.MSDSmartCheckbox;
 import red.felnull.imp.client.gui.components.PlayersFixedButtonsList;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
+import red.felnull.imp.data.resource.AdministratorInformation;
 import red.felnull.imp.data.resource.ImageInfo;
+import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
     private final List<PlayerInfo> playerInfos = new ArrayList<>();
+    private final List<AdminInfoData> selectedAdminPlayer = new ArrayList<>();
     private MSDSmartCheckbox publicedCheckBox;
     private PlayersFixedButtonsList playersFixedButtonsList;
+    private AdminPlayersFixedButtonsList adminPlayersFixedButtonsList;
 
 
     public CreatePlaylistMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
@@ -33,16 +38,23 @@ public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
         publicedCheckBox.setChecked(true);
 
         playersFixedButtonsList = this.addRenderableWidget(new PlayersFixedButtonsList(x + 4, y + 74, 84, 44, 4, new TextComponent("Players"), playerInfos, n -> {
-
+            selectedAdminPlayer.add(new AdminInfoData(n.item(), AdministratorInformation.AuthorityType.ADMINISTRATOR));
         }));
 
+        adminPlayersFixedButtonsList = this.addRenderableWidget(new AdminPlayersFixedButtonsList(x + 102, y + 73, 93, 27, 3, new TextComponent("Admin Players"), selectedAdminPlayer, n -> new TextComponent(n.playerInfo().getProfile().getName()), n -> {
+            if (n.item().type() == AdministratorInformation.AuthorityType.ADMINISTRATOR) {
+                selectedAdminPlayer.set(n.itemNum(), new AdminInfoData(n.item().playerInfo(), AdministratorInformation.AuthorityType.BAN));
+            } else {
+                selectedAdminPlayer.remove(n.itemNum());
+            }
+        }));
     }
 
     @Override
     public void tick() {
         super.tick();
         playerInfos.clear();
-        playerInfos.addAll(IMPServerSyncManager.getInstance().getOnlinePlayers());
+        playerInfos.addAll(IMPServerSyncManager.getInstance().getOnlinePlayers().stream().filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().getProfile().getId().equals(n.getProfile().getId()))).toList());
     }
 
     @Override
@@ -50,13 +62,16 @@ public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
         boolean pub = publicedCheckBox.isChecked();
         String name = nameTextBox.getValue();
         ImageInfo image = imageInfo;
-
+        Map<UUID, AdministratorInformation.AuthorityType> adminData = new HashMap<>();
+        selectedAdminPlayer.forEach(n -> adminData.put(n.playerInfo().getProfile().getId(), n.type()));
         insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST);
     }
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
+        IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
+        drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.playerAuthority"), x + 4, y + 64, 0);
     }
 
     @Override
@@ -65,4 +80,5 @@ public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
         drawDarkBox(poseStack, x + 3, y + 73, 86, 46);
         drawDarkBox(poseStack, x + 101, y + 72, 95, 29);
     }
+
 }
