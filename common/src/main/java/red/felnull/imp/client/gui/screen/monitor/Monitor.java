@@ -40,9 +40,14 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     }
 
     public void render(PoseStack poseStack, int mousX, int mousY, float parTick) {
+        renderBg(poseStack, mousX, mousY, parTick);
         buttons.forEach(n -> n.render(poseStack, mousX, mousY, parTick));
 
         children.stream().filter(n -> n instanceof EditBox).forEach(n -> ((EditBox) n).render(poseStack, mousX, mousY, parTick));
+    }
+
+    public void renderBg(PoseStack poseStack, int mousX, int mousY, float parTick) {
+
     }
 
     public Component getTitle() {

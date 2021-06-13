@@ -16,7 +16,7 @@ public class AddPlaylistMonitor extends MSDBaseMonitor {
     private final List<MusicPlayList> playList = new ArrayList<>();
 
     public AddPlaylistMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
-        super(new TranslatableComponent("imp.msdmonitor.addplaylist"), msdScreen, parentScreen, x, y, width, height);
+        super(new TranslatableComponent("imp.msdMonitor.addPlaylist"), msdScreen, parentScreen, x, y, width, height);
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
@@ -34,7 +34,7 @@ public class AddPlaylistMonitor extends MSDBaseMonitor {
             System.out.println(n.item().getName());
         }));
 
-        addCreateSmartButton(new TranslatableComponent("imp.msdbutton.create"), x + 175, y + 12, 23, 8, n -> {
+        addCreateSmartButton(new TranslatableComponent("imp.msdButton.create"), x + 175, y + 12, 23, 8, n -> {
             insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST);
         });
 

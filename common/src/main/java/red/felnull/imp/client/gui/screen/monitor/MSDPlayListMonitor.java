@@ -21,7 +21,7 @@ public class MSDPlayListMonitor extends MSDBaseMonitor {
 
 
     public MSDPlayListMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
-        super(new TranslatableComponent("imp.msdmonitor.playlist"), msdScreen, parentScreen, x, y, width, height);
+        super(new TranslatableComponent("imp.msdMonitor.playlist"), msdScreen, parentScreen, x, y, width, height);
         this.renderHeader = false;
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
         playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));

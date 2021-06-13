@@ -146,8 +146,8 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     @Override
     public boolean mouseClicked(double d, double e, int i) {
         boolean f1 = super.mouseClicked(d, e, i);
-        boolean f2 = getCurrentScreen() == null || !getCurrentScreen().isActive() || getCurrentScreen().mouseClicked(d, e, i);
-        return f1 && f2;
+        //   boolean f2 = getCurrentScreen() == null || !getCurrentScreen().isActive() || getCurrentScreen().mouseClicked(d, e, i);
+        return f1;//&& f2;
     }
 
     @Override

@@ -41,4 +41,35 @@ public interface IMSDSmartRender extends IIkisugibleWidget {
         component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         getFont().draw(poseStack, component, i, j, k);
     }
+
+    default void drawDarkBox(PoseStack poseStack, int x, int y, int w, int h) {
+        fillXDarkGrayLine(poseStack, x, y, w);
+        fillXDarkGrayLine(poseStack, x, y + h, w);
+        fillYDarkGrayLine(poseStack, x, y + 1, h - 1);
+        fillYDarkGrayLine(poseStack, x + w - 1, y + 1, h - 1);
+        fillBerryDarkGray(poseStack, x + 1, y + 1, w - 2, h - 1);
+    }
+
+    default void fillXLine(PoseStack ps, int x, int y, int s, int col) {
+        GuiComponent.fill(ps, x, y, x + s, y + 1, col);
+    }
+
+    default void fillYLine(PoseStack ps, int x, int y, int s, int col) {
+        GuiComponent.fill(ps, x, y, x + 1, y + s, col);
+    }
+
+    default void drawFill(PoseStack poseStack, int x, int y, int w, int h, int col) {
+        GuiComponent.fill(poseStack, x, y, x + w, y + h, col);
+    }
+
+    default void drawSmartButtonBox(PoseStack poseStack, int x, int y, int w, int h, int st) {
+        int c1 = st == 0 ? 0x383838 : st == 1 ? 0xa9a9a9 : 0x9ebdd1;
+        int c2 = st == 0 ? 454545 : st == 1 ? 0xb9b9b9 : 0xb3d4e9;
+
+        fillXLine(poseStack, x, y, w, IKSGColorUtil.toSRGB(c1));
+        fillXLine(poseStack, x, y + h, w, IKSGColorUtil.toSRGB(c1));
+        fillYLine(poseStack, x, y + 1, h - 1, IKSGColorUtil.toSRGB(c1));
+        fillYLine(poseStack, x + w - 1, y + 1, h - 1, IKSGColorUtil.toSRGB(c1));
+        drawFill(poseStack, x + 1, y + 1, w - 2, h - 1, IKSGColorUtil.toSRGB(c2));
+    }
 }

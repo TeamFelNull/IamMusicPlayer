@@ -16,10 +16,10 @@ import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.util.IKSGImageUtil;
 import red.felnull.otyacraftengine.util.IKSGURLUtil;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
@@ -37,10 +37,11 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
     private static final Gson GSON = new Gson();
     private static final Map<String, ImageOPURLData> optimizations = new HashMap<>();
     private MSDSmartEditBox imageURLTextBox;
-    private MSDSmartEditBox nameTextBox;
-    private ImageInfo imageInfo = ImageInfo.EMPTY;
+    protected MSDSmartEditBox nameTextBox;
+    protected ImageInfo imageInfo = ImageInfo.EMPTY;
     private ImageOptimizationThread optimizationThread;
     private ImageLoadState loadState = ImageLoadState.NONE;
+    private String errorMessage;
 
     public MSDCreateBaseMonitor(Component component, MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(component, msdScreen, parentScreen, x, y, width, height);
@@ -63,7 +64,6 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
             }
         });
 
-        nameTextBox.setValue(getMinecraft().player.getGameProfile().getName() + "'s Play List");
 
         boolean canFileCoose = false;
         if (canFileCoose) {
@@ -77,7 +77,11 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
         this.addRenderableWidget(new ImageButton(x + 61 - (canFileCoose ? 0 : 8), y + 54, 8, 8, 16, 107, 8, MSD_WIDGETS, n -> {
             setImageInfo(new ImageInfo(ImageInfo.ImageType.STRING, nameTextBox.getValue()));
         }));
+
+        addCreateSmartButton(new TranslatableComponent("imp.msdButton.create"), x + 148, y + 104, n -> created());
     }
+
+    abstract protected void created();
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
@@ -89,24 +93,27 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
         fillLightGray(poseStack, x + 4, y + 24, 37, 37);
 
         PlayImageRenderer.getInstance().render(imageInfo, poseStack, x + 4, y + 24, 37);
-
+        MutableComponent component;
         if (loadState != ImageLoadState.NONE) {
-            MutableComponent component = loadState.getComponent();
-            if (loadState == ImageLoadState.ERROR)
+            component = loadState.getComponent().copy();
+            if (loadState == ImageLoadState.ERROR) {
+                if (errorMessage != null) {
+                    component.append(": " + errorMessage);
+                }
                 component.withStyle(ChatFormatting.RED);
-            else
+            } else {
                 component.append("...");
-
-            drawPrettyString(poseStack, component, x + 46, y + 43, 0);
+            }
         } else {
-            poseStack.pushPose();
-            MutableComponent component = new TranslatableComponent("imp.msdText.setImageInfo");
-            component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
-            float scale = Math.min(1f, 150f / getFont().width(component));
-            IKSGRenderUtil.matrixScalf(poseStack, scale);
-            drawPrettyString(poseStack, component, (x + 44f) / scale, (y + 43f) / scale, 0);
-            poseStack.popPose();
+            component = new TranslatableComponent("imp.msdText.setImageInfo");
         }
+        poseStack.pushPose();
+        component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
+        float scale = Math.min(1f, 150f / getFont().width(component));
+        IKSGRenderUtil.matrixScalf(poseStack, scale);
+        drawPrettyString(poseStack, component, (x + 44f) / scale, (y + 43f) / scale, 0);
+        poseStack.popPose();
+
     }
 
 
@@ -202,20 +209,11 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
                 if (stopped)
                     return;
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(opImage.image(), "png", baos);
-                baos.flush();
-                byte[] imgebyte = baos.toByteArray();
-                baos.close();
-
-                if (stopped)
-                    return;
-
                 loadState = ImageLoadState.UPLOADING;
 
                 HttpClient hc = HttpClient.newHttpClient();
                 HttpRequest hr = HttpRequest.newBuilder(URI.create("https://api.imgur.com/3/image"))
-                        .POST(HttpRequest.BodyPublishers.ofByteArray(imgebyte))
+                        .POST(HttpRequest.BodyPublishers.ofByteArray(opImage.imageData()))
                         .header("Authorization", "Client-ID d33f23f7c189083")
                         .build();
 
@@ -240,6 +238,7 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
 
             } catch (Exception ex) {
                 loadState = ImageLoadState.ERROR;
+                errorMessage = ex.getLocalizedMessage();
             }
         }
 
@@ -251,7 +250,10 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
 
 
     private ImageData imageOptimization(InputStream stream) throws IOException {
-        BufferedImage image = ImageIO.read(stream);
+
+        byte[] data = stream.readAllBytes();
+
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(data));
 
         int wi = image.getWidth();
         int hi = image.getHeight();
@@ -271,9 +273,38 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
         int ws = (int) (256 * w);
         int hs = (int) (256 * h);
 
-        BufferedImage outImage = new BufferedImage(ws, hs, image.getType());
-        outImage.createGraphics().drawImage(image.getScaledInstance(ws, hs, Image.SCALE_AREA_AVERAGING), 0, 0, ws, hs, null);
-        return new ImageData(outImage, w, h);
+        String formatName = IKSGImageUtil.getFormatName(data);
+        long maxL = 1024L * 1024;
+        if ("gif".equalsIgnoreCase(formatName)) {
+            byte[] gd = IKSGImageUtil.resizeGif(data, ws, hs);
+            for (int i = 0; i < 3; i++) {
+                if (gd.length > maxL) {
+                    int fc = IKSGImageUtil.gifDivide(gd).length;
+                    int reframe = (int) (((double) maxL / (double) gd.length) * (double) fc);
+                    gd = IKSGImageUtil.setFrameContGif(gd, reframe);
+                }
+            }
+            for (int i = 0; i < 3; i++) {
+                if (gd.length > maxL) {
+                    int fc = IKSGImageUtil.gifDivide(gd).length;
+                    int reframe = (int) ((double) fc / 2d);
+                    gd = IKSGImageUtil.setFrameContGif(gd, reframe);
+                }
+            }
+            if (gd.length > maxL) {
+                throw new IOException("Size over");
+            }
+            return new ImageData(gd, w, h);
+        }
+
+        BufferedImage outImage = IKSGImageUtil.resize(image, ws, hs);
+        byte[] datab = IKSGImageUtil.toByte(outImage, formatName);
+
+        if (datab.length > maxL) {
+            throw new IOException("Size over");
+        }
+
+        return new ImageData(datab, w, h);
     }
 
     private static enum ImageLoadState {
@@ -297,7 +328,7 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
 
     }
 
-    private static record ImageData(BufferedImage image, float w, float h) {
+    private static record ImageData(byte[] imageData, float w, float h) {
 
     }
 }

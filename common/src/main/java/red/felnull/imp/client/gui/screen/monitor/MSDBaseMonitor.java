@@ -11,6 +11,7 @@ import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.IMPFonts;
 import red.felnull.imp.client.gui.components.IMSDSmartRender;
 import red.felnull.imp.client.gui.components.MSDSmartButton;
+import red.felnull.imp.client.gui.components.MSDSmartCheckbox;
 import red.felnull.imp.client.gui.components.MSDSmartEditBox;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -99,6 +100,10 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> implements
     public MSDSmartEditBox addCreateSmartTextEditBox(MutableComponent component, int x, int y, int w) {
         return addCreateSmartTextEditBox(component, x, y, w, n -> {
         });
+    }
+
+    public MSDSmartCheckbox addCreateCheckBox(MutableComponent component, int x, int y) {
+        return this.addRenderableWidget(new MSDSmartCheckbox(x, y, component));
     }
 
     public MSDSmartEditBox addCreateSmartTextEditBox(MutableComponent component, int x, int y, int w, Consumer<String> changeNamed) {

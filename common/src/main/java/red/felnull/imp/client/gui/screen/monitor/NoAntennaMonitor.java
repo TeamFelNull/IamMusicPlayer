@@ -14,7 +14,7 @@ public class NoAntennaMonitor extends MSDBaseMonitor {
     protected ItemRenderer itemRenderer;
 
     public NoAntennaMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
-        super(new TranslatableComponent("imp.msdmonitor.noantenna"), msdScreen, parentScreen, x, y, width, height);
+        super(new TranslatableComponent("imp.msdMonitor.noAntenna"), msdScreen, parentScreen, x, y, width, height);
         this.renderHeader = false;
     }
 
@@ -28,7 +28,7 @@ public class NoAntennaMonitor extends MSDBaseMonitor {
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
-        drawPrettyCenteredString(poseStack, new TranslatableComponent("imp.msdtext.noantenna"), x + width / 2, y + 50, 0);
+        drawPrettyCenteredString(poseStack, new TranslatableComponent("imp.msdText.noAntenna"), x + width / 2, y + 50, 0);
         this.itemRenderer.blitOffset = 100.0F;
         this.itemRenderer.renderAndDecorateItem(antenna, x + (width / 2) - 8, y + 65);
         this.itemRenderer.blitOffset = 0.0F;

@@ -4,10 +4,10 @@ import net.minecraft.nbt.CompoundTag;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
 public class MusicPlayListDetailed implements ITAGSerializable {
-    private boolean anyonejoin;
+    private boolean publiced;
 
-    public MusicPlayListDetailed(boolean anyonejoin) {
-        this.anyonejoin = anyonejoin;
+    public MusicPlayListDetailed(boolean publiced) {
+        this.publiced = publiced;
     }
 
     public MusicPlayListDetailed(CompoundTag tag) {
@@ -16,16 +16,16 @@ public class MusicPlayListDetailed implements ITAGSerializable {
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        tag.putBoolean("AnyoneJoin", anyonejoin);
+        tag.putBoolean("Publiced", publiced);
         return tag;
     }
 
     @Override
     public void load(CompoundTag tag) {
-        this.anyonejoin = tag.getBoolean("AnyoneJoin");
+        this.publiced = tag.getBoolean("Publiced");
     }
 
-    public boolean isAnyonejoin() {
-        return anyonejoin;
+    public boolean isPubliced() {
+        return publiced;
     }
 }

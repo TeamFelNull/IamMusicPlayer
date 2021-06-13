@@ -3,12 +3,8 @@ package red.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import red.felnull.imp.client.gui.screen.monitor.MSDBaseMonitor;
-import red.felnull.otyacraftengine.client.gui.components.IIkisugibleWidget;
-import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-public class MSDSmartButton extends Button implements IIkisugibleWidget {
+public class MSDSmartButton extends Button implements IMSDSmartRender {
     public MSDSmartButton(int i, int j, int k, int l, Component component, OnPress onPress, OnTooltip onTooltip) {
         super(i, j, k, l, component, onPress, onTooltip);
     }
@@ -20,7 +16,8 @@ public class MSDSmartButton extends Button implements IIkisugibleWidget {
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float parTick) {
         int k = this.getYImage(this.isHovered());
-
+        drawSmartButtonBox(poseStack, x, y, width, height, k);
+/*
         IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x, y, 0, 62 + 15 * k, 3, 3);
 
         IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x, y + height - 3, 0, 74 + 15 * k, 3, 3);
@@ -58,12 +55,12 @@ public class MSDSmartButton extends Button implements IIkisugibleWidget {
             IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 3 + 42 * wc, y + 3 + 9 * j, 3, 65 + 15 * k, w % 42, 9);
         }
         IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 3 + 42 * wc, y + 3 + 9 * hc, 3, 65 + 15 * k, w % 42, h % 9);
-
+*/
         this.renderBg(poseStack, getMinecraft(), mx, my);
         drawPrettyCenteredString(poseStack, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 0);
     }
 
     public void drawPrettyCenteredString(PoseStack poseStack, Component component, int i, int j, int k) {
-       getFont().draw(poseStack, component, (float) (i - getFont().width(component) / 2), j, k);
+        getFont().draw(poseStack, component, (float) (i - getFont().width(component) / 2), j, k);
     }
 }
