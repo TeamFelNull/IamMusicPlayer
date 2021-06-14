@@ -5,6 +5,7 @@ import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.data.resource.AdministratorInformation;
 import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.MusicPlayList;
+import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 import red.felnull.otyacraftengine.util.IKSGNbtUtil;
 
 import java.util.List;
@@ -26,6 +27,15 @@ public class NbtUtils {
 
     public static void readMusicPlayLists(CompoundTag tag, String name, List<MusicPlayList> musics) {
         IKSGNbtUtil.readList(tag, name, musics, n -> new MusicPlayList((CompoundTag) n));
+    }
+
+
+    public static CompoundTag writeSimpleMusicPlayLists(CompoundTag tag, String name, List<SimpleMusicPlayList> musics) {
+        return IKSGNbtUtil.writeList(tag, name, musics, n -> n.save(new CompoundTag()));
+    }
+
+    public static void readSimpleMusicPlayLists(CompoundTag tag, String name, List<SimpleMusicPlayList> musics) {
+        IKSGNbtUtil.readList(tag, name, musics, n -> new SimpleMusicPlayList((CompoundTag) n));
     }
 
     public static CompoundTag writeAdminData(CompoundTag tag, String name, Map<UUID, AdministratorInformation.AuthorityType> adminData) {

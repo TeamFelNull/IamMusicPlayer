@@ -49,9 +49,9 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     }
 
     protected void addScreens() {
-        addScreen(MusicSharingDeviceBlockEntity.Screen.OFF, () -> new MSDOffMonitor(MusicSharingDeviceBlockEntity.Screen.OFF, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
-        addScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG, () -> new MSDDebugMonitor(MusicSharingDeviceBlockEntity.Screen.DEBUG, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
-        addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, () -> new MSDPlayListMonitor(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.OFF, () -> new OffMonitor(MusicSharingDeviceBlockEntity.Screen.OFF, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.DEBUG, () -> new DebugMonitor(MusicSharingDeviceBlockEntity.Screen.DEBUG, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, () -> new PlayListMonitor(MusicSharingDeviceBlockEntity.Screen.PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, () -> new NoAntennaMonitor(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST, () -> new AddPlaylistMonitor(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST, () -> new CreatePlaylistMonitor(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));

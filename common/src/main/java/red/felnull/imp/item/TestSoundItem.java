@@ -24,40 +24,15 @@ public class TestSoundItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (level.isClientSide()) {
-            //  player.displayClientMessage(new TextComponent(itemStack.getHoverName().getString()), false);
-            // TestMusic.playStart(itemStack.getHoverName().getString());
-           /* IMusicPlayerLoader loader = MusicPlayerRegistry.getLoader(new ResourceLocation(IamMusicPlayer.MODID, "youtube"));
-            IMusicPlayer musicPlayer = loader.createMusicPlayer(itemStack.getHoverName().getString());
-            try {
-                musicPlayer.ready(0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            musicPlayer.setSelfPosition(player.position());
-            musicPlayer.linearAttenuation(32f);
-
-            musicPlayer.play(0);*/
+         /*   IMPSyncClientManager.getInstance().getMyPlayLists().forEach(n->{
+                player.displayClientMessage(new TextComponent(n.getName()),false);
+            });*/
         } else {
             if (!player.isCrouching()) {
                 IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), itemStack.getHoverName().getString())));
             } else {
                 IKSGPacketUtil.sendToClientPacket((ServerPlayer) player, new MusicClientInstructionMessage(MusicClientInstructionMessage.Type.READY, UUID.randomUUID(), 0, new MusicLocation(new ResourceLocation(IamMusicPlayer.MODID, "http"), itemStack.getHoverName().getString())));
             }
-
-            //  IKSGClientUtil.addSubtitle(itemStack.getHoverName(), player.position());
-
-     /*       Map<UUID, AdministratorInformation.AuthorityType> players = new HashMap<>();
-            players.put(player.getGameProfile().getId(), AdministratorInformation.AuthorityType.READ_ONLY);
-
-            UUID uuidpl = UUID.randomUUID();
-            MusicPlayList mpl = new MusicPlayList(uuidpl, "aikisugiList", new MusicPlayListDetailed(false), new ImageLocation(ImageLocation.ImageType.STRING, "TEST"), new AdministratorInformation(false, players), new ArrayList<>());
-            MusicManager.getInstance().addPlayList(mpl);
-
-            UUID uuid = UUID.randomUUID();
-
-            Music ms = new Music(uuid, "ikisugi", 114514, new MusicLocation(MusicLocation.LocationType.URL, "https://cdn.discordapp.com/attachments/358878159615164416/831304524001837086/pigstep.mp3"), new MusicDetailed("yj", "ikisugi", "1919", "a", "115"), new ImageLocation(ImageLocation.ImageType.STRING, "TEST"), new AdministratorInformation(false, players));
-            MusicManager.getInstance().addMusic(uuidpl, ms);*/
         }
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }

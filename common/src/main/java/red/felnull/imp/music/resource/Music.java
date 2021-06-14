@@ -38,7 +38,7 @@ public class Music implements ITAGSerializable {
         tag.putLong("Duration", duration);
         tag.put("MusicLocation", location.save(new CompoundTag()));
         tag.put("MusicDetailed", detailed.save(new CompoundTag()));
-        tag.put("ImageLocation", image.save(new CompoundTag()));
+        tag.put("ImageInfo", image.save(new CompoundTag()));
         tag.put("AdministratorInformation", administrator.save(new CompoundTag()));
         return tag;
     }
@@ -50,7 +50,7 @@ public class Music implements ITAGSerializable {
         this.duration = tag.getLong("Duration");
         this.location = new MusicLocation(tag.getCompound("MusicLocation"));
         this.detailed = new MusicDetailed(tag.getCompound("MusicDetailed"));
-        this.image = new ImageInfo(tag.getCompound("ImageLocation"));
+        this.image = new ImageInfo(tag.getCompound("ImageInfo"));
         this.administrator = new AdministratorInformation(tag.getCompound("AdministratorInformation"));
     }
 

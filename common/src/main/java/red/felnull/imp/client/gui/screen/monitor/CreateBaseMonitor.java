@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
+public abstract class CreateBaseMonitor extends MSDBaseMonitor {
     private static final Gson GSON = new Gson();
     private static final Map<String, ImageOPURLData> optimizations = new HashMap<>();
     private MSDSmartEditBox imageURLTextBox;
@@ -45,7 +45,7 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
     private String errorMessage;
     private MSDSmartButton createButton;
 
-    public MSDCreateBaseMonitor(Component component, MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
+    public CreateBaseMonitor(Component component, MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(component, msdScreen, parentScreen, x, y, width, height);
     }
 
@@ -211,7 +211,7 @@ public abstract class MSDCreateBaseMonitor extends MSDBaseMonitor {
 
                 if (url != null) {
                     URL imurl = new URL(url);
-                    opImage = imageOptimization(IKSGURLUtil.getURLStream(imurl));
+                    opImage = imageOptimization(IKSGURLUtil.getStream(imurl));
                 } else {
                     opImage = imageOptimization(new FileInputStream(file));
                 }

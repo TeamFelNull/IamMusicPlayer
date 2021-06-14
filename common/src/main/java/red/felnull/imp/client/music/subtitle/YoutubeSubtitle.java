@@ -32,7 +32,7 @@ public class YoutubeSubtitle implements IMusicSubtitle {
         SubtitleManager manager = SubtitleManager.getInstance();
         URL langList = new URL("https://video.google.com/timedtext?hl=en&type=list&v=" + videoID);
 
-        InputStream langListStream = IKSGURLUtil.getURLStream(langList);
+        InputStream langListStream = IKSGURLUtil.getStream(langList);
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -58,7 +58,7 @@ public class YoutubeSubtitle implements IMusicSubtitle {
             return;
 
         URL subUrl = new URL("https://www.youtube.com/api/timedtext?lang=" + langCode.get() + "&v=" + videoID);
-        InputStream subStream = IKSGURLUtil.getURLStream(subUrl);
+        InputStream subStream = IKSGURLUtil.getStream(subUrl);
         Document subDocument = builder.parse(subStream);
 
         NodeList subListNL = subDocument.getChildNodes();

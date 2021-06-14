@@ -9,33 +9,36 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AdministratorInformation implements ITAGSerializable {
-    private boolean publiced;
     private Map<UUID, AuthorityType> adminData = new HashMap<>();
 
     public AdministratorInformation(CompoundTag tag) {
         this.load(tag);
     }
 
-    public AdministratorInformation(boolean publiced, Map<UUID, AuthorityType> adminData) {
-        this.publiced = publiced;
+    public AdministratorInformation(Map<UUID, AuthorityType> adminData) {
         this.adminData = adminData;
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        tag.putBoolean("Publiced", publiced);
         NbtUtils.writeAdminData(tag, "AdminData", adminData);
         return tag;
     }
 
     @Override
     public void load(CompoundTag tag) {
-        this.publiced = tag.getBoolean("Publiced");
         NbtUtils.readAdminData(tag, "AdminData", adminData);
     }
 
     public Map<UUID, AuthorityType> getAdminData() {
         return adminData;
+    }
+
+    public AuthorityType getAuthority(UUID plId) {
+        if (adminData.containsKey(plId))
+            return adminData.get(plId);
+
+        return AuthorityType.READ_ONLY;
     }
 
     public static enum AuthorityType {

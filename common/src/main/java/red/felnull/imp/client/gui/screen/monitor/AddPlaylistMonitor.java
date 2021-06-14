@@ -4,33 +4,27 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
+import red.felnull.imp.client.data.IMPSyncClientManager;
 import red.felnull.imp.client.gui.components.PublishedPlayListFixedButtonsList;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
-import red.felnull.imp.music.resource.MusicPlayList;
+import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class AddPlaylistMonitor extends MSDBaseMonitor {
-    private final List<MusicPlayList> playList = new ArrayList<>();
+    private final List<SimpleMusicPlayList> playLists = new ArrayList<>();
 
     public AddPlaylistMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.addPlaylist"), msdScreen, parentScreen, x, y, width, height);
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
-        playList.add(new MusicPlayList(UUID.randomUUID(), "TEST", null, null, null, null));
     }
 
     @Override
     public void init() {
         super.init();
+        IMPSyncClientManager.getInstance().syncPublicPlayLists();
 
-        this.addRenderableWidget(new PublishedPlayListFixedButtonsList(x + 1, y + 21, 197, 100, 5, new TextComponent("Play List"), this.playList, n -> new TextComponent(n.getName()), (n) -> {
+        this.addRenderableWidget(new PublishedPlayListFixedButtonsList(x + 1, y + 21, 197, 100, 5, new TextComponent("Play List"), this.playLists, n -> new TextComponent(n.getName()), (n) -> {
             System.out.println(n.item().getName());
         }));
 
@@ -38,6 +32,13 @@ public class AddPlaylistMonitor extends MSDBaseMonitor {
             insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST);
         });
 
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        playLists.clear();
+        playLists.addAll(IMPSyncClientManager.getInstance().getPublicPlayLists());
     }
 
     @Override

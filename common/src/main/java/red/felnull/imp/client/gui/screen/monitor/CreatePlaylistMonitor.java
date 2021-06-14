@@ -5,7 +5,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
-import red.felnull.imp.client.data.IMPServerSyncManager;
+import red.felnull.imp.client.data.IMPSyncClientManager;
 import red.felnull.imp.client.gui.components.AdminInfoData;
 import red.felnull.imp.client.gui.components.AdminPlayersFixedButtonsList;
 import red.felnull.imp.client.gui.components.MSDSmartCheckbox;
@@ -13,11 +13,13 @@ import red.felnull.imp.client.gui.components.PlayersFixedButtonsList;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.data.resource.AdministratorInformation;
 import red.felnull.imp.data.resource.ImageInfo;
+import red.felnull.imp.packet.PlayListCreateMessage;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 
 import java.util.*;
 
-public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
+public class CreatePlaylistMonitor extends CreateBaseMonitor {
     private final List<PlayerInfo> playerInfos = new ArrayList<>();
     private final List<AdminInfoData> selectedAdminPlayer = new ArrayList<>();
     private MSDSmartCheckbox publicedCheckBox;
@@ -54,7 +56,7 @@ public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
     public void tick() {
         super.tick();
         playerInfos.clear();
-        playerInfos.addAll(IMPServerSyncManager.getInstance().getOnlinePlayers().stream().filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().getProfile().getId().equals(n.getProfile().getId()))).toList());
+        playerInfos.addAll(IMPSyncClientManager.getInstance().getOnlinePlayers().stream().filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().getProfile().getId().equals(n.getProfile().getId()))).toList());
     }
 
     @Override
@@ -64,6 +66,8 @@ public class CreatePlaylistMonitor extends MSDCreateBaseMonitor {
         ImageInfo image = imageInfo;
         Map<UUID, AdministratorInformation.AuthorityType> adminData = new HashMap<>();
         selectedAdminPlayer.forEach(n -> adminData.put(n.playerInfo().getProfile().getId(), n.type()));
+
+        IKSGPacketUtil.sendToServerPacket(new PlayListCreateMessage(name, pub, image, adminData));
         insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST);
     }
 
