@@ -6,6 +6,8 @@ import red.felnull.imp.api.register.IMPMusicPlayerRegister;
 import red.felnull.imp.client.music.loader.IMusicLoader;
 import red.felnull.otyacraftengine.api.register.OERegistries;
 
+import java.util.List;
+
 public class IMPClientRegistry {
     public static void init() {
         IMPMusicPlayerRegister musicPlayerRegister = new IMPMusicPlayerRegister();
@@ -25,4 +27,11 @@ public class IMPClientRegistry {
         return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().containsKey(location);
     }
 
+    public static List<IMusicLoader> getLoaders() {
+        return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().values().stream().toList();
+    }
+
+    public static List<ResourceLocation> getLoaderLocations() {
+        return OERegistries.getRegistry(IMPMusicPlayerRegister.class).getMap().keySet().stream().toList();
+    }
 }

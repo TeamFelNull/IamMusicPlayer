@@ -56,7 +56,7 @@ public class CreatePlaylistMonitor extends CreateBaseMonitor {
     public void tick() {
         super.tick();
         playerInfos.clear();
-        playerInfos.addAll(IMPSyncClientManager.getInstance().getOnlinePlayers().stream().filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().getProfile().getId().equals(n.getProfile().getId()))).toList());
+        playerInfos.addAll(IMPSyncClientManager.getInstance().getOnlinePlayers().stream().filter(n -> !n.getProfile().getId().equals(getMinecraft().player.getGameProfile().getId())).filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().getProfile().getId().equals(n.getProfile().getId()))).toList());
     }
 
     @Override

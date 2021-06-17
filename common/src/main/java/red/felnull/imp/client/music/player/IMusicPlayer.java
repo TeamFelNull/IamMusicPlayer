@@ -1,7 +1,7 @@
 package red.felnull.imp.client.music.player;
 
 import net.minecraft.world.phys.Vec3;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 
 public interface IMusicPlayer {
     void ready(long position) throws Exception;
@@ -36,7 +36,7 @@ public interface IMusicPlayer {
 
     void update();
 
-    MusicLocation getMusicLocation();
+    MusicSource getMusicLocation();
 
     long getPosition();
 }

@@ -12,13 +12,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PlayListFixedButtonsList extends FixedButtonsList<SimpleMusicPlayList> implements IMSDSmartRender {
-    public PlayListFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<SimpleMusicPlayList> list, Function<SimpleMusicPlayList, Component> listName, Consumer<PressState<SimpleMusicPlayList>> onPress) {
+    private final Function<SimpleMusicPlayList, Boolean> selected;
+
+    public PlayListFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<SimpleMusicPlayList> list, Function<SimpleMusicPlayList, Component> listName, Consumer<PressState<SimpleMusicPlayList>> onPress, Function<SimpleMusicPlayList, Boolean> selected) {
         super(x, y, w, h, MSDBaseMonitor.MSD_WIDGETS, 0, 20, 256, 256, num, name, list, listName, onPress);
+        this.selected = selected;
     }
 
     @Override
     protected void renderOneButton(PoseStack poseStack, SimpleMusicPlayList item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
         int k = this.getYImage(this.isHovered(bnum));
+        if (selected.apply(item))
+            k = 0;
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
         PlayImageRenderer.getInstance().render(item.getImage(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
     }

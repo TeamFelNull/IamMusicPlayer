@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class AdministratorInformation implements ITAGSerializable {
+    public static final AdministratorInformation EMPTY = new AdministratorInformation(new HashMap<>());
     private Map<UUID, AuthorityType> adminData = new HashMap<>();
 
     public AdministratorInformation(CompoundTag tag) {

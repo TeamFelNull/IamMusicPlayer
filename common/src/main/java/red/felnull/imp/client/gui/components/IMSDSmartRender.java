@@ -32,7 +32,7 @@ public interface IMSDSmartRender extends IIkisugibleWidget {
         GuiComponent.fill(ps, x, y, x + 1, y + s, IKSGColorUtil.toSRGB(0x585858));
     }
 
-    default void drawPrettyCenteredString(PoseStack poseStack, MutableComponent component, int i, int j, int k) {
+    default void drawPrettyCenteredString(PoseStack poseStack, MutableComponent component, float i, float j, int k) {
         component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         getFont().draw(poseStack, component, (float) (i - getFont().width(component) / 2), j, k);
     }

@@ -5,6 +5,7 @@ import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.otyacraftengine.data.WorldDataManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,23 +30,33 @@ public class MusicManager {
         getSaveData().setDirty();
     }
 
-    public List<MusicPlayList> getPlayList() {
+    public List<MusicPlayList> getPlayLists() {
         return getSaveData().getMusicPlaylists().values().stream().toList();
     }
 
-    public List<MusicPlayList> getMyPlayList(UUID playerID) {
-        return getPlayList().stream().filter(n -> n.getPlayerList().contains(playerID) && n.getAdministrator().getAuthority(playerID).canRead()).toList();
+    public List<MusicPlayList> getMyPlayLists(UUID playerID) {
+        return getPlayLists().stream().filter(n -> n.getPlayerList().contains(playerID) && n.getAdministrator().getAuthority(playerID).canRead()).toList();
     }
 
-    public List<MusicPlayList> getPublicPlayList() {
-        return getPlayList().stream().filter(n -> n.getDetailed().isPubliced()).toList();
+    public List<MusicPlayList> getPublicPlayLists() {
+        return getPlayLists().stream().filter(n -> n.getDetailed().isPubliced()).toList();
     }
 
-    public List<MusicPlayList> getFilterPublicPlayList(UUID playerId) {
-        //.filter(n -> !n.getPlayerList().contains(playerId))
-        return getPlayList().stream().filter(n -> n.getDetailed().isPubliced()).filter(n -> n.getAdministrator().getAuthority(playerId).canRead()).toList();
+    public List<MusicPlayList> getFilterPublicPlayLists(UUID playerId) {
+        return getPlayLists().stream().filter(n -> n.getDetailed().isPubliced()).filter(n -> !n.getPlayerList().contains(playerId)).filter(n -> n.getAdministrator().getAuthority(playerId).canRead()).toList();
     }
 
+    public List<Music> getPlayListToMusics(UUID playlistID) {
+        MusicPlayList playList = getPlayList(playlistID);
+        if (playList != null)
+            return playList.getMusicList().stream().map(this::getMusic).toList();
+
+        return new ArrayList<>();
+    }
+
+    public Music getMusic(UUID musicID) {
+        return getSaveData().getMusics().get(musicID);
+    }
 
     public void addMusic(UUID playlistID, Music music) {
         addMusic(music);
@@ -65,4 +76,17 @@ public class MusicManager {
         getSaveData().getMusicPlaylists().remove(playlistID);
         getSaveData().setDirty();
     }
+
+    public MusicPlayList getPlayList(UUID playlistID) {
+        return getSaveData().getMusicPlaylists().get(playlistID);
+    }
+
+    public void addPlayerToMusicPlayList(UUID playlistID, UUID playerID) {
+        MusicPlayList playList = getPlayList(playlistID);
+        if (playList != null && playList.getAdministrator().getAuthority(playlistID).canRead()) {
+            playList.getPlayerList().add(playerID);
+            getSaveData().setDirty();
+        }
+    }
+
 }

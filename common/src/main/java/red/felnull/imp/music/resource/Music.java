@@ -1,33 +1,29 @@
 package red.felnull.imp.music.resource;
 
 import net.minecraft.nbt.CompoundTag;
-import red.felnull.imp.data.resource.AdministratorInformation;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Music implements ITAGSerializable {
     private UUID uuid;
     private String name;
-    private long duration;
-    private MusicLocation location;
-    private MusicDetailed detailed;
+    private MusicSource source;
     private ImageInfo image;
-    private AdministratorInformation administrator;
+    private UUID owner;
 
     public Music(CompoundTag tag) {
         this.load(tag);
     }
 
-    public Music(UUID uuid, String name, long duration, MusicLocation location, MusicDetailed detailed, ImageInfo image, AdministratorInformation administrator) {
+    public Music(UUID uuid, String name, MusicSource source, ImageInfo image, UUID owner) {
         this.uuid = uuid;
         this.name = name;
-        this.duration = duration;
-        this.location = location;
-        this.detailed = detailed;
+        this.source = source;
         this.image = image;
-        this.administrator = administrator;
+        this.owner = owner;
     }
 
 
@@ -35,11 +31,9 @@ public class Music implements ITAGSerializable {
     public CompoundTag save(CompoundTag tag) {
         tag.putUUID("UUID", uuid);
         tag.putString("Name", name);
-        tag.putLong("Duration", duration);
-        tag.put("MusicLocation", location.save(new CompoundTag()));
-        tag.put("MusicDetailed", detailed.save(new CompoundTag()));
+        tag.put("MusicSource", source.save(new CompoundTag()));
         tag.put("ImageInfo", image.save(new CompoundTag()));
-        tag.put("AdministratorInformation", administrator.save(new CompoundTag()));
+        tag.putUUID("Owner", owner);
         return tag;
     }
 
@@ -47,31 +41,21 @@ public class Music implements ITAGSerializable {
     public void load(CompoundTag tag) {
         this.uuid = tag.getUUID("UUID");
         this.name = tag.getString("Name");
-        this.duration = tag.getLong("Duration");
-        this.location = new MusicLocation(tag.getCompound("MusicLocation"));
-        this.detailed = new MusicDetailed(tag.getCompound("MusicDetailed"));
+        this.source = new MusicSource(tag.getCompound("MusicSource"));
         this.image = new ImageInfo(tag.getCompound("ImageInfo"));
-        this.administrator = new AdministratorInformation(tag.getCompound("AdministratorInformation"));
+        this.owner = tag.getUUID("Owner");
     }
 
-    public AdministratorInformation getAdministrator() {
-        return administrator;
+    public UUID getOwner() {
+        return owner;
     }
 
     public ImageInfo getImage() {
         return image;
     }
 
-    public long getDuration() {
-        return duration;
-    }
-
-    public MusicDetailed getDetailed() {
-        return detailed;
-    }
-
-    public MusicLocation getLocation() {
-        return location;
+    public MusicSource getSource() {
+        return source;
     }
 
     public String getName() {
@@ -80,5 +64,18 @@ public class Music implements ITAGSerializable {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Music music = (Music) o;
+        return o.equals(this.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, name, source, image, owner);
     }
 }

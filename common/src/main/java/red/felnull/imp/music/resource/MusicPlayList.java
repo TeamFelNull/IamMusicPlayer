@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class MusicPlayList implements ITAGSerializable {
+    public static final MusicPlayList ALL = new MusicPlayList(UUID.fromString("cf9b3688-5cd7-7b89-c3ce-1f3c585b4c61"), "All", MusicPlayListDetailed.EMPTY, new ImageInfo(ImageInfo.ImageType.STRING, "All"), AdministratorInformation.EMPTY, new ArrayList<>(), new ArrayList<>());
     private UUID uuid;
     private String name;
     private MusicPlayListDetailed detailed;

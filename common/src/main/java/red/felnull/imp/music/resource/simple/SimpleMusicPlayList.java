@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class SimpleMusicPlayList implements ITAGSerializable {
@@ -60,8 +61,20 @@ public class SimpleMusicPlayList implements ITAGSerializable {
         return name;
     }
 
-    public UUID getUuid() {
+    public UUID getUUID() {
         return uuid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleMusicPlayList that = (SimpleMusicPlayList) o;
+        return uuid.equals(that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, name, image, owner, playerCont);
+    }
 }

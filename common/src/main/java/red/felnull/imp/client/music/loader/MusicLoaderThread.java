@@ -4,14 +4,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.api.client.IMPClientRegistry;
-import red.felnull.imp.client.IamMusicPlayerClient;
 import red.felnull.imp.client.music.MusicEngine;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.subtitle.IMusicSubtitle;
 import red.felnull.imp.client.music.subtitle.SubtitleLoaderThread;
 import red.felnull.imp.client.music.subtitle.SubtitleSystem;
 import red.felnull.imp.music.info.MusicPlayInfo;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 import red.felnull.imp.packet.MusicResponseMessage;
 import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 
@@ -20,14 +19,14 @@ import java.util.UUID;
 public class MusicLoaderThread extends Thread {
     private static final Logger LOGGER = LogManager.getLogger(MusicLoaderThread.class);
     private final UUID uuid;
-    private final MusicLocation location;
+    private final MusicSource location;
     private final long startPosition;
     private final long startTime;
     private final boolean autPlay;
     private final MusicPlayInfo autPlayInfo;
     private boolean stop;
 
-    public MusicLoaderThread(UUID uuid, MusicLocation location, long startPosition, boolean autPlay, MusicPlayInfo autPlayInfo) {
+    public MusicLoaderThread(UUID uuid, MusicSource location, long startPosition, boolean autPlay, MusicPlayInfo autPlayInfo) {
         this.setName("Music Loader Thread: " + location.getIdentifier());
         this.uuid = uuid;
         this.location = location;
@@ -86,7 +85,7 @@ public class MusicLoaderThread extends Thread {
         stop = true;
     }
 
-    public MusicLocation getLocation() {
+    public MusicSource getLocation() {
         return location;
     }
 

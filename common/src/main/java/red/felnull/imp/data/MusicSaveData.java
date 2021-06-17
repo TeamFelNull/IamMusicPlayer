@@ -1,6 +1,7 @@
 package red.felnull.imp.data;
 
 import net.minecraft.nbt.CompoundTag;
+import red.felnull.imp.handler.SyncResourceRequestMessageHandler;
 import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.imp.util.NbtUtils;
@@ -45,5 +46,11 @@ public class MusicSaveData extends IkisugiSaveData {
 
     public Map<UUID, MusicPlayList> getMusicPlaylists() {
         return MUSIC_PLAYLISTS;
+    }
+
+    @Override
+    public void setDirty() {
+        super.setDirty();
+        SyncResourceRequestMessageHandler.resetMusicPlayList();
     }
 }

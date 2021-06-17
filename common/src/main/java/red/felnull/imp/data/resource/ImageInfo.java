@@ -61,7 +61,8 @@ public class ImageInfo implements ITAGSerializable {
     public static enum ImageType {
         URL("url"),
         STRING("string"),
-        PLAYER_FACE("playerface");
+        PLAYER_FACE("player_face"),
+        YOUTUBE_THUMBNAIL("youtube_thumbnail");
         private final String name;
 
         private ImageType(String name) {

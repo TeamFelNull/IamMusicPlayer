@@ -55,6 +55,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         addScreen(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, () -> new NoAntennaMonitor(MusicSharingDeviceBlockEntity.Screen.NO_ANTENNA, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST, () -> new AddPlaylistMonitor(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
         addScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST, () -> new CreatePlaylistMonitor(MusicSharingDeviceBlockEntity.Screen.CREATE_PLAYLIST, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
+        addScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_MUSIC, () -> new CreateMusicMonitor(MusicSharingDeviceBlockEntity.Screen.CREATE_MUSIC, this, getMonitorLeftPos(), getMonitorTopPos(), getMonitorWidth(), getMonitorHeight()));
     }
 
     @Override

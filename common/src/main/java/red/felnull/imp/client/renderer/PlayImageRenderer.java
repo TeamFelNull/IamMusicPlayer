@@ -42,6 +42,7 @@ public class PlayImageRenderer {
             case URL -> renderURLImage(location.getIdentifier(), poseStack, x, y, ws, hs, size);
             case STRING -> renderStringImage(location.getIdentifier(), poseStack, x, y, ws, hs, size);
             case PLAYER_FACE -> renderPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
+            case YOUTUBE_THUMBNAIL -> renderURLImage(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, x, y, ws, hs, size);
         }
     }
 

@@ -12,7 +12,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
 import javax.sound.sampled.AudioInputStream;
@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     private static final Logger LOGGER = LogManager.getLogger(LavaAbstractMusicPlayer.class);
-    protected final MusicLocation musicLocation;
+    protected final MusicSource musicSource;
     protected final AudioPlayerManager audioPlayerManager;
     protected final AudioDataFormat dataformat;
     protected final AudioPlayer audioPlayer;
@@ -37,8 +37,8 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     private long lastPausedTime;
     private long pausedTime;
 
-    public LavaAbstractMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
-        this.musicLocation = location;
+    public LavaAbstractMusicPlayer(MusicSource location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
+        this.musicSource = location;
         this.audioPlayerManager = audioPlayerManager;
         this.dataformat = dataformat;
         this.audioPlayer = audioPlayerManager.createPlayer();
@@ -48,7 +48,7 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     public void ready(long position) throws Exception {
         startPosition = position;
         this.trackLoaded = false;
-        audioPlayerManager.loadItem(musicLocation.getIdentifier(), new AudioLoadResultHandler() {
+        audioPlayerManager.loadItem(musicSource.getIdentifier(), new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 track.setPosition(position);
@@ -102,8 +102,8 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public MusicLocation getMusicLocation() {
-        return musicLocation;
+    public MusicSource getMusicLocation() {
+        return musicSource;
     }
 
     @Override

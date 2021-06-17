@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
 
 public class MusicPlayListDetailed implements ITAGSerializable {
+    public static final MusicPlayListDetailed EMPTY = new MusicPlayListDetailed(false);
     private boolean publiced;
 
     public MusicPlayListDetailed(boolean publiced) {

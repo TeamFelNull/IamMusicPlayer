@@ -5,7 +5,8 @@ import net.minecraft.util.StringRepresentable;
 public enum SyncType implements StringRepresentable {
     NONE("none"),
     MY_PLAYLISTS("my_playlists"),
-    PUBLIC_PLAYLISTS("public_playlists");
+    PUBLIC_PLAYLISTS("public_playlists"),
+    MUSIC("music");
     private final String name;
 
     SyncType(String name) {

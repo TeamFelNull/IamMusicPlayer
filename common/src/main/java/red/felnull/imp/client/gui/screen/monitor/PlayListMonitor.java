@@ -6,68 +6,66 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.data.IMPSyncClientManager;
+import red.felnull.imp.client.gui.components.MSDSmartButton;
 import red.felnull.imp.client.gui.components.MusicFixedButtonsList;
 import red.felnull.imp.client.gui.components.PlayListFixedButtonsList;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.music.resource.Music;
+import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayListMonitor extends MSDBaseMonitor {
     private final List<SimpleMusicPlayList> playList = new ArrayList<>();
     private final List<Music> musics = new ArrayList<>();
-
+    private SimpleMusicPlayList selectPlayList = MusicPlayList.ALL.getSimple();
+    private MSDSmartButton allButton;
 
     public PlayListMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.playlist"), msdScreen, parentScreen, x, y, width, height);
         this.renderHeader = false;
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-        musics.add(new Music(UUID.randomUUID(), "TEST", 0, null, null, null, null));
-
     }
 
     @Override
     public void init() {
         super.init();
-        IMPSyncClientManager.getInstance().syncMyPlayLists();
-
+        IMPSyncClientManager syncClientManager = IMPSyncClientManager.getInstance();
+        syncClientManager.syncMyPlayLists();
         this.addRenderableWidget(new PlayListFixedButtonsList(x + 1, y + 21, 29, 100, 5, new TextComponent("Play List"), this.playList, n -> new TextComponent(n.getName()), (n) -> {
-            System.out.println(n.item().getName());
-        }));
+            this.selectPlayList = n.item();
+            syncClientManager.syncMusics(n.item().getUUID());
+        }, n -> n.equals(selectPlayList)));
 
         this.addRenderableWidget(new MusicFixedButtonsList(x + 30, y + 21, 169, 100, 5, new TextComponent("Musics"), this.musics, n -> new TextComponent(n.getName()), (n) -> {
-            System.out.println(n.item().getName());
-        }));
-
-        this.addRenderableWidget(new ImageButton(x + 1, y + 1, 20, 19, 18, 20, 19, MSD_WIDGETS, 256, 256, n -> {
 
         }));
+
+        this.allButton = this.addCreateSmartButton(new TextComponent("All"), x + 1, y + 1, 20, 19, n -> {
+            selectPlayList = MusicPlayList.ALL.getSimple();
+        });
 
         this.addRenderableWidget(new ImageButton(x + 22, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST)));
 
-        this.addRenderableWidget(new ImageButton(x + 191, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> {
-
-        }));
+        this.addRenderableWidget(new ImageButton(x + 191, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_MUSIC)));
     }
 
     @Override
     public void tick() {
         super.tick();
+        IMPSyncClientManager syncClientManager = IMPSyncClientManager.getInstance();
+
         this.playList.clear();
-        this.playList.addAll(IMPSyncClientManager.getInstance().getMyPlayLists());
+        this.playList.addAll(syncClientManager.getMyPlayLists());
+        if (!playList.contains(selectPlayList)) {
+            selectPlayList = MusicPlayList.ALL.getSimple();
+        }
+        this.allButton.active = !selectPlayList.equals(MusicPlayList.ALL.getSimple());
+
+        this.musics.clear();
+        if (!selectPlayList.equals(MusicPlayList.ALL.getSimple()))
+            this.musics.addAll(syncClientManager.getMusics(selectPlayList.getUUID()));
     }
 
     @Override
@@ -86,5 +84,8 @@ public class PlayListMonitor extends MSDBaseMonitor {
         fillYGrayLine(poseStack, x + 198, y + 20, 100);
         fillXGrayLine(poseStack, x + 22, y + 21, 7);
         fillXGrayLine(poseStack, x + 22, y + 120, 7);
+
+        drawPrettyString(poseStack, new TextComponent(selectPlayList.getName()), x + 31, y + 2, 0);
+
     }
 }

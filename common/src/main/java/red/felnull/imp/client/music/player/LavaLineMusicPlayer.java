@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import red.felnull.imp.client.util.SoundMath;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class LavaLineMusicPlayer extends LavaAbstractMusicPlayer {
     private boolean stopped;
     private boolean paused;
 
-    public LavaLineMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
+    public LavaLineMusicPlayer(MusicSource location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat) {
         super(location, audioPlayerManager, dataformat);
     }
 

@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.handler.ClientHandler;
 import red.felnull.imp.client.handler.RenderHandler;
+import red.felnull.imp.handler.ServerHandler;
 import red.felnull.otyacraftengine.api.IOEIntegration;
 import red.felnull.otyacraftengine.api.OEIntegration;
 import red.felnull.otyacraftengine.api.register.OEClientHandlerRegister;
@@ -18,6 +19,7 @@ public class IMPOEIntegration implements IOEIntegration {
     public void registrationClientHandler(OEClientHandlerRegister reg) {
         reg.register(ClientHandler.class);
         reg.register(RenderHandler.class);
+        reg.register(ServerHandler.class);
     }
 
     @Override

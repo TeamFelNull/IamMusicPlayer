@@ -8,6 +8,7 @@ import red.felnull.imp.client.gui.screen.monitor.MSDBaseMonitor;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
 import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 import red.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
+import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 
@@ -27,8 +28,12 @@ public class PublishedPlayListFixedButtonsList extends FixedButtonsList<SimpleMu
         PlayImageRenderer.getInstance().render(item.getImage(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + getOneButtonHeight() + 1, y + 1, 0);
 
+        String plName = IKSGClientUtil.getPlayerNameByUUID(item.getOwner());
+        if (IKSGPlayerUtil.getFakePlayerName().equals(plName))
+            plName = item.getOwner().toString();
+
         IKSGRenderUtil.drawPlayerFase(poseStack, item.getOwner(), x + getOneButtonHeight() + 1, (int) (y + getOneButtonHeight() / 2f + 1));
-        drawPrettyString(poseStack, new TextComponent(IKSGPlayerUtil.getNameByUUID(item.getOwner())), x + getOneButtonHeight() + 10, (int) (y + getOneButtonHeight() / 2f) + 1, 0);
+        drawPrettyString(poseStack, new TextComponent(plName), x + getOneButtonHeight() + 10, (int) (y + getOneButtonHeight() / 2f) + 1, 0);
 
     }
 }

@@ -3,21 +3,29 @@ package red.felnull.imp.client.data;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 import red.felnull.imp.packet.SyncResourceRequestMessage;
 import red.felnull.imp.packet.SyncType;
 import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class IMPSyncClientManager {
     private static final Minecraft mc = Minecraft.getInstance();
     private static final IMPSyncClientManager INSTANCE = new IMPSyncClientManager();
     public final List<SimpleMusicPlayList> myPlayLists = new ArrayList<>();
     public final List<SimpleMusicPlayList> publicPlayLists = new ArrayList<>();
+    public final Map<UUID, List<Music>> musics = new HashMap<>();
     private long lastMyPlayListSyncTime;
     private long lastPublicPlayListSyncTime;
+    private final Map<UUID, Long> lastMusicSyncTime = new HashMap<>();
+
+    public void resetMusicPlayListSync() {
+        lastMyPlayListSyncTime = 0;
+        lastPublicPlayListSyncTime = 0;
+        lastMusicSyncTime.clear();
+    }
 
     public static IMPSyncClientManager getInstance() {
         return INSTANCE;
@@ -38,6 +46,15 @@ public class IMPSyncClientManager {
         return publicPlayLists;
     }
 
+    public List<Music> getMusics(UUID playlistID) {
+        syncMusics(playlistID);
+
+        if (musics.containsKey(playlistID))
+            return musics.get(playlistID);
+
+        return new ArrayList<>();
+    }
+
     private long minSyncTime() {
         return 1000 * 3;
     }
@@ -56,5 +73,15 @@ public class IMPSyncClientManager {
         }
     }
 
+    public void syncMusics(UUID playlistID) {
+        long lst = 0;
+        if (lastMusicSyncTime.containsKey(playlistID))
+            lst = lastMusicSyncTime.get(playlistID);
+
+        if (System.currentTimeMillis() - lst >= minSyncTime()) {
+            IKSGPacketUtil.sendToServerPacket(new SyncResourceRequestMessage(SyncType.MUSIC));
+            lastMusicSyncTime.put(playlistID, System.currentTimeMillis());
+        }
+    }
 
 }

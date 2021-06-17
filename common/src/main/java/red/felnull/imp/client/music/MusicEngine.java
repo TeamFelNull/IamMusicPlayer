@@ -12,7 +12,7 @@ import red.felnull.imp.client.music.subtitle.SubtitleSystem;
 import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.info.tracker.MusicTracker;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 
 import java.util.*;
 
@@ -35,18 +35,18 @@ public class MusicEngine {
         reload = true;
     }
 
-    public void readyAndPlay(UUID uuid, MusicLocation musicLocation, long startPosition, MusicPlayInfo info) {
+    public void readyAndPlay(UUID uuid, MusicSource musicSource, long startPosition, MusicPlayInfo info) {
         runnerEntries.add(new MusicRunnerEntry(Priority.HIGH, true, () -> {
-            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicLocation, startPosition, true, info);
+            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, true, info);
             loaders.put(uuid, ml);
             ml.start();
         }));
     }
 
 
-    public void ready(UUID uuid, MusicLocation musicLocation, long startPosition) {
+    public void ready(UUID uuid, MusicSource musicSource, long startPosition) {
         runnerEntries.add(new MusicRunnerEntry(Priority.LOW, true, () -> {
-            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicLocation, startPosition, false, null);
+            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, false, null);
             loaders.put(uuid, ml);
             ml.start();
         }));

@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
 import red.felnull.imp.client.util.SoundMath;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 import red.felnull.otyacraftengine.client.util.IKSGOpenALUtil;
 import red.felnull.otyacraftengine.throwable.OpenALException;
 
@@ -29,7 +29,7 @@ public class LavaALMusicPlayer extends LavaAbstractMusicPlayer {
     private float ang;
     private int trig;
 
-    public LavaALMusicPlayer(MusicLocation location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat, boolean intentionallyMono) {
+    public LavaALMusicPlayer(MusicSource location, AudioPlayerManager audioPlayerManager, AudioDataFormat dataformat, boolean intentionallyMono) {
         super(location, audioPlayerManager, dataformat);
         this.source = alGenSources();
         this.intentionallyMono = intentionallyMono;

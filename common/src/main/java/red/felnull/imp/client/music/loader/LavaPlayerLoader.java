@@ -1,5 +1,6 @@
 package red.felnull.imp.client.music.loader;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
@@ -10,21 +11,22 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.minecraft.network.chat.TextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.IamMusicPlayerClient;
+import red.felnull.imp.client.gui.components.IMSDSmartRender;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.LavaALMusicPlayer;
 import red.felnull.imp.client.music.player.LavaLineMusicPlayer;
 import red.felnull.imp.client.music.subtitle.IMusicSubtitle;
 import red.felnull.imp.client.music.subtitle.YoutubeSubtitle;
-import red.felnull.imp.music.resource.MusicLocation;
+import red.felnull.imp.music.resource.MusicSource;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
 import java.util.Arrays;
 
-public class LavaPlayerLoader implements IMusicLoader {
+public class LavaPlayerLoader implements IMusicLoader, IMSDSmartRender {
     private static final Logger LOGGER = LogManager.getLogger(LavaPlayerLoader.class);
     private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
     private static final AudioDataFormat COMMON_PCM_S16_BE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, true);
@@ -52,7 +54,7 @@ public class LavaPlayerLoader implements IMusicLoader {
     }
 
     @Override
-    public IMusicSubtitle createMusicSubtitle(IMusicPlayer musicPlayer, MusicLocation location) {
+    public IMusicSubtitle createMusicSubtitle(IMusicPlayer musicPlayer, MusicSource location) {
         if ("youtube".equals(name)) {
             return new YoutubeSubtitle(musicPlayer, location.getIdentifier());
         }
@@ -60,7 +62,7 @@ public class LavaPlayerLoader implements IMusicLoader {
     }
 
     @Override
-    public IMusicPlayer createMusicPlayer(MusicLocation location) {
+    public IMusicPlayer createMusicPlayer(MusicSource location) {
         switch (IamMusicPlayer.CONFIG.playSystem) {
             case OPEN_AL_SPATIAL:
                 audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
@@ -125,5 +127,10 @@ public class LavaPlayerLoader implements IMusicLoader {
             else
                 LOGGER.info("Test load successful " + (System.currentTimeMillis() - stTime) + "ms" + ": " + name);
         }
+    }
+
+    @Override
+    public void renderIcon(PoseStack poseStack, int x, int y, int w, int h) {
+        drawPrettyCenteredString(poseStack, new TextComponent(name), x + (float) w / 2f, y + (float) (h - getFont().lineHeight) / 2f, 0);
     }
 }
