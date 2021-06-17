@@ -35,6 +35,10 @@ public class LavaPlayerLoader implements IMusicLoader, IMSDSmartRender {
     private final String testIdentifier;
     private AudioPlayerManager audioPlayerManager;
 
+    public LavaPlayerLoader(String name, AudioSourceManager... sourceManagers) {
+        this(name, null, sourceManagers);
+    }
+
     public LavaPlayerLoader(String name, String testIdentifier, AudioSourceManager... sourceManagers) {
         this.sourceManagers = sourceManagers;
         this.name = name;
@@ -49,8 +53,14 @@ public class LavaPlayerLoader implements IMusicLoader, IMSDSmartRender {
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
         Arrays.stream(sourceManagers).forEach(n -> audioPlayerManager.registerSourceManager(n));
-        LoadTestThread ltt = new LoadTestThread();
-        ltt.start();
+        if (testIdentifier != null) {
+            LoadTestThread ltt = new LoadTestThread();
+            ltt.start();
+        }
+    }
+
+    public AudioPlayerManager getAudioPlayerManager() {
+        return audioPlayerManager;
     }
 
     @Override
