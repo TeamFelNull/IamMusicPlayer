@@ -25,6 +25,9 @@ import red.felnull.imp.music.resource.MusicSource;
 import red.felnull.imp.throwable.InvalidIdentifierException;
 
 import java.util.Arrays;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerLoader implements IMusicLoader, IMSDSmartRender {
     private static final Logger LOGGER = LogManager.getLogger(LavaPlayerLoader.class);
@@ -142,5 +145,52 @@ public class LavaPlayerLoader implements IMusicLoader, IMSDSmartRender {
     @Override
     public void renderIcon(PoseStack poseStack, int x, int y, int w, int h) {
         drawPrettyCenteredString(poseStack, new TextComponent(name), x + (float) w / 2f, y + (float) (h - getFont().lineHeight) / 2f, 0);
+    }
+
+    @Override
+    public SearchData getPlayMusicData(String identifier) {
+        AtomicBoolean ff = new AtomicBoolean(false);
+        AtomicReference<SearchData> data = new AtomicReference<>(null);
+        getAudioPlayerManager().loadItemOrdered(UUID.randomUUID(), identifier, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                if (!track.getInfo().isStream)
+                    data.set(toMusicSearchData(track));
+                ff.set(true);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                ff.set(true);
+            }
+
+            @Override
+            public void noMatches() {
+                ff.set(true);
+            }
+
+            @Override
+            public void loadFailed(FriendlyException ex) {
+                ff.set(true);
+            }
+        });
+
+        long ft = System.currentTimeMillis();
+
+        while (!ff.get()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (System.currentTimeMillis() - ft > 30000)
+                break;
+        }
+
+        return data.get();
+    }
+
+    protected SearchData toMusicSearchData(AudioTrack track) {
+        return new SearchData(track.getInfo().title, null, track.getIdentifier(), null, track.getDuration(), track.getInfo().author);
     }
 }

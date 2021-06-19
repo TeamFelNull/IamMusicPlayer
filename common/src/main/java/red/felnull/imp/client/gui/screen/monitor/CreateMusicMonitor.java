@@ -1,93 +1,70 @@
 package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
-import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
-import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.api.client.IMPClientRegistry;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.components.IMSDSmartRender;
 import red.felnull.imp.client.gui.components.MSDSmartEditBox;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.music.loader.IMusicLoader;
-import red.felnull.imp.client.music.loader.LavaPlayerLoader;
-import red.felnull.imp.client.music.loader.YoutubeLavaPlayerLoader;
+import red.felnull.imp.client.music.loader.IMusicSearchable;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
 import red.felnull.imp.data.resource.ImageInfo;
+import red.felnull.imp.music.resource.MusicSource;
 import red.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class CreateMusicMonitor extends CreateBaseMonitor {
+    private final List<IMusicLoader.SearchData> searchDataList = new ArrayList<>();
+    private MusicSearchThread musicsearchthread;
+    private MusicPlayCheckThread musicplaycheckthread;
     protected MSDSmartEditBox sourceTextBox;
     protected ResourceLocation musicLoaderLocation;
     private MusicSourceNextOrBackButton nextLoaderButton;
     private MusicSourceNextOrBackButton backLoaderButton;
-    private final List<AudioTrack> searchTracks = new ArrayList<>();
+    private SearchMusicsFixedButtonsList searchMusicsButtonsList;
+    private IMusicLoader.SearchData checkableData;
 
     public CreateMusicMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.createMusic"), msdScreen, parentScreen, x, y, width, height);
         this.musicLoaderLocation = IMPClientRegistry.getLoaderLocations().get(0);
-
-        LavaPlayerLoader lpl = ((LavaPlayerLoader) IMPClientRegistry.getLoader(new ResourceLocation(IamMusicPlayer.MODID, "youtube")));
-        lpl.getAudioPlayerManager().loadItemOrdered(UUID.randomUUID(), "ytsearch:野獣先輩", new AudioLoadResultHandler() {
-            @Override
-            public void trackLoaded(AudioTrack track) {
-                searchTracks.add(track);
-            }
-
-            @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                searchTracks.addAll(playlist.getTracks());
-            }
-
-            @Override
-            public void noMatches() {
-                System.out.println("noMatches");
-            }
-
-            @Override
-            public void loadFailed(FriendlyException ex) {
-                ex.printStackTrace();
-            }
-        });
-
     }
 
     @Override
     public void init() {
         super.init();
-        this.sourceTextBox = addCreateSmartTextEditBox(new TranslatableComponent("imp.msdSourceBox.name"), x + 101, y + 73, 95, n -> {
-
+        this.sourceTextBox = addCreateSmartTextEditBox(new TranslatableComponent("imp.msdTextBox.source"), x + 101, y + 73, 95, n -> {
+            checkStop();
+            searchStop();
+            musicplaycheckthread = new MusicPlayCheckThread(n);
+            musicplaycheckthread.start();
         });
 
+
         addRenderableWidget(new MusicSourceButton(x + 110, y + 104, 27, 15, n -> {
-      /*      List<IMusicLoader> msls = IMPClientRegistry.getLoaders();
-            int num = msls.indexOf(musicLoader);
-            num++;
-            if (num >= msls.size())
-                num = 0;
-            this.musicLoader = msls.get(num);*/
         }));
 
         this.nextLoaderButton = addRenderableWidget(new MusicSourceNextOrBackButton(x + 137, y + 104, new TranslatableComponent("imp.msdButton.musicSourceNext"), n -> {
             List<ResourceLocation> msls = IMPClientRegistry.getLoaderLocations();
             int num = msls.indexOf(musicLoaderLocation);
             num++;
+            if (num >= msls.size())
+                return;
             this.musicLoaderLocation = msls.get(num);
+            sourceTextBox.setValue("");
+            searchStop();
+            checkStop();
+            searchDataList.clear();
         }, true));
 
         this.backLoaderButton = addRenderableWidget(new MusicSourceNextOrBackButton(x + 101, y + 104, new TranslatableComponent("imp.msdButton.musicSourceBack"), n -> {
@@ -95,16 +72,44 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
             int num = msls.indexOf(musicLoaderLocation);
             num--;
             this.musicLoaderLocation = msls.get(num);
+            sourceTextBox.setValue("");
+            searchStop();
+            checkStop();
+            searchDataList.clear();
         }, false));
 
-        this.addRenderableWidget(new SearchMusicsFixedButtonsList(x + 4, y + 74, 93, 44, 4, new TextComponent("SearchResults"), searchTracks, n -> {
-
+        this.searchMusicsButtonsList = this.addRenderableWidget(new SearchMusicsFixedButtonsList(x + 4, y + 74, 93, 44, 4, new TranslatableComponent("imp.msdText.searchResults"), searchDataList, n -> {
+            sourceTextBox.setValue(n.item().identifier());
         }));
+    }
+
+    @Override
+    public void disable() {
+        super.disable();
+        searchStop();
+        checkStop();
+    }
+
+    private void checkStop() {
+        if (musicplaycheckthread != null) {
+            musicplaycheckthread.stopped();
+            musicplaycheckthread = null;
+        }
+        checkableData = null;
+    }
+
+    private void searchStop() {
+        if (musicsearchthread != null) {
+            musicsearchthread.stopped();
+            musicsearchthread = null;
+        }
+        searchDataList.clear();
     }
 
     protected IMusicLoader getLoader() {
         return IMPClientRegistry.getLoader(musicLoaderLocation);
     }
+
 
     @Override
     public void tick() {
@@ -113,26 +118,131 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         int lnum = msls.indexOf(musicLoaderLocation);
         nextLoaderButton.active = lnum + 1 < msls.size();
         backLoaderButton.active = lnum > 0;
+        searchMusicsButtonsList.active = searchMusicsButtonsList.visible = getLoader() instanceof IMusicSearchable && !searchDataList.isEmpty();
+        sourceTextBox.setMessage((getLoader() instanceof IMusicSearchable) ? new TranslatableComponent("imp.msdTextBox.sourceOrSearch") : new TranslatableComponent("imp.msdTextBox.source"));
     }
 
     @Override
     protected void created() {
+        String name = nameTextBox.getValue();
+        MusicSource musicSource = new MusicSource(musicLoaderLocation, checkableData.identifier(), checkableData.duration());
+        ImageInfo image = imageInfo;
 
+        insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST);
+    }
+
+    @Override
+    protected boolean canCreate() {
+        return super.canCreate() && checkableData != null;
     }
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
-        drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.searchResults"), x + 4, y + 64, 0);
+        if (!searchDataList.isEmpty()) {
+            drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.searchResults"), x + 4, y + 64, 0);
+        } else {
+            if (checkableData != null) {
+                drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicInfo"), x + 3, y + 65, 0);
+                drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicTitle", checkableData.name()), x + 3, y + 65 + (getFont().lineHeight + 1), 0);
+
+                if (!checkableData.author().isEmpty())
+                    drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicAuthor", checkableData.author()), x + 3, y + 65 + (getFont().lineHeight + 1) * 2, 0);
+
+                drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicDuration", checkableData.duration() + "ms"), x + 3, y + 65 + (getFont().lineHeight + 1) * (checkableData.author().isEmpty() ? 2 : 3), 0);
+            }
+        }
     }
 
     @Override
     public void renderBg(PoseStack poseStack, int mousX, int mousY, float parTick) {
         super.renderBg(poseStack, mousX, mousY, parTick);
-        drawDarkBox(poseStack, x + 3, y + 73, 95, 46);
+        if (!searchDataList.isEmpty()) {
+            drawDarkBox(poseStack, x + 3, y + 73, 95, 46);
+        }
     }
 
-    public class MusicSourceButton extends Button implements IMSDSmartRender {
+    private class MusicPlayCheckThread extends Thread {
+        private boolean stopped;
+        private final String identifier;
+
+        private MusicPlayCheckThread(String identifier) {
+            this.identifier = identifier;
+        }
+
+        @Override
+        public void run() {
+            IMusicLoader.SearchData data = getLoader().getPlayMusicData(identifier);
+            if (stopped)
+                return;
+
+            if (data != null) {
+                if (!identifier.equals(data.identifier())) {
+                    sourceTextBox.setValue(data.identifier());
+                    return;
+                }
+
+                if (stopped)
+                    return;
+
+                checkableData = data;
+                if (data.setName() != null) {
+                    nameTextBox.setValue(data.setName());
+                } else {
+                    if (nameTextBox.getValue().isEmpty())
+                        nameTextBox.setValue(data.name());
+                }
+
+                if (data.image() != null)
+                    imageInfo = data.image();
+
+                return;
+            }
+
+            if (stopped)
+                return;
+
+            if (getLoader() instanceof IMusicSearchable) {
+                searchStop();
+                musicsearchthread = new MusicSearchThread(identifier);
+                musicsearchthread.start();
+            }
+        }
+
+        public void stopped() {
+            this.stopped = true;
+        }
+    }
+
+    private class MusicSearchThread extends Thread {
+        private boolean stopped;
+        private final String searchIdentifier;
+
+        private MusicSearchThread(String searchIdentifier) {
+            this.searchIdentifier = searchIdentifier;
+        }
+
+        @Override
+        public void run() {
+            searchDataList.clear();
+
+            if (stopped)
+                return;
+
+            List<IMusicLoader.SearchData> scd = ((IMusicSearchable) getLoader()).search(searchIdentifier);
+
+            if (stopped)
+                return;
+
+            searchDataList.addAll(scd);
+        }
+
+        public void stopped() {
+            this.stopped = true;
+        }
+    }
+
+    private class MusicSourceButton extends Button implements IMSDSmartRender {
 
         public MusicSourceButton(int i, int j, int k, int l, OnPress onPress) {
             super(i, j, k, l, new TranslatableComponent("imp.msdButton.musicSource"), onPress);
@@ -148,7 +258,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         }
     }
 
-    public class MusicSourceNextOrBackButton extends Button implements IMSDSmartRender {
+    private class MusicSourceNextOrBackButton extends Button implements IMSDSmartRender {
         private final boolean revers;
 
 
@@ -165,46 +275,22 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         }
     }
 
-    public class SearchMusicsFixedButtonsList extends FixedButtonsList<AudioTrack> implements IMSDSmartRender {
-        private static final Map<String, SizeScale> SCALES = new HashMap<>();
+    private class SearchMusicsFixedButtonsList extends FixedButtonsList<IMusicLoader.SearchData> implements IMSDSmartRender {
 
-        public SearchMusicsFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<AudioTrack> list, Consumer<PressState<AudioTrack>> onPress) {
-            super(x, y, w, h, num, name, list, n -> new TextComponent(n.getInfo().title), onPress);
+        public SearchMusicsFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<IMusicLoader.SearchData> list, Consumer<PressState<IMusicLoader.SearchData>> onPress) {
+            super(x, y, w, h, num, name, list, n -> new TextComponent(n.name()), onPress);
         }
 
         @Override
-        protected void renderOneButton(PoseStack poseStack, AudioTrack item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
+        protected void renderOneButton(PoseStack poseStack, IMusicLoader.SearchData item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
             int k = this.getYImage(this.isHovered(bnum));
             drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
-
-            boolean samune = getLoader() instanceof YoutubeLavaPlayerLoader;
-
+            boolean samune = item.image() != null;
             drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + 3 + (samune ? getOneButtonHeight() - 2 : 0), y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);
 
             if (samune) {
-                float w = 0;
-                float h = 0;
-
-                if (SCALES.containsKey(item.getIdentifier())) {
-                    w = SCALES.get(item.getIdentifier()).w;
-                    h = SCALES.get(item.getIdentifier()).h;
-                } else {
-                    try {
-                        URL url = new URL(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", item.getIdentifier()));
-                        BufferedImage image = ImageIO.read(url);
-                        w = image.getWidth() >= image.getHeight() ? 1 : (float) image.getHeight() / image.getWidth();
-                        h = image.getHeight() >= image.getWidth() ? 1 : (float) image.getWidth() / image.getHeight();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                PlayImageRenderer.getInstance().render(new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, "", w, h), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
+                PlayImageRenderer.getInstance().render(item.image(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2, false);
             }
-        }
-
-        private static record SizeScale(float w, float h) {
-
         }
     }
 }

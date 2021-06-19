@@ -21,7 +21,7 @@ public class DefaultIMPIntegration implements IIMPIntegration {
     @Override
     @Environment(EnvType.CLIENT)
     public void registrationMusicPlayerLoader(IMPMusicPlayerRegister reg) {
-        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new YoutubeLavaPlayerLoader("youtube",  new YoutubeAudioSourceManager(true)));
+        reg.register(new ResourceLocation(IamMusicPlayer.MODID, "youtube"), new YoutubeLavaPlayerLoader());
         reg.register(new ResourceLocation(IamMusicPlayer.MODID, "http"), new LavaPlayerLoader("http", "https://cdn.discordapp.com/attachments/358878159615164416/839483788177702952/ikisugi.mp3", new HttpAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY)));
 
     }

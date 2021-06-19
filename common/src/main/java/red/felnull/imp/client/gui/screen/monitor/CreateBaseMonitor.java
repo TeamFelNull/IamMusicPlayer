@@ -86,6 +86,14 @@ public abstract class CreateBaseMonitor extends MSDBaseMonitor {
     abstract protected void created();
 
     @Override
+    public void disable() {
+        super.disable();
+        if (optimizationThread != null) {
+            optimizationThread.stopped();
+        }
+    }
+
+    @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
         fillXDarkGrayLine(poseStack, x + 3, y + 23, 39);
@@ -94,7 +102,7 @@ public abstract class CreateBaseMonitor extends MSDBaseMonitor {
         fillYDarkGrayLine(poseStack, x + 41, y + 24, 37);
         fillLightGray(poseStack, x + 4, y + 24, 37, 37);
 
-        PlayImageRenderer.getInstance().render(imageInfo, poseStack, x + 4, y + 24, 37);
+        PlayImageRenderer.getInstance().render(imageInfo, poseStack, x + 4, y + 24, 37, false);
         MutableComponent component;
         if (loadState != ImageLoadState.NONE) {
             component = loadState.getComponent().copy();

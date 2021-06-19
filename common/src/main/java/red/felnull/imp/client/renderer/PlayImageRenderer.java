@@ -3,6 +3,7 @@ package red.felnull.imp.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +25,19 @@ public class PlayImageRenderer {
     }
 
     public void render(ImageInfo location, PoseStack poseStack, int x, int y, int size) {
-        float w = location.getWidthScale();
-        float h = location.getHeightScale();
+        render(location, poseStack, x, y, size, true);
+    }
+
+    public void render(ImageInfo location, PoseStack poseStack, int x, int y, int size, boolean cash) {
+        switch (location.getImageType()) {
+            case URL -> renderURLImage(location.getIdentifier(), poseStack, x, y, location.getWidthScale(), location.getHeightScale(), size, cash);
+            case STRING -> renderStringImage(location.getIdentifier(), poseStack, x, y, size);
+            case PLAYER_FACE -> renderPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
+            case YOUTUBE_THUMBNAIL -> renderURLImage(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, x, y, location.getWidthScale(), location.getHeightScale(), size, cash);
+        }
+    }
+
+    private void renderURLImage(String url, PoseStack poseStack, int x, int y, float w, float h, int size, boolean cash) {
 
         if (w > h) {
             h *= 1f / w;
@@ -36,27 +48,25 @@ public class PlayImageRenderer {
             h = 1;
         }
 
-        float ws = size * w;
-        float hs = size * h;
-        switch (location.getImageType()) {
-            case URL -> renderURLImage(location.getIdentifier(), poseStack, x, y, ws, hs, size);
-            case STRING -> renderStringImage(location.getIdentifier(), poseStack, x, y, ws, hs, size);
-            case PLAYER_FACE -> renderPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
-            case YOUTUBE_THUMBNAIL -> renderURLImage(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, x, y, ws, hs, size);
+        float width = size * w;
+        float height = size * h;
+
+        ResourceLocation location = IKSGTextureUtil.getURLTextureAsync(url, cash, PLAY_IMAGE);
+
+        if (location == PLAY_IMAGE) {
+            renderStringColorImage(I18n.get("Loading"), poseStack, x, y, width, height, size, 1, 1, 1);
+        } else {
+            IKSGRenderUtil.drawBindTextuer(location, poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height);
         }
     }
 
-    private void renderURLImage(String url, PoseStack poseStack, int x, int y, float width, float height, float size) {
-        try {
-            IKSGRenderUtil.drawBindTextuer(IKSGTextureUtil.getURLTexture(url, true), poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void renderStringImage(String str, PoseStack poseStack, int x, int y, float width, float height, int size) {
+    private void renderStringImage(String str, PoseStack poseStack, int x, int y, int size) {
         Random r = new Random(str.hashCode());
-        IKSGRenderUtil.drawBindColorTextuer(PLAY_IMAGE, poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height, r.nextFloat(), r.nextFloat(), r.nextFloat(), 1);
+        renderStringColorImage(str, poseStack, x, y, size, size, size, r.nextFloat(), r.nextFloat(), r.nextFloat());
+    }
+
+    private void renderStringColorImage(String str, PoseStack poseStack, int x, int y, float width, float height, int size, float r, float g, float b) {
+        IKSGRenderUtil.drawBindColorTextuer(PLAY_IMAGE, poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height, r, g, b, 1);
         Component text = new TextComponent(str).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         int txSize = Math.max(mc.font.width(text), mc.font.lineHeight);
         poseStack.pushPose();
