@@ -19,7 +19,9 @@ public interface IMSDSmartRender extends IIkisugibleWidget {
     default void fillLightGray(PoseStack poseStack, int x, int y, int w, int h) {
         GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(16119543));
     }
-
+    default void fillGray(PoseStack poseStack, int x, int y, int w, int h) {
+        GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(14474460));
+    }
     default void fillBerryDarkGray(PoseStack poseStack, int x, int y, int w, int h) {
         GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(0x343434));
     }

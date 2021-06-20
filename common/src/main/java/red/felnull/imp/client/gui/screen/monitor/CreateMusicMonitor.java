@@ -11,6 +11,7 @@ import red.felnull.imp.api.client.IMPClientRegistry;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.components.IMSDSmartRender;
 import red.felnull.imp.client.gui.components.MSDSmartEditBox;
+import red.felnull.imp.client.gui.components.SimplePlayMusicWidget;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.music.loader.IMusicLoader;
 import red.felnull.imp.client.music.loader.IMusicSearchable;
@@ -34,6 +35,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
     private MusicSourceNextOrBackButton backLoaderButton;
     private SearchMusicsFixedButtonsList searchMusicsButtonsList;
     private IMusicLoader.SearchData checkableData;
+    private SimplePlayMusicWidget simplePlayMusicWidget;
 
     public CreateMusicMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.createMusic"), msdScreen, parentScreen, x, y, width, height);
@@ -81,6 +83,8 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         this.searchMusicsButtonsList = this.addRenderableWidget(new SearchMusicsFixedButtonsList(x + 4, y + 74, 93, 44, 4, new TranslatableComponent("imp.msdText.searchResults"), searchDataList, n -> {
             sourceTextBox.setValue(n.item().identifier());
         }));
+
+        this.simplePlayMusicWidget = this.addRenderableWidget(new SimplePlayMusicWidget(x + 3, y + 104, null));
     }
 
     @Override
@@ -88,6 +92,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         super.disable();
         searchStop();
         checkStop();
+        simplePlayMusicWidget.musicPlayStop();
     }
 
     private void checkStop() {
@@ -120,6 +125,12 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         backLoaderButton.active = lnum > 0;
         searchMusicsButtonsList.active = searchMusicsButtonsList.visible = getLoader() instanceof IMusicSearchable && !searchDataList.isEmpty();
         sourceTextBox.setMessage((getLoader() instanceof IMusicSearchable) ? new TranslatableComponent("imp.msdTextBox.sourceOrSearch") : new TranslatableComponent("imp.msdTextBox.source"));
+
+        if (checkableData != null)
+            simplePlayMusicWidget.setPlayMusic(new MusicSource(musicLoaderLocation, checkableData.identifier(), checkableData.duration()));
+        else
+            simplePlayMusicWidget.setPlayMusic(null);
+
     }
 
     @Override
