@@ -45,7 +45,7 @@ public class SubtitleManager {
 
         subtitles.forEach((n, m) -> {
             if (m.isLoaded()) {
-                if (!me.isExist(n)) {
+                if (!me.isPlaying(n)) {
                     removedSubs.add(n);
                     return;
                 }

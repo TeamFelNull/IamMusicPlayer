@@ -11,8 +11,6 @@ import red.felnull.imp.client.music.subtitle.SubtitleLoaderThread;
 import red.felnull.imp.client.music.subtitle.SubtitleSystem;
 import red.felnull.imp.music.info.MusicPlayInfo;
 import red.felnull.imp.music.resource.MusicSource;
-import red.felnull.imp.packet.MusicResponseMessage;
-import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 
 import java.util.UUID;
 
@@ -22,27 +20,27 @@ public class MusicLoaderThread extends Thread {
     private final MusicSource location;
     private final long startPosition;
     private final long startTime;
-    private final boolean autPlay;
     private final MusicPlayInfo autPlayInfo;
+    private final MusicLoaderThread.MusicLoadResultListener resultListener;
     private boolean stop;
 
-    public MusicLoaderThread(UUID uuid, MusicSource location, long startPosition, boolean autPlay, MusicPlayInfo autPlayInfo) {
+    public MusicLoaderThread(UUID uuid, MusicSource location, long startPosition, MusicPlayInfo autPlayInfo, MusicLoaderThread.MusicLoadResultListener resultListener) {
         this.setName("Music Loader Thread: " + location.getIdentifier());
         this.uuid = uuid;
         this.location = location;
         this.startPosition = startPosition;
-        this.autPlay = autPlay;
         this.autPlayInfo = autPlayInfo;
         this.startTime = System.currentTimeMillis();
+        this.resultListener = resultListener;
     }
 
     @Override
     public void run() {
         if (!IMPClientRegistry.isLoaderContains(location.getLoaderName())) {
             LOGGER.error("Non existent music loader: " + location.getLoaderName());
-            if (stop || autPlay)
+            if (stop)
                 return;
-            IKSGPacketUtil.sendToServerPacket(new MusicResponseMessage(MusicResponseMessage.Type.READY_FAILURE, uuid, 0));
+            resultListener.onResult(MusicLoadResult.FAILURE, uuid, 0);
             return;
         }
 
@@ -55,8 +53,8 @@ public class MusicLoaderThread extends Thread {
             player.ready(startPosition);
         } catch (Exception ex) {
             LOGGER.error("Failed to load music: " + location.getIdentifier(), ex);
-            if (!stop && !autPlay)
-                IKSGPacketUtil.sendToServerPacket(new MusicResponseMessage(MusicResponseMessage.Type.READY_FAILURE, uuid, 0));
+            if (!stop)
+                resultListener.onResult(MusicLoadResult.FAILURE, uuid, 0);
             if (player != null)
                 player.destroy();
             return;
@@ -70,15 +68,13 @@ public class MusicLoaderThread extends Thread {
             SubtitleLoaderThread slt = new SubtitleLoaderThread(uuid, location, subtitle, () -> stop);
             slt.start();
         }
-
-        if (!stop && !autPlay)
-            IKSGPacketUtil.sendToServerPacket(new MusicResponseMessage(MusicResponseMessage.Type.READY_COMPLETE, uuid, eqTime));
         if (stop)
             return;
+
         MusicEngine.getInstance().musicPlayers.put(uuid, new MusicEngine.MusicPlayingEntry(player, null));
         MusicEngine.getInstance().loaders.remove(uuid);
-        if (autPlay && autPlayInfo != null)
-            MusicEngine.getInstance().play(uuid, eqTime, autPlayInfo);
+
+        resultListener.onResult(MusicLoadResult.COMPLETE, uuid, eqTime);
     }
 
     public void stopped() {
@@ -100,4 +96,14 @@ public class MusicLoaderThread extends Thread {
     public MusicPlayInfo getAutPlayInfo() {
         return autPlayInfo;
     }
+
+    public static enum MusicLoadResult {
+        FAILURE,
+        COMPLETE;
+    }
+
+    public static interface MusicLoadResultListener {
+        void onResult(MusicLoadResult result, UUID uuid, long time);
+    }
+
 }

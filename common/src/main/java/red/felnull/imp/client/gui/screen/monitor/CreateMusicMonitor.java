@@ -18,6 +18,7 @@ import red.felnull.imp.client.music.loader.IMusicSearchable;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.imp.music.resource.MusicSource;
+import red.felnull.imp.util.StringUtils;
 import red.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
@@ -50,6 +51,8 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
             searchStop();
             musicplaycheckthread = new MusicPlayCheckThread(n);
             musicplaycheckthread.start();
+            if (simplePlayMusicWidget != null)
+                simplePlayMusicWidget.musicPlayStop();
         });
 
 
@@ -67,6 +70,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
             searchStop();
             checkStop();
             searchDataList.clear();
+            simplePlayMusicWidget.musicPlayStop();
         }, true));
 
         this.backLoaderButton = addRenderableWidget(new MusicSourceNextOrBackButton(x + 101, y + 104, new TranslatableComponent("imp.msdButton.musicSourceBack"), n -> {
@@ -78,13 +82,14 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
             searchStop();
             checkStop();
             searchDataList.clear();
+            simplePlayMusicWidget.musicPlayStop();
         }, false));
 
         this.searchMusicsButtonsList = this.addRenderableWidget(new SearchMusicsFixedButtonsList(x + 4, y + 74, 93, 44, 4, new TranslatableComponent("imp.msdText.searchResults"), searchDataList, n -> {
             sourceTextBox.setValue(n.item().identifier());
         }));
 
-        this.simplePlayMusicWidget = this.addRenderableWidget(new SimplePlayMusicWidget(x + 3, y + 104, null));
+        this.simplePlayMusicWidget = this.addRenderableWidget(new SimplePlayMusicWidget(x + 3, y + 104, null, getParentScreen().uuid));
     }
 
     @Override
@@ -124,12 +129,15 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         nextLoaderButton.active = lnum + 1 < msls.size();
         backLoaderButton.active = lnum > 0;
         searchMusicsButtonsList.active = searchMusicsButtonsList.visible = getLoader() instanceof IMusicSearchable && !searchDataList.isEmpty();
+        simplePlayMusicWidget.visible = simplePlayMusicWidget.active = searchDataList.isEmpty() && checkableData != null;
         sourceTextBox.setMessage((getLoader() instanceof IMusicSearchable) ? new TranslatableComponent("imp.msdTextBox.sourceOrSearch") : new TranslatableComponent("imp.msdTextBox.source"));
 
-        if (checkableData != null)
+        if (checkableData != null) {
             simplePlayMusicWidget.setPlayMusic(new MusicSource(musicLoaderLocation, checkableData.identifier(), checkableData.duration()));
-        else
+        } else {
+            simplePlayMusicWidget.musicPlayStop();
             simplePlayMusicWidget.setPlayMusic(null);
+        }
 
     }
 
@@ -160,7 +168,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
                 if (!checkableData.author().isEmpty())
                     drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicAuthor", checkableData.author()), x + 3, y + 65 + (getFont().lineHeight + 1) * 2, 0);
 
-                drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicDuration", checkableData.duration() + "ms"), x + 3, y + 65 + (getFont().lineHeight + 1) * (checkableData.author().isEmpty() ? 2 : 3), 0);
+                drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.musicDuration", StringUtils.getTimeNotation(checkableData.duration())), x + 3, y + 65 + (getFont().lineHeight + 1) * (checkableData.author().isEmpty() ? 2 : 3), 0);
             }
         }
     }

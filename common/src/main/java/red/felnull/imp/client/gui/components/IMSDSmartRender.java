@@ -1,7 +1,10 @@
 package red.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.MutableComponent;
 import red.felnull.imp.client.gui.IMPFonts;
 import red.felnull.otyacraftengine.client.gui.components.IIkisugibleWidget;
@@ -19,9 +22,57 @@ public interface IMSDSmartRender extends IIkisugibleWidget {
     default void fillLightGray(PoseStack poseStack, int x, int y, int w, int h) {
         GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(16119543));
     }
+
+    default void fillGreen(PoseStack poseStack, float x, float y, float w, float h) {
+        gFill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(0x115d0e));
+    }
+
     default void fillGray(PoseStack poseStack, int x, int y, int w, int h) {
         GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(14474460));
     }
+
+    default void gFill(PoseStack poseStack, float i, float j, float k, float l, int m) {
+        gInnerFill(poseStack.last().pose(), i, j, k, l, m);
+    }
+
+    default void gInnerFill(Matrix4f matrix4f, float i, float j, float k, float l, int m) {
+        float o;
+        if (i < k) {
+            o = i;
+            i = k;
+            k = o;
+        }
+
+        if (j < l) {
+            o = j;
+            j = l;
+            l = o;
+        }
+
+        float f = (float) (m >> 24 & 255) / 255.0F;
+        float g = (float) (m >> 16 & 255) / 255.0F;
+        float h = (float) (m >> 8 & 255) / 255.0F;
+        float p = (float) (m & 255) / 255.0F;
+        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        bufferBuilder.vertex(matrix4f, i, l, 0.0F).color(g, h, p, f).endVertex();
+        bufferBuilder.vertex(matrix4f, k, l, 0.0F).color(g, h, p, f).endVertex();
+        bufferBuilder.vertex(matrix4f, k, j, 0.0F).color(g, h, p, f).endVertex();
+        bufferBuilder.vertex(matrix4f, i, j, 0.0F).color(g, h, p, f).endVertex();
+        bufferBuilder.end();
+        BufferUploader.end(bufferBuilder);
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
+
+    default void fillMediumGray(PoseStack poseStack, int x, int y, int w, int h) {
+        GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(0x656565));
+    }
+
     default void fillBerryDarkGray(PoseStack poseStack, int x, int y, int w, int h) {
         GuiComponent.fill(poseStack, x, y, x + w, y + h, IKSGColorUtil.toSRGB(0x343434));
     }

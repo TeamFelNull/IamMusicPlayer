@@ -15,15 +15,13 @@ import red.felnull.otyacraftengine.api.OtyacraftEngineAPI;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharingDeviceMenu> {
     private static final ResourceLocation MSD_LOCATION = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_sharing_device.png");
     private static final Map<MusicSharingDeviceBlockEntity.Screen, Supplier<MSDBaseMonitor>> SCREEN_CRATER = new HashMap<>();
+    public final UUID uuid = UUID.randomUUID();
     public List<MusicSharingDeviceBlockEntity.Screen> screenHistory = new ArrayList();
     private MSDBaseMonitor currentScreens;
 
@@ -189,6 +187,13 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
         }
 
         return super.keyPressed(i, j, k);
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        if (getCurrentScreen() != null)
+            getCurrentScreen().disable();
     }
 
     @Override

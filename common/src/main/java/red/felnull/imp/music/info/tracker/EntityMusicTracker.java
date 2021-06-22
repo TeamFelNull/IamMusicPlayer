@@ -2,6 +2,7 @@ package red.felnull.imp.music.info.tracker;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import red.felnull.imp.IamMusicPlayer;
@@ -13,9 +14,9 @@ public class EntityMusicTracker extends MusicTracker {
 
     }
 
-    public EntityMusicTracker(Vec3 position, float volume, float maxDistance, int entityID) {
+    public EntityMusicTracker(Vec3 position, float volume, float maxDistance, Entity entity) {
         super(position, volume, maxDistance);
-        this.entityID = entityID;
+        this.entityID = entity.getId();
     }
 
     @Override

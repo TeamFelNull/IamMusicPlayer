@@ -35,18 +35,27 @@ public class MusicEngine {
         reload = true;
     }
 
-    public void readyAndPlay(UUID uuid, MusicSource musicSource, long startPosition, MusicPlayInfo info) {
+    public void readyAndPlay(UUID uuid, MusicSource musicSource, long startPosition, MusicPlayInfo info, boolean delay) {
         runnerEntries.add(new MusicRunnerEntry(Priority.HIGH, true, () -> {
-            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, true, info);
+            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, info, (x, y, z) -> {
+                if (x == MusicLoaderThread.MusicLoadResult.COMPLETE) {
+                    play(y, delay ? z : 0, info);
+                } else {
+                    LOGGER.error("Failure Play: " + musicSource.getLoaderName() + ":" + musicSource.getIdentifier());
+                }
+            });
             loaders.put(uuid, ml);
             ml.start();
         }));
     }
 
+    public MusicPlayingEntry getPlyingMusic(UUID uuid) {
+        return musicPlayers.get(uuid);
+    }
 
-    public void ready(UUID uuid, MusicSource musicSource, long startPosition) {
+    public void ready(UUID uuid, MusicSource musicSource, long startPosition, MusicLoaderThread.MusicLoadResultListener resultListener) {
         runnerEntries.add(new MusicRunnerEntry(Priority.LOW, true, () -> {
-            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, false, null);
+            MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, null, resultListener);
             loaders.put(uuid, ml);
             ml.start();
         }));
@@ -124,8 +133,8 @@ public class MusicEngine {
             Map<UUID, MusicLoaderThread> oldLoaders = new HashMap<>(loaders);
             oldLoaders.forEach((n, m) -> times.put(n, m.getCurrentDelayStartPosition()));
             stopReady();
-            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker)));
-            oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo()));
+            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker), true));
+            oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo(), true));
             reload = false;
         }
 
@@ -155,8 +164,12 @@ public class MusicEngine {
 
     }
 
-    public boolean isExist(UUID uuid) {
+    public boolean isPlaying(UUID uuid) {
         return musicPlayers.containsKey(uuid);
+    }
+
+    public boolean isExist(UUID uuid) {
+        return musicPlayers.containsKey(uuid) || loaders.containsKey(uuid);
     }
 
     public static class MusicPlayingEntry {

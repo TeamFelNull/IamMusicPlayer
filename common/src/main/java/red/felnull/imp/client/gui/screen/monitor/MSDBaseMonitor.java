@@ -111,7 +111,7 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> implements
         MSDSmartEditBox msdSmartEditBox = this.addWidget(new MSDSmartEditBox(x, y, w, component));
         msdSmartEditBox.setTextColor(-1);
         msdSmartEditBox.setTextColorUneditable(-1);
-        msdSmartEditBox.setMaxLength(100);
+        msdSmartEditBox.setMaxLength(1000);
         msdSmartEditBox.setResponder(changeNamed);
         msdSmartEditBox.setValue("");
         return msdSmartEditBox;
