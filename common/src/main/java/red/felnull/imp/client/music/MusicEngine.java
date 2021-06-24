@@ -20,8 +20,8 @@ public class MusicEngine {
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final Minecraft mc = Minecraft.getInstance();
     private static final MusicEngine INSTANCE = new MusicEngine();
-    public final Map<UUID, MusicPlayingEntry> musicPlayers = new HashMap<>();
-    public final Map<UUID, MusicLoaderThread> loaders = new HashMap<>();
+    private final Map<UUID, MusicPlayingEntry> musicPlayers = new HashMap<>();
+    private final Map<UUID, MusicLoaderThread> loaders = new HashMap<>();
     private boolean reload;
     private ResourceLocation lastLocation;
 
@@ -36,7 +36,11 @@ public class MusicEngine {
     }
 
     public void readyAndPlay(UUID uuid, MusicSource musicSource, long startPosition, MusicPlayInfo info, boolean delay) {
-        runnerEntries.add(new MusicRunnerEntry(Priority.HIGH, true, () -> {
+        if (isExist(uuid))
+            stop(uuid);
+        if (loaders.containsKey(uuid))
+            loaders.get(uuid).stopped();
+        runnerEntries.add(new MusicRunnerEntry(Priority.MIDDLE, true, () -> {
             MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, info, (x, y, z) -> {
                 if (x == MusicLoaderThread.MusicLoadResult.COMPLETE) {
                     play(y, delay ? z : 0, info);
@@ -54,7 +58,11 @@ public class MusicEngine {
     }
 
     public void ready(UUID uuid, MusicSource musicSource, long startPosition, MusicLoaderThread.MusicLoadResultListener resultListener) {
-        runnerEntries.add(new MusicRunnerEntry(Priority.LOW, true, () -> {
+        if (isExist(uuid))
+            stop(uuid);
+        if (loaders.containsKey(uuid))
+            loaders.get(uuid).stopped();
+        runnerEntries.add(new MusicRunnerEntry(Priority.MIDDLE, true, () -> {
             MusicLoaderThread ml = new MusicLoaderThread(uuid, musicSource, startPosition, null, resultListener);
             loaders.put(uuid, ml);
             ml.start();
@@ -68,9 +76,17 @@ public class MusicEngine {
         }));
     }
 
+    public void loadFinished(UUID uuid, IMusicPlayer player) {
+        runnerEntries.add(new MusicRunnerEntry(Priority.MIDDLE, false, () -> {
+            if (player != null && !musicPlayers.containsKey(uuid))
+                musicPlayers.put(uuid, new MusicEngine.MusicPlayingEntry(player, null));
+            loaders.remove(uuid);
+        }));
+    }
+
     public void play(UUID uuid, long delay, MusicPlayInfo info) {
         runnerEntries.add(new MusicRunnerEntry(Priority.MIDDLE, true, () -> {
-            if (musicPlayers.containsKey(uuid)) {
+            if (!musicPlayers.get(uuid).musicPlayer.playing() && musicPlayers.containsKey(uuid)) {
                 musicPlayers.get(uuid).musicTracker = info.getTracker();
                 MusicPlayingEntry entry = musicPlayers.get(uuid);
                 entry.musicPlayer.play(delay);
@@ -104,7 +120,7 @@ public class MusicEngine {
     }
 
     public void stop(UUID musicID) {
-        runnerEntries.add(new MusicRunnerEntry(Priority.LOW, false, () -> {
+        runnerEntries.add(new MusicRunnerEntry(Priority.HIGH, false, () -> {
             if (musicPlayers.containsKey(musicID)) {
                 musicPlayers.get(musicID).musicPlayer.stop();
                 musicPlayers.get(musicID).musicPlayer.destroy();
@@ -137,7 +153,6 @@ public class MusicEngine {
             oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo(), true));
             reload = false;
         }
-
         List<MusicRunnerEntry> removeRunners = new ArrayList<>();
         runnerEntries.stream().filter(n -> !paused || !n.nonPaused).sorted(Comparator.comparing(n -> 10 - n.priority.num)).forEach(n -> {
             removeRunners.add(n);
