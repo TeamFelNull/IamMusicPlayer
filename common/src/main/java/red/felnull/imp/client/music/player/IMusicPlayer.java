@@ -36,7 +36,7 @@ public interface IMusicPlayer {
 
     void update();
 
-    MusicSource getMusicLocation();
+    MusicSource getMusicSource();
 
     long getPosition();
 }

@@ -133,7 +133,7 @@ public class MusicEngine {
             Map<UUID, MusicLoaderThread> oldLoaders = new HashMap<>(loaders);
             oldLoaders.forEach((n, m) -> times.put(n, m.getCurrentDelayStartPosition()));
             stopReady();
-            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicLocation(), times.get(n), new MusicPlayInfo(m.musicTracker), true));
+            oldMPlayers.forEach((n, m) -> readyAndPlay(n, m.musicPlayer.getMusicSource(), times.get(n), new MusicPlayInfo(m.musicTracker), true));
             oldLoaders.forEach((n, m) -> readyAndPlay(n, m.getLocation(), times.get(n), m.getAutPlayInfo(), true));
             reload = false;
         }
@@ -150,13 +150,15 @@ public class MusicEngine {
         removeRunners.forEach(runnerEntries::remove);
         removeRunners.clear();
 
-        musicPlayers.values().forEach(n -> {
+        musicPlayers.forEach((m, n) -> {
             n.musicPlayer.update();
             if (n.musicTracker != null) {
                 n.musicPlayer.setSelfPosition(n.musicTracker.getTrackingPosition(mc.level));
                 n.musicPlayer.linearAttenuation(n.musicTracker.getMaxDistance(mc.level));
                 n.musicPlayer.setVolume(SoundMath.calculateVolume(n.musicTracker.getTrackingVolume(mc.level)));
             }
+            if (n.musicPlayer.getPosition() > n.musicPlayer.getMusicSource().getDuration())
+                stop(m);
         });
 
         if (IamMusicPlayer.CONFIG.subtitleSystem != SubtitleSystem.OFF)

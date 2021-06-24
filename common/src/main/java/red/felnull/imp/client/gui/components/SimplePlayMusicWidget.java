@@ -60,7 +60,7 @@ public class SimplePlayMusicWidget extends AbstractWidget implements IMSDSmartRe
         if (engine.isPlaying(uuid) && engine.getPlyingMusic(uuid) != null) {
             MusicEngine.MusicPlayingEntry entry = engine.getPlyingMusic(uuid);
             ct = entry.musicPlayer.getPosition();
-            at = entry.musicPlayer.getMusicLocation().getDuration();
+            at = entry.musicPlayer.getMusicSource().getDuration();
         }
 
         drawPrettyString(poseStack, new TextComponent(StringUtils.getTimeNotationPercentage(ct, at)), x + 16, y + 1, 0);

@@ -38,6 +38,7 @@ public class MusicLoaderThread extends Thread {
     public void run() {
         if (!IMPClientRegistry.isLoaderContains(location.getLoaderName())) {
             LOGGER.error("Non existent music loader: " + location.getLoaderName());
+            finished();
             if (stop)
                 return;
             resultListener.onResult(MusicLoadResult.FAILURE, uuid, 0);
@@ -53,6 +54,7 @@ public class MusicLoaderThread extends Thread {
             player.ready(startPosition);
         } catch (Exception ex) {
             LOGGER.error("Failed to load music: " + location.getIdentifier(), ex);
+            finished();
             if (!stop)
                 resultListener.onResult(MusicLoadResult.FAILURE, uuid, 0);
             if (player != null)
@@ -68,13 +70,17 @@ public class MusicLoaderThread extends Thread {
             SubtitleLoaderThread slt = new SubtitleLoaderThread(uuid, location, subtitle, () -> stop);
             slt.start();
         }
-        if (stop)
+
+        finished();
+        if (stop) {
             return;
-
+        }
         MusicEngine.getInstance().musicPlayers.put(uuid, new MusicEngine.MusicPlayingEntry(player, null));
-        MusicEngine.getInstance().loaders.remove(uuid);
-
         resultListener.onResult(MusicLoadResult.COMPLETE, uuid, eqTime);
+    }
+
+    private void finished() {
+        MusicEngine.getInstance().loaders.remove(uuid);
     }
 
     public void stopped() {

@@ -102,7 +102,7 @@ public abstract class LavaAbstractMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public MusicSource getMusicLocation() {
+    public MusicSource getMusicSource() {
         return musicSource;
     }
 
