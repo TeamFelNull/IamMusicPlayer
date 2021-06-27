@@ -46,6 +46,12 @@ public class MusicManager {
         return getPlayLists().stream().filter(n -> n.getDetailed().isPubliced()).filter(n -> !n.getPlayerList().contains(playerId)).filter(n -> n.getAdministrator().getAuthority(playerId).canRead()).toList();
     }
 
+    public List<Music> getPlayerAllMusics(UUID playerID) {
+        List<Music> musics = new ArrayList<>();
+        getMyPlayLists(playerID).forEach(n -> n.getMusicList().forEach(m -> musics.add(getMusic(m))));
+        return musics;
+    }
+
     public List<Music> getPlayListToMusics(UUID playlistID) {
         MusicPlayList playList = getPlayList(playlistID);
         if (playList != null)
@@ -56,14 +62,6 @@ public class MusicManager {
 
     public Music getMusic(UUID musicID) {
         return getSaveData().getMusics().get(musicID);
-    }
-
-    public void addMusic(UUID playlistID, Music music) {
-        addMusic(music);
-        if (getSaveData().getMusicPlaylists().containsKey(playlistID)) {
-            getSaveData().getMusicPlaylists().get(playlistID).getMusicList().add(music.getUUID());
-            getSaveData().setDirty();
-        }
     }
 
     public void removeMusic(UUID musicID) {
@@ -79,6 +77,15 @@ public class MusicManager {
 
     public MusicPlayList getPlayList(UUID playlistID) {
         return getSaveData().getMusicPlaylists().get(playlistID);
+    }
+
+    public void addMusicToMusicPlayList(UUID playlistID, UUID musicID) {
+        MusicPlayList playList = getPlayList(playlistID);
+        Music music = getMusic(musicID);
+        if (playList != null && music != null && playList.getPlayerList().contains(music.getOwner()) && playList.getAdministrator().getAuthority(music.getOwner()).canAdd()) {
+            playList.getMusicList().add(musicID);
+            getSaveData().setDirty();
+        }
     }
 
     public void addPlayerToMusicPlayList(UUID playlistID, UUID playerID) {

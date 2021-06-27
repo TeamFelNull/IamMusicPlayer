@@ -21,8 +21,9 @@ public class SyncResourceResponseMessageHandler implements IPacketMessageClientH
         } else if (type == SyncType.MUSIC) {
             if (!manager.musics.containsKey(syncResourceResponseMessage.uuid))
                 manager.musics.put(syncResourceResponseMessage.uuid, new ArrayList<>());
-
             NbtUtils.readMusics(syncResourceResponseMessage.data, "Music", manager.musics.get(syncResourceResponseMessage.uuid));
+        } else if (type == SyncType.ALL_MUSIC) {
+            NbtUtils.readMusics(syncResourceResponseMessage.data, "Music", manager.allMusics);
         }
         return true;
     }

@@ -17,13 +17,17 @@ import red.felnull.imp.client.music.loader.IMusicLoader;
 import red.felnull.imp.client.music.loader.IMusicSearchable;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
 import red.felnull.imp.data.resource.ImageInfo;
+import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.imp.music.resource.MusicSource;
+import red.felnull.imp.packet.PlayMusicCreateMessage;
 import red.felnull.imp.util.StringUtils;
 import red.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
+import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class CreateMusicMonitor extends CreateBaseMonitor {
@@ -146,7 +150,9 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         String name = nameTextBox.getValue();
         MusicSource musicSource = new MusicSource(musicLoaderLocation, checkableData.identifier(), checkableData.duration());
         ImageInfo image = imageInfo;
-
+        UUID playList = getParentScreen().selectPlayList.getUUID();
+        if (playList != null && !playList.equals(MusicPlayList.ALL.getUUID()))
+            IKSGPacketUtil.sendToServerPacket(new PlayMusicCreateMessage(name, musicSource, image, playList));
         insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST);
     }
 

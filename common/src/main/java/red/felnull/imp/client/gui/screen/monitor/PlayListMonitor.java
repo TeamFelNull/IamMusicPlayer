@@ -20,8 +20,8 @@ import java.util.List;
 public class PlayListMonitor extends MSDBaseMonitor {
     private final List<SimpleMusicPlayList> playList = new ArrayList<>();
     private final List<Music> musics = new ArrayList<>();
-    private SimpleMusicPlayList selectPlayList = MusicPlayList.ALL.getSimple();
     private MSDSmartButton allButton;
+    private ImageButton createMusicButton;
 
     public PlayListMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.playlist"), msdScreen, parentScreen, x, y, width, height);
@@ -34,21 +34,21 @@ public class PlayListMonitor extends MSDBaseMonitor {
         IMPSyncClientManager syncClientManager = IMPSyncClientManager.getInstance();
         syncClientManager.syncMyPlayLists();
         this.addRenderableWidget(new PlayListFixedButtonsList(x + 1, y + 21, 29, 100, 5, new TextComponent("Play List"), this.playList, n -> new TextComponent(n.getName()), (n) -> {
-            this.selectPlayList = n.item();
+            getParentScreen().selectPlayList = n.item();
             syncClientManager.syncMusics(n.item().getUUID());
-        }, n -> n.equals(selectPlayList)));
+        }, n -> n.equals(getParentScreen().selectPlayList)));
 
         this.addRenderableWidget(new MusicFixedButtonsList(x + 30, y + 21, 169, 100, 5, new TextComponent("Musics"), this.musics, n -> new TextComponent(n.getName()), (n) -> {
 
         }));
 
         this.allButton = this.addCreateSmartButton(new TextComponent("All"), x + 1, y + 1, 20, 19, n -> {
-            selectPlayList = MusicPlayList.ALL.getSimple();
+            getParentScreen().selectPlayList = MusicPlayList.ALL.getSimple();
         });
 
         this.addRenderableWidget(new ImageButton(x + 22, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST)));
 
-        this.addRenderableWidget(new ImageButton(x + 191, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_MUSIC)));
+        this.createMusicButton = this.addRenderableWidget(new ImageButton(x + 191, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_MUSIC)));
     }
 
     @Override
@@ -58,14 +58,18 @@ public class PlayListMonitor extends MSDBaseMonitor {
 
         this.playList.clear();
         this.playList.addAll(syncClientManager.getMyPlayLists());
-        if (!playList.contains(selectPlayList)) {
-            selectPlayList = MusicPlayList.ALL.getSimple();
+        if (!playList.contains(getParentScreen().selectPlayList)) {
+            getParentScreen().selectPlayList = MusicPlayList.ALL.getSimple();
         }
-        this.allButton.active = !selectPlayList.equals(MusicPlayList.ALL.getSimple());
+        this.allButton.active = !getParentScreen().selectPlayList.equals(MusicPlayList.ALL.getSimple());
 
         this.musics.clear();
-        if (!selectPlayList.equals(MusicPlayList.ALL.getSimple()))
-            this.musics.addAll(syncClientManager.getMusics(selectPlayList.getUUID()));
+        if (!getParentScreen().selectPlayList.equals(MusicPlayList.ALL.getSimple()))
+            this.musics.addAll(syncClientManager.getMusics(getParentScreen().selectPlayList.getUUID()));
+        else
+            this.musics.addAll(syncClientManager.getAllMusics());
+
+        this.createMusicButton.visible = this.createMusicButton.active = !getParentScreen().selectPlayList.equals(MusicPlayList.ALL.getSimple());
     }
 
     @Override
@@ -85,7 +89,7 @@ public class PlayListMonitor extends MSDBaseMonitor {
         fillXGrayLine(poseStack, x + 22, y + 21, 7);
         fillXGrayLine(poseStack, x + 22, y + 120, 7);
 
-        drawPrettyString(poseStack, new TextComponent(selectPlayList.getName()), x + 31, y + 2, 0);
+        drawPrettyString(poseStack, new TextComponent(getParentScreen().selectPlayList.getName()), x + 31, y + 2, 0);
 
     }
 }

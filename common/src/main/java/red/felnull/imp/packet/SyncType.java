@@ -6,7 +6,8 @@ public enum SyncType implements StringRepresentable {
     NONE("none"),
     MY_PLAYLISTS("my_playlists"),
     PUBLIC_PLAYLISTS("public_playlists"),
-    MUSIC("music");
+    MUSIC("music"),
+    ALL_MUSIC("all_music");
     private final String name;
 
     SyncType(String name) {

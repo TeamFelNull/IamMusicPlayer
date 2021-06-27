@@ -14,7 +14,6 @@ import red.felnull.otyacraftengine.client.gui.screen.IkisugiContainerScreen;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractContainerEventHandler implements NarratableEntry, IIkisugibleWidget {
     protected final List<GuiEventListener> children = new ArrayList<>();
@@ -26,6 +25,7 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     public int width;
     public int height;
     private boolean active;
+    private Monitor<?> beforemonitor;
 
     public Monitor(Component component, PS parentScreen, int x, int y, int width, int height) {
         this.x = x;
@@ -119,5 +119,13 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
 
     public void onFilesDrop(List<Path> list) {
 
+    }
+
+    public Monitor<?> getBeforeMonitor() {
+        return beforemonitor;
+    }
+
+    public void setBeforeMonitor(Monitor<?> beforemonitor) {
+        this.beforemonitor = beforemonitor;
     }
 }

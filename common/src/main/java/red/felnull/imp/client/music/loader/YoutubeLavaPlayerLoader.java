@@ -6,7 +6,10 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import red.felnull.imp.data.resource.ImageInfo;
+import red.felnull.otyacraftengine.util.IKSGImageUtil;
 
+import javax.imageio.ImageIO;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +65,15 @@ public class YoutubeLavaPlayerLoader extends LavaPlayerLoader implements IMusicS
 
     @Override
     protected SearchData toMusicSearchData(AudioTrack track) {
-        return new SearchData(track.getInfo().title, track.getInfo().title + " - " + track.getInfo().author, track.getIdentifier(), new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, track.getIdentifier()), track.getDuration(), track.getInfo().author);
+        float x = 1;
+        float y = 1;
+        try {
+            URL url = new URL(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", track.getIdentifier()));
+            IKSGImageUtil.ImageSimpleInfo info = IKSGImageUtil.getSimpleInfo(ImageIO.read(url));
+            x = info.widthScale();
+            y = info.heightScale();
+        } catch (Exception ignored) {
+        }
+        return new SearchData(track.getInfo().title, track.getInfo().title + " - " + track.getInfo().author, track.getIdentifier(), new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, track.getIdentifier(), x, y), track.getDuration(), track.getInfo().author);
     }
 }

@@ -11,6 +11,8 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.gui.screen.monitor.*;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
+import red.felnull.imp.music.resource.MusicPlayList;
+import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 import red.felnull.otyacraftengine.api.OtyacraftEngineAPI;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
@@ -24,6 +26,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
     public final UUID uuid = UUID.randomUUID();
     public List<MusicSharingDeviceBlockEntity.Screen> screenHistory = new ArrayList();
     private MSDBaseMonitor currentScreens;
+    public SimpleMusicPlayList selectPlayList = MusicPlayList.ALL.getSimple();
 
     public MusicSharingDeviceScreen(MusicSharingDeviceMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -66,8 +69,10 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
                 removeWidget(getCurrentScreen());
             }
 
+            Monitor<?> bef = currentScreens;
             currentScreens = SCREEN_CRATER.get(getCurrentMonitorScreen()).get();
             getCurrentScreen().init();
+            getCurrentScreen().setBeforeMonitor(bef);
             addWidget(getCurrentScreen());
         }
 

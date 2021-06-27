@@ -15,7 +15,6 @@ import red.felnull.imp.util.NbtUtils;
 import red.felnull.otyacraftengine.api.SimpleMessageSender;
 import red.felnull.otyacraftengine.packet.IPacketMessageServerHandler;
 import red.felnull.otyacraftengine.util.IKSGPacketUtil;
-import red.felnull.otyacraftengine.util.IKSGServerUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,14 +25,14 @@ public class SyncResourceRequestMessageHandler implements IPacketMessageServerHa
     private static final Map<UUID, Long> lastMyPlayListSyncTime = new HashMap<>();
     private static final Map<UUID, Long> lastPublicPlayListSyncTime = new HashMap<>();
     private static final Map<UUID, Map<UUID, Long>> lastMusicSyncTime = new HashMap<>();
+    private static final Map<UUID, Long> lastAllMusicSyncTime = new HashMap<>();
 
     public static void resetMusicPlayList() {
         lastMyPlayListSyncTime.clear();
         lastPublicPlayListSyncTime.clear();
         lastMusicSyncTime.clear();
-        IKSGServerUtil.getMinecraftServer().getPlayerList().getPlayers().forEach(n -> {
-            SimpleMessageSender.sendToClient(n.getGameProfile().getId(), new ResourceLocation(IamMusicPlayer.MODID, "sync_update"), 0, new CompoundTag());
-        });
+        lastAllMusicSyncTime.clear();
+        SimpleMessageSender.sendToClient(new ResourceLocation(IamMusicPlayer.MODID, "sync_update"), 0, new CompoundTag());
     }
 
     @Override
@@ -67,7 +66,16 @@ public class SyncResourceRequestMessageHandler implements IPacketMessageServerHa
             List<Music> ms = manager.getPlayListToMusics(syncResourceRequestMessage.uuid);
             if (!ms.isEmpty())
                 NbtUtils.writeMusics(data, "Music", ms);
+            IKSGPacketUtil.sendToClientPacket(serverPlayer, new SyncResourceResponseMessage(type, data, syncResourceRequestMessage.uuid));
+        } else if (type == SyncType.ALL_MUSIC) {
+            if (lastAllMusicSyncTime.containsKey(serverPlayer.getGameProfile().getId())) {
+                if (System.currentTimeMillis() - lastAllMusicSyncTime.get(serverPlayer.getGameProfile().getId()) <= minSyncTime())
+                    return true;
+            }
+            CompoundTag data = new CompoundTag();
+            NbtUtils.writeMusics(data, "Music", manager.getPlayerAllMusics(serverPlayer.getGameProfile().getId()));
             IKSGPacketUtil.sendToClientPacket(serverPlayer, new SyncResourceResponseMessage(type, data));
+            lastAllMusicSyncTime.put(serverPlayer.getGameProfile().getId(), System.currentTimeMillis());
         }
 
         return true;
