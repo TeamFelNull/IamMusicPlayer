@@ -44,7 +44,7 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
         renderBg(poseStack, mousX, mousY, parTick);
         buttons.forEach(n -> n.render(poseStack, mousX, mousY, parTick));
 
-        children.stream().filter(n -> n instanceof EditBox).forEach(n -> ((EditBox) n).render(poseStack, mousX, mousY, parTick));
+        children.stream().filter(n -> n instanceof EditBox).filter(n -> ((EditBox) n).visible).forEach(n -> ((EditBox) n).render(poseStack, mousX, mousY, parTick));
     }
 
     public void renderBg(PoseStack poseStack, int mousX, int mousY, float parTick) {
@@ -91,7 +91,7 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     }
 
     public void tick() {
-        children.stream().filter(n -> n instanceof EditBox).forEach(n -> ((EditBox) n).tick());
+        children.stream().filter(n -> n instanceof EditBox).filter(n -> ((EditBox) n).active).forEach(n -> ((EditBox) n).tick());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Monitor<PS extends IkisugiContainerScreen<?>> extends AbstractConta
     @Override
     public boolean keyPressed(int i, int j, int k) {
 
-        boolean all = children.stream().filter(n -> n instanceof EditBox).anyMatch(n -> ((EditBox) n).canConsumeInput());
+        boolean all = children.stream().filter(n -> n instanceof EditBox).anyMatch(n -> ((EditBox) n).canConsumeInput() && ((EditBox) n).active);
 
         return super.keyPressed(i, j, k) || all;
     }

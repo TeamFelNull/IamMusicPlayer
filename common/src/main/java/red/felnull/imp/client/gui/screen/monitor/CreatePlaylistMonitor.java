@@ -6,6 +6,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.data.IMPSyncClientManager;
+import red.felnull.imp.client.data.SimplePlayerData;
 import red.felnull.imp.client.gui.components.AdminInfoData;
 import red.felnull.imp.client.gui.components.AdminPlayersFixedButtonsList;
 import red.felnull.imp.client.gui.components.MSDSmartCheckbox;
@@ -20,7 +21,7 @@ import red.felnull.otyacraftengine.util.IKSGPacketUtil;
 import java.util.*;
 
 public class CreatePlaylistMonitor extends CreateBaseMonitor {
-    private final List<PlayerInfo> playerInfos = new ArrayList<>();
+    private final List<SimplePlayerData> playerInfos = new ArrayList<>();
     private final List<AdminInfoData> selectedAdminPlayer = new ArrayList<>();
     private MSDSmartCheckbox publicedCheckBox;
     private PlayersFixedButtonsList playersFixedButtonsList;
@@ -43,7 +44,7 @@ public class CreatePlaylistMonitor extends CreateBaseMonitor {
             selectedAdminPlayer.add(new AdminInfoData(n.item(), AdministratorInformation.AuthorityType.ADMINISTRATOR));
         }));
 
-        adminPlayersFixedButtonsList = this.addRenderableWidget(new AdminPlayersFixedButtonsList(x + 102, y + 73, 93, 27, 3, new TextComponent("Admin Players"), selectedAdminPlayer, n -> new TextComponent(n.playerInfo().getProfile().getName()), n -> {
+        adminPlayersFixedButtonsList = this.addRenderableWidget(new AdminPlayersFixedButtonsList(x + 102, y + 73, 93, 27, 3, new TextComponent("Admin Players"), selectedAdminPlayer, n -> new TextComponent(n.playerInfo().name()), n -> {
             if (n.item().type() == AdministratorInformation.AuthorityType.ADMINISTRATOR) {
                 selectedAdminPlayer.set(n.itemNum(), new AdminInfoData(n.item().playerInfo(), AdministratorInformation.AuthorityType.BAN));
             } else {
@@ -56,7 +57,10 @@ public class CreatePlaylistMonitor extends CreateBaseMonitor {
     public void tick() {
         super.tick();
         playerInfos.clear();
-        playerInfos.addAll(IMPSyncClientManager.getInstance().getOnlinePlayers().stream().filter(n -> !n.getProfile().getId().equals(getMinecraft().player.getGameProfile().getId())).filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().getProfile().getId().equals(n.getProfile().getId()))).toList());
+        playerInfos.addAll(IMPSyncClientManager.getInstance().getOnlinePlayers().stream().filter(n -> !n.id().equals(getMinecraft().player.getGameProfile().getId())).filter(n -> selectedAdminPlayer.stream().noneMatch(m -> m.playerInfo().id().equals(n.id()))).toList());
+
+        adminPlayersFixedButtonsList.visible = adminPlayersFixedButtonsList.active = playersFixedButtonsList.visible = playersFixedButtonsList.active = canAuthoritySetting();
+
     }
 
     @Override
@@ -65,24 +69,32 @@ public class CreatePlaylistMonitor extends CreateBaseMonitor {
         String name = nameTextBox.getValue();
         ImageInfo image = imageInfo;
         Map<UUID, AdministratorInformation.AuthorityType> adminData = new HashMap<>();
-        selectedAdminPlayer.forEach(n -> adminData.put(n.playerInfo().getProfile().getId(), n.type()));
+        selectedAdminPlayer.forEach(n -> adminData.put(n.playerInfo().id(), n.type()));
 
         IKSGPacketUtil.sendToServerPacket(new PlayListCreateMessage(name, pub, image, adminData));
         insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST);
     }
 
+    private boolean canAuthoritySetting() {
+        return !playerInfos.isEmpty();
+    }
+
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
-        IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
-        drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.playerAuthority"), x + 4, y + 64, 0);
+        if (canAuthoritySetting()) {
+            IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
+            drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.playerAuthority"), x + 4, y + 64, 0);
+        }
     }
 
     @Override
     public void renderBg(PoseStack poseStack, int mousX, int mousY, float parTick) {
         super.renderBg(poseStack, mousX, mousY, parTick);
-        drawDarkBox(poseStack, x + 3, y + 73, 86, 46);
-        drawDarkBox(poseStack, x + 101, y + 72, 95, 29);
+        if (canAuthoritySetting()) {
+            drawDarkBox(poseStack, x + 3, y + 73, 86, 46);
+            drawDarkBox(poseStack, x + 101, y + 72, 95, 29);
+        }
     }
 
 }

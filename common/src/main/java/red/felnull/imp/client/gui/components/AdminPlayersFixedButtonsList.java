@@ -26,7 +26,7 @@ public class AdminPlayersFixedButtonsList extends FixedButtonsList<AdminInfoData
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
         drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + 3 + getOneButtonHeight() - 2, y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);
 
-        IKSGRenderUtil.drawPlayerFase(poseStack, item.playerInfo().getProfile().getName(), x + 1, y + 1, getOneButtonHeight() - 2);
+        IKSGRenderUtil.drawPlayerFase(poseStack, item.playerInfo().name(), x + 1, y + 1, getOneButtonHeight() - 2);
 
         boolean red = item.type() == AdministratorInformation.AuthorityType.BAN;
 

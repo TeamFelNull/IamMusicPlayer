@@ -3,7 +3,10 @@ package red.felnull.imp.music.resource.simple;
 import net.minecraft.nbt.CompoundTag;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.otyacraftengine.data.ITAGSerializable;
+import red.felnull.otyacraftengine.util.IKSGNbtUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -12,18 +15,22 @@ public class SimpleMusicPlayList implements ITAGSerializable {
     private String name;
     private ImageInfo image;
     private UUID owner;
+    private List<UUID> administrators = new ArrayList<>();
+    private List<UUID> players = new ArrayList<>();
     private int playerCont;
 
     public SimpleMusicPlayList(CompoundTag tag) {
         load(tag);
     }
 
-    public SimpleMusicPlayList(UUID uuid, String name, ImageInfo image, UUID owner, int playerCont) {
+    public SimpleMusicPlayList(UUID uuid, String name, ImageInfo image, UUID owner, int playerCont, List<UUID> administrators, List<UUID> players) {
         this.uuid = uuid;
         this.name = name;
         this.image = image;
         this.owner = owner;
         this.playerCont = playerCont;
+        this.administrators = administrators;
+        this.players = players;
     }
 
     @Override
@@ -33,6 +40,8 @@ public class SimpleMusicPlayList implements ITAGSerializable {
         tag.put("ImageInfo", image.save(new CompoundTag()));
         tag.putUUID("Owner", owner);
         tag.putInt("PlayerCont", playerCont);
+        IKSGNbtUtil.writeUUIDList(tag, "Administrators", administrators);
+        IKSGNbtUtil.writeUUIDList(tag, "Players", players);
         return tag;
     }
 
@@ -43,6 +52,8 @@ public class SimpleMusicPlayList implements ITAGSerializable {
         this.image = new ImageInfo(tag.getCompound("ImageInfo"));
         this.owner = tag.getUUID("Owner");
         this.playerCont = tag.getInt("PlayerCont");
+        IKSGNbtUtil.readUUIDList(tag, "Administrators", administrators);
+        IKSGNbtUtil.readUUIDList(tag, "Players", players);
     }
 
     public UUID getOwner() {
@@ -63,6 +74,14 @@ public class SimpleMusicPlayList implements ITAGSerializable {
 
     public UUID getUUID() {
         return uuid;
+    }
+
+    public List<UUID> getAdministrators() {
+        return administrators;
+    }
+
+    public List<UUID> getPlayers() {
+        return players;
     }
 
     @Override

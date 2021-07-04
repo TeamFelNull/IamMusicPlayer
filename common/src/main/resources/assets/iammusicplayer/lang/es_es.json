@@ -7,6 +7,7 @@
   "item.iammusicplayer.ikisugi_antenna": "Antena Ikisugi",
   "item.iammusicplayer.fcoh_antenna": "Antena F.C.O.H",
   "_comment.b": "Block",
+  "block.iammusicplayer.music_sharing_device": "Dispositivo para compartir música",
   "_comment.m": "Music",
   "_comment.s": "gui",
   "container.music_sharing_device": "Dispositivo para compartir música",

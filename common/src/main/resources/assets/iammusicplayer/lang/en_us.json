@@ -7,6 +7,7 @@
   "item.iammusicplayer.ikisugi_antenna": "Ikisugi Antenna",
   "item.iammusicplayer.fcoh_antenna": "F.C.O.H Antenna",
   "_comment.b": "Block",
+  "block.iammusicplayer.music_sharing_device": "Music Sharing Device",
   "_comment.m": "Music",
   "musicPlaySystem.spatial": "Spatial",
   "musicPlaySystem.non_spatial": "Non Spatial",

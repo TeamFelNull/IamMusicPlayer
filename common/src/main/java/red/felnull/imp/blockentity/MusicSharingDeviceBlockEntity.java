@@ -9,6 +9,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import red.felnull.imp.inventory.MusicSharingDeviceMenu;
 import red.felnull.imp.util.ItemHelper;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
     private final Map<UUID, Screen> playerScreens = new HashMap<>();
     private Screen currentScreen;
+    private long antennaProgress;
 
     public MusicSharingDeviceBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.MUSIC_SHARING_DEVICE, blockPos, blockState);
@@ -36,15 +38,21 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         return new MusicSharingDeviceMenu(i, getBlockPos(), this, inventory);
     }
 
+    public long getAntennaProgress() {
+        return antennaProgress;
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag) {
         NbtUtils.writeMSDPlayerScreenData(tag, "PlayerScreens", playerScreens);
+        tag.putLong("AntennaProgress", antennaProgress);
         return super.save(tag);
     }
 
     @Override
     public void load(CompoundTag tag) {
         NbtUtils.readMSDPlayerScreenData(tag, "PlayerScreens", playerScreens);
+        this.antennaProgress = tag.getLong("AntennaProgress");
         super.load(tag);
     }
 
@@ -57,6 +65,7 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
     public CompoundTag clientSyncbleData(ServerPlayer player, CompoundTag tag) {
         ContainerHelper.saveAllItems(tag, this.getItems());
         tag.putString("CurrentScreen", getCurrentScreen(player.getGameProfile().getId()).getSerializedName());
+        tag.putLong("AntennaProgress", antennaProgress);
         return tag;
     }
 
@@ -65,6 +74,7 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         this.getItems().clear();
         ContainerHelper.loadAllItems(tag, this.getItems());
         this.currentScreen = Screen.getScreenByName(tag.getString("CurrentScreen"));
+        this.antennaProgress = tag.getLong("AntennaProgress");
     }
 
     @Override
@@ -95,6 +105,7 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
                         setCurrentScreen(n, Screen.PLAYLIST);
 
                 });
+                antennaProgress++;
             } else {
                 setCurrentScreen(Screen.OFF);
             }
@@ -109,6 +120,10 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
 
     public boolean isExistAntenna() {
         return ItemHelper.isAntenna(getItem(0));
+    }
+
+    public ItemStack getAntenna() {
+        return getItem(0);
     }
 
     public void setCurrentScreen(UUID playerUUID, Screen screen) {
@@ -133,7 +148,9 @@ public class MusicSharingDeviceBlockEntity extends IMPEquipmentBaseBlockEntity {
         NO_ANTENNA("no_antenna"),
         ADD_PLAYLIST("add_playlist"),
         CREATE_PLAYLIST("create_playlist"),
-        CREATE_MUSIC("create_music");
+        CREATE_MUSIC("create_music"),
+        PLAYLIST_DETAILS("playlist_details");
+
         private final String name;
 
         Screen(String name) {

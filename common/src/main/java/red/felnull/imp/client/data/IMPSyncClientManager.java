@@ -2,7 +2,6 @@ package red.felnull.imp.client.data;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.multiplayer.PlayerInfo;
 import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 import red.felnull.imp.packet.SyncResourceRequestMessage;
@@ -34,9 +33,9 @@ public class IMPSyncClientManager {
         return INSTANCE;
     }
 
-    public List<PlayerInfo> getOnlinePlayers() {
+    public List<SimplePlayerData> getOnlinePlayers() {
         ClientPacketListener cpl = mc.player.connection;
-        return cpl.getOnlinePlayers().stream().toList();
+        return cpl.getOnlinePlayers().stream().map(n -> new SimplePlayerData(n.getProfile().getName(), n.getProfile().getId())).toList();
     }
 
     public List<SimpleMusicPlayList> getMyPlayLists() {

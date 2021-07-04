@@ -2,10 +2,12 @@ package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
 import red.felnull.imp.client.data.IMPSyncClientManager;
+import red.felnull.imp.client.gui.IMPFonts;
 import red.felnull.imp.client.gui.components.MSDSmartButton;
 import red.felnull.imp.client.gui.components.MusicFixedButtonsList;
 import red.felnull.imp.client.gui.components.PlayListFixedButtonsList;
@@ -13,6 +15,7 @@ import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.music.resource.Music;
 import red.felnull.imp.music.resource.MusicPlayList;
 import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
+import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,7 @@ public class PlayListMonitor extends MSDBaseMonitor {
     private final List<Music> musics = new ArrayList<>();
     private MSDSmartButton allButton;
     private ImageButton createMusicButton;
+    private ImageButton detailsButton;
 
     public PlayListMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.playlist"), msdScreen, parentScreen, x, y, width, height);
@@ -49,6 +53,11 @@ public class PlayListMonitor extends MSDBaseMonitor {
         this.addRenderableWidget(new ImageButton(x + 22, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.ADD_PLAYLIST)));
 
         this.createMusicButton = this.addRenderableWidget(new ImageButton(x + 191, y + 1, 7, 19, 38, 20, 19, MSD_WIDGETS, 256, 256, n -> insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.CREATE_MUSIC)));
+
+        this.detailsButton = addRenderableWidget(new ImageButton(x + 176, y + 1, 14, 10, 54, 30, MSD_WIDGETS, n -> {
+            insMonitorScreen(MusicSharingDeviceBlockEntity.Screen.PLAYLIST_DETAILS);
+        }));
+
     }
 
     @Override
@@ -70,13 +79,13 @@ public class PlayListMonitor extends MSDBaseMonitor {
             this.musics.addAll(syncClientManager.getAllMusics());
 
         this.createMusicButton.visible = this.createMusicButton.active = !getParentScreen().selectPlayList.equals(MusicPlayList.ALL.getSimple());
+        this.detailsButton.visible = this.detailsButton.active = !getParentScreen().selectPlayList.equals(MusicPlayList.ALL.getSimple());
     }
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
         fillXGrayLine(poseStack, x + 1, y + 20, 28);
-        fillLightGray(poseStack, x + 30, y + 1, 160, 19);
         fillXGrayLine(poseStack, x + 30, y + 11, 160);
         fillXGrayLine(poseStack, x + 22, y + 20, 7);
         fillXGrayLine(poseStack, x + 190, y + 120, 9);
@@ -90,6 +99,22 @@ public class PlayListMonitor extends MSDBaseMonitor {
         fillXGrayLine(poseStack, x + 22, y + 120, 7);
 
         drawPrettyString(poseStack, new TextComponent(getParentScreen().selectPlayList.getName()), x + 31, y + 2, 0);
+        if (!getParentScreen().selectPlayList.equals(MusicPlayList.ALL.getSimple())) {
 
+            boolean mflg = getParentScreen().selectPlayList.getPlayerCont() > 1;
+
+            MutableComponent ccomp = new TextComponent("+" + getParentScreen().selectPlayList.getPlayerCont()).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
+            IKSGRenderUtil.drawPlayerFase(poseStack, getParentScreen().selectPlayList.getOwner(), x + 165 - (mflg ? getFont().width(ccomp) : 0), y + 1, 10);
+            if (mflg) {
+                drawPrettyString(poseStack, ccomp, x + 176 - getFont().width(ccomp), y + 2, 0);
+            }
+        }
+
+    }
+
+    @Override
+    public void renderBg(PoseStack poseStack, int mousX, int mousY, float parTick) {
+        super.renderBg(poseStack, mousX, mousY, parTick);
+        fillLightGray(poseStack, x + 30, y + 1, 160, 19);
     }
 }

@@ -10,6 +10,7 @@ import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class MusicPlayList implements ITAGSerializable {
@@ -45,6 +46,7 @@ public class MusicPlayList implements ITAGSerializable {
         tag.put("AdministratorInformation", administrator.save(new CompoundTag()));
         IKSGNbtUtil.writeUUIDList(tag, "MusicList", musicList);
         IKSGNbtUtil.writeUUIDList(tag, "PlayerList", playerList);
+
         return tag;
     }
 
@@ -88,7 +90,7 @@ public class MusicPlayList implements ITAGSerializable {
     }
 
     public SimpleMusicPlayList getSimple() {
-        return new SimpleMusicPlayList(uuid, name, image, getOwner(), playerList.size());
+        return new SimpleMusicPlayList(uuid, name, image, getOwner(), playerList.size(), administrator.getAdminData().entrySet().stream().filter(n -> n.getValue().canSave()).map(Map.Entry::getKey).toList(), playerList);
     }
 
     public UUID getOwner() {
