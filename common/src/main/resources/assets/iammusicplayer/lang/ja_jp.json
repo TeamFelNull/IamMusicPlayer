@@ -44,6 +44,7 @@
   "imp.msdText.playerAuthority": "権限",
   "imp.msdAuthority.administrator": "管理人",
   "imp.msdAuthority.ban": "禁止",
+  "imp.msdAuthority.owner": "オーナー",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Playerの設定",
   "text.autoconfig.iammusicplayer.option.volume": "音量",

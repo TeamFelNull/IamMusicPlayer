@@ -90,7 +90,7 @@ public class MusicPlayList implements ITAGSerializable {
     }
 
     public SimpleMusicPlayList getSimple() {
-        return new SimpleMusicPlayList(uuid, name, image, getOwner(), playerList.size(), administrator.getAdminData().entrySet().stream().filter(n -> n.getValue().canSave()).map(Map.Entry::getKey).toList(), playerList);
+        return new SimpleMusicPlayList(uuid, name, image, getOwner(), playerList.size(), administrator.getAdminData().entrySet().stream().filter(n -> n.getValue().canSave()).map(Map.Entry::getKey).toList(), playerList, administrator.getAdminData().entrySet().stream().filter(n -> n.getValue().isBan()).map(Map.Entry::getKey).toList());
     }
 
     public UUID getOwner() {

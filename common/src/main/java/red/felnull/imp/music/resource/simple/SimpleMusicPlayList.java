@@ -17,13 +17,14 @@ public class SimpleMusicPlayList implements ITAGSerializable {
     private UUID owner;
     private List<UUID> administrators = new ArrayList<>();
     private List<UUID> players = new ArrayList<>();
+    private List<UUID> baned = new ArrayList<>();
     private int playerCont;
 
     public SimpleMusicPlayList(CompoundTag tag) {
         load(tag);
     }
 
-    public SimpleMusicPlayList(UUID uuid, String name, ImageInfo image, UUID owner, int playerCont, List<UUID> administrators, List<UUID> players) {
+    public SimpleMusicPlayList(UUID uuid, String name, ImageInfo image, UUID owner, int playerCont, List<UUID> administrators, List<UUID> players, List<UUID> baned) {
         this.uuid = uuid;
         this.name = name;
         this.image = image;
@@ -31,6 +32,7 @@ public class SimpleMusicPlayList implements ITAGSerializable {
         this.playerCont = playerCont;
         this.administrators = administrators;
         this.players = players;
+        this.baned = baned;
     }
 
     @Override
@@ -42,6 +44,7 @@ public class SimpleMusicPlayList implements ITAGSerializable {
         tag.putInt("PlayerCont", playerCont);
         IKSGNbtUtil.writeUUIDList(tag, "Administrators", administrators);
         IKSGNbtUtil.writeUUIDList(tag, "Players", players);
+        IKSGNbtUtil.writeUUIDList(tag, "Baned", baned);
         return tag;
     }
 
@@ -54,6 +57,7 @@ public class SimpleMusicPlayList implements ITAGSerializable {
         this.playerCont = tag.getInt("PlayerCont");
         IKSGNbtUtil.readUUIDList(tag, "Administrators", administrators);
         IKSGNbtUtil.readUUIDList(tag, "Players", players);
+        IKSGNbtUtil.readUUIDList(tag, "Baned", baned);
     }
 
     public UUID getOwner() {
@@ -82,6 +86,10 @@ public class SimpleMusicPlayList implements ITAGSerializable {
 
     public List<UUID> getPlayers() {
         return players;
+    }
+
+    public List<UUID> getBaned() {
+        return baned;
     }
 
     @Override

@@ -7,7 +7,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.client.gui.IMPFonts;
 import red.felnull.imp.client.gui.screen.monitor.MSDBaseMonitor;
-import red.felnull.imp.data.resource.AdministratorInformation;
 import red.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
@@ -28,13 +27,22 @@ public class AdminPlayersFixedButtonsList extends FixedButtonsList<AdminInfoData
 
         IKSGRenderUtil.drawPlayerFase(poseStack, item.playerInfo().name(), x + 1, y + 1, getOneButtonHeight() - 2);
 
-        boolean red = item.type() == AdministratorInformation.AuthorityType.BAN;
-
-        int zure = red ? 0 : 7;
-
+        ChatFormatting chatColor = ChatFormatting.GREEN;
+        int zure = 0;
+        switch (item.type()) {
+            case BAN -> chatColor = ChatFormatting.RED;
+            case ADMINISTRATOR -> zure = 7;
+            case OWNER -> {
+                chatColor = ChatFormatting.BLUE;
+                zure = 14;
+            }
+            default -> {
+                zure = 7;
+                chatColor = ChatFormatting.GRAY;
+            }
+        }
         IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 1, y + 1, 0, 62 + zure, 7, 7);
-
-        MutableComponent component = new TranslatableComponent("imp.msdAuthority." + item.type().getNmae()).withStyle(IMPFonts.FLOPDE_SIGN_FONT).withStyle(red ? ChatFormatting.RED : ChatFormatting.GREEN);
+        MutableComponent component = new TranslatableComponent("imp.msdAuthority." + item.type().getNmae()).withStyle(IMPFonts.FLOPDE_SIGN_FONT).withStyle(chatColor);
         int cw = getFont().width(component);
         drawPrettyString(poseStack, component, x + getOneButtonWidth() - 3 - cw, y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);
 

@@ -44,6 +44,7 @@
   "imp.msdText.playerAuthority": "Authority",
   "imp.msdAuthority.administrator": "Administrator",
   "imp.msdAuthority.ban": "BAN",
+  "imp.msdAuthority.owner": "Owner",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "Client",

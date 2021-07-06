@@ -16,6 +16,8 @@ public class ClientHandler {
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mousepad"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mouse_hontai"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "block/music_sharing_device/mouse_wheel"));
+
+        e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/cassette_tape_base"));
     }
 
     public static void onSimpleMessage(SimpleMessageEvent.Client e) {

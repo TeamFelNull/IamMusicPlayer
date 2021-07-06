@@ -13,6 +13,7 @@ import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.data.resource.AdministratorInformation;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.imp.music.resource.MusicPlayList;
+import red.felnull.imp.music.resource.simple.SimpleMusicPlayList;
 import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
@@ -32,12 +33,32 @@ public class PlaylistDetailsMonitor extends DetailsEditBaseMonitor {
     public PlaylistDetailsMonitor(MusicSharingDeviceBlockEntity.Screen msdScreen, MusicSharingDeviceScreen parentScreen, int x, int y, int width, int height) {
         super(new TranslatableComponent("imp.msdMonitor.details"), msdScreen, parentScreen, x, y, width, height);
         UUID pil = getMinecraft().player.getGameProfile().getId();
-        selectedAdminPlayer.add(new AdminInfoData(new SimplePlayerData(getMinecraft().player.getGameProfile().getName(), pil), getParentScreen().selectPlayList.getOwner().equals(pil) ? AdministratorInformation.AuthorityType.OWNER : AdministratorInformation.AuthorityType.ADMINISTRATOR));
     }
 
     @Override
     public void init() {
         super.init();
+
+        getParentScreen().selectPlayList.getPlayers().stream().filter(n -> !n.equals(getMinecraft().player.getGameProfile().getId())).forEach(n -> {
+            SimplePlayerData data = new SimplePlayerData(IKSGClientUtil.getPlayerNameByUUID(n).equals(IKSGPlayerUtil.getFakePlayerName()) ? n.toString() : IKSGClientUtil.getPlayerNameByUUID(n), n);
+            selectedAdminPlayer.add(new AdminInfoData(data, getParentScreen().selectPlayList.getAdministrators().contains(n) ? AdministratorInformation.AuthorityType.ADMINISTRATOR : AdministratorInformation.AuthorityType.READ_ONLY));
+        });
+        selectedAdminPlayer.clear();
+        SimpleMusicPlayList playList = getParentScreen().selectPlayList;
+        playList.getBaned().forEach(n -> {
+            SimplePlayerData data = new SimplePlayerData(IKSGClientUtil.getPlayerNameByUUID(n).equals(IKSGPlayerUtil.getFakePlayerName()) ? n.toString() : IKSGClientUtil.getPlayerNameByUUID(n), n);
+            selectedAdminPlayer.add(new AdminInfoData(data, AdministratorInformation.AuthorityType.BAN));
+        });
+        playList.getAdministrators().forEach(n -> {
+            SimplePlayerData data = new SimplePlayerData(IKSGClientUtil.getPlayerNameByUUID(n).equals(IKSGPlayerUtil.getFakePlayerName()) ? n.toString() : IKSGClientUtil.getPlayerNameByUUID(n), n);
+            selectedAdminPlayer.add(new AdminInfoData(data, playList.getOwner().equals(n) ? AdministratorInformation.AuthorityType.OWNER : AdministratorInformation.AuthorityType.ADMINISTRATOR));
+        });
+        playList.getPlayers().forEach(n -> {
+            if (selectedAdminPlayer.stream().anyMatch(m -> m.playerInfo().id().equals(n)))
+                return;
+            SimplePlayerData data = new SimplePlayerData(IKSGClientUtil.getPlayerNameByUUID(n).equals(IKSGPlayerUtil.getFakePlayerName()) ? n.toString() : IKSGClientUtil.getPlayerNameByUUID(n), n);
+            selectedAdminPlayer.add(new AdminInfoData(data, AdministratorInformation.AuthorityType.READ_ONLY));
+        });
 
         playersFixedButtonsList = this.addRenderableWidget(new PlayersFixedButtonsList(x + 4, y + 74, 191, 44, 4, new TextComponent("Players"), playerInfos, n -> {
 
@@ -47,11 +68,13 @@ public class PlaylistDetailsMonitor extends DetailsEditBaseMonitor {
             selectedAdminPlayer.add(new AdminInfoData(n.item(), AdministratorInformation.AuthorityType.ADMINISTRATOR));
         }));
         adminPlayersFixedButtonsList = this.addRenderableWidget(new AdminPlayersFixedButtonsList(x + 102, y + 73, 93, 27, 3, new TextComponent("Admin Players"), selectedAdminPlayer, n -> new TextComponent(n.playerInfo().name()), n -> {
-         /*  if (n.item().type() == AdministratorInformation.AuthorityType.ADMINISTRATOR) {
+            if (n.item().type() == AdministratorInformation.AuthorityType.READ_ONLY) {
+                selectedAdminPlayer.set(n.itemNum(), new AdminInfoData(n.item().playerInfo(), AdministratorInformation.AuthorityType.ADMINISTRATOR));
+            } else if (n.item().type() == AdministratorInformation.AuthorityType.ADMINISTRATOR) {
                 selectedAdminPlayer.set(n.itemNum(), new AdminInfoData(n.item().playerInfo(), AdministratorInformation.AuthorityType.BAN));
-            } else {
+            } else if (n.item().type() == AdministratorInformation.AuthorityType.BAN) {
                 selectedAdminPlayer.remove(n.itemNum());
-            }*/
+            }
         }));
     }
 

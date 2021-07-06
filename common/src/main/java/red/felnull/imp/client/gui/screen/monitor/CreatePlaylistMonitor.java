@@ -1,7 +1,6 @@
 package red.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import red.felnull.imp.blockentity.MusicSharingDeviceBlockEntity;
@@ -76,7 +75,7 @@ public class CreatePlaylistMonitor extends CreateBaseMonitor {
     }
 
     private boolean canAuthoritySetting() {
-        return !playerInfos.isEmpty();
+        return !playerInfos.isEmpty() || !selectedAdminPlayer.isEmpty();
     }
 
     @Override

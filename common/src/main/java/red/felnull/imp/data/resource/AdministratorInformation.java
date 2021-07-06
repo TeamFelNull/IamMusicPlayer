@@ -43,24 +43,26 @@ public class AdministratorInformation implements ITAGSerializable {
     }
 
     public static enum AuthorityType {
-        OWNER("owner", true, true, true, true),
-        ADMINISTRATOR("administrator", false, true, true, true),
-        NORMAL_USER("normal_user", false, true, false, true),
-        READ_ONLY("read_only", false, true, false, false),
-        BAN("ban", false, false, false, false);
+        OWNER("owner", true, true, true, true, false),
+        ADMINISTRATOR("administrator", false, true, true, true, false),
+        NORMAL_USER("normal_user", false, true, false, true, false),
+        READ_ONLY("read_only", false, true, false, false, false),
+        BAN("ban", false, false, false, false, true);
 
         private final String name;
         private final boolean owner;
         private final boolean read;
         private final boolean save;
         private final boolean add;
+        private final boolean ban;
 
-        private AuthorityType(String name, boolean owner, boolean read, boolean save, boolean add) {
+        private AuthorityType(String name, boolean owner, boolean read, boolean save, boolean add, boolean ban) {
             this.name = name;
             this.owner = owner;
             this.read = read;
             this.save = save;
             this.add = add;
+            this.ban = ban;
         }
 
         public String getNmae() {
@@ -77,6 +79,10 @@ public class AdministratorInformation implements ITAGSerializable {
 
         public boolean canSave() {
             return save;
+        }
+
+        public boolean isBan() {
+            return ban;
         }
 
         public boolean isOwner() {
