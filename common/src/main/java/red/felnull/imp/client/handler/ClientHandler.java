@@ -19,6 +19,7 @@ public class ClientHandler {
 
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/cassette_tape_base"));
         e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_core"));
+        e.registSprite(new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_roll"));
     }
 
     public static void onSimpleMessage(SimpleMessageEvent.Client e) {
