@@ -7,6 +7,8 @@ import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 public class IMPItemRenderers {
     public static void init() {
         IKSGClientUtil.registerItemRenderer(IMPBlocks.MUSIC_SHARING_DEVICE, new MusicSharingDeviceItemRenderer());
-        IKSGClientUtil.registerItemRenderer(IMPItems.CASSETTE_TAPE, new CassetteTapeItemRenderer());
+        CassetteTapeItemRenderer cr = new CassetteTapeItemRenderer();
+        IKSGClientUtil.registerItemRenderer(IMPItems.CASSETTE_TAPE, cr);
+        IKSGClientUtil.registerItemRenderer(IMPItems.CASSETTE_TAPE_GLASS, cr);
     }
 }

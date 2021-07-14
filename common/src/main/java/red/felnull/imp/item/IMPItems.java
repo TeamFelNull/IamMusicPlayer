@@ -10,7 +10,8 @@ public class IMPItems {
     public static final Item TEST_SOUND = register("test_sound", new TestSoundItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
     public static final Item MAGNETIC_TAPE = register("magnetic_tape");
 
-    public static final Item CASSETTE_TAPE = register("cassette_tape", new CassetteTapeItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
+    public static final Item CASSETTE_TAPE = register("cassette_tape", new CassetteTapeItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB), CassetteTapeItem.BaseType.NORMAL));
+    public static final Item CASSETTE_TAPE_GLASS = register("cassette_tape_glass", new CassetteTapeItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB), CassetteTapeItem.BaseType.GLASS));
 
     public static final Item PARABOLIC_ANTENNA = register("parabolic_antenna", new ParabolicAntennaItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB), 1f));
     public static final Item KAMESUTA_ANTENNA = register("kamesuta_antenna", new ParabolicAntennaItem(new Item.Properties(), 3f));

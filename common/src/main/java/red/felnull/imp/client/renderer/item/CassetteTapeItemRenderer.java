@@ -10,11 +10,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.item.CassetteTapeItem;
 import red.felnull.otyacraftengine.client.renderer.item.ICustomBEWLRenderer;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
 public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
-    private static final ResourceLocation BASE_NOMAL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_nomal");
+    private static final ResourceLocation BASE_NORMAL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_nomal");
     private static final ResourceLocation BASE_GLASS_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_glass");
     private static final ResourceLocation TAPE_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape");
     private static final ResourceLocation TAPE_CONECTER = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_conecter");
@@ -52,9 +53,15 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
     }
 
     private static void renderBase(PoseStack poseStack, VertexConsumer ivb, ItemStack stack, int i, int i1) {
-        BakedModel bakedModel = IKSGRenderUtil.getBakedModel(BASE_GLASS_MODEL);
+        CassetteTapeItem.BaseType type = stack.getItem() instanceof CassetteTapeItem ? ((CassetteTapeItem) stack.getItem()).getType() : CassetteTapeItem.BaseType.NORMAL;
+        ResourceLocation location = null;
+        if (type == CassetteTapeItem.BaseType.NORMAL) {
+            location = BASE_NORMAL_MODEL;
+        } else if (type == CassetteTapeItem.BaseType.GLASS) {
+            location = BASE_GLASS_MODEL;
+        }
+        BakedModel bakedModel = IKSGRenderUtil.getBakedModel(location);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, bakedModel, i, i1);
-
     }
 
 
