@@ -25,6 +25,7 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
     private static final ResourceLocation TAPE_CORE_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_core");
     private static final ResourceLocation TAPE_CORE_AROUND_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_core_around");
     private static final ResourceLocation TAPE_ROLL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_roll");
+    private static final ResourceLocation LABEL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/label");
 
     @Override
     public void renderByItem(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
@@ -53,15 +54,23 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
         renderTapeConecter(poseStack, 22 - 46 * par, ivb, 0.975d, 0.25d, 0.8d, i, i1);
         renderTapeConecter(poseStack, 22 - 46 * par, ivb, 9d, 0.25d, 0.8d, i, i1);
 
-        renderMusicInfo(poseStack, multiBufferSource, itemStack, i, i1);
+        renderMusicInfo(poseStack, ivb, multiBufferSource, itemStack, i, i1);
     }
 
-    private static void renderMusicInfo(PoseStack poseStack, MultiBufferSource multiBufferSource, ItemStack stack, int i, int i1) {
+    private static void renderMusicInfo(PoseStack poseStack, VertexConsumer ivb, MultiBufferSource multiBufferSource, ItemStack stack, int i, int i1) {
+        BakedModel labelModel = IKSGRenderUtil.getBakedModel(LABEL_MODEL);
+        poseStack.pushPose();
+        IKSGRenderUtil.poseTrans16(poseStack, 3d, 1d, 4d);
+        IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, labelModel, i, i1);
+
         PlayImageRenderer renderer = PlayImageRenderer.getInstance();
-        ImageInfo image = new ImageInfo(ImageInfo.ImageType.URL, "https://cdn.discordapp.com/attachments/358878159615164416/850625064130969630/microbroken.gif",1f,1);
+        ImageInfo image = new ImageInfo(ImageInfo.ImageType.STRING, "1");
+        float size = (1f / 16f) * 1.025f;
+        float x = 2.8f;
+        float y = 0.55f;
+        renderer.renderSprite(image, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, (1f / 16f) * 0.025f + Mth.EPSILON, -90, 0, 180, size, i, i1);
 
-        renderer.renderSprite(image, poseStack, multiBufferSource, 0, 0, 0, 0, 0, 0, 1, i, i1);
-
+        poseStack.popPose();
     }
 
     private static void renderBase(PoseStack poseStack, VertexConsumer ivb, ItemStack stack, int i, int i1) {

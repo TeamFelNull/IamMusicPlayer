@@ -86,40 +86,41 @@ public class PlayImageRenderer {
         IKSGRenderUtil.drawTexture(plskin, poseStack, x, y, size * 5, size, size, size, size * 8, size * 8);
     }
 
-    public void renderSprite(ImageInfo location, PoseStack poseStack, MultiBufferSource multiBufferSource, int x, int y, int z, float pitch, float yaw, float roll, float size, int combinedLightIn, int combinedOverlayIn) {
+    public void renderSprite(ImageInfo location, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float pitch, float yaw, float roll, float size, int combinedLightIn, int combinedOverlayIn) {
         renderSprite(location, poseStack, multiBufferSource, x, y, z, pitch, yaw, roll, size, true, combinedLightIn, combinedOverlayIn);
     }
 
     public void renderSprite(ImageInfo location, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float pitch, float yaw, float roll, float size, boolean cash, int combinedLightIn, int combinedOverlayIn) {
+        poseStack.pushPose();
+        IKSGRenderUtil.poseRotateAll(poseStack, pitch, yaw, roll);
         switch (location.getImageType()) {
-            case URL -> renderURLImageSprite(location.getIdentifier(), poseStack, multiBufferSource, x, y, z, location.getWidthScale(), location.getHeightScale(), pitch, yaw, roll, size, cash, combinedLightIn, combinedOverlayIn);
-            case STRING -> renderStringImageSprite(location.getIdentifier(), poseStack, multiBufferSource, x, y, z, pitch, yaw, roll, size, combinedLightIn, combinedOverlayIn);
-            case PLAYER_FACE -> renderPlayerFaceImageSprite(location.getIdentifier(), poseStack, multiBufferSource, x, y, z, pitch, yaw, roll, size, combinedLightIn, combinedOverlayIn);
-            case YOUTUBE_THUMBNAIL -> renderURLImageSprite(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, multiBufferSource, x, y, z, location.getWidthScale(), location.getHeightScale(), pitch, yaw, roll, size, cash, combinedLightIn, combinedOverlayIn);
+            case URL -> renderURLImageSprite(location.getIdentifier(), poseStack, multiBufferSource, x, y, z, location.getWidthScale(), location.getHeightScale(), size, cash, combinedLightIn, combinedOverlayIn);
+            case STRING -> renderStringImageSprite(location.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, combinedLightIn, combinedOverlayIn);
+            case PLAYER_FACE -> renderPlayerFaceImageSprite(location.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, combinedLightIn, combinedOverlayIn);
+            case YOUTUBE_THUMBNAIL -> renderURLImageSprite(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, multiBufferSource, x, y, z, location.getWidthScale(), location.getHeightScale(), size, cash, combinedLightIn, combinedOverlayIn);
         }
+        poseStack.popPose();
     }
 
-    private void renderStringImageSprite(String name, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float pitch, float yaw, float roll, float size, int combinedLightIn, int combinedOverlayIn) {
+    private void renderStringImageSprite(String name, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int combinedLightIn, int combinedOverlayIn) {
         Random r = new Random(name.hashCode());
-        renderStringImageSprite(name, poseStack, multiBufferSource, x, y, z, pitch, yaw, roll, size, size, size, r.nextInt(0xFFFFFF), combinedLightIn, combinedOverlayIn);
+        renderStringImageSprite(name, poseStack, multiBufferSource, x, y, z, size, size, size, r.nextInt(0xFFFFFF), combinedLightIn, combinedOverlayIn);
     }
 
-    private void renderStringImageSprite(String str, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float pitch, float yaw, float roll, float width, float height, float size, int color, int combinedLightIn, int combinedOverlayIn) {
-        IKSGRenderUtil.renderColorTextureSprite(PLAY_IMAGE, poseStack, multiBufferSource, x + (size - width) / 2, y + (size - height) / 2, z, IKSGColorUtil.getRed(color), IKSGColorUtil.getGreen(color), IKSGColorUtil.getBlue(color), 1, pitch, yaw, roll, width, height, 0, 0, width, height, width, height, combinedLightIn, combinedOverlayIn);
+    private void renderStringImageSprite(String str, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float width, float height, float size, int color, int combinedLightIn, int combinedOverlayIn) {
+        IKSGRenderUtil.renderColorTextureSprite(PLAY_IMAGE, poseStack, multiBufferSource, x + (size - width) / 2, y + (size - height) / 2, z, IKSGColorUtil.getRed(color), IKSGColorUtil.getGreen(color), IKSGColorUtil.getBlue(color), 1, 0, 0, 0, width, height, 0, 0, width, height, width, height, combinedLightIn, combinedOverlayIn);
         Component text = new TextComponent(str).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         int txSize = Math.max(mc.font.width(text), mc.font.lineHeight);
         float brit = 70f;
         float sc = (size * brit) / txSize;
-        poseStack.pushPose();
-        IKSGRenderUtil.renderCenterTextSprite(poseStack, multiBufferSource, text, x + size / 2f, y + size / 2f, Mth.EPSILON, sc, 0, (float) mc.font.lineHeight / 2f);
-        poseStack.popPose();
+        IKSGRenderUtil.renderCenterTextSprite(poseStack, multiBufferSource, text, x + size / 2f, y + size / 2f, z + Mth.EPSILON, sc, 0, (float) mc.font.lineHeight / 2f);
     }
 
-    private void renderPlayerFaceImageSprite(String name, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float pitch, float yaw, float roll, float size, int combinedLightIn, int combinedOverlayIn) {
-        IKSGRenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, name, x, y, z, pitch, yaw, roll, size, combinedLightIn, combinedOverlayIn);
+    private void renderPlayerFaceImageSprite(String name, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int combinedLightIn, int combinedOverlayIn) {
+        IKSGRenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, name, x, y, z, 0, 0, 0, size, combinedLightIn, combinedOverlayIn);
     }
 
-    private void renderURLImageSprite(String url, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, float pitch, float yaw, float roll, float size, boolean cash, int combinedLightIn, int combinedOverlayIn) {
+    private void renderURLImageSprite(String url, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, float size, boolean cash, int combinedLightIn, int combinedOverlayIn) {
 
         if (w > h) {
             h *= 1f / w;
@@ -135,10 +136,9 @@ public class PlayImageRenderer {
 
         ResourceLocation location = IKSGTextureUtil.getURLTextureAsync(url, cash, PLAY_IMAGE);
         if (location == PLAY_IMAGE) {
-            renderStringImageSprite(I18n.get("Loading"), poseStack, multiBufferSource, x, y, z, pitch, yaw, roll, width, height, size, 0x114514, combinedLightIn, combinedOverlayIn);
+            renderStringImageSprite(I18n.get("Loading"), poseStack, multiBufferSource, x, y, z, width, height, size, 0x114514, combinedLightIn, combinedOverlayIn);
         } else {
-            IKSGRenderUtil.renderTextureSprite(location, poseStack, multiBufferSource,  x + (size - width) / 2, y + (size - height) / 2, z, pitch, yaw, roll,  width, height, 0, 0, width, height,  width, height, combinedLightIn, combinedOverlayIn);
+            IKSGRenderUtil.renderTextureSprite(location, poseStack, multiBufferSource, x + (size - width) / 2, y + (size - height) / 2, z, 0, 0, 0, width, height, 0, 0, width, height, width, height, combinedLightIn, combinedOverlayIn);
         }
-
     }
 }

@@ -6,6 +6,8 @@
   "item.iammusicplayer.katyou_antenna": "Katyou Antenna",
   "item.iammusicplayer.ikisugi_antenna": "Ikisugi Antenna",
   "item.iammusicplayer.fcoh_antenna": "F.C.O.H Antenna",
+  "item.iammusicplayer.cassette_tape": "Cassette Tape",
+  "item.iammusicplayer.cassette_tape_glass": "Glass Cassette Tape",
   "_comment.b": "Block",
   "block.iammusicplayer.music_sharing_device": "Music Sharing Device",
   "_comment.m": "Music",
