@@ -138,7 +138,7 @@ public class MusicSharingDeviceScreen extends IMPEquipmentBaseScreen<MusicSharin
             getCurrentScreen().render(poseStack, i, j, f);
         } else {
             if (isPowerOn())
-                IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_BACKGROUND, poseStack, getMonitorLeftPos(), getMonitorTopPos(), 0, 0, getMonitorWidth(), getMonitorHeight(), getMonitorWidth(), getMonitorHeight());
+                IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_BACKGROUND, poseStack, getMonitorLeftPos(), getMonitorTopPos(), 0, 0, getMonitorWidth(), getMonitorHeight(), getMonitorWidth(), getMonitorHeight());
         }
     }
 

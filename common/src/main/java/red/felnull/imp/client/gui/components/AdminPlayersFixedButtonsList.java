@@ -25,7 +25,7 @@ public class AdminPlayersFixedButtonsList extends FixedButtonsList<AdminInfoData
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
         drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + 3 + getOneButtonHeight() - 2, y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);
 
-        IKSGRenderUtil.drawPlayerFase(poseStack, item.playerInfo().name(), x + 1, y + 1, getOneButtonHeight() - 2);
+        IKSGRenderUtil.drawPlayerFace(poseStack, item.playerInfo().name(), x + 1, y + 1, getOneButtonHeight() - 2);
 
         ChatFormatting chatColor = ChatFormatting.GREEN;
         int zure = 0;
@@ -41,7 +41,7 @@ public class AdminPlayersFixedButtonsList extends FixedButtonsList<AdminInfoData
                 chatColor = ChatFormatting.GRAY;
             }
         }
-        IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 1, y + 1, 0, 62 + zure, 7, 7);
+        IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 1, y + 1, 0, 62 + zure, 7, 7);
         MutableComponent component = new TranslatableComponent("imp.msdAuthority." + item.type().getNmae()).withStyle(IMPFonts.FLOPDE_SIGN_FONT).withStyle(chatColor);
         int cw = getFont().width(component);
         drawPrettyString(poseStack, component, x + getOneButtonWidth() - 3 - cw, y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);

@@ -104,7 +104,7 @@ public class PlayListMonitor extends MSDBaseMonitor {
             boolean mflg = getParentScreen().selectPlayList.getPlayerCont() > 1;
 
             MutableComponent ccomp = new TextComponent("+" + getParentScreen().selectPlayList.getPlayerCont()).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
-            IKSGRenderUtil.drawPlayerFase(poseStack, getParentScreen().selectPlayList.getOwner(), x + 165 - (mflg ? getFont().width(ccomp) : 0), y + 1, 10);
+            IKSGRenderUtil.drawPlayerFace(poseStack, getParentScreen().selectPlayList.getOwner(), x + 165 - (mflg ? getFont().width(ccomp) : 0), y + 1, 10);
             if (mflg) {
                 drawPrettyString(poseStack, ccomp, x + 176 - getFont().width(ccomp), y + 2, 0);
             }

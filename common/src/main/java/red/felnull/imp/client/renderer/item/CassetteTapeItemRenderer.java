@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import red.felnull.imp.IamMusicPlayer;
+import red.felnull.imp.client.renderer.PlayImageRenderer;
+import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.imp.item.CassetteTapeItem;
 import red.felnull.otyacraftengine.client.renderer.item.ICustomBEWLRenderer;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
@@ -35,7 +37,7 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
 
         BakedModel glassModel = IKSGRenderUtil.getBakedModel(GLASS_MODEL);
         poseStack.pushPose();
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 3, 0, 2.25d);
+        IKSGRenderUtil.poseTrans16(poseStack, 3, 0, 2.25d);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, glassModel, i, i1);
         poseStack.popPose();
 
@@ -44,12 +46,22 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
 
         BakedModel tapeModel = IKSGRenderUtil.getBakedModel(TAPE_MODEL);
         poseStack.pushPose();
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 0.975d, 0.25d, 0.275d);
+        IKSGRenderUtil.poseTrans16(poseStack, 0.975d, 0.25d, 0.275d);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, tapeModel, i, i1);
         poseStack.popPose();
 
         renderTapeConecter(poseStack, 22 - 46 * par, ivb, 0.975d, 0.25d, 0.8d, i, i1);
         renderTapeConecter(poseStack, 22 - 46 * par, ivb, 9d, 0.25d, 0.8d, i, i1);
+
+        renderMusicInfo(poseStack, multiBufferSource, itemStack, i, i1);
+    }
+
+    private static void renderMusicInfo(PoseStack poseStack, MultiBufferSource multiBufferSource, ItemStack stack, int i, int i1) {
+        PlayImageRenderer renderer = PlayImageRenderer.getInstance();
+        ImageInfo image = new ImageInfo(ImageInfo.ImageType.URL, "https://cdn.discordapp.com/attachments/358878159615164416/850625064130969630/microbroken.gif",1f,1);
+
+        renderer.renderSprite(image, poseStack, multiBufferSource, 0, 0, 0, 0, 0, 0, 1, i, i1);
+
     }
 
     private static void renderBase(PoseStack poseStack, VertexConsumer ivb, ItemStack stack, int i, int i1) {
@@ -68,11 +80,11 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
     private static void renderTapeConecter(PoseStack poseStack, float angle, VertexConsumer ivb, double x, double y, double z, int i, int i1) {
         BakedModel tapeConecterModel = IKSGRenderUtil.getBakedModel(TAPE_CONECTER);
         poseStack.pushPose();
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, x, y, z);
+        IKSGRenderUtil.poseTrans16(poseStack, x, y, z);
         float f = 0.025f / 2f;
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, f, f, f);
-        IKSGRenderUtil.matrixRotateDegreefY(poseStack, angle);
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, -f, -f, -f);
+        IKSGRenderUtil.poseTrans16(poseStack, f, f, f);
+        IKSGRenderUtil.poseRotateY(poseStack, angle);
+        IKSGRenderUtil.poseTrans16(poseStack, -f, -f, -f);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, tapeConecterModel, i, i1);
         poseStack.popPose();
     }
@@ -84,22 +96,22 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
         BakedModel tapeRollModel = IKSGRenderUtil.getBakedModel(TAPE_ROLL_MODEL);
 
         poseStack.pushPose();
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, x, y, z);
+        IKSGRenderUtil.poseTrans16(poseStack, x, y, z);
         poseStack.scale(1.25f, 1.05f, 1.25f);
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 0.4, 0, 0.4);
-        IKSGRenderUtil.matrixRotateDegreefY(poseStack, par * 360f);
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, -0.4, 0, -0.4);
+        IKSGRenderUtil.poseTrans16(poseStack, 0.4, 0, 0.4);
+        IKSGRenderUtil.poseRotateY(poseStack, par * 360f);
+        IKSGRenderUtil.poseTrans16(poseStack, -0.4, 0, -0.4);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, tapeCoreModel, i, i1);
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 0, 0.25, 0);
+        IKSGRenderUtil.poseTrans16(poseStack, 0, 0.25, 0);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, tapeCoreAroundModel, i, i1);
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 0, 0.125f / 2f, 0);
+        IKSGRenderUtil.poseTrans16(poseStack, 0, 0.125f / 2f, 0);
         float rollPar = roll + 0.5f;
         for (int j = 1; j <= Math.ceil(rollPar); j++) {
             poseStack.pushPose();
-            IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 0.4, 0, 0.4);
+            IKSGRenderUtil.poseTrans16(poseStack, 0.4, 0, 0.4);
             float sc = Math.min(rollPar, j);
             poseStack.scale(sc, 1, sc);
-            IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, -0.4, 0, -0.4);
+            IKSGRenderUtil.poseTrans16(poseStack, -0.4, 0, -0.4);
             IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, tapeRollModel, i, i1);
             poseStack.popPose();
         }

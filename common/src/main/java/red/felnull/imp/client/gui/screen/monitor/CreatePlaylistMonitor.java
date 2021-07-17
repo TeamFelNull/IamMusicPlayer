@@ -82,7 +82,7 @@ public class CreatePlaylistMonitor extends CreateBaseMonitor {
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
         if (canAuthoritySetting()) {
-            IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
+            IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
             drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.playerAuthority"), x + 4, y + 64, 0);
         }
     }

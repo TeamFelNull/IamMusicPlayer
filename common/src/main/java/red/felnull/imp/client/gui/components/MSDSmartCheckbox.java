@@ -37,7 +37,7 @@ public class MSDSmartCheckbox extends AbstractButton implements IMSDSmartRender 
             ty += 15;
 
 
-        IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x, y, tx, ty, 15, 15);
+        IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_WIDGETS, poseStack, x, y, tx, ty, 15, 15);
 
         drawPrettyString(poseStack, (MutableComponent) this.getMessage(), this.x + 18, this.y + (this.height - 8) / 2, 0);
     }

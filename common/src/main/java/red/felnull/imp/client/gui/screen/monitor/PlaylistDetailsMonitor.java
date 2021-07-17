@@ -117,7 +117,7 @@ public class PlaylistDetailsMonitor extends DetailsEditBaseMonitor {
         if (!canChangeable()) {
             drawPrettyString(poseStack, new TextComponent(getParentScreen().selectPlayList.getName()), x + 46, y + 24, 0);
         } else {
-            IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
+            IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 90, y + 83, 7, 62, 10, 7);
             drawPrettyString(poseStack, new TranslatableComponent("imp.msdText.playerAuthority"), x + 4, y + 64, 0);
         }
     }

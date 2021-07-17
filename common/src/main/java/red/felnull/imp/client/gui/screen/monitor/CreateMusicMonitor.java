@@ -295,7 +295,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
         @Override
         public void renderButton(PoseStack poseStack, int i, int j, float f) {
             int k = this.getYImage(this.isHovered());
-            IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, this.x, this.y, 18 + (revers ? this.width : 0), 20 + (this.height * k), this.width, this.height);
+            IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_WIDGETS, poseStack, this.x, this.y, 18 + (revers ? this.width : 0), 20 + (this.height * k), this.width, this.height);
             this.renderBg(poseStack, getMinecraft(), i, j);
         }
     }

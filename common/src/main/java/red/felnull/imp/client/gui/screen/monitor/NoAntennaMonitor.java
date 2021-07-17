@@ -34,7 +34,7 @@ public class NoAntennaMonitor extends MSDBaseMonitor {
         this.itemRenderer.blitOffset = 0.0F;
         poseStack.pushPose();
         poseStack.translate(0, 0, 500);
-        IKSGRenderUtil.drawBindTextuer(MSD_WIDGETS, poseStack, x + width / 2 - 10, y + 63, 28, 0, 20, 20, 256, 256);
+        IKSGRenderUtil.drawTexture(MSD_WIDGETS, poseStack, x + width / 2 - 10, y + 63, 28, 0, 20, 20, 256, 256);
         poseStack.popPose();
     }
 }

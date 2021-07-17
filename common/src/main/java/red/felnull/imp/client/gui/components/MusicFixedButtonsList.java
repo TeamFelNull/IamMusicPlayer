@@ -32,7 +32,7 @@ public class MusicFixedButtonsList extends FixedButtonsList<Music> implements IM
         if (IKSGPlayerUtil.getFakePlayerName().equals(plName))
             plName = item.getOwner().toString();
 
-        IKSGRenderUtil.drawPlayerFase(poseStack, item.getOwner(), x + getOneButtonHeight() + 1, (int) (y + getOneButtonHeight() / 2f) + 1);
+        IKSGRenderUtil.drawPlayerFace(poseStack, item.getOwner(), x + getOneButtonHeight() + 1, (int) (y + getOneButtonHeight() / 2f) + 1);
         drawPrettyString(poseStack, new TextComponent(plName), x + getOneButtonHeight() + 10, (int) (y + getOneButtonHeight() / 2f) + 1, 0);
     }
 }

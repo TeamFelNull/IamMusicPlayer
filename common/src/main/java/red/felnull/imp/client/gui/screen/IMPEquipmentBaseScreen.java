@@ -43,7 +43,7 @@ public abstract class IMPEquipmentBaseScreen<T extends IkisugiContainerMenu> ext
 
         @Override
         public void renderButton(PoseStack poseStack, int i, int j, float f) {
-            IKSGRenderUtil.drawBindTextuer(EQUIPMENT_WIDGETS_TEXTURES, poseStack, this.x, this.y, isPowerOn() ? 20 : 0, this.isHovered() ? 20 : 0, 20, 20, 256, 256);
+            IKSGRenderUtil.drawTexture(EQUIPMENT_WIDGETS_TEXTURES, poseStack, this.x, this.y, isPowerOn() ? 20 : 0, this.isHovered() ? 20 : 0, 20, 20, 256, 256);
         }
     }
 }

@@ -124,7 +124,7 @@ public abstract class ImageNameMonitor extends MSDBaseMonitor {
             poseStack.pushPose();
             component = component.withStyle(IMPFonts.FLOPDE_SIGN_FONT);
             float scale = Math.min(1f, 150f / getFont().width(component));
-            IKSGRenderUtil.matrixScalf(poseStack, scale);
+            IKSGRenderUtil.poseScaleAll(poseStack, scale);
             drawPrettyString(poseStack, component, (x + 44f) / scale, (y + 43f) / scale, 0);
             poseStack.popPose();
         }

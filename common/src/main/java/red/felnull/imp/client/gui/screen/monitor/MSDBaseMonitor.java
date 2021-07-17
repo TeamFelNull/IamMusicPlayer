@@ -54,7 +54,7 @@ public class MSDBaseMonitor extends Monitor<MusicSharingDeviceScreen> implements
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         if (renderBackGround) {
-            IKSGRenderUtil.drawBindTextuer(MSD_BACKGROUND, poseStack, x, y, 0, 0, width, height, width, height);
+            IKSGRenderUtil.drawTexture(MSD_BACKGROUND, poseStack, x, y, 0, 0, width, height, width, height);
         }
 
         if (renderHeader) {

@@ -59,7 +59,7 @@ public class SimplePlayMusicWidget extends AbstractWidget implements IMSDSmartRe
         fillGray(poseStack, x + 15, y, 80, 15);
         MusicEngine engine = MusicEngine.getInstance();
 
-        IKSGRenderUtil.drawBindTextuer(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 3, y + 2, 45, 30 + (isPlaying() ? 11 : 0), 9, 11);
+        IKSGRenderUtil.drawTexture(MSDBaseMonitor.MSD_WIDGETS, poseStack, x + 3, y + 2, 45, 30 + (isPlaying() ? 11 : 0), 9, 11);
 
         long ct = 0;
         long at = playMusic != null ? playMusic.getDuration() : 0;

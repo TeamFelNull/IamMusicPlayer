@@ -22,6 +22,6 @@ public class PlayersFixedButtonsList extends FixedButtonsList<SimplePlayerData> 
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
         drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + 3 + getOneButtonHeight() - 2, y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);
 
-        IKSGRenderUtil.drawPlayerFase(poseStack, item.name(), x + 1, y + 1, getOneButtonHeight() - 2);
+        IKSGRenderUtil.drawPlayerFace(poseStack, item.name(), x + 1, y + 1, getOneButtonHeight() - 2);
     }
 }

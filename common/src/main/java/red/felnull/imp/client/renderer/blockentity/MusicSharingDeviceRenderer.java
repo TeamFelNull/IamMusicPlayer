@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,7 +37,7 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
     public void render(MusicSharingDeviceBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         BlockState state = blockEntity.getBlockState();
         poseStack.pushPose();
-        IKSGRenderUtil.matrixRotateDirection(poseStack, state.getValue(BlockStateProperties.HORIZONTAL_FACING).getClockWise());
+        IKSGRenderUtil.poseRotateDirection(poseStack, state.getValue(BlockStateProperties.HORIZONTAL_FACING), 1);
         renderMSD(poseStack, multiBufferSource, i, j, partialTicks, state.getValue(IMPEquipmentBaseBlock.ON), blockEntity.getAntenna(), blockEntity.getAntennaProgress());
         poseStack.popPose();
     }
@@ -57,7 +58,7 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelMousepad, combinedLight, combinedOverlay);
 
         poseStack.pushPose();
-        IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 2f, 0.1f, 2f);
+        IKSGRenderUtil.poseTrans16(poseStack, 2f, 0.1f, 2f);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, modelMouse, combinedLight, combinedOverlay);
         poseStack.popPose();
 
@@ -71,20 +72,20 @@ public class MusicSharingDeviceRenderer extends IkisugiBlockEntityRenderer<Music
 
             float yaw = (float) antennaProgress * 5f;
             float preYaw = (float) (antennaProgress + 1) * 5f;
-            float allYaw = IKSGRenderUtil.partialTicksMisalignment(yaw, preYaw, partialTicks);
+            float allYaw = Mth.lerp(partialTicks, yaw, preYaw);
 
             float p1 = (float) (antennaProgress % 40) * 5 - 50;
             float p2 = (float) ((antennaProgress + 1) % 40) * 5 - 50;
 
             float pitch = p1 > 50 ? 50 - (p1 - 50) : p1;
             float prePitch = p2 > 50 ? 50 - (p2 - 50) : p2;
-            float allPitch = IKSGRenderUtil.partialTicksMisalignment(pitch, prePitch, partialTicks);
+            float allPitch = Mth.lerp(partialTicks, pitch, prePitch);
 
             poseStack.pushPose();
-            IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, px, py, pz);
-            IKSGRenderUtil.matrixRotateDegreefY(poseStack, allYaw);
-            IKSGRenderUtil.matrixRotateDegreefZ(poseStack, allPitch);
-            IKSGRenderUtil.matrixTranslatef16Divisions(poseStack, 0f, -1.8f, 0);
+            IKSGRenderUtil.poseTrans16(poseStack, px, py, pz);
+            IKSGRenderUtil.poseRotateY(poseStack, allYaw);
+            IKSGRenderUtil.poseRotateZ(poseStack, allPitch);
+            IKSGRenderUtil.poseTrans16(poseStack, 0f, -1.8f, 0);
             mc.getItemRenderer().renderStatic(antenna, ItemTransforms.TransformType.GROUND, combinedLight, combinedOverlay, poseStack, multiBufferSource, 0);
             poseStack.popPose();
         }
