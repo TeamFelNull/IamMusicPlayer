@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +20,7 @@ import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
     private static final ResourceLocation BASE_NORMAL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_nomal");
     private static final ResourceLocation BASE_GLASS_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_glass");
+    private static final ResourceLocation BASE_GLASS_COLOR_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_glass_color");
     private static final ResourceLocation TAPE_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape");
     private static final ResourceLocation TAPE_CONECTER = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_conecter");
     private static final ResourceLocation GLASS_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/glass");
@@ -34,7 +36,7 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
 
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
-        renderBase(poseStack, ivb, itemStack, i, i1);
+        renderBase(poseStack, ivb, multiBufferSource, itemStack, i, i1);
 
         BakedModel glassModel = IKSGRenderUtil.getBakedModel(GLASS_MODEL);
         poseStack.pushPose();
@@ -62,27 +64,55 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
         poseStack.pushPose();
         IKSGRenderUtil.poseTrans16(poseStack, 3d, 1d, 4d);
         IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, labelModel, i, i1);
+        poseStack.translate(0, (1f / 16f) * 0.025f + Mth.EPSILON, 0);
 
         PlayImageRenderer renderer = PlayImageRenderer.getInstance();
-        ImageInfo image = new ImageInfo(ImageInfo.ImageType.STRING, "1");
-        float size = (1f / 16f) * 1.025f;
-        float x = 2.8f;
-        float y = 0.55f;
-        renderer.renderSprite(image, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, (1f / 16f) * 0.025f + Mth.EPSILON, -90, 0, 180, size, i, i1);
+        ImageInfo image1 = new ImageInfo(ImageInfo.ImageType.STRING, "1");
+        ImageInfo image2 = new ImageInfo(ImageInfo.ImageType.STRING, "2");
+        ImageInfo image3 = new ImageInfo(ImageInfo.ImageType.STRING, "3");
+
+        {
+            float size = (1f / 16f) * 1.025f;
+            float x = 2.8f;
+            float y = 0.55f;
+            renderer.renderSprite(image1, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, 0, -90, 0, 180, size, i, i1);
+        }
+        {
+            float size = (1f / 16f) * 0.4f;
+            float x = 2.175f;
+            float y = 1.175f;
+            renderer.renderSprite(image2, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, 0, -90, 0, 180, size, i, i1);
+        }
+        {
+            float size = (1f / 16f) * 0.4f;
+            float x = 2.175f;
+            float y = 0.55f;
+            renderer.renderSprite(image3, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, 0, -90, 0, 180, size, i, i1);
+        }
+        poseStack.pushPose();
+        IKSGRenderUtil.poseRotateX(poseStack, 90f);
+        IKSGRenderUtil.poseRotateY(poseStack, 180);
+        IKSGRenderUtil.renderTextSprite(poseStack, multiBufferSource, new TextComponent("TEST1"), -(1f / 16f) * 3.85f, (1f / 16f) * 0.18f, 0, 0.15f, 0, 0);
+        IKSGRenderUtil.renderTextSprite(poseStack, multiBufferSource, new TextComponent("TEST2"), -(1f / 16f) * 2.05f, (1f / 16f) * 1.2f, 0, 0.18f, 0, 0);
+        IKSGRenderUtil.renderTextSprite(poseStack, multiBufferSource, new TextComponent("TEST3"), -(1f / 16f) * 2.05f, (1f / 16f) * 0.575f, 0, 0.18f, 0, 0);
+        IKSGRenderUtil.renderTextSprite(poseStack, multiBufferSource, new TextComponent("+19..."), -(1f / 16f) * 0.95f, (1f / 16f) * 0.2f, 0, 0.15f, 0, 0);
+        poseStack.popPose();
 
         poseStack.popPose();
     }
 
-    private static void renderBase(PoseStack poseStack, VertexConsumer ivb, ItemStack stack, int i, int i1) {
-        CassetteTapeItem.BaseType type = stack.getItem() instanceof CassetteTapeItem ? ((CassetteTapeItem) stack.getItem()).getType() : CassetteTapeItem.BaseType.NORMAL;
-        ResourceLocation location = null;
-        if (type == CassetteTapeItem.BaseType.NORMAL) {
-            location = BASE_NORMAL_MODEL;
-        } else if (type == CassetteTapeItem.BaseType.GLASS) {
-            location = BASE_GLASS_MODEL;
+    private static void renderBase(PoseStack poseStack, VertexConsumer ivb, MultiBufferSource multiBufferSource, ItemStack stack, int i, int i1) {
+        if (stack.getItem() instanceof CassetteTapeItem) {
+            CassetteTapeItem.BaseType type = ((CassetteTapeItem) stack.getItem()).getType();
+            ResourceLocation location = BASE_NORMAL_MODEL;
+            int color = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? ((CassetteTapeItem) stack.getItem()).getColor(stack) : 0x1a1a1a;
+            if (type == CassetteTapeItem.BaseType.GLASS) {
+                location = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? BASE_GLASS_COLOR_MODEL : BASE_GLASS_MODEL;
+                ivb = multiBufferSource.getBuffer(Sheets.translucentCullBlockSheet());
+            }
+            BakedModel bakedModel = IKSGRenderUtil.getBakedModel(location);
+            IKSGRenderUtil.renderColorBakedModel(poseStack, ivb, null, bakedModel, i, i1, color);
         }
-        BakedModel bakedModel = IKSGRenderUtil.getBakedModel(location);
-        IKSGRenderUtil.renderBakedModel(poseStack, ivb, null, bakedModel, i, i1);
     }
 
 

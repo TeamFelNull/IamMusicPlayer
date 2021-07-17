@@ -1,8 +1,9 @@
 package red.felnull.imp.item;
 
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.DyeableLeatherItem;
+import red.felnull.otyacraftengine.item.IkisugiItem;
 
-public class CassetteTapeItem extends Item {
+public class CassetteTapeItem extends IkisugiItem implements DyeableLeatherItem {
     private final BaseType type;
 
     public CassetteTapeItem(Properties properties, BaseType type) {
