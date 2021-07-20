@@ -67,9 +67,9 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
         poseStack.translate(0, (1f / 16f) * 0.025f + Mth.EPSILON, 0);
 
         PlayImageRenderer renderer = PlayImageRenderer.getInstance();
-        ImageInfo image1 = new ImageInfo(ImageInfo.ImageType.STRING, "1");
-        ImageInfo image2 = new ImageInfo(ImageInfo.ImageType.STRING, "2");
-        ImageInfo image3 = new ImageInfo(ImageInfo.ImageType.STRING, "3");
+        ImageInfo image1 = new ImageInfo(ImageInfo.ImageType.URL, "https://i.imgur.com/5sBJtwI.gif");
+        ImageInfo image2 = new ImageInfo(ImageInfo.ImageType.URL, "https://i.imgur.com/IUFfaF4.gif");
+        ImageInfo image3 = new ImageInfo(ImageInfo.ImageType.URL, "https://i.imgur.com/c19lVFX.gif");
 
         {
             float size = (1f / 16f) * 1.025f;
