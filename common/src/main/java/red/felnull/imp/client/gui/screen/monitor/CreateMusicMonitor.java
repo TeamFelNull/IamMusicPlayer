@@ -314,7 +314,7 @@ public class CreateMusicMonitor extends CreateBaseMonitor {
             drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + 3 + (samune ? getOneButtonHeight() - 2 : 0), y + ((float) this.getOneButtonHeight() - 8f) / 2f, 0);
 
             if (samune) {
-                PlayImageRenderer.getInstance().render(item.image(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2, false);
+                PlayImageRenderer.getInstance().draw(item.image(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2, false);
             }
         }
     }

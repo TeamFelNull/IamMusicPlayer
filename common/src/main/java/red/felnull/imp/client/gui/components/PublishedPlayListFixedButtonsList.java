@@ -25,7 +25,7 @@ public class PublishedPlayListFixedButtonsList extends FixedButtonsList<SimpleMu
     protected void renderOneButton(PoseStack poseStack, SimpleMusicPlayList item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
         int k = this.getYImage(this.isHovered(bnum));
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
-        PlayImageRenderer.getInstance().render(item.getImage(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
+        PlayImageRenderer.getInstance().draw(item.getImage(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         drawPrettyString(poseStack, (MutableComponent) getMessage(lnum), x + getOneButtonHeight() + 1, y + 1, 0);
 
         String plName = IKSGClientUtil.getPlayerNameByUUID(item.getOwner());

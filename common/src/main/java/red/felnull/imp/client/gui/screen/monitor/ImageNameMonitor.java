@@ -105,7 +105,7 @@ public abstract class ImageNameMonitor extends MSDBaseMonitor {
         fillYDarkGrayLine(poseStack, x + 41, y + 24, 37);
         fillLightGray(poseStack, x + 4, y + 24, 37, 37);
 
-        PlayImageRenderer.getInstance().render(imageInfo, poseStack, x + 4, y + 24, 37, false);
+        PlayImageRenderer.getInstance().draw(imageInfo, poseStack, x + 4, y + 24, 37, false);
         if (canChangeImage) {
             MutableComponent component;
             if (loadState != ImageLoadState.NONE) {

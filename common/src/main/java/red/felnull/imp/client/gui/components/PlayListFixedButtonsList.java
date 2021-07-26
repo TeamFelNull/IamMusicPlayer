@@ -25,6 +25,6 @@ public class PlayListFixedButtonsList extends FixedButtonsList<SimpleMusicPlayLi
         if (selected.apply(item))
             k = 0;
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
-        PlayImageRenderer.getInstance().render(item.getImage(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
+        PlayImageRenderer.getInstance().draw(item.getImage(), poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
     }
 }

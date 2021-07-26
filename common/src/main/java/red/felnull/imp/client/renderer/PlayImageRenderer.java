@@ -27,20 +27,20 @@ public class PlayImageRenderer {
         return INSTANCE;
     }
 
-    public void render(ImageInfo location, PoseStack poseStack, int x, int y, int size) {
-        render(location, poseStack, x, y, size, true);
+    public void draw(ImageInfo location, PoseStack poseStack, int x, int y, int size) {
+        draw(location, poseStack, x, y, size, true);
     }
 
-    public void render(ImageInfo location, PoseStack poseStack, int x, int y, int size, boolean cash) {
+    public void draw(ImageInfo location, PoseStack poseStack, int x, int y, int size, boolean cash) {
         switch (location.getImageType()) {
-            case URL -> renderURLImage(location.getIdentifier(), poseStack, x, y, location.getWidthScale(), location.getHeightScale(), size, cash);
-            case STRING -> renderStringImage(location.getIdentifier(), poseStack, x, y, size);
-            case PLAYER_FACE -> renderPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
-            case YOUTUBE_THUMBNAIL -> renderURLImage(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, x, y, location.getWidthScale(), location.getHeightScale(), size, cash);
+            case URL -> drawURLImage(location.getIdentifier(), poseStack, x, y, location.getWidthScale(), location.getHeightScale(), size, cash);
+            case STRING -> drawStringImage(location.getIdentifier(), poseStack, x, y, size);
+            case PLAYER_FACE -> drawPlayerFaceImage(location.getIdentifier(), poseStack, x, y, size);
+            case YOUTUBE_THUMBNAIL -> drawURLImage(String.format("https://i.ytimg.com/vi/%s/hqdefault.jpg", location.getIdentifier()), poseStack, x, y, location.getWidthScale(), location.getHeightScale(), size, cash);
         }
     }
 
-    private void renderURLImage(String url, PoseStack poseStack, int x, int y, float w, float h, int size, boolean cash) {
+    private void drawURLImage(String url, PoseStack poseStack, int x, int y, float w, float h, int size, boolean cash) {
 
         if (w > h) {
             h *= 1f / w;
@@ -57,18 +57,18 @@ public class PlayImageRenderer {
         ResourceLocation location = IKSGTextureUtil.getURLTextureAsync(url, cash, PLAY_IMAGE);
 
         if (location == PLAY_IMAGE) {
-            renderStringColorImage(I18n.get("Loading"), poseStack, x, y, width, height, size, 0xFFFFFF);
+            drawStringColorImage(I18n.get("Loading"), poseStack, x, y, width, height, size, 0xFFFFFF);
         } else {
             IKSGRenderUtil.drawTexture(location, poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height);
         }
     }
 
-    private void renderStringImage(String str, PoseStack poseStack, int x, int y, int size) {
+    private void drawStringImage(String str, PoseStack poseStack, int x, int y, int size) {
         Random r = new Random(str.hashCode());
-        renderStringColorImage(str, poseStack, x, y, size, size, size, r.nextInt(0xFFFFFF));
+        drawStringColorImage(str, poseStack, x, y, size, size, size, r.nextInt(0xFFFFFF));
     }
 
-    private void renderStringColorImage(String str, PoseStack poseStack, int x, int y, float width, float height, int size, int color) {
+    private void drawStringColorImage(String str, PoseStack poseStack, int x, int y, float width, float height, int size, int color) {
         IKSGRenderUtil.drawColorTexture(PLAY_IMAGE, poseStack, x + (size - width) / 2, y + (size - height) / 2, 0, 0, width, height, width, height, IKSGColorUtil.toSRGB(color));
         Component text = new TextComponent(str).withStyle(IMPFonts.FLOPDE_SIGN_FONT);
         int txSize = Math.max(mc.font.width(text), mc.font.lineHeight);
@@ -80,7 +80,7 @@ public class PlayImageRenderer {
         poseStack.popPose();
     }
 
-    private void renderPlayerFaceImage(String name, PoseStack poseStack, int x, int y, int size) {
+    private void drawPlayerFaceImage(String name, PoseStack poseStack, int x, int y, int size) {
         ResourceLocation plskin = IKSGTextureUtil.getPlayerSkinTexture(name);
         IKSGRenderUtil.drawTexture(plskin, poseStack, x, y, size, size, size, size, size * 8, size * 8);
         IKSGRenderUtil.drawTexture(plskin, poseStack, x, y, size * 5, size, size, size, size * 8, size * 8);

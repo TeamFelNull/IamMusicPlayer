@@ -32,7 +32,7 @@ public class DebugMonitor extends MSDBaseMonitor {
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
         drawPrettyString(poseStack, new TextComponent("ｳｧｧ!!ｵﾚﾓｲｯﾁｬｳｩｩｩ!!!ｳｳｳｳｳｳｳｳｳｩｩｩｩｩｩｩｩｳｳｳｳｳｳｳ!ｲｨｨｲｨｨｨｲｲｲｨｲｲｲ!!"), x, y + 100, 0);
-        PlayImageRenderer.getInstance().render(new ImageInfo(ImageInfo.ImageType.STRING, "https://cdn.discordapp.com/attachments/358878159615164416/850625064130969630/microbroken.gif", 0.6f, 0.3f), poseStack, x + 10, y + 10, 100);
+        PlayImageRenderer.getInstance().draw(new ImageInfo(ImageInfo.ImageType.STRING, "https://cdn.discordapp.com/attachments/358878159615164416/850625064130969630/microbroken.gif", 0.6f, 0.3f), poseStack, x + 10, y + 10, 100);
         //   fillXGrayLine(poseStack, x + 1, y + 19, 197);
     }
 }

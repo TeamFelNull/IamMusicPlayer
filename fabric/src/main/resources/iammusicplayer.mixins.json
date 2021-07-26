@@ -5,8 +5,8 @@
   "mixins": [
   ],
   "client": [
-    "SoundLibraryMixin",
-    "SoundEngineMixin"
+    "SoundEngineMixin",
+    "SoundLibraryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

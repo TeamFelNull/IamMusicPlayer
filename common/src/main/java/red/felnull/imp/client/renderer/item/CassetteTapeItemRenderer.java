@@ -14,6 +14,7 @@ import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.renderer.PlayImageRenderer;
 import red.felnull.imp.data.resource.ImageInfo;
 import red.felnull.imp.item.CassetteTapeItem;
+import red.felnull.imp.music.resource.dynamic.DynamicMusicList;
 import red.felnull.otyacraftengine.client.renderer.item.ICustomBEWLRenderer;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 
@@ -60,6 +61,12 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
     }
 
     private static void renderMusicInfo(PoseStack poseStack, VertexConsumer ivb, MultiBufferSource multiBufferSource, ItemStack stack, int i, int i1) {
+
+        DynamicMusicList musicList = CassetteTapeItem.getMusicList(stack);
+
+        if (musicList == null)
+            return;
+
         BakedModel labelModel = IKSGRenderUtil.getBakedModel(LABEL_MODEL);
         poseStack.pushPose();
         IKSGRenderUtil.poseTrans16(poseStack, 3d, 1d, 4d);
@@ -67,23 +74,23 @@ public class CassetteTapeItemRenderer implements ICustomBEWLRenderer {
         poseStack.translate(0, (1f / 16f) * 0.025f + Mth.EPSILON, 0);
 
         PlayImageRenderer renderer = PlayImageRenderer.getInstance();
-        ImageInfo image1 = new ImageInfo(ImageInfo.ImageType.URL, "https://i.imgur.com/5sBJtwI.gif");
-        ImageInfo image2 = new ImageInfo(ImageInfo.ImageType.URL, "https://i.imgur.com/IUFfaF4.gif");
-        ImageInfo image3 = new ImageInfo(ImageInfo.ImageType.URL, "https://i.imgur.com/c19lVFX.gif");
+        ImageInfo image1 = musicList.getImage();
+        ImageInfo image2 = musicList.getMusics().size() >= 1 ? musicList.getMusics().get(0).getImage() : null;
+        ImageInfo image3 = musicList.getMusics().size() >= 2 ? musicList.getMusics().get(1).getImage() : null;
 
-        {
+        if (image1 != null) {
             float size = (1f / 16f) * 1.025f;
             float x = 2.8f;
             float y = 0.55f;
             renderer.renderSprite(image1, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, 0, -90, 0, 180, size, i, i1);
         }
-        {
+        if (image2 != null) {
             float size = (1f / 16f) * 0.4f;
             float x = 2.175f;
             float y = 1.175f;
             renderer.renderSprite(image2, poseStack, multiBufferSource, -(size + (1f / 16f) * x), (1f / 16f) * y, 0, -90, 0, 180, size, i, i1);
         }
-        {
+        if (image3 != null) {
             float size = (1f / 16f) * 0.4f;
             float x = 2.175f;
             float y = 0.55f;

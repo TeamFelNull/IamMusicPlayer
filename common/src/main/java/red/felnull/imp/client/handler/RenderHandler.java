@@ -10,6 +10,11 @@ import red.felnull.otyacraftengine.api.event.TickEvent;
 public class RenderHandler {
     private static final Minecraft mc = Minecraft.getInstance();
 
+    public static void init() {
+
+    }
+
+
     public static void onRender(TickEvent.RenderTickEvent e) {
         if (IamMusicPlayer.CONFIG.subtitleSystem == SubtitleSystem.OVERLAY && e.phase == TickEvent.Phase.END && mc.level != null && !mc.options.hideGui) {
             PoseStack stack = new PoseStack();
