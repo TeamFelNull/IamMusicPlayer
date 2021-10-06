@@ -54,6 +54,7 @@ import ws.schild.jave.info.MultimediaInfo;
 
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -1437,11 +1438,11 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
             pictuerLoading = true;
             boolean nopicteur = false;
             try {
-                BufferedImage bfi = IKSGPictuerUtil.getBffImage(path);
-                if (bfi != null) {
+                byte[] image = Files.readAllBytes(path);
+                if (image != null) {
                     int size = 256;
-                    float w = bfi.getWidth();
-                    float h = bfi.getHeight();
+                    float w = IKSGPictuerUtil.getBffImage();
+                    float h = image.getHeight();
                     int aw = 0;
                     int ah = 0;
                     if (w == h) {
@@ -1450,7 +1451,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                     } else if (w > h) {
                         aw = size;
                         ah = (int) ((float) size * (h / w));
-                    } else if (w < h) {
+                    } else {
                         aw = (int) ((float) size * (w / h));
                         ah = size;
                     }

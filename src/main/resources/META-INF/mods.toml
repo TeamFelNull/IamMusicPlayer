@@ -16,6 +16,6 @@ description="Thank you for downloading!\nThis mod is The Ikisugi Music Player MO
 [[dependencies.iammusicplayer]]
     modId="otyacraftengine"
     mandatory=true
-    versionRange="[1.20,)"
+    versionRange="[1.23,)"
     ordering="NONE"
     side="BOTH"

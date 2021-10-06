@@ -79,6 +79,7 @@ repositories {
     maven { url = "https://dvs1.progwml6.com/files/maven/" }//JEI
     maven { url = "https://modmaven.k-4u.nl" }//JEI
     maven { url "https://maven.latmod.com/" }//FGL
+    maven { url "https://maven.morimori0317.net/" }//OE
 }
 configurations {
     shadowAll
@@ -107,11 +108,12 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
     compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${fgl_version}")
-    compile fg.deobf(files("libs/OtyacraftEngine-${oe_version}-dev.jar"))
+    compile fg.deobf("red.felnull:otyacraftengine:${oe_version}")
     shadowAll 'com.mpatric:mp3agic:0.9.1'
     shadowAll 'com.sedmelluq:lavaplayer:1.3.63'
     shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
     shadowAll files("libs/jl1.0.1-imp1.1.jar");
+    shadowAll 'dev.felnull:felnull-java-library:1.5'
     shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
     shadowAll "ws.schild:jave-core:${jave_version}"
     shadowWin32 "ws.schild:jave-nativebin-win32:${jave_version}"
@@ -143,6 +145,7 @@ shadowJar {
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -180,6 +183,7 @@ task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJ
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -204,6 +208,7 @@ task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -228,6 +233,7 @@ task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -252,6 +258,7 @@ task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -276,6 +283,7 @@ task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Sha
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -300,6 +308,7 @@ task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
     from sourceSets.main.output
@@ -324,6 +333,7 @@ task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shado
     relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
     relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
+    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
 }
 
 afterEvaluate {
