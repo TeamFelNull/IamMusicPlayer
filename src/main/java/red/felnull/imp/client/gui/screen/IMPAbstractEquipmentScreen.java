@@ -14,7 +14,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.IMPAbstractEquipmentBlock;
-import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.util.IKSGStyles;
 
@@ -41,12 +40,6 @@ public abstract class IMPAbstractEquipmentScreen<T extends Container> extends IM
 
     @Override
     public void initByIKSG() {
-        FFmpegManeger maneger = FFmpegManeger.instance();
-        if (!maneger.canUseFFmpeg()) {
-            maneger.cantFFmpegCaution(getMinecraft().player);
-            closeScreen();
-            return;
-        }
         super.initByIKSG();
         this.addWidgetByIKSG(new PowerButton(getTexturStartX() + xSize - 34, getTexturStartY() + ySize - 40, this::isStateOn, n -> insPower(!this.isStateOn())));
     }

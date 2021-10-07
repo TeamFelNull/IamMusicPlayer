@@ -68,6 +68,7 @@
   "msd.sort.time": "時間",
   "msd.sort.length": "長さ",
   "msd.sort.player": "プレイヤー",
+  "msd.loadSuccess": "読み込み完了",
   "cd.operationselection": "操作を選択",
   "cd.play": "再生",
   "cd.write": "書き込み",

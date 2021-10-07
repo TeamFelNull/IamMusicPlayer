@@ -1,29 +1,6 @@
 package red.felnull.imp.client.data;
 
-import com.mpatric.mp3agic.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import red.felnull.imp.client.gui.toasts.MusicUploadToast;
-import red.felnull.imp.data.IMPWorldData;
-import red.felnull.imp.exception.IMPFFmpegException;
-import red.felnull.imp.music.resource.PlayImage;
-import red.felnull.imp.util.FFmpegUtils;
-import red.felnull.imp.util.PathUtils;
-import red.felnull.otyacraftengine.api.DataSendReceiverManager;
-import red.felnull.otyacraftengine.util.IKSGDataUtil;
-import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
-import ws.schild.jave.EncoderException;
-import ws.schild.jave.MultimediaObject;
-import ws.schild.jave.info.MultimediaInfo;
-import ws.schild.jave.progress.EncoderProgressListener;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-
+/*
 @OnlyIn(Dist.CLIENT)
 public class MusicUploader {
     private static MusicUploader INSTANCE;
@@ -159,3 +136,4 @@ public class MusicUploader {
     }
 
 }
+*/

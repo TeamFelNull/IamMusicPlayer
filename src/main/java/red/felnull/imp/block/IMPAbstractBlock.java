@@ -17,7 +17,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
-import red.felnull.imp.tileentity.IMPAbstractEquipmentTileEntity;
 import red.felnull.imp.tileentity.IMPAbstractTileEntity;
 import red.felnull.otyacraftengine.util.IKSGEntityUtil;
 

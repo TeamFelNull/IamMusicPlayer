@@ -1,14 +1,6 @@
 package red.felnull.imp.client.handler;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import red.felnull.imp.client.data.MusicUploadData;
-import red.felnull.imp.client.data.MusicUploader;
-import red.felnull.imp.data.IMPWorldData;
-import red.felnull.otyacraftengine.api.event.common.ResponseEvent;
-import red.felnull.otyacraftengine.api.event.common.SenderEvent;
-import red.felnull.otyacraftengine.data.SendReceiveLogger;
-
+/*
 public class MusicUploadHandler {
 
     @SubscribeEvent
@@ -37,3 +29,4 @@ public class MusicUploadHandler {
 
     }
 }
+*/

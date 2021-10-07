@@ -2,14 +2,13 @@ package red.felnull.imp.client.music;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.vector.Vector3d;
-import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.music.resource.PlayMusic;
 import red.felnull.otyacraftengine.api.ResponseSender;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class MusicRinger {
@@ -28,10 +27,6 @@ public class MusicRinger {
 
     public Vector3d getPosition() {
         return positionVec;
-    }
-
-    public double getDistance() {
-        return Math.sqrt(Objects.requireNonNull(IamMusicPlayer.proxy.getMinecraft().player).getDistanceSq(getPosition()));
     }
 
     public void playWait(long startpos) {
@@ -63,15 +58,9 @@ public class MusicRinger {
 
     public void volumeUpdate() {
         if (musicPlayer != null) {
-            float vl = volume;
             float rarnge = 30f * volume;
-            float distance = (float) getDistance();
-            float zure = rarnge / 5f;
-            float atzure = rarnge / 10f;
-            float nn = Math.min((vl / (distance - zure)) * 3f, 1f);
-            float at = Math.min((vl / (rarnge - zure)) * 3f, 1f);
-            float volume = distance <= zure ? 1f : distance <= (rarnge - atzure) ? nn : at * ((distance - rarnge) * -1 / atzure);
-            musicPlayer.setVolume((float) (volume * ClientWorldMusicManager.instance().getEventuallyMusicVolume()));
+            float vol = SoundMath.calculateVolume(volume, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
+            musicPlayer.setVolume(SoundMath.calculatePseudoAttenuation(getPosition(), rarnge, vol));
         }
     }
 

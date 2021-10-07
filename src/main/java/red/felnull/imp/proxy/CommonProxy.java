@@ -6,8 +6,8 @@ import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.data.PlayListGuildManeger;
 import red.felnull.imp.data.PlayMusicManeger;
 import red.felnull.imp.exception.IMPFFmpegException;
-import red.felnull.imp.ffmpeg.FFmpegManeger;
 import red.felnull.imp.handler.*;
+import red.felnull.imp.lava.LavaPlayerPort;
 import red.felnull.imp.music.ServerWorldMusicManager;
 import red.felnull.imp.packet.PacketHandler;
 import red.felnull.imp.recipe.ComposterRecipes;
@@ -18,7 +18,8 @@ import java.net.URL;
 
 public class CommonProxy {
     public void preInit() {
-        FFmpegManeger.init();
+        LavaPlayerPort.init();
+        // FFmpegManeger.init();
         PacketHandler.init();
         PlayListGuildManeger.init();
         PlayMusicManeger.init();
@@ -26,7 +27,7 @@ public class CommonProxy {
         ComposterRecipes.register();
         MinecraftForge.EVENT_BUS.register(ServerHandler.class);
         MinecraftForge.EVENT_BUS.register(MusicReceiveHandler.class);
-        MinecraftForge.EVENT_BUS.register(WorldMusicServerHandler.class);
+        //MinecraftForge.EVENT_BUS.register(WorldMusicServerHandler.class);
         MinecraftForge.EVENT_BUS.register(WorldRingerHandler.class);
         MinecraftForge.EVENT_BUS.register(TradeHandler.class);
     }
@@ -36,13 +37,13 @@ public class CommonProxy {
     }
 
     public void posInit() {
-        FFmpegManeger.instance().check();
+        // FFmpegManeger.instance().check();
     }
 
     public Minecraft getMinecraft() {
         return null;
     }
-
+/*
     public void addFFmpegLoadToast() {
     }
 
@@ -59,6 +60,6 @@ public class CommonProxy {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 }

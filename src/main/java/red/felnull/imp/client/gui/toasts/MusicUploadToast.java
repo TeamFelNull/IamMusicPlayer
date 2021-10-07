@@ -1,21 +1,6 @@
 package red.felnull.imp.client.gui.toasts;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.toasts.IToast;
-import net.minecraft.client.gui.toasts.ToastGui;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.client.data.MusicUploadData;
-import red.felnull.imp.client.data.MusicUploader;
-import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
-import red.felnull.imp.client.util.RenderUtil;
-import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
-
+/*
 public class MusicUploadToast implements IToast {
     public static final ResourceLocation IMP_TEXTURE_TOASTS = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/toasts.png");
     private final String uuid;
@@ -88,3 +73,4 @@ public class MusicUploadToast implements IToast {
         }
     }
 }
+*/

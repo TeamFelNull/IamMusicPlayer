@@ -1,19 +1,6 @@
 package red.felnull.imp.client.music.player;
 
-import com.mpatric.mp3agic.InvalidDataException;
-import com.mpatric.mp3agic.UnsupportedTagException;
-import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import red.felnull.imp.exception.IMPFFmpegException;
-import red.felnull.imp.util.MusicUtils;
-import ws.schild.jave.EncoderException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
+/*
 public class LocalFileMusicPlayer implements IMusicPlayer {
     private final File inputFile;
     private final float frameSecond;
@@ -26,7 +13,7 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
     private boolean isReady;
     private long readyTime;
 
-    public LocalFileMusicPlayer(long rery, File file) throws IOException, InvalidDataException, UnsupportedTagException, EncoderException, IMPFFmpegException, BitstreamException {
+    public LocalFileMusicPlayer(long rery, File file) throws IOException, IMPFFmpegException, BitstreamException {
         this.readyTime = rery;
         if (!file.exists())
             throw new FileNotFoundException();
@@ -158,3 +145,4 @@ public class LocalFileMusicPlayer implements IMusicPlayer {
         }
     }
 }
+*/

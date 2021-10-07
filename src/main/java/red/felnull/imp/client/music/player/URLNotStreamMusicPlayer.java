@@ -1,100 +1,131 @@
 package red.felnull.imp.client.music.player;
 
-import javazoom.jl.decoder.BitstreamException;
-import javazoom.jl.player.advanced.AdvancedPlayer;
-import red.felnull.imp.client.music.ClientWorldMusicManager;
-import red.felnull.imp.client.music.InputStreamArrayEnumeration;
-import red.felnull.imp.exception.IMPFFmpegException;
-import red.felnull.imp.util.FFmpegUtils;
-import red.felnull.imp.util.MusicUtils;
-import red.felnull.imp.util.PathUtils;
-import ws.schild.jave.EncoderException;
-import ws.schild.jave.MultimediaObject;
+import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
+import com.sedmelluq.discord.lavaplayer.format.AudioDataFormatTools;
+import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL11;
+import red.felnull.imp.client.util.OpenALUtil;
 
-import java.io.FileInputStream;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
-import java.io.SequenceInputStream;
 import java.net.URL;
-import java.nio.file.Path;
-import java.util.UUID;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.lwjgl.openal.AL11.*;
 
 public class URLNotStreamMusicPlayer implements IMusicPlayer {
-    private static final long oneCovCutTime = 60 * 1000;
-
-    private final URL inputURL;
-    private final long duration;
-    private final InputStreamArrayEnumeration streamEnumeration;
-
-    private AdvancedPlayer player;
-    private long startPlayTime;
-    private long startPosition;
-    private int cont;
-    private boolean stop;
-    private boolean isReady;
-    private boolean nextCovFlag;
+    protected final AudioPlayerManager audioPlayerManager;
+    protected final AudioDataFormat dataformat;
+    protected final AudioPlayer audioPlayer;
+    private final List<Integer> buffers = new ArrayList<>();
+    private final URL url;
+    private boolean trackLoaded;
     private long readyTime;
-    private float frameSecond;
+    protected boolean stereo;
+    protected long duration;
+    private Exception exception;
+    protected long startPosition;
+    protected AudioInputStream stream;
+    protected long startTime;
+    private int source;
+    private final boolean intentionallyMono;
+    private boolean stopped;
+    private float ang;
+    private byte[] buffer = new byte[1024 * 3];
+    private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
+    private int trig;
+    private boolean ready;
+    protected boolean disableAttenuation;
 
-    public URLNotStreamMusicPlayer(long rery, URL url) throws IOException, BitstreamException, EncoderException, IMPFFmpegException {
-        this.readyTime = rery;
-        MultimediaObject mo = FFmpegUtils.createMultimediaObject(url);
-        this.duration = FFmpegUtils.getInfo(mo).getDuration();
-        this.inputURL = url;
-        this.streamEnumeration = new InputStreamArrayEnumeration();
+    public URLNotStreamMusicPlayer(long readyTime, URL url, LavaMusicLoader loader) {
+        this.url = url;
+        this.readyTime = readyTime;
+        this.dataformat = loader.getFormat();
+        this.audioPlayerManager = loader.getAudioPlayerManager();
+        this.audioPlayerManager.getConfiguration().setOutputFormat(dataformat);
+        this.audioPlayer = audioPlayerManager.createPlayer();
+        this.source = alGenSources();
+        this.intentionallyMono = loader.isMono();
     }
 
     @Override
-    public void ready(long startMiliSecond) {
-        try {
-            this.startPosition = startMiliSecond;
-            if (!this.isReady && player == null) {
-                this.cont = 0;
-                this.streamEnumeration.clear();
-                String fristname = UUID.randomUUID().toString();
-                nextCovFlag = duration - startMiliSecond > 60;
-                converting(inputURL, PathUtils.getIMPTmpFolder().resolve(fristname), startMiliSecond, nextCovFlag ? oneCovCutTime : 0);
-                if (stop)
-                    return;
-                frameSecond = MusicUtils.getMP3MillisecondPerFrame(PathUtils.getIMPTmpFolder().resolve(fristname).toFile());
-                if (stop)
-                    return;
-                streamEnumeration.add(new FileInputStream(PathUtils.getIMPTmpFolder().resolve(fristname).toFile()));
-                cont++;
-                this.player = new AdvancedPlayer(new SequenceInputStream(streamEnumeration));
-                this.isReady = true;
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            this.player = null;
-            this.isReady = false;
-            this.streamEnumeration.clear();
-        }
-    }
+    public void ready(long position) throws Exception {
+        startPosition = position;
+        this.trackLoaded = false;
+        audioPlayerManager.loadItem(url.toString(), new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                track.setPosition(position);
+                audioPlayer.startTrack(track, false);
+                if (!track.getInfo().isStream)
+                    duration = track.getDuration();
 
-    @Override
-    public void playMisalignment(long zure) {
-        try {
-            this.stop = false;
-            if (this.isReady && player != null) {
-                this.startPosition += zure;
-                if (duration <= startPosition) {
-                    this.player = null;
-                    this.stop = true;
-                    return;
-                }
-                int startFrame = (int) ((float) zure / frameSecond);
-                MusicPlayThread playThread = new MusicPlayThread(startFrame);
-                playThread.start();
-                if (nextCovFlag) {
-                    MusicConversionThread conversionThread = new MusicConversionThread(startPosition);
-                    conversionThread.start();
-                }
+                trackLoaded = true;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            this.player = null;
-            this.stop = true;
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                exception = new IllegalStateException("ambiguous");
+                trackLoaded = true;
+            }
+
+            @Override
+            public void noMatches() {
+                exception = new IllegalStateException("nomatche");
+                trackLoaded = true;
+            }
+
+            @Override
+            public void loadFailed(FriendlyException ex) {
+                exception = ex;
+                trackLoaded = true;
+            }
+        });
+
+        while (!trackLoaded) {
+            Thread.sleep(20);
         }
+        if (exception != null)
+            throw exception;
+
+        stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
+        stereo = AudioDataFormatTools.toAudioFormat(dataformat).getChannels() >= 2;
+
+        alSourcef(source, AL_PITCH, 1f);
+        alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
+        alSourcei(source, AL_LOOPING, AL_FALSE);
+        OpenALUtil.checkErrorThrower();
+
+        AudioFormat format = AudioDataFormatTools.toAudioFormat(dataformat);
+        for (int i = 0; i < 500; i++) {
+            try {
+                if (stream != null && stream.read(buffer) >= 0) {
+                    int bff = alGenBuffers();
+                    ang = fillBuffer(ang, pcm);
+
+                    int formatId = audioFormatToOpenAl(format);
+                    alBufferData(bff, formatId, getBuffer(buffer), (int) format.getSampleRate() * (intentionallyMono ? 2 : 1));
+                    buffers.add(bff);
+                    alSourceQueueBuffers(source, bff);
+                }
+            } catch (IOException e) {
+            }
+        }
+        LoadThread lt = new LoadThread();
+        lt.start();
+
+        ready = true;
     }
 
     @Override
@@ -103,9 +134,18 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void playAndReady(long startMiliSecond) {
-        ready(startMiliSecond);
-        play();
+    public void playMisalignment(long delay) {
+        if (!ready)
+            return;
+
+        startTime = System.currentTimeMillis();
+        startPosition += delay;
+
+        if (duration == 0 || duration >= startPosition) {
+            float secdelay = delay / 1000f;
+            alSourcef(source, AL_SEC_OFFSET, secdelay);
+            alSourcePlay(this.source);
+        }
     }
 
     @Override
@@ -117,30 +157,56 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     }
 
     @Override
+    public void playAndReady(long startMiliSecond) throws Exception {
+        ready(startMiliSecond);
+        play();
+    }
+
+    @Override
     public void stop() {
-        stop = true;
-        if (player != null) {
-            player.close();
+        if (ready)
+            alSourceStop(this.source);
+        stopped = true;
+        startTime = 0;
+        startPosition = 0;
+        if (this.stream != null) {
+            try {
+                this.stream.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            this.stream = null;
+        }
+        audioPlayer.destroy();
+        if (ready) {
+            alSourceStop(source);
+            alDeleteSources(source);
+            List<Integer> bffs = new ArrayList<>(buffers);
+            bffs.forEach(AL11::alDeleteBuffers);
+            buffers.clear();
+            OpenALUtil.checkErrorThrower();
         }
     }
 
+    private int getPlayState() {
+        if (!ready)
+            return AL_STOPPED;
+        return alGetSourcei(this.source, AL_SOURCE_STATE);
+    }
 
     @Override
     public boolean isPlaying() {
-        return player != null;
+        return getPlayState() == AL_PLAYING;
     }
 
     @Override
     public long getMaxMisalignment() {
-        return oneCovCutTime;
+        return Integer.MAX_VALUE;
     }
 
     @Override
     public long getCureentElapsed() {
-        if (player == null)
-            return 0;
-
-        return System.currentTimeMillis() - startPlayTime + startPosition;
+        return System.currentTimeMillis() - startTime + startPosition;
     }
 
     @Override
@@ -150,86 +216,115 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
 
     @Override
     public Object getMusicSource() {
-        return inputURL;
+        return this.url;
     }
 
     @Override
-    public void setVolume(float vol) {
-        if (player != null)
-            player.setVolume(vol);
+    public void setVolume(float f) {
+        //   if (stereo && !disableAttenuation) {
+        //      f = SoundMath.calculatePseudoAttenuation(position, attenuation, f);
+        //  }
+        // run(() -> alSourcef(source, AL_GAIN, f));
+        alSourcef(source, AL_GAIN, f);
     }
 
     @Override
     public float getVolume() {
-        if (player != null)
-            return player.getVolume();
-        return 0;
+        //    AtomicReference<Float> val= new AtomicReference<>((float) 0);
+        //   run(()-> val.set(alGetSourcef(this.source, AL_GAIN)));
+        //    return val.get();
+        return alGetSourcef(this.source, AL_GAIN);
     }
 
-    private class MusicPlayThread extends Thread {
-        private final int startMiliFrame;
 
-        public MusicPlayThread(int startMiliFrame) {
-            this.startMiliFrame = startMiliFrame;
+    public class LoadThread extends Thread {
+        public LoadThread() {
+            setName("LavaPlayer Load Thread");
         }
 
         @Override
         public void run() {
             try {
-                if (!stop) {
-                    startPlayTime = System.currentTimeMillis();
-                    player.play(startMiliFrame, Integer.MAX_VALUE);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                player = null;
-                streamEnumeration.clear();
-            }
-        }
-    }
-
-    private class MusicConversionThread extends Thread {
-        private final long startMiliSecond;
-
-        public MusicConversionThread(long startMiliSecond) {
-            this.startMiliSecond = startMiliSecond;
-        }
-
-        @Override
-        public void run() {
-            try {
-                String name = UUID.randomUUID().toString();
-                long off = oneCovCutTime * cont;
-                long alltime = duration - startMiliSecond - oneCovCutTime * cont;
-                long wait = off - oneCovCutTime / 2 - getCureentElapsed();
-                if (wait >= 0)
-                    sleep(wait);
-                if (!isPlaying() || stop)
-                    return;
-                cont++;
-                boolean nextFlag = alltime - oneCovCutTime * cont > 60;
-                converting(inputURL, PathUtils.getIMPTmpFolder().resolve(name), off, nextFlag ? oneCovCutTime : 0);
-                if (!isPlaying() || stop)
-                    return;
-                streamEnumeration.add(new FileInputStream(PathUtils.getIMPTmpFolder().resolve(name).toFile()));
-                if (nextFlag && !stop) {
-                    MusicConversionThread conversionThread = new MusicConversionThread(startMiliSecond);
-                    conversionThread.start();
+                while (stream.read(buffer) >= 0) {
+                    if (stopped)
+                        return;
+                    int b = alGenBuffers();
+                    if (stopped)
+                        return;
+                    ang = fillBuffer(ang, pcm);
+                    if (stopped)
+                        return;
+                    AudioFormat format = AudioDataFormatTools.toAudioFormat(dataformat);
+                    if (stopped)
+                        return;
+                    int formatId = audioFormatToOpenAl(format);
+                    if (stopped)
+                        return;
+                    alBufferData(b, formatId, getBuffer(buffer), (int) format.getSampleRate() * (intentionallyMono ? 2 : 1));
+                    if (stopped)
+                        return;
+                    alSourceQueueBuffers(source, b);
+                    if (stopped)
+                        return;
+                    buffers.add(b);
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
-
     }
 
-    public static void converting(URL url, Path outPath, long offset, long duration) {
-        try {
-            FFmpegUtils.encode(FFmpegUtils.createMultimediaObject(url), outPath.toFile(), "libmp3lame", 128, ClientWorldMusicManager.instance().isStereoEnabled() ? 2 : 1, 44100, "mp3", offset, duration);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public float fillBuffer(float ang, ByteBuffer buff) {
+        int size = buff.capacity();
+        trig++;
+        for (int i = 0; i < size; i++) {
+            int source1 = (int) (Math.sin(ang) * 127 + 128);
+            int source2 = 0;
+            if (trig > 3) source2 = (int) (Math.sin(ang * 3) * 127 + 128);
+            if (trig > 4) trig = 0;
+            buff.put(i, (byte) ((source1 + source2) / 2));
+            ang += 0.1f;
         }
+        return ang;
     }
 
+
+    public ByteBuffer getBuffer(byte[] array) {
+        ByteBuffer audioBuffer2 = BufferUtils.createByteBuffer(array.length);
+        audioBuffer2.put(array);
+        audioBuffer2.flip();
+        return audioBuffer2;
+    }
+
+    private int audioFormatToOpenAl(AudioFormat audioFormat) {
+
+        AudioFormat.Encoding encoding = audioFormat.getEncoding();
+        int i = audioFormat.getChannels();
+        int j = audioFormat.getSampleSizeInBits();
+        if (encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED) || encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
+            return getOpenALFormat(intentionallyMono ? 1 : 2, j);
+        }
+
+        throw new IllegalArgumentException("Invalid audio format: " + audioFormat);
+    }
+
+    public static int getOpenALFormat(int channel, int bit) {
+        if (channel == 1) {
+            if (bit == 8) {
+                return AL_FORMAT_MONO8;
+            }
+            if (bit == 16) {
+                return AL_FORMAT_MONO16;
+            }
+        } else if (channel == 2) {
+            if (bit == 8) {
+                return AL_FORMAT_STEREO8;
+            }
+
+            if (bit == 16) {
+                return AL_FORMAT_STEREO16;
+            }
+        }
+        return AL_FORMAT_MONO16;
+    }
 }

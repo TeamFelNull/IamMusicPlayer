@@ -11,7 +11,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
 import red.felnull.imp.block.propertie.IMPBlockStateProperties;
-import red.felnull.imp.ffmpeg.FFmpegManeger;
 
 public abstract class IMPAbstractEquipmentBlock extends IMPAbstractBlock {
     public static final BooleanProperty ON = IMPBlockStateProperties.ON;
@@ -34,14 +33,9 @@ public abstract class IMPAbstractEquipmentBlock extends IMPAbstractBlock {
 
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity playerIn, Hand handIn, BlockRayTraceResult hit) {
-        if (!worldIn.isRemote) {
-            FFmpegManeger maneger = FFmpegManeger.instance();
-            if (maneger.canUseFFmpeg()) {
-                this.interactWith(worldIn, pos, playerIn);
-            } else {
-                maneger.cantFFmpegCaution(playerIn);
-            }
-        }
+        if (!worldIn.isRemote)
+            this.interactWith(worldIn, pos, playerIn);
+
         return ActionResultType.func_233537_a_(worldIn.isRemote);
     }
 

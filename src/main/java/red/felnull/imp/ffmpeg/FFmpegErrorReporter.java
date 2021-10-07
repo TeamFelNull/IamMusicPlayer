@@ -1,18 +1,6 @@
 package red.felnull.imp.ffmpeg;
 
-import net.minecraftforge.fml.ModList;
-import red.felnull.imp.exception.IMPFFmpegException;
-import red.felnull.imp.util.PathUtils;
-import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
-import red.felnull.otyacraftengine.util.IKSGModUtil;
-
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+/*
 public class FFmpegErrorReporter {
     public static void reportExport(Exception ex, IMPFFmpegException impex) {
         IKSGFileLoadUtil.createFolder(PathUtils.getFFmpegReportFolder());
@@ -62,3 +50,4 @@ public class FFmpegErrorReporter {
         IKSGFileLoadUtil.txtWriter(sb.toString(), pt);
     }
 }
+*/

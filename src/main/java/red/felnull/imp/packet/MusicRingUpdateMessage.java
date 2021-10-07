@@ -1,6 +1,5 @@
 package red.felnull.imp.packet;
 
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.vector.Vector3d;
 

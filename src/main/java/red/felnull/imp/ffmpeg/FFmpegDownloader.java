@@ -1,18 +1,6 @@
 package red.felnull.imp.ffmpeg;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import red.felnull.imp.IamMusicPlayer;
-import red.felnull.imp.util.PathUtils;
-import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
-
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.concurrent.atomic.AtomicLong;
-
+/*
 public class FFmpegDownloader {
     private static final Logger LOGGER = LogManager.getLogger(FFmpegDownloader.class);
     private static FFmpegDownloader INSTANCE;
@@ -91,3 +79,4 @@ public class FFmpegDownloader {
         return Math.round(per * 100) + " %";
     }
 }
+*/

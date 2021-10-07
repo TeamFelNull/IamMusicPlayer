@@ -2,7 +2,7 @@ package red.felnull.imp.util;
 
 public class StringUtils {
     public static String getTimeNotationPercentage(long current, long all) {
-        StringBuffer bff = new StringBuffer();
+        StringBuilder bff = new StringBuilder();
         long sec = Math.round((float) all / 1000f);
         long min = sec / 60;
         long hr = min / 60;
@@ -26,7 +26,7 @@ public class StringUtils {
         long minz = min - (hr * 60);
         long secz = sec - (min * 60);
 
-        StringBuffer biff = new StringBuffer();
+        StringBuilder biff = new StringBuilder();
         if (horus) {
             biff.append(zeroNumber(Math.toIntExact(hr))).append(":").append(zeroNumber(Math.toIntExact(minz)));
         } else {
@@ -40,9 +40,7 @@ public class StringUtils {
         String numst = String.valueOf(num);
 
         if (numst.length() == 1) {
-            StringBuffer bff = new StringBuffer();
-            bff.append(0).append(num);
-            return bff.toString();
+            return "0" + num;
         }
 
         return numst;

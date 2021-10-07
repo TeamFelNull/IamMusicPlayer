@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
-import red.felnull.imp.client.data.MusicUploader;
 import red.felnull.imp.client.util.YoutubeUtils;
 import red.felnull.imp.handler.MusicReceiveHandler;
 import red.felnull.imp.music.resource.PlayImage;
@@ -17,18 +16,14 @@ import red.felnull.imp.packet.PlayMusicChangeRequestMessage;
 import red.felnull.imp.packet.PlayMusicCreateRequestMessage;
 import red.felnull.imp.packet.PlayMusicRemoveRequestMessage;
 import red.felnull.imp.util.MusicUtils;
-import red.felnull.imp.util.PathUtils;
 import red.felnull.otyacraftengine.api.DataSendReceiverManager;
 import red.felnull.otyacraftengine.data.SendReceiveLogger;
 import red.felnull.otyacraftengine.data.WorldDataManager;
-import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
 import red.felnull.otyacraftengine.util.IKSGNBTUtil;
 import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 import red.felnull.otyacraftengine.util.IKSGStringUtil;
 
-import java.io.File;
 import java.net.URL;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +121,7 @@ public class PlayMusicManeger {
 
             long leth = 0;
 
-            if (uploadtype == MusicSourceClientReferencesType.LOCAL_FILE) {
+            /*if (uploadtype == MusicSourceClientReferencesType.LOCAL_FILE) {
                 MusicUploader.instance().startUpload(name, Paths.get(pathOrURL), location.getIdOrURL(), image, imageData);
                 File file = PathUtils.getIMPTmpFolder().resolve(location.getIdOrURL() + "-tmp").toFile();
                 try {
@@ -135,7 +130,8 @@ public class PlayMusicManeger {
                     ex.printStackTrace();
                 }
                 IKSGFileLoadUtil.deleteFile(file);
-            } else if (uploadtype == MusicSourceClientReferencesType.URL) {
+            } else*/
+            if (uploadtype == MusicSourceClientReferencesType.URL) {
                 try {
                     leth = MusicUtils.getMillisecondDuration(new URL(location.getIdOrURL()));
                 } catch (Exception ex) {

@@ -23,6 +23,6 @@ public class IMPWorldData {
         OERegistries.registrierWorldData(PLAYMUSIC_DATA, new PlayMusicWorldData());
         OERegistries.registrierServerRecevedPath(IMAGE, Paths.get(IamMusicPlayer.MODID).resolve("image"));
         OERegistries.registrierTextuerSendPath(IMAGE, Paths.get(IamMusicPlayer.MODID).resolve("image"));
-        OERegistries.registrierServerRecevedPath(SERVER_MUSIC_DATA, Paths.get(IamMusicPlayer.MODID).resolve("tmp"));
+      //  OERegistries.registrierServerRecevedPath(SERVER_MUSIC_DATA, Paths.get(IamMusicPlayer.MODID).resolve("tmp"));
     }
 }

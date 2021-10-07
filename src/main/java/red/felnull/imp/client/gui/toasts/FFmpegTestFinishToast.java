@@ -1,17 +1,6 @@
 package red.felnull.imp.client.gui.toasts;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.toasts.IToast;
-import net.minecraft.client.gui.toasts.ToastGui;
-import net.minecraft.util.text.TranslationTextComponent;
-import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
-import red.felnull.imp.ffmpeg.FFmpegManeger;
-import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
-
+/*
 public class FFmpegTestFinishToast implements IToast {
     @Override
     public Visibility func_230444_a_(MatrixStack matrix, ToastGui toast, long time) {
@@ -44,3 +33,4 @@ public class FFmpegTestFinishToast implements IToast {
         return tos != null;
     }
 }
+*/

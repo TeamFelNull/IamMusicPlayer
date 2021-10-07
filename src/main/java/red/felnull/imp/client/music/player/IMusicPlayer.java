@@ -2,7 +2,7 @@ package red.felnull.imp.client.music.player;
 
 public interface IMusicPlayer {
 
-    void ready(long startMiliSecond);
+    void ready(long startMiliSecond) throws Exception;
 
     void play();
 
@@ -10,7 +10,7 @@ public interface IMusicPlayer {
 
     void playAutoMisalignment();
 
-    void playAndReady(long startMiliSecond);
+    void playAndReady(long startMiliSecond) throws Exception;
 
     void stop();
 

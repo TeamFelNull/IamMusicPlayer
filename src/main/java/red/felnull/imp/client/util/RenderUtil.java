@@ -21,7 +21,7 @@ import java.util.Random;
 
 public class RenderUtil {
     private static final ResourceLocation STRING_PLAYIMAGE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/string_playimage.png");
-    private static final int maxColor = Integer.valueOf("ffffff", 16);
+    private static final int maxColor =0XFFFFFF;
 
     public static void drwPlayImage(MatrixStack matrix, PlayImage image, int x, int y, int size) {
         drwPlayImage(matrix, image, x, y, size, 0, 0);
@@ -114,7 +114,7 @@ public class RenderUtil {
     }
 
     private static void drwPlayImageURLImage(MatrixStack matrix, String url, int x, int y, int size, int upOver, int downOver) {
-        ResourceLocation location = null;
+        ResourceLocation location;
 
         if (url == null)
             location = IKSGTextureUtil.TEXTUER_NOTFINED;
@@ -134,7 +134,7 @@ public class RenderUtil {
         } else if (w > h) {
             xsize = size;
             ysize = (int) ((float) size * (h / w));
-        } else if (w < h) {
+        } else {
             xsize = (int) ((float) size * (w / h));
             ysize = size;
         }

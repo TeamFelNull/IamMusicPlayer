@@ -7,12 +7,6 @@ import java.util.function.Consumer;
 public class FileUtils {
     public static void openFileChoser(String title, Consumer<File> op) {
         try {
-         /*   javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
-            fc.setTitle(title);
-            com.sun.javafx.application.PlatformImpl.startup(() -> {
-                File file = fc.showOpenDialog(null);
-                op.openFile(file);
-            });*/
             Class<?> fcClass = Class.forName("javafx.stage.FileChooser");
             Object fcIns = fcClass.newInstance();
 
@@ -40,7 +34,6 @@ public class FileUtils {
 
     public static boolean isCanOpenFileChooser() {
         try {
-            //     javafx.stage.FileChooser fc = new javafx.stage.FileChooser();
             Class<?> fcClass = Class.forName("javafx.stage.FileChooser");
             Class<?> piClass = Class.forName("com.sun.javafx.application.PlatformImpl");
             Class<?> wdClass = Class.forName("javafx.stage.Window");

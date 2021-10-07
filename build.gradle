@@ -80,6 +80,9 @@ repositories {
     maven { url = "https://modmaven.k-4u.nl" }//JEI
     maven { url "https://maven.latmod.com/" }//FGL
     maven { url "https://maven.morimori0317.net/" }//OE
+    maven {
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 configurations {
     shadowAll
@@ -110,11 +113,12 @@ dependencies {
     compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${fgl_version}")
     compile fg.deobf("red.felnull:otyacraftengine:${oe_version}")
     shadowAll 'com.mpatric:mp3agic:0.9.1'
-    shadowAll 'com.sedmelluq:lavaplayer:1.3.63'
+    shadowAll 'com.sedmelluq:lavaplayer:1.3.75'
     shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
-    shadowAll files("libs/jl1.0.1-imp1.1.jar");
-    shadowAll 'dev.felnull:felnull-java-library:1.5'
+    //shadowAll files("libs/jl1.0.1-imp1.1.jar");
+    shadowAll 'dev.felnull:felnull-java-library:1.6'
     shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
+    /*
     shadowAll "ws.schild:jave-core:${jave_version}"
     shadowWin32 "ws.schild:jave-nativebin-win32:${jave_version}"
     shadowWin64 "ws.schild:jave-nativebin-win64:${jave_version}"
@@ -122,6 +126,8 @@ dependencies {
     shadowLinux64 "ws.schild:jave-nativebin-linux64:${jave_version}"
     shadowLinuxArm64 "ws.schild:jave-nativebin-linux-arm64:${jave_version}"
     shadowOsx64 "ws.schild:jave-nativebin-osx64:${jave_version}"
+    */
+    implementation 'com.madgag:animated-gif-lib:1.4';
 }
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
 shadowJar {

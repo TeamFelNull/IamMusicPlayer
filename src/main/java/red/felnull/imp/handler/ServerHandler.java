@@ -86,16 +86,15 @@ public class ServerHandler {
         if (e.getName().toString().equals("minecraft:chests/simple_dungeon")) {
             LootPool pool = LootPool.builder().rolls(new RandomValueRange(1))
                     .acceptCondition(RandomChance.builder((0.0810f)))
-                    .addEntry(ItemLootEntry.builder(IMPItems.KATYOU_ANTENNA).weight(1))
                     .addEntry(ItemLootEntry.builder(IMPItems.IKISUGI_ANTENNA).weight(1))
                     .name(new ResourceLocation(IamMusicPlayer.MODID, "antenna").toString())
                     .build();
             e.getTable().addPool(pool);
         }
     }
-
+/*
     @SubscribeEvent
     public static void onLogIn(PlayerEvent.PlayerLoggedInEvent e) {
         e.getPlayer().sendStatusMessage(IKSGStyles.withStyle(new TranslationTextComponent("message.login.impalpha"), IKSGStyles.withColor(TextFormatting.RED)), false);
-    }
+    }*/
 }

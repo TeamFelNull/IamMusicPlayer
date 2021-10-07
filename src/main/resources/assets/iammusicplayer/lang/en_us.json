@@ -68,6 +68,7 @@
   "msd.sort.time": "Time",
   "msd.sort.length": "Length",
   "msd.sort.player": "Player",
+  "msd.loadSuccess": "Loading completed",
   "cd.operationselection": "Operation selection",
   "cd.play": "Play",
   "cd.write": "Write",
