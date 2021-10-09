@@ -24,7 +24,7 @@ public class ClientConfig {
             LOGGER.info("Loading Client Config");
             builder.push("Music Play");
             MusicVolume = builder.define("Music Volume", 1d);
-            StereoEnabled = builder.define("Stereo Enabled", true);
+            StereoEnabled = builder.define("Stereo Enabled", false);
             builder.pop();
         }
     }

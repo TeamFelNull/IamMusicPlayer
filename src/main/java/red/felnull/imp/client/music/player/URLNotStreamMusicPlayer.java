@@ -9,10 +9,9 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.vector.Vector3d;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
-import red.felnull.imp.client.util.OpenALUtil;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -46,7 +45,6 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
     private int trig;
     private boolean ready;
-    protected boolean disableAttenuation;
 
     public URLNotStreamMusicPlayer(long readyTime, URL url, LavaMusicLoader loader) {
         this.url = url;
@@ -57,7 +55,31 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         this.audioPlayer = audioPlayerManager.createPlayer();
         this.source = alGenSources();
         this.intentionallyMono = loader.isMono();
+
+        if (!intentionallyMono)
+            disableAttenuation();
     }
+
+    public boolean isSpatial() {
+        return intentionallyMono;
+    }
+
+    public void setPos(Vector3d pos, float range) {
+        alSource3f(source, AL_POSITION, (float) pos.x, (float) pos.y, (float) pos.z);
+        linearAttenuation(range);
+    }
+
+    private void linearAttenuation(float f) {
+        alSourcei(source, AL_DISTANCE_MODEL, 53251);
+        alSourcef(source, AL_MAX_DISTANCE, f);
+        alSourcef(source, AL_ROLLOFF_FACTOR, 1.0F);
+        alSourcef(source, AL_REFERENCE_DISTANCE, 0.0F);
+    }
+
+    private void disableAttenuation() {
+        alSourcei(this.source, AL_DISTANCE_MODEL, AL_FALSE);
+    }
+
 
     @Override
     public void ready(long position) throws Exception {
@@ -105,7 +127,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         alSourcef(source, AL_PITCH, 1f);
         alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
         alSourcei(source, AL_LOOPING, AL_FALSE);
-        OpenALUtil.checkErrorThrower();
+        //OpenALUtil.checkErrorThrower();
 
         AudioFormat format = AudioDataFormatTools.toAudioFormat(dataformat);
         for (int i = 0; i < 500; i++) {
@@ -184,7 +206,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
             List<Integer> bffs = new ArrayList<>(buffers);
             bffs.forEach(AL11::alDeleteBuffers);
             buffers.clear();
-            OpenALUtil.checkErrorThrower();
+            // OpenALUtil.checkErrorThrower();
         }
     }
 

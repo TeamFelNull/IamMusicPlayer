@@ -6,10 +6,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
+import red.felnull.imp.client.music.ClientWorldMusicManager;
 
 public class LavaMusicLoader {
     private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
-    private static final AudioDataFormat COMMON_PCM_S16_BE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, true);
     private final AudioSourceManager sourceManager;
     private AudioPlayerManager audioPlayerManager;
 
@@ -36,6 +36,6 @@ public class LavaMusicLoader {
     }
 
     public boolean isMono() {
-        return false;
+        return !ClientWorldMusicManager.instance().isStereoEnabled();
     }
 }

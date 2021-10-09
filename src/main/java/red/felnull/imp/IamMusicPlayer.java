@@ -10,7 +10,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import red.felnull.imp.client.config.ClientConfig;
-import red.felnull.imp.lava.LavaPlayerPort;
 import red.felnull.imp.proxy.ClientProxy;
 import red.felnull.imp.proxy.CommonProxy;
 

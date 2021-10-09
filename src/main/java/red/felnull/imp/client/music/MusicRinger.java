@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.vector.Vector3d;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.client.music.player.URLNotStreamMusicPlayer;
 import red.felnull.imp.client.util.SoundMath;
 import red.felnull.imp.data.IMPWorldData;
 import red.felnull.imp.music.resource.PlayMusic;
@@ -60,7 +61,13 @@ public class MusicRinger {
         if (musicPlayer != null) {
             float rarnge = 30f * volume;
             float vol = SoundMath.calculateVolume(volume, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
-            musicPlayer.setVolume(SoundMath.calculatePseudoAttenuation(getPosition(), rarnge, vol));
+            if (musicPlayer instanceof URLNotStreamMusicPlayer) {
+                if (!((URLNotStreamMusicPlayer) musicPlayer).isSpatial())
+                    vol = SoundMath.calculatePseudoAttenuation(getPosition(), rarnge, vol);
+                else
+                    ((URLNotStreamMusicPlayer) musicPlayer).setPos(getPosition(), rarnge);
+            }
+            musicPlayer.setVolume(vol);
         }
     }
 
