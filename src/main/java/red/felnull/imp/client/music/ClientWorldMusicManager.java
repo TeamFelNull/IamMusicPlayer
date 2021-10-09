@@ -2,11 +2,14 @@ package red.felnull.imp.client.music;
 
 import net.minecraft.client.Minecraft;
 import red.felnull.imp.client.config.ClientConfig;
+import red.felnull.imp.client.music.player.IMusicPlayer;
+import red.felnull.imp.client.util.SoundMath;
 
 import java.util.*;
 
 public class ClientWorldMusicManager {
     private static final Minecraft mc = Minecraft.getInstance();
+    public final List<IMusicPlayer> screenMusicPlayers = new ArrayList<>();
     private static ClientWorldMusicManager INSTANCE;
     private double musicVolume;
     private boolean stereoEnabled;
@@ -65,6 +68,13 @@ public class ClientWorldMusicManager {
             }
         }
         mplayers.values().forEach(MusicRinger::volumeUpdate);
+
+        for (IMusicPlayer screenMusicPlayer : screenMusicPlayers) {
+            if (screenMusicPlayer == null)
+                continue;
+            float vol = SoundMath.calculateVolume(0.1f, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
+            screenMusicPlayer.setVolume(vol);
+        }
     }
 
     public MusicRinger getMusicRinger(UUID uuid) {

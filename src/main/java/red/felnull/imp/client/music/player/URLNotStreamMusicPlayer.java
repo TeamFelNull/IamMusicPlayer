@@ -29,22 +29,22 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     protected final AudioPlayer audioPlayer;
     private final List<Integer> buffers = new ArrayList<>();
     private final URL url;
-    private boolean trackLoaded;
+    protected boolean trackLoaded;
     private long readyTime;
     protected boolean stereo;
     protected long duration;
-    private Exception exception;
+    protected Exception exception;
     protected long startPosition;
     protected AudioInputStream stream;
     protected long startTime;
     private int source;
-    private final boolean intentionallyMono;
+    private boolean intentionallyMono;
     private boolean stopped;
     private float ang;
     private byte[] buffer = new byte[1024 * 3];
     private ByteBuffer pcm = BufferUtils.createByteBuffer(11025);
     private int trig;
-    private boolean ready;
+    protected boolean ready;
 
     public URLNotStreamMusicPlayer(long readyTime, URL url, LavaMusicLoader loader) {
         this.url = url;
@@ -62,6 +62,14 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
 
     public boolean isSpatial() {
         return intentionallyMono;
+    }
+
+    @Override
+    public void setSpatial(boolean enable) {
+        if (!enable) {
+            disableAttenuation();
+            intentionallyMono = false;
+        }
     }
 
     public void setPos(Vector3d pos, float range) {
@@ -124,6 +132,12 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
         stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
         stereo = AudioDataFormatTools.toAudioFormat(dataformat).getChannels() >= 2;
 
+        loadOpenAL();
+
+        ready = true;
+    }
+
+    protected void loadOpenAL() {
         alSourcef(source, AL_PITCH, 1f);
         alSourcei(source, AL_SOURCE_RELATIVE, AL_FALSE);
         alSourcei(source, AL_LOOPING, AL_FALSE);
@@ -141,13 +155,11 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
                     buffers.add(bff);
                     alSourceQueueBuffers(source, bff);
                 }
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         }
         LoadThread lt = new LoadThread();
         lt.start();
-
-        ready = true;
     }
 
     @Override

@@ -10,7 +10,6 @@ buildscript {
 }
 
 plugins {
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
     id "com.github.johnrengelman.shadow" version "4.0.4"
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -19,10 +18,7 @@ apply plugin: 'maven-publish'
 
 //def dest = "pre-${getDate()}"
 
-if (System.getenv('curesforgeapikey') == null || "${curesfg_id}" == "0")
-    version = "${mod_version}-pre${getDate()}"
-else
-    version = "${mod_version}"
+version = "${mod_version}"
 
 group = "${mod_group}"
 archivesBaseName = "${mod_name}-${mc_version}"
@@ -79,7 +75,7 @@ repositories {
     maven { url = "https://dvs1.progwml6.com/files/maven/" }//JEI
     maven { url = "https://modmaven.k-4u.nl" }//JEI
     maven { url "https://maven.latmod.com/" }//FGL
-    maven { url "https://maven.morimori0317.net/" }//OE
+    maven { url "https://maven.felnull.dev/" }//OE
     maven {
         url 'https://m2.dv8tion.net/releases'
     }
@@ -87,18 +83,6 @@ repositories {
 configurations {
     shadowAll
     compile.extendsFrom(shadowAll)
-    shadowWin32
-    compile.extendsFrom(shadowWin32)
-    shadowWin64
-    compile.extendsFrom(shadowWin64)
-    shadowLinux32
-    compile.extendsFrom(shadowLinux32)
-    shadowLinux64
-    compile.extendsFrom(shadowLinux64)
-    shadowLinuxArm64
-    compile.extendsFrom(shadowLinuxArm64)
-    shadowOsx64
-    compile.extendsFrom(shadowOsx64)
 }
 allprojects {
     repositories {
@@ -112,21 +96,10 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
     compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${fgl_version}")
     compile fg.deobf("red.felnull:otyacraftengine:${oe_version}")
-    shadowAll 'com.mpatric:mp3agic:0.9.1'
     shadowAll 'com.sedmelluq:lavaplayer:1.3.75'
     shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
-    //shadowAll files("libs/jl1.0.1-imp1.1.jar");
     shadowAll 'dev.felnull:felnull-java-library:1.8'
     shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
-    /*
-    shadowAll "ws.schild:jave-core:${jave_version}"
-    shadowWin32 "ws.schild:jave-nativebin-win32:${jave_version}"
-    shadowWin64 "ws.schild:jave-nativebin-win64:${jave_version}"
-    shadowLinux32 "ws.schild:jave-nativebin-linux32:${jave_version}"
-    shadowLinux64 "ws.schild:jave-nativebin-linux64:${jave_version}"
-    shadowLinuxArm64 "ws.schild:jave-nativebin-linux-arm64:${jave_version}"
-    shadowOsx64 "ws.schild:jave-nativebin-osx64:${jave_version}"
-    */
     implementation 'com.madgag:animated-gif-lib:1.4';
 }
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
@@ -134,224 +107,26 @@ shadowJar {
     classifier ''
     project.configurations.shadowAll.setTransitive(true);
     configurations = [project.configurations.shadowAll]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
+    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
     relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
     relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'com.fasterxml', 'red.felnull.imp.libs.com.fasterxml'
     relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
+    relocate 'natives', 'red.felnull.imp.libs.natives'
     relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
+    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
+    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
+    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
     relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarAll(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'all'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowWin32.setTransitive(true);
-    project.configurations.shadowWin64.setTransitive(true);
-    project.configurations.shadowLinux32.setTransitive(true);
-    project.configurations.shadowLinux64.setTransitive(true);
-    project.configurations.shadowLinuxArm64.setTransitive(true);
-    project.configurations.shadowOsx64.setTransitive(true);
-    configurations = [
-            project.configurations.shadowAll,
-            project.configurations.shadowWin32,
-            project.configurations.shadowWin64,
-            project.configurations.shadowLinux32,
-            project.configurations.shadowLinux64,
-            project.configurations.shadowLinuxArm64,
-            project.configurations.shadowOsx64
-    ]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarWin32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'win32'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowWin32.setTransitive(true);
-    configurations = [project.configurations.shadowAll, project.configurations.shadowWin32]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarWin64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'win64'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowWin64.setTransitive(true);
-    configurations = [project.configurations.shadowAll, project.configurations.shadowWin64]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarLinux32(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'linux32'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowLinux32.setTransitive(true);
-    configurations = [project.configurations.shadowAll, project.configurations.shadowLinux32]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarLinux64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'linux64'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowLinux64.setTransitive(true);
-    configurations = [project.configurations.shadowAll, project.configurations.shadowLinux64]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarLinuxArm64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'linux-arm64'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowLinuxArm64.setTransitive(true);
-    configurations = [project.configurations.shadowAll, project.configurations.shadowLinuxArm64]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-}
-task shadowJarOsx64(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-    from sourceSets.main.output
-    classifier 'osx64'
-    project.configurations.shadowAll.setTransitive(true);
-    project.configurations.shadowOsx64.setTransitive(true);
-    configurations = [project.configurations.shadowAll, project.configurations.shadowOsx64]
-    relocate 'com.mpatric', 'red.felnull.imp.libs.com.mpatric'
-    relocate 'ws.schild.jave', 'red.felnull.imp.libs.ws.schild.jave'
-    relocate 'org.slf4j', 'red.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'red.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml.jackson', 'red.felnull.imp.libs.com.fasterxml.jackson'
-    relocate 'com.sedmelluq.discord', 'red.felnull.imp.libs.com.sedmelluq.discord'
-    relocate 'com.sedmelluq.lava', 'red.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.jsoup', 'red.felnull.imp.libs.org.jsoup'
-    relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
-    relocate 'net.iharder', 'red.felnull.imp.libs.net.iharder'
-    relocate 'natives.win-x86-64', 'red.felnull.imp.libs.natives.win-x86-64'
-    relocate 'natives.linux-x86-64', 'red.felnull.imp.libs.natives.linux-x86-64'
-    relocate 'natives.darwin', 'red.felnull.imp.libs.natives.darwin'
-    relocate 'mozilla', 'red.felnull.imp.libs.mozilla'
-    relocate 'javazoom.jl', 'red.felnull.imp.libs.javazoom.jl'
-    relocate 'com.github.kiulian', 'red.felnull.imp.libs.com.github.kiulian'
-    relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
-    relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
+    relocate 'org.apache.commons.codec', 'red.felnull.imp.libs.org.apache.commons.codec'
+    relocate 'org.apache.commons.logging', 'red.felnull.imp.libs.org.apache.commons.logging'
+    relocate 'org.apache.commons.io', 'red.felnull.imp.libs.org.apache.commons.io'
 }
 
 afterEvaluate {
     reobf {
         shadowJar { mappings = tasks.reobfJar.mappings }
-        shadowJarAll { mappings = tasks.reobfJar.mappings }
-        shadowJarWin32 { mappings = tasks.reobfJar.mappings }
-        shadowJarWin64 { mappings = tasks.reobfJar.mappings }
-        shadowJarLinux32 { mappings = tasks.reobfJar.mappings }
-        shadowJarLinux64 { mappings = tasks.reobfJar.mappings }
-        shadowJarLinuxArm64 { mappings = tasks.reobfJar.mappings }
-        shadowJarOsx64 { mappings = tasks.reobfJar.mappings }
     }
 }
 ext.themanifest = {
@@ -379,44 +154,9 @@ task sourceJar(type: Jar) {
     classifier = 'source'
     manifest themanifest
 }
-task jarAll(type: Jar) {
-    classifier = 'all'
-    manifest themanifest
-}
-task jarWin32(type: Jar) {
-    classifier = 'win32'
-    manifest themanifest
-}
-task jarWin64(type: Jar) {
-    classifier = 'win64'
-    manifest themanifest
-}
-task jarLinux32(type: Jar) {
-    classifier = 'linux32'
-    manifest themanifest
-}
-task jarLinux64(type: Jar) {
-    classifier = 'linux64'
-    manifest themanifest
-}
-task jarLinuxArm64(type: Jar) {
-    classifier = 'linux-arm64'
-    manifest themanifest
-}
-task jarOsx64(type: Jar) {
-    classifier = 'osx64'
-    manifest themanifest
-}
 artifacts {
     archives devJar
     archives sourceJar
-    archives jarAll
-    archives jarWin32
-    archives jarWin64
-    archives jarLinux32
-    archives jarLinux64
-    archives jarLinuxArm64
-    archives jarOsx64
 }
 
 publishing {
@@ -425,63 +165,11 @@ publishing {
             artifact jar
             artifact devJar
             artifact sourceJar
-            artifact jarAll
-            artifact jarWin32
-            artifact jarWin64
-            artifact jarLinux32
-            artifact jarLinux64
-            artifact jarLinuxArm64
-            artifact jarOsx64
         }
     }
     repositories {
         maven {
             url "file:///${project.projectDir}/mcmodsrepo"
-        }
-    }
-}
-
-if (System.getenv('curesforgeapikey') != null && "${curesfg_id}" != "0") {
-    curseforge {
-        apiKey = System.getenv('curesforgeapikey')
-        project {
-            id = "${curesfg_id}"
-            changelog = "${mod_changelog}"
-            releaseType = "${releasetype}"
-            addGameVersion "${mc_version}"
-            mainArtifact(jar) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}"
-                relations {
-                    requiredDependency 'otyacraft-engine'
-                }
-            }
-            addArtifact(devJar) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-dev"
-            }
-            addArtifact(sourceJar) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-source"
-            }
-            addArtifact(jarAll) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-all"
-            }
-            addArtifact(jarWin32) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-win32"
-            }
-            addArtifact(jarWin64) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-win64"
-            }
-            addArtifact(jarLinux32) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-linux32"
-            }
-            addArtifact(jarLinux64) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-linux64"
-            }
-            addArtifact(jarLinuxArm64) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-linux-arm64"
-            }
-            addArtifact(jarOsx64) {
-                displayName = "${mod_name}-${mc_version}-${mod_version}-osx64"
-            }
         }
     }
 }

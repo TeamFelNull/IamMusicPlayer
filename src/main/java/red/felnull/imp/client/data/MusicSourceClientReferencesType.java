@@ -2,6 +2,7 @@ package red.felnull.imp.client.data;
 
 import com.github.kiulian.downloader.YoutubeException;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import net.minecraft.util.ResourceLocation;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.music.player.IMusicPlayer;
@@ -25,6 +26,7 @@ public enum MusicSourceClientReferencesType {
     private final PlayLocation.LocationType lctype;
 
     private static final LavaMusicLoader urlMusicLoader = new LavaMusicLoader(new HttpAudioSourceManager());
+    private static final LavaMusicLoader youtubeMusicLoader = new LavaMusicLoader(new YoutubeAudioSourceManager());
 
     MusicSourceClientReferencesType(ResourceLocation textuerLocation, PlayLocation.LocationType locationType) {
         this.textuerLocation = textuerLocation;
@@ -52,7 +54,7 @@ public enum MusicSourceClientReferencesType {
 
         switch (this) {
             case YOUTUBE:
-                return new YoutubeMusicPlayer(rerytime, src, urlMusicLoader);
+                return new YoutubeMusicPlayer(rerytime, src, urlMusicLoader, youtubeMusicLoader);
             case URL:
                 return new URLNotStreamMusicPlayer(rerytime, new URL(src), urlMusicLoader);
             //   case LOCAL_FILE:

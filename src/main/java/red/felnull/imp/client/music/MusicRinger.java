@@ -60,7 +60,7 @@ public class MusicRinger {
     public void volumeUpdate() {
         if (musicPlayer != null) {
             float rarnge = 30f * volume;
-            float vol = SoundMath.calculateVolume(volume, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
+            float vol = SoundMath.calculateVolume(volume/10, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
             if (musicPlayer instanceof URLNotStreamMusicPlayer) {
                 if (!((URLNotStreamMusicPlayer) musicPlayer).isSpatial())
                     vol = SoundMath.calculatePseudoAttenuation(getPosition(), rarnge, vol);

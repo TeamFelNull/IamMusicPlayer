@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
 import red.felnull.imp.client.gui.widget.*;
+import red.felnull.imp.client.music.ClientWorldMusicManager;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.util.FileUtils;
 import red.felnull.imp.client.util.RenderUtil;
@@ -53,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<MusicSharingDeviceContainer> {
 
@@ -1387,6 +1389,13 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
         if (musicPlayer != null) {
             musicPlayer.stop();
+            try {
+                getMinecraft().runAsync(()->{
+                    ClientWorldMusicManager.instance().screenMusicPlayers.remove(musicPlayer);
+                }).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
             musicPlayer = null;
         }
     }
@@ -1675,9 +1684,12 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
                 musicPlayLodingSrc = src;
                 musicPlayLodingType = type;
                 musicPlayLoading = true;
-                if (!stop)
+                if (!stop) {
                     musicPlayer = type.getMusicPlayer(src);
+                    ClientWorldMusicManager.instance().screenMusicPlayers.add(musicPlayer);
+                }
                 if (!stop && getCurrentScreen() == monitor && musicPlayer != null && isOpend()) {
+                    musicPlayer.setSpatial(false);
                     musicPlayer.playAndReady(startTime);
                 }
             } catch (Exception ex) {

@@ -2,6 +2,8 @@ package red.felnull.imp.client.music.player;
 
 public interface IMusicPlayer {
 
+    void setSpatial(boolean enable);
+
     void ready(long startMiliSecond) throws Exception;
 
     void play();
