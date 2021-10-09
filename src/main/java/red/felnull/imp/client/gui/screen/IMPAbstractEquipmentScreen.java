@@ -8,17 +8,15 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.IamMusicPlayer;
 import red.felnull.imp.block.IMPAbstractEquipmentBlock;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public abstract class IMPAbstractEquipmentScreen<T extends Container> extends IMPAbstractScreen<T> {
-    public static final Style smart_fontStyle = IKSGStyles.withFont(new ResourceLocation(IamMusicPlayer.MODID, "imp_fonts"));
+    //1 public static final Style smart_fontStyle = IKSGStyles.withFont(new ResourceLocation(IamMusicPlayer.MODID, "imp_fonts"));
     public static final ResourceLocation EQUIPMENT_WIDGETS_TEXTURES = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/equipment_widgets.png");
 
     public IMPAbstractEquipmentScreen(T screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {
@@ -45,17 +43,17 @@ public abstract class IMPAbstractEquipmentScreen<T extends Container> extends IM
     }
 
     protected void drawCenterFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
-        IKSGRenderUtil.drawCenterString(this.font, matx, IKSGStyles.withStyle(text, smart_fontStyle), x, y, 0);
+        IKSGRenderUtil.drawCenterString(this.font, matx, text, x, y, 0);
     }
 
     protected void drawFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
-        IKSGRenderUtil.drawString(this.font, matx, IKSGStyles.withStyle(text, smart_fontStyle), x, y, 0);
+        IKSGRenderUtil.drawString(this.font, matx, text, x, y, 0);
     }
 
     protected void drawMiniFontString(MatrixStack matx, IFormattableTextComponent text, int x, int y) {
         IKSGRenderUtil.matrixPush(matx);
         IKSGRenderUtil.matrixScalf(matx, 0.5f);
-        IKSGRenderUtil.drawString(this.font, matx, IKSGStyles.withStyle(text, smart_fontStyle), x * 2, y * 2, 0);
+        IKSGRenderUtil.drawString(this.font, matx, text, x * 2, y * 2, 0);
         IKSGRenderUtil.matrixPop(matx);
     }
 

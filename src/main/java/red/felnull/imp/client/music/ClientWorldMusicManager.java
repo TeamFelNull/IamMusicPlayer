@@ -72,7 +72,7 @@ public class ClientWorldMusicManager {
         for (IMusicPlayer screenMusicPlayer : screenMusicPlayers) {
             if (screenMusicPlayer == null)
                 continue;
-            float vol = SoundMath.calculateVolume(0.1f, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
+            float vol = SoundMath.calculateVolume(0.5f, ClientWorldMusicManager.instance().getEventuallyMusicVolume());
             screenMusicPlayer.setVolume(vol);
         }
     }

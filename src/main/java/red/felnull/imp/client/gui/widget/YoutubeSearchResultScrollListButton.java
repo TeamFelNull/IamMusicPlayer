@@ -34,7 +34,7 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
         if (upOver < 13 && downOver <= 37) {
-            IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, pl.getInfo().title, "imp.msdfc." + pl.hashCode() + " file.hashCode()", 30, x + 41, y + 3, 133, 30, IMPAbstractEquipmentScreen.smart_fontStyle);
+            IKSGRenderUtil.drawHorizontalMovementString(matrix, fontrenderer, pl.getInfo().title, "imp.msdfc." + pl.hashCode() + " file.hashCode()", 30, x + 41, y + 3, 133, 30);
         }
 
         int upzure = 1 < upOver ? upOver - 1 : 0;
@@ -47,7 +47,7 @@ public class YoutubeSearchResultScrollListButton extends ScrollListButton {
         if (screen.musicPlayThread != null && screen.musicPlayThread.isMusicPlayLoading() && screen.musicPlayThread.getMusicPlayLodingSrc() != null && screen.musicPlayThread.getMusicPlayLodingSrc().equals(pl.getIdentifier())) {
             IKSGRenderUtil.guiBindAndBlit(IKSGTextureUtil.getLoadingIconTextuer(), matrix, x + 41, y + 29 + fupzure, 0, fupzure, 8, 8 - fupzure - fdownzure, 8, 8);
             if (upOver < 38 && downOver <= 12) {
-                IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new TranslationTextComponent("msd.musicloading"), IMPAbstractEquipmentScreen.smart_fontStyle), x + 50, y + 29, 0);
+                IKSGRenderUtil.drawString(fontrenderer, matrix, IKSGStyles.withStyle(new TranslationTextComponent("msd.musicloading")), x + 50, y + 29, 0);
             }
         } else {
             IMusicPlayer player = screen.musicPlayer;

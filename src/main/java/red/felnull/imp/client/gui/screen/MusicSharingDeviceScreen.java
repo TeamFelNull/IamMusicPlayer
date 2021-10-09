@@ -45,7 +45,10 @@ import red.felnull.otyacraftengine.client.util.IKSGClientUtil;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
 import red.felnull.otyacraftengine.client.util.IKSGTextureUtil;
-import red.felnull.otyacraftengine.util.*;
+import red.felnull.otyacraftengine.util.ClockTimer;
+import red.felnull.otyacraftengine.util.IKSGNBTUtil;
+import red.felnull.otyacraftengine.util.IKSGPictuerUtil;
+import red.felnull.otyacraftengine.util.IKSGPlayerUtil;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -282,7 +285,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
 
         this.joinplaylistbackButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 12, 14, 7, 0, 30, 14, MSD_GUI_TEXTURES2, n -> {
             insMode(MusicSharingDeviceTileEntity.Screen.PLAYLIST);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
+        }, IkisugiDialogTexts.BACK));
         this.joinplaylistbackButton.setSizeAdjustment(true);
         this.joinplaylistbackButton.setShadwString(false);
         this.joinplaylistbackButton.setStringColor(0);
@@ -696,7 +699,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         this.playListSortName = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             setSorts(Sort.NAME);
             updatePlayMusic();
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.name"), smart_fontStyle)));
+        }, new TranslationTextComponent("msd.sort.name")));
         this.playListSortName.setSizeAdjustment(true);
         this.playListSortName.setShadwString(false);
         this.playListSortName.setStringColor(0);
@@ -706,7 +709,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         this.playListSortTime = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30 + 20, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             setSorts(Sort.TIME);
             updatePlayMusic();
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.time"), smart_fontStyle)));
+        }, new TranslationTextComponent("msd.sort.time")));
         this.playListSortTime.setSizeAdjustment(true);
         this.playListSortTime.setShadwString(false);
         this.playListSortTime.setStringColor(0);
@@ -716,7 +719,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         this.playListSortLength = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30 + 20 * 2, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             setSorts(Sort.LENGTH);
             updatePlayMusic();
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.length"), smart_fontStyle)));
+        }, new TranslationTextComponent("msd.sort.length")));
         this.playListSortLength.setSizeAdjustment(true);
         this.playListSortLength.setShadwString(false);
         this.playListSortLength.setStringColor(0);
@@ -726,7 +729,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         this.playListSortPlayer = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 30 + 20 * 3, getMonitorStartY() + 12, 20, 7, 141, 0, 7, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             setSorts(Sort.PLAYER);
             updatePlayMusic();
-        }, IKSGStyles.withStyle(new TranslationTextComponent("msd.sort.player"), smart_fontStyle)));
+        }, new TranslationTextComponent("msd.sort.player")));
         this.playListSortPlayer.setSizeAdjustment(true);
         this.playListSortPlayer.setShadwString(false);
         this.playListSortPlayer.setStringColor(0);
@@ -1390,7 +1393,7 @@ public class MusicSharingDeviceScreen extends IMPAbstractPLEquipmentScreen<Music
         if (musicPlayer != null) {
             musicPlayer.stop();
             try {
-                getMinecraft().runAsync(()->{
+                getMinecraft().runAsync(() -> {
                     ClientWorldMusicManager.instance().screenMusicPlayers.remove(musicPlayer);
                 }).get();
             } catch (InterruptedException | ExecutionException e) {

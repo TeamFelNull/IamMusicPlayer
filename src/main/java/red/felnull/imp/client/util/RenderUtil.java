@@ -80,7 +80,7 @@ public class RenderUtil {
         Minecraft mc = IamMusicPlayer.proxy.getMinecraft();
         FontRenderer ft = mc.fontRenderer;
 
-        IFormattableTextComponent comp = IKSGStyles.withStyle(new StringTextComponent(str), IMPAbstractEquipmentScreen.smart_fontStyle);
+        IFormattableTextComponent comp = new StringTextComponent(str);
         int stWidthSize = ft.getStringPropertyWidth(comp);
         float baritu = (float) (size - 3) / (float) stWidthSize;
         float yzure = (size - ft.FONT_HEIGHT * baritu) / 2;

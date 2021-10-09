@@ -24,7 +24,7 @@ public abstract class IMPAbstractMonitorEquipmentScreen<T extends Container> ext
     }
 
     protected StringImageButton addStringImageButton(IFormattableTextComponent text, ResourceLocation location, int x, int y, int w, int h, int tsx, int tsy, Button.IPressable onPressIn) {
-        StringImageButton sib = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + x, getMonitorStartY() + y, w, h, tsx, tsy, h, location, onPressIn, IKSGStyles.withStyle(text, smart_fontStyle)));
+        StringImageButton sib = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + x, getMonitorStartY() + y, w, h, tsx, tsy, h, location, onPressIn, text));
         sib.setSizeAdjustment(true);
         sib.setShadwString(false);
         sib.setStringColor(0);

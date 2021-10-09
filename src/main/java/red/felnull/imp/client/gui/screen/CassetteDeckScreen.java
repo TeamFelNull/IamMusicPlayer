@@ -27,7 +27,6 @@ import red.felnull.otyacraftengine.client.gui.widget.ScrollBarSlider;
 import red.felnull.otyacraftengine.client.gui.widget.StringImageButton;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.util.Arrays;
 
@@ -112,7 +111,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
 
         this.backButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 1, getMonitorStartY() + 69, 21, 10, 88, 0, 10, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             insScreen(CassetteDeckTileEntity.Screen.SELECTION);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.BACK, smart_fontStyle)));
+        }, IkisugiDialogTexts.BACK));
         this.backButton.setSizeAdjustment(true);
         this.backButton.setShadwString(false);
         this.backButton.setStringColor(0);
@@ -120,7 +119,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
 
         this.writeStartButton = this.addWidgetByIKSG(new StringImageButton(getMonitorStartX() + 178, getMonitorStartY() + 69, 21, 10, 88, 0, 10, EQUIPMENT_WIDGETS_TEXTURES, n -> {
             insScreen(CassetteDeckTileEntity.Screen.WRITE_2);
-        }, IKSGStyles.withStyle((TranslationTextComponent) IkisugiDialogTexts.START, smart_fontStyle)));
+        }, IkisugiDialogTexts.START));
         this.writeStartButton.setSizeAdjustment(true);
         this.writeStartButton.setShadwString(false);
         this.writeStartButton.setStringColor(0);
@@ -227,7 +226,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
     private void drawWrite2Screen(MatrixStack matrx, float partTick, int mouseX, int mouseY) {
         drawFontString(matrx, new TranslationTextComponent("cd.write"), getMonitorStartX() + 2, getMonitorStartY() + 2);
         FontRenderer fontrenderer = getMinecraft().fontRenderer;
-        IKSGRenderUtil.drawHorizontalMovementString(matrx, fontrenderer, getWritePlayMusic().getName(), "imp.cdpm.name." + getWritePlayMusic().getUUID(), 10, getMonitorStartX() + 69, getMonitorStartY() + 17, 100, 30, IMPAbstractEquipmentScreen.smart_fontStyle);
+        IKSGRenderUtil.drawHorizontalMovementString(matrx, fontrenderer, getWritePlayMusic().getName(), "imp.cdpm.name." + getWritePlayMusic().getUUID(), 10, getMonitorStartX() + 69, getMonitorStartY() + 17, 100, 30);
 
         RenderUtil.drwPlayImage(matrx, getWritePlayMusic().getImage(), getMonitorStartX() + 30, getMonitorStartY() + 15, 36);
 
@@ -248,7 +247,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
             IKSGRenderUtil.guiBindAndBlit(CD_GUI_TEXTURES, matrx, getMonitorStartX() + 22, getMonitorStartY() + 69, 0, 241, 156, 10, 256, 256);
             RenderUtil.drwPlayImage(matrx, getWritePlayMusic().getImage(), getMonitorStartX() + 25, getMonitorStartY() + 70, 8);
             IKSGRenderUtil.matrixPush(matrx);
-            IKSGRenderUtil.drawHorizontalMovementString(matrx, fontrenderer, getWritePlayMusic().getName(), "imp.cdpm.name." + getWritePlayMusic().getUUID(), 30, getMonitorStartX() + 37, getMonitorStartY() + 69, 115 + 40 - 11, 30, IMPAbstractEquipmentScreen.smart_fontStyle);
+            IKSGRenderUtil.drawHorizontalMovementString(matrx, fontrenderer, getWritePlayMusic().getName(), "imp.cdpm.name." + getWritePlayMusic().getUUID(), 30, getMonitorStartX() + 37, getMonitorStartY() + 69, 115 + 40 - 11, 30);
         }
 
     }
@@ -261,7 +260,7 @@ public class CassetteDeckScreen extends IMPAbstractPLEquipmentScreen<CassetteDec
     @Override
     public void tickByIKSG() {
         super.tickByIKSG();
-     //   IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
+        //   IKSGScreenUtil.setVisible(this.playButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.writeButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.eraseButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
         IKSGScreenUtil.setVisible(this.copyButton, isScreen(CassetteDeckTileEntity.Screen.SELECTION));
