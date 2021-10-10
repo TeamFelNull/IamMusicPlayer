@@ -8,7 +8,6 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import red.felnull.otyacraftengine.client.gui.widget.StringImageButton;
 import red.felnull.otyacraftengine.client.util.IKSGScreenUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public abstract class IMPAbstractMonitorEquipmentScreen<T extends Container> extends IMPAbstractEquipmentScreen<T> implements IMonitorScreen {
     public IMPAbstractMonitorEquipmentScreen(T screenContainer, PlayerInventory playerInventory, ITextComponent titleIn) {

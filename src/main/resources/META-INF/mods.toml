@@ -2,7 +2,7 @@ modLoader="javafml"
 loaderVersion="[33,)" 
 issueTrackerURL="https://github.com/TeamFelnull/IamMusicPlayer/issues"
 logoFile="logo.png" 
-license="LGPL v3"
+license="GNU LGPL v3"
 [[mods]]
 modId="iammusicplayer"
 version="${file.jarVersion}" 

@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.TranslationTextComponent;
-import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.imp.client.music.player.IMusicPlayer;
 import red.felnull.imp.client.music.player.YoutubeMusicPlayer;

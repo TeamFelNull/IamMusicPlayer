@@ -8,10 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
-import red.felnull.imp.client.gui.screen.IMPAbstractEquipmentScreen;
 import red.felnull.imp.client.gui.screen.MusicSharingDeviceScreen;
 import red.felnull.otyacraftengine.client.util.IKSGRenderUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
 
 public class UploadLocationSelectButton extends ImageButton {
     private static final ResourceLocation WorldIcon = new ResourceLocation("textures/misc/unknown_server.png");

@@ -6,6 +6,8 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
+        classpath "gradle.plugin.com.modrinth.minotaur:Minotaur:1.2.0"
     }
 }
 
@@ -15,7 +17,8 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-
+apply plugin: com.matthewprenger.cursegradle.CurseGradlePlugin
+apply plugin: com.modrinth.minotaur.Minotaur
 //def dest = "pre-${getDate()}"
 
 version = "${mod_version}"
@@ -74,7 +77,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 repositories {
     maven { url = "https://dvs1.progwml6.com/files/maven/" }//JEI
     maven { url = "https://modmaven.k-4u.nl" }//JEI
-    maven { url "https://maven.latmod.com/" }//FGL
     maven { url "https://maven.felnull.dev/" }//OE
     maven {
         url 'https://m2.dv8tion.net/releases'
@@ -94,7 +96,6 @@ dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
-    compile fg.deobf("com.feed_the_beast.mods:ftb-gui-library:${fgl_version}")
     compile fg.deobf("red.felnull:otyacraftengine:${oe_version}")
     shadowAll 'com.sedmelluq:lavaplayer:1.3.75'
     shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
@@ -162,14 +163,114 @@ artifacts {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            artifactId = 'iammusicplayer'
             artifact jar
-            artifact devJar
-            artifact sourceJar
+            pom {
+                name = 'IamMusicPlayer'
+                description = 'Music Player which supports Multiplayer.'
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'MORIMORI0317'
+                        name = 'MORIMORI0317'
+                    }
+                    developer {
+                        id = 'FelNull'
+                        name = 'TeamFelNull'
+                        email = 'teamfelnull@m.servg.red'
+                    }
+                }
+            }
         }
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            url "https://maven.felnull.dev/"
+            credentials {
+                username = System.getenv('mavenname')
+                password = System.getenv('mavenpassword')
+            }
+        }
+    }
+}
+
+if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
+    curseforge {
+        apiKey = System.getenv('curesforgeapikey')
+        project {
+            id = "${project.curesforge_id}"
+            changelog = ""
+            releaseType = "${project.release_type}"
+            addGameVersion "${project.mc_version}"
+            project.support_versions.split(",").each {
+                String version -> addGameVersion version
+            }
+            if ("${project.loader_type}" == 'Fabric')
+                addGameVersion 'Fabric'
+
+            if (JavaVersion.current().ordinal() + 1 >= 16)
+                addGameVersion 'Java 16'
+
+            mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${project.mod_version}.jar")) {
+                displayName = "${project.mod_name}-${project.mc_version}-${project.mod_version}-${project.loader_type}"
+
+                if ("${project.loader_type}" == 'Fabric' || "${project.required_mods}" != '' || "${project.optional_mods}" != '' || "${project.embedded_mods}" != '') {
+                    relations {
+                        if ("${project.loader_type}" == 'Fabric') {
+                            requiredDependency 'fabric-api'
+                            if ("${project.cloth_config_version}" != '')
+                                requiredDependency 'cloth-config'
+                        }
+
+                        if ("${project.required_mods}" != '') {
+                            project.required_mods.split(",").each {
+                                String name -> requiredDependency name
+                            }
+                        }
+
+                        if ("${project.optional_mods}" != '') {
+                            project.optional_mods.split(",").each {
+                                String name -> optionalDependency name
+                            }
+                        }
+
+                        if ("${project.embedded_mods}" != '') {
+                            project.embedded_mods.split(",").each {
+                                String name -> embeddedLibrary name
+                            }
+                        }
+                    }
+                }
+            }
+
+            addArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${project.mod_version}-dev.jar")) {
+                displayName = "${project.mod_name}-${project.mc_version}-${project.mod_version}-${project.loader_type}-dev"
+            }
+            addArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${project.mod_version}-source.jar")) {
+                displayName = "${project.mod_name}-${project.mc_version}-${project.mod_version}-${project.loader_type}-source"
+            }
+        }
+    }
+}
+
+if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
+    task publishModrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
+
+        token = System.getenv('modrinthapikey')
+        projectId = "${project.modrinth_id}"
+        versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}-${project.loader_type}"
+        versionNumber = "${project.mc_version}-${project.mod_version}-${project.loader_type}"
+        uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${project.mod_version}.jar")
+        versionType = "${project.release_type}".toUpperCase()
+        addGameVersion("${project.mc_version}")
+        addLoader("${project.loader_type}".toLowerCase())
+        project.support_versions.split(",").each {
+            String version -> addGameVersion version
         }
     }
 }

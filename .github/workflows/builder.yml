@@ -19,9 +19,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew build curseforge
+        run: ./gradlew build publish curseforge publishModrinth --stacktrace
         env:
           curesforgeapikey: ${{secrets.CURESFORGEAPIKEY}}
+          modrinthapikey: ${{secrets.MODRINTH}}
+          mavenname: ${{secrets.MAVEN_NAME}}
+          mavenpassword: ${{secrets.MAVEN_PASSWORD}}
       - name: Zip create
         run: |
           cd build/libs

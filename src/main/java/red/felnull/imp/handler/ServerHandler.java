@@ -7,11 +7,8 @@ import net.minecraft.loot.RandomValueRange;
 import net.minecraft.loot.conditions.RandomChance;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
@@ -27,7 +24,6 @@ import red.felnull.otyacraftengine.api.event.common.ResponseEvent;
 import red.felnull.otyacraftengine.data.SendReceiveLogger;
 import red.felnull.otyacraftengine.util.IKSGDataUtil;
 import red.felnull.otyacraftengine.util.IKSGFileLoadUtil;
-import red.felnull.otyacraftengine.util.IKSGStyles;
 
 import java.io.File;
 
