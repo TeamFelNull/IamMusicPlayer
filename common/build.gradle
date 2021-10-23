@@ -1,7 +1,41 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+configurations {
+    shadowIn
+    implementation.extendsFrom(shadowIn)
+}
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
-    modApi "test.dev.felnull:otyacraftengine:${rootProject.oe_version}"
+
+    modImplementation("pre.dev.felnull:otyacraftengine:${rootProject.oe_version}") {
+        transitive = false
+    }
+
+    shadowIn 'com.sedmelluq:lavaplayer:1.3.78'
+
+    modApi "me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}"
+
+}
+shadowJar {
+    configurations = [project.configurations.shadowIn]
+    classifier "dev-shadow"
+    relocate 'certificates', 'dev.felnull.imp.libs.certificates'
+    relocate 'com.fasterxml', 'dev.felnull.imp.libs.com.fasterxml'
+    relocate 'org.slf4j', 'dev.felnull.imp.libs.org.slf4j'
+    relocate 'org.jsoup', 'dev.felnull.imp.libs.org.jsoup'
+    relocate 'org.apache', 'dev.felnull.imp.libs.org.apache'
+    relocate 'natives', 'dev.felnull.imp.libs.natives'
+    relocate 'mozilla', 'dev.felnull.imp.libs.mozilla'
+    relocate 'net.iharder', 'dev.felnull.imp.libs.net.iharder'
+    relocate 'com.sedmelluq.lava', 'dev.felnull.imp.libs.com.sedmelluq.lava'
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    classifier "common"
 }
 
 architectury {

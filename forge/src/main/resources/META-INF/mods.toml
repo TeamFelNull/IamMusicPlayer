@@ -1,33 +1,34 @@
 modLoader = "javafml"
 loaderVersion = "[37,)"
-#issueTrackerURL = ""
-license = "Insert License Here"
+issueTrackerURL = "https://github.com/TeamFelnull/IamMusicPlayer/issues"
+license = "GNU LGPLv3"
 
 [[mods]]
-modId = "examplemod"
+modId = "iammusicplayer"
 version = "${version}"
-displayName = "Example Mod"
-authors = "Me!"
+displayName = "Iam Music Player"
+authors = "MORIMORI0317, nin8995, TeamFelNull"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Thank you for downloading!
+This mod is The Ikisugi Music Player MOD.
 '''
 #logoFile = ""
 
-[[dependencies.examplemod]]
+[[dependencies.iammusicplayer]]
 modId = "forge"
 mandatory = true
 versionRange = "[37,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.iammusicplayer]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.17.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.examplemod]]
+[[dependencies.iammusicplayer]]
 modId = "architectury"
 mandatory = true
 versionRange = "[2.3.23,)"

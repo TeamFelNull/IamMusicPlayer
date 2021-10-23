@@ -1,22 +1,27 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "iammusicplayer",
   "version": "${version}",
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Iam Music Player",
+  "description": "Thank you for downloading!\nThis mod is The Ikisugi Music Player MOD.",
   "authors": [
-    "Me!"
+    "MORIMORI0317",
+    "nin8995",
+    "TeamFelNull"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/iammusicplayer",
+    "sources": "https://github.com/TeamFelnull/IamMusicPlayer"
   },
-  "license": "Insert License Here",
+  "license": "GNU LGPLv3",
   "icon": "assets/examplemod/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.examplemod.fabric.ExampleModFabric"
+      "dev.felnull.imp.fabric.IamMusicPlayerFabric"
+    ],
+    "client": [
+      "dev.felnull.imp.fabric.client.IamMusicPlayerClientFabric"
     ]
   },
   "depends": {
@@ -25,7 +30,7 @@
     "minecraft": ">=1.16.4",
     "architectury": ">=1.1.55"
   },
-  "suggests": {
-    "flamingo": "*"
-  }
+  "mixins": [
+    "iammusicplayer.mixins.json"
+  ]
 }
