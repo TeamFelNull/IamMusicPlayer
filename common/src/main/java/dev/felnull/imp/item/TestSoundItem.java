@@ -31,12 +31,13 @@ public class TestSoundItem extends Item {
 
             var apm = LavaPlayerUtil.createAudioPlayerManager();
             apm.registerSourceManager(new YoutubeAudioSourceManager());
+            long st = System.currentTimeMillis();
 
             var track = LavaPlayerUtil.loadTrack(apm, "6uAjJ3m2ZIk");
-
             track.ifPresent(n -> {
-                player.displayClientMessage(new TextComponent(n.getInfo().title), false);
+                player.displayClientMessage(new TextComponent(n.getInfo().title + ":" + (System.currentTimeMillis() - st) + "ms"), false);
             });
+
         }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);

@@ -17,6 +17,5 @@ public class IamMusicPlayerForge {
 
     private void doClientStuff(FMLClientSetupEvent event) {
         IamMusicPlayerClient.init();
-
     }
 }
