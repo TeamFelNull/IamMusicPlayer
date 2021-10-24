@@ -3,6 +3,7 @@ package dev.felnull.imp.client.music;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
 import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.music.resource.MusicSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +13,9 @@ public class MusicEngine {
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
     private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
-    private final List<UUID> REMOVES = new ArrayList<>();
+    private final Map<UUID, MusicLoadThread> MUSIC_LOADS = new HashMap<>();
+    private final List<UUID> REMOVES_PLAYERS = new ArrayList<>();
+    private final List<UUID> REMOVE_LOADS = new ArrayList<>();
     private long lastTime;
     private long lastProsesTime;
 
@@ -21,7 +24,7 @@ public class MusicEngine {
     }
 
     public int getCurrentMusicPlayed() {
-        return MUSIC_PLAYERS.size();
+        return MUSIC_PLAYERS.size() + MUSIC_LOADS.size();
     }
 
     public int getMaxMusicPlayed() {
@@ -32,9 +35,47 @@ public class MusicEngine {
         return String.format("Musics: %d/%d %d ms", getCurrentMusicPlayed(), getMaxMusicPlayed(), lastProsesTime);
     }
 
+    public boolean playMusicPlayer(UUID id, long delay) {
+        synchronized (MUSIC_PLAYERS) {
+            if (!MUSIC_PLAYERS.containsKey(id))
+                return false;
+            var player = MUSIC_PLAYERS.get(id).player();
+            if (!player.isPlaying())
+                player.play(delay);
+        }
+        return true;
+    }
+
+    public boolean loadAddMusicPlayer(UUID id, MusicPlaybackInfo playbackInfo, MusicSource source, long position, MusicLoadThread.MusicLoadResultListener listener) {
+        synchronized (MUSIC_LOADS) {
+            if (getCurrentMusicPlayed() >= getMaxMusicPlayed() || MUSIC_LOADS.containsKey(id) || MUSIC_PLAYERS.containsKey(id))
+                return false;
+            var mt = new MusicLoadThread(source, position, (result, time, player, retry) -> {
+                if (result)
+                    addMusicPlayer(id, playbackInfo, player);
+                listener.onResult(result, time, player, retry);
+            });
+            MUSIC_LOADS.put(id, mt);
+            mt.start();
+        }
+        return true;
+    }
+
+    public boolean stopLoadMusicPlayer(UUID id) {
+        synchronized (MUSIC_LOADS) {
+            var load = MUSIC_LOADS.remove(id);
+            if (load != null) {
+                if (load.isAlive())
+                    load.interrupt();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean addMusicPlayer(UUID id, MusicPlaybackInfo playbackInfo, IMusicPlayer musicPlayer) {
         synchronized (MUSIC_PLAYERS) {
-            if (MUSIC_PLAYERS.size() >= getMaxMusicPlayed() || MUSIC_PLAYERS.containsKey(id))
+            if (getCurrentMusicPlayed() >= getMaxMusicPlayed() || MUSIC_PLAYERS.containsKey(id))
                 return false;
             MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, musicPlayer));
 
@@ -57,7 +98,7 @@ public class MusicEngine {
         return true;
     }
 
-    public boolean removeMusicPlayer(UUID id) {
+    public boolean stopMusicPlayer(UUID id) {
         synchronized (MUSIC_PLAYERS) {
             var rmPly = MUSIC_PLAYERS.remove(id);
             if (rmPly != null) {
@@ -69,9 +110,9 @@ public class MusicEngine {
         }
     }
 
-    public void removeAllMusicPlayer() {
+    public void stopAllMusicPlayer() {
         synchronized (MUSIC_PLAYERS) {
-            MUSIC_PLAYERS.forEach((n, m) -> REMOVES.add(n));
+            MUSIC_PLAYERS.forEach((n, m) -> REMOVES_PLAYERS.add(n));
         }
     }
 
@@ -82,17 +123,27 @@ public class MusicEngine {
     public void tick(boolean paused) {
         lastTime = System.currentTimeMillis();
         synchronized (MUSIC_PLAYERS) {
-            REMOVES.forEach(this::removeMusicPlayer);
-            REMOVES.clear();
+            REMOVES_PLAYERS.forEach(this::stopMusicPlayer);
+            REMOVES_PLAYERS.clear();
 
             MUSIC_PLAYERS.forEach((n, m) -> {
                 if (m.player().isFinished()) {
-                    REMOVES.add(n);
+                    REMOVES_PLAYERS.add(n);
                     return;
                 }
                 var tracker = IMPMusicTrackers.getTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
-                m.player().setCoordinatePosition(tracker.getPosition().get());
+                var ps = tracker.getPosition().get();
+                m.player().setCoordinatePosition(ps);
+                m.player().setFixedSound(ps == null);
                 m.player().update(m.playbackInfo());
+            });
+        }
+        synchronized (MUSIC_LOADS) {
+            REMOVE_LOADS.forEach(this::stopLoadMusicPlayer);
+            REMOVE_LOADS.clear();
+            MUSIC_LOADS.forEach((n, m) -> {
+                if (!m.isAlive())
+                    REMOVE_LOADS.add(n);
             });
         }
         lastProsesTime = System.currentTimeMillis() - lastTime;

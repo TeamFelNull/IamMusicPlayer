@@ -6,10 +6,14 @@ import net.minecraft.resources.ResourceLocation;
 public class MusicPlaybackInfo {
     private final ResourceLocation tracker;
     private final CompoundTag trackerTag;
+    private final float volume;
+    private final float range;
 
-    public MusicPlaybackInfo(ResourceLocation tracker, CompoundTag trackerTag) {
+    public MusicPlaybackInfo(ResourceLocation tracker, CompoundTag trackerTag, float volume, float range) {
         this.tracker = tracker;
         this.trackerTag = trackerTag;
+        this.volume = volume;
+        this.range = range;
     }
 
     public CompoundTag getTrackerTag() {
@@ -21,10 +25,10 @@ public class MusicPlaybackInfo {
     }
 
     public float getVolume() {
-        return 0;
+        return volume;
     }
 
     public float getRange() {
-        return 0;
+        return range;
     }
 }

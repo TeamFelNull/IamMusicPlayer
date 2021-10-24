@@ -5,7 +5,7 @@ import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.world.phys.Vec3;
 
 public interface IMusicPlayer {
-    void ready(long position) throws Exception;
+    void load(long position) throws Exception;
 
     void play(long delay);
 
@@ -36,4 +36,6 @@ public interface IMusicPlayer {
     long getPosition();
 
     MusicSource getMusicSource();
+
+    void setFixedSound(boolean enable);
 }

@@ -75,7 +75,6 @@ dependencies {
     shadowCommon('net.iharder:base64:2.3.9')
 
 
-    forgeDependencies 'com.github.sealedtx:java-youtube-downloader:2.4.3'
 }
 
 processResources {
@@ -92,7 +91,7 @@ shadowJar {
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
 
-   // relocate 'org.slf4j', 'dev.felnull.imp.libs.org.slf4j'
+    // relocate 'org.slf4j', 'dev.felnull.imp.libs.org.slf4j'
     relocate 'certificates', 'dev.felnull.imp.libs.certificates'
     relocate 'com.fasterxml', 'dev.felnull.imp.libs.com.fasterxml'
     relocate 'org.jsoup', 'dev.felnull.imp.libs.org.jsoup'

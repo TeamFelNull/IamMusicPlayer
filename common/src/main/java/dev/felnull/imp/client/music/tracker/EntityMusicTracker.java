@@ -12,7 +12,7 @@ public class EntityMusicTracker implements IMusicTracker {
     private Vec3 pos;
 
     public EntityMusicTracker(CompoundTag tag) {
-        this(new Vec3(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")), tag.getInt("id"));
+        this(new Vec3(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")), tag.getInt("id"));
     }
 
     public EntityMusicTracker(Vec3 pos, int entityID) {
@@ -23,9 +23,11 @@ public class EntityMusicTracker implements IMusicTracker {
     @Override
     public Supplier<Vec3> getPosition() {
         return () -> {
-            var en = mc.level.getEntity(entityID);
-            if (en != null)
-                this.pos = en.position();
+            if (mc.level != null) {
+                var en = mc.level.getEntity(entityID);
+                if (en != null)
+                    this.pos = en.position();
+            }
             return pos;
         };
     }

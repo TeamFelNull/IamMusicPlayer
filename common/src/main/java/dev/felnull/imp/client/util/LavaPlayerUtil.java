@@ -13,32 +13,37 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerUtil {
+    public static Optional<AudioTrack> loadTrackNonThrow(AudioPlayerManager audioPlayerManager, String identifier) {
+        try {
+            return loadTrack(audioPlayerManager, identifier);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
 
-    public static Optional<AudioTrack> loadTrack(AudioPlayerManager audioPlayerManager, String identifier) {
+    public static Optional<AudioTrack> loadTrack(AudioPlayerManager audioPlayerManager, String identifier) throws ExecutionException, InterruptedException {
         AtomicReference<AudioTrack> audioTrack = new AtomicReference<>();
         AtomicReference<FriendlyException> fe = new AtomicReference<>();
-        try {
-            audioPlayerManager.loadItem(identifier, new AudioLoadResultHandler() {
-                @Override
-                public void trackLoaded(AudioTrack track) {
-                    audioTrack.set(track);
-                }
+        audioPlayerManager.loadItem(identifier, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                audioTrack.set(track);
+            }
 
-                @Override
-                public void playlistLoaded(AudioPlaylist playlist) {
-                }
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+            }
 
-                @Override
-                public void noMatches() {
-                }
+            @Override
+            public void noMatches() {
+            }
 
-                @Override
-                public void loadFailed(FriendlyException ex) {
-                    fe.set(ex);
-                }
-            }).get();
-        } catch (InterruptedException | ExecutionException ignored) {
-        }
+            @Override
+            public void loadFailed(FriendlyException ex) {
+                fe.set(ex);
+            }
+        }).get();
         if (fe.get() != null)
             throw fe.get();
         return Optional.ofNullable(audioTrack.get());

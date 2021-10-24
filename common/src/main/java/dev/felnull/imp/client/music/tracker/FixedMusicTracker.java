@@ -9,7 +9,7 @@ public class FixedMusicTracker implements IMusicTracker {
     private final Vec3 pos;
 
     public FixedMusicTracker(CompoundTag tag) {
-        this(new Vec3(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")));
+        this(new Vec3(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")));
     }
 
     public FixedMusicTracker(Vec3 pos) {

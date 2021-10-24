@@ -1,25 +1,23 @@
 package dev.felnull.imp.music.resource;
 
-import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.otyacraftengine.data.ITAGSerializable;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 
 public class MusicSource implements ITAGSerializable {
-    public static final MusicSource EMPTY = new MusicSource(new ResourceLocation(IamMusicPlayer.MODID, "empty"), "", 0);
-    private ResourceLocation loader;
+    public static final MusicSource EMPTY = new MusicSource("", "", 0);
+    private String loaderType;
     private String identifier;
     private long duration;
 
-    public MusicSource(ResourceLocation loader, String identifier, long duration) {
-        this.loader = loader;
+    public MusicSource(String loaderType, String identifier, long duration) {
+        this.loaderType = loaderType;
         this.identifier = identifier;
         this.duration = duration;
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        tag.putString("Loader", loader.toString());
+        tag.putString("LoaderType", loaderType);
         tag.putString("Identifier", identifier);
         tag.putLong("Duration", duration);
         return tag;
@@ -27,7 +25,7 @@ public class MusicSource implements ITAGSerializable {
 
     @Override
     public void load(CompoundTag tag) {
-        this.loader = new ResourceLocation(tag.getString("Loader"));
+        this.loaderType = tag.getString("LoaderType");
         this.identifier = tag.getString("Identifier");
         this.duration = tag.getLong("Duration");
     }
@@ -36,8 +34,8 @@ public class MusicSource implements ITAGSerializable {
         return duration;
     }
 
-    public ResourceLocation getLoader() {
-        return loader;
+    public String getLoaderType() {
+        return loaderType;
     }
 
     public String getIdentifier() {
