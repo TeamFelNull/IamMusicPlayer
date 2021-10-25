@@ -55,10 +55,11 @@ dependencies {
     forgeDependencies('org.apache.httpcomponents:httpclient:4.5.13')
     forgeDependencies('com.fasterxml.jackson.core:jackson-core:2.13.0')
     forgeDependencies('com.fasterxml.jackson.core:jackson-databind:2.13.0')
-    forgeDependencies('com.sedmelluq:lavaplayer-natives:1.3.14')
+    forgeDependencies(implementation('com.sedmelluq:lavaplayer-natives:1.3.14'))
     forgeDependencies('commons-io:commons-io:2.6')
     forgeDependencies('org.jsoup:jsoup:1.12.1')
     forgeDependencies('net.iharder:base64:2.3.9')
+    //forgeDependencies group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha5'
 
     shadowCommon('com.sedmelluq:lavaplayer:1.3.78') {
         transitive = false
@@ -73,7 +74,7 @@ dependencies {
     shadowCommon('commons-io:commons-io:2.6')
     shadowCommon('org.jsoup:jsoup:1.12.1')
     shadowCommon('net.iharder:base64:2.3.9')
-
+    //  shadowCommon group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha5'
 
 }
 

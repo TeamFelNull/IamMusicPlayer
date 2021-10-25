@@ -11,16 +11,20 @@ import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LavaALMusicPlayer implements IMusicPlayer {
+    private static final Logger LOGGER = LogManager.getLogger(LavaALMusicPlayer.class);
     private final MusicSource musicSource;
     private final int source;
     private final AudioPlayerManager audioPlayerManager;
@@ -116,9 +120,28 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void destroy() {
+        stopped = true;
+
         startTime = 0;
         startPosition = 0;
+        if (this.stream != null) {
+            try {
+                this.stream.close();
+            } catch (IOException var2) {
+                LOGGER.error("Failed to close audio stream", var2);
+            }
+            this.stream = null;
+        }
+        audioPlayer.destroy();
 
+        if (loaded) {
+            AL11.alSourceStop(source);
+            AL11.alDeleteSources(source);
+            List<Integer> bffs = new ArrayList<>(buffers);
+            bffs.forEach(AL11::alDeleteBuffers);
+            buffers.clear();
+            checkError();
+        }
     }
 
     private int getPlayState() {
@@ -270,7 +293,6 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     private int audioFormatToOpenAl(AudioFormat audioFormat) {
 
         AudioFormat.Encoding encoding = audioFormat.getEncoding();
-        int i = audioFormat.getChannels();
         int j = audioFormat.getSampleSizeInBits();
         if (encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED) || encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
             return getOpenALFormat(spatial ? 1 : 2, j);
