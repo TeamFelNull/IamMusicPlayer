@@ -25,6 +25,7 @@ import java.util.List;
 
 public class LavaALMusicPlayer implements IMusicPlayer {
     private static final Logger LOGGER = LogManager.getLogger(LavaALMusicPlayer.class);
+    private static final Minecraft mc = Minecraft.getInstance();
     private final MusicSource musicSource;
     private final int source;
     private final AudioPlayerManager audioPlayerManager;
@@ -38,7 +39,6 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     private final List<Integer> buffers = new ArrayList<>();
     private float ang;
     private int trig;
-    private boolean stopped;
     private boolean loaded;
     private Vec3 pos = Vec3.ZERO;
     private boolean fixed;
@@ -49,6 +49,8 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     private long pausedTime;
     private boolean firstStart;
     private float noSpatialVolume;
+    private LavaLoadThread loadThread;
+    private long lastLavaLoad;
 
     public LavaALMusicPlayer(MusicSource musicSource, AudioPlayerManager audioPlayerManager, AudioDataFormat audioFormat, boolean spatial) {
         this.musicSource = musicSource;
@@ -82,18 +84,12 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
         for (int i = 0; i < 500; i++) {
             if (stream.read(buffer) >= 0) {
-                int bff = AL11.alGenBuffers();
-                ang = fillBuffer(ang, pcm);
-
-                int formatId = audioFormatToOpenAl(format);
-                AL11.alBufferData(bff, formatId, getBuffer(buffer), (int) format.getSampleRate() * (spatial ? 2 : 1));
-                buffers.add(bff);
-                AL11.alSourceQueueBuffers(source, bff);
+                lavaLoad(format);
             }
         }
 
-        LoadThread lt = new LoadThread();
-        lt.start();
+        loadThread = new LavaLoadThread();
+        loadThread.start();
 
         loaded = true;
     }
@@ -120,7 +116,8 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void destroy() {
-        stopped = true;
+        if (loadThread != null)
+            loadThread.interrupt();
 
         startTime = 0;
         startPosition = 0;
@@ -182,7 +179,11 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     @Override
     public void setCoordinatePosition(Vec3 vec3) {
         if (vec3 == null)
-            vec3 = Minecraft.getInstance().player.position();
+            if (mc.player != null) {
+                vec3 = mc.player.position();
+            } else {
+                vec3 = Vec3.ZERO;
+            }
         this.pos = vec3;
         AL11.alSource3f(source, AL11.AL_POSITION, (float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
@@ -219,6 +220,13 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
         if (!spatial)
             AL11.alSourcef(source, AL11.AL_GAIN, SoundMath.calculatePseudoAttenuation(pos, range, noSpatialVolume));
+
+
+        if (getPosition() - lastLavaLoad >= 20000 && loadThread == null) {
+            lastLavaLoad = getPosition();
+            loadThread = new LavaLoadThread();
+            loadThread.start();
+        }
 
     }
 
@@ -321,40 +329,39 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         return AL11.AL_FORMAT_MONO16;
     }
 
-    public class LoadThread extends Thread {
-        public LoadThread() {
-            setName("LavaPlayer Load Thread");
+    private class LavaLoadThread extends Thread {
+        private LavaLoadThread() {
+            setName("LavaPlayer Load Thread : " + musicSource.getIdentifier());
         }
 
         @Override
         public void run() {
             try {
-                while (stream.read(buffer) >= 0) {
-                    if (stopped)
-                        return;
-                    int b = AL11.alGenBuffers();
-                    if (stopped)
-                        return;
-                    ang = fillBuffer(ang, pcm);
-                    if (stopped)
-                        return;
-                    AudioFormat format = AudioDataFormatTools.toAudioFormat(audioFormat);
-                    if (stopped)
-                        return;
-                    int formatId = audioFormatToOpenAl(format);
-                    if (stopped)
-                        return;
-                    AL11.alBufferData(b, formatId, getBuffer(buffer), (int) format.getSampleRate() * (spatial ? 2 : 1));
-                    if (stopped)
-                        return;
-                    AL11.alSourceQueueBuffers(source, b);
-                    if (stopped)
-                        return;
-                    buffers.add(b);
+                AudioFormat format = AudioDataFormatTools.toAudioFormat(audioFormat);
+                for (int i = 0; i < 500 * 6; i++) {
+                    try {
+                        if (stream.read(buffer) >= 0 && !isInterrupted()) {
+                            lavaLoad(format);
+                        } else {
+                            break;
+                        }
+                    } catch (Exception ex) {
+                        break;
+                    }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            loadThread = null;
         }
+    }
+
+    private synchronized void lavaLoad(AudioFormat format) {
+        int b = AL11.alGenBuffers();
+        ang = fillBuffer(ang, pcm);
+        int formatId = audioFormatToOpenAl(format);
+        AL11.alBufferData(b, formatId, getBuffer(buffer), (int) format.getSampleRate() * (spatial ? 2 : 1));
+        AL11.alSourceQueueBuffers(source, b);
+        buffers.add(b);
     }
 }

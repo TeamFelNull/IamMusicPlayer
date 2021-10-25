@@ -9,8 +9,6 @@ import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.player.LavaALMusicPlayer;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.MusicSource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -29,7 +27,7 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicSource source) {
-        return new LavaALMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, false);
+        return new LavaALMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, true);
     }
 
     @Override

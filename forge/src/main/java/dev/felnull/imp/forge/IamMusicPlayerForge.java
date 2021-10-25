@@ -13,8 +13,7 @@ public class IamMusicPlayerForge {
         EventBuses.registerModEventBus(IamMusicPlayer.MODID, FMLJavaModLoadingContext.get().getModEventBus());
         IamMusicPlayer.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        System.out.println(IamMusicPlayer.class.getResourceAsStream("/natives/win-x86-64/connector.dll"));
-        System.out.println("test");
+
     }
 
     private void doClientStuff(FMLClientSetupEvent event) {
