@@ -48,7 +48,7 @@ public class TestSoundItem extends Item {
                     tag.putDouble("y", p.y);
                     tag.putDouble("z", p.z);
                     tag.putInt("id", c.getId());
-                    var plb = new MusicPlaybackInfo(MusicPlayManager.ENTITY_TRACKER, tag, 1, 10);
+                    var plb = new MusicPlaybackInfo(MusicPlayManager.ENTITY_TRACKER, tag, 1, 30);
                     var ms = new MusicSource("youtube", idi, track.get().getDuration());
                     me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
                         System.out.println(result + ":" + time + ":" + retry);

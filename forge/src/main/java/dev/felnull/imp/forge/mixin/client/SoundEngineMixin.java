@@ -28,4 +28,9 @@ public class SoundEngineMixin {
     private void reload(CallbackInfo ci) {
         MusicEngine.getInstance().reload();
     }
+
+    @Inject(method = "stopAll", at = @At("HEAD"))
+    private void stopAll(CallbackInfo ci) {
+        MusicEngine.getInstance().stop();
+    }
 }

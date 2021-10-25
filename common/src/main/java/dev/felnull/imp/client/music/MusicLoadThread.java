@@ -3,6 +3,7 @@ package dev.felnull.imp.client.music;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loader.IMusicLoader;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
+import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,12 +11,14 @@ import org.apache.logging.log4j.Logger;
 public class MusicLoadThread extends Thread {
     private static final Logger LOGGER = LogManager.getLogger(MusicLoadThread.class);
     private final MusicSource source;
+    private final MusicPlaybackInfo playbackInfo;
     private final long position;
     private final MusicLoadResultListener listener;
 
-    protected MusicLoadThread(MusicSource source, long position, MusicLoadResultListener listener) {
+    protected MusicLoadThread(MusicSource source, MusicPlaybackInfo playbackInfo, long position, MusicLoadResultListener listener) {
         this.setName("Music Loader Thread: " + source.getIdentifier());
         this.source = source;
+        this.playbackInfo = playbackInfo;
         this.position = position;
         this.listener = listener;
     }
@@ -52,6 +55,22 @@ public class MusicLoadThread extends Thread {
             LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
             listener.onResult(false, System.currentTimeMillis() - time, null, true);
         }
+    }
+
+    public MusicPlaybackInfo getPlaybackInfo() {
+        return playbackInfo;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public MusicSource getSource() {
+        return source;
+    }
+
+    public MusicLoadResultListener getListener() {
+        return listener;
     }
 
     public static interface MusicLoadResultListener {

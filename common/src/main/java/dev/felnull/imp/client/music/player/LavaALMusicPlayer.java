@@ -19,6 +19,7 @@ import org.lwjgl.openal.AL11;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +84,12 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         AudioFormat format = AudioDataFormatTools.toAudioFormat(audioFormat);
 
         for (int i = 0; i < 500; i++) {
-            if (stream.read(buffer) >= 0) {
-                lavaLoad(format);
+            try {
+                if (stream.read(buffer) >= 0) {
+                    lavaLoad(format);
+                }
+            } catch (InterruptedIOException ex) {
+                return;
             }
         }
 
@@ -137,7 +142,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
             List<Integer> bffs = new ArrayList<>(buffers);
             bffs.forEach(AL11::alDeleteBuffers);
             buffers.clear();
-            checkError();
+            //checkError();
         }
     }
 
