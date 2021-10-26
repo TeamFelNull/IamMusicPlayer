@@ -14,7 +14,7 @@
     "sources": "https://github.com/TeamFelnull/IamMusicPlayer"
   },
   "license": "GNU LGPLv3",
-  "icon": "assets/examplemod/icon.png",
+  "icon": "assets/iammusicplayer/logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -29,7 +29,8 @@
     "fabric": "*",
     "minecraft": ">=1.16.4",
     "architectury": ">=1.1.55",
-    "cloth-config2": ">=5.0.38"
+    "cloth-config2": ">=5.0.38",
+    "otyacraftengine": ">=2.0-build3"
   },
   "mixins": [
     "iammusicplayer.mixins.json"

@@ -7,6 +7,8 @@ import net.minecraft.world.phys.Vec3;
 public interface IMusicPlayer {
     void load(long position) throws Exception;
 
+    boolean isLoadSuccess();
+
     void play(long delay);
 
     void stop();

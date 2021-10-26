@@ -14,6 +14,8 @@ public class MusicLoadThread extends Thread {
     private final MusicPlaybackInfo playbackInfo;
     private final long position;
     private final MusicLoadResultListener listener;
+    private LoadTimer timer;
+    private boolean timeOut;
 
     protected MusicLoadThread(MusicSource source, MusicPlaybackInfo playbackInfo, long position, MusicLoadResultListener listener) {
         this.setName("Music Loader Thread: " + source.getIdentifier());
@@ -29,12 +31,20 @@ public class MusicLoadThread extends Thread {
         IMusicLoader loader = null;
         for (IMusicLoader ldr : IMPMusicLoaders.getLoaders()) {
             try {
-                if (ldr.canLoad(source)) {
+                timer = new LoadTimer();
+                timer.start();
+                boolean lod = ldr.canLoad(source);
+                timer.interrupt();
+                timer = null;
+                if (lod) {
                     loader = ldr;
                     break;
                 }
             } catch (InterruptedException ex) {
-                return;
+                if (!timeOut)
+                    return;
+                LOGGER.error("Load check time out: " + source.getIdentifier());
+                timeOut = false;
             } catch (Exception ignored) {
             }
         }
@@ -46,9 +56,20 @@ public class MusicLoadThread extends Thread {
         IMusicPlayer player = null;
         try {
             player = loader.createMusicPlayer(source);
+            timer = new LoadTimer();
+            timer.start();
             player.load(position);
+            timer.interrupt();
+            timer = null;
+            if (!player.isLoadSuccess())
+                throw new IllegalStateException("Load failed");
             listener.onResult(true, System.currentTimeMillis() - time, player, false);
         } catch (InterruptedException ignored) {
+            if (timeOut) {
+                LOGGER.error("Load time out: " + source.getIdentifier());
+                listener.onResult(false, System.currentTimeMillis() - time, null, false);
+            }
+            player.destroy();
         } catch (Exception ex) {
             if (player != null)
                 player.destroy();
@@ -75,5 +96,17 @@ public class MusicLoadThread extends Thread {
 
     public static interface MusicLoadResultListener {
         void onResult(boolean result, long time, IMusicPlayer player, boolean retry);
+    }
+
+    private class LoadTimer extends Thread {
+        @Override
+        public void run() {
+            try {
+                Thread.sleep(15000);
+                timeOut = true;
+                MusicLoadThread.this.interrupt();
+            } catch (InterruptedException ignored) {
+            }
+        }
     }
 }

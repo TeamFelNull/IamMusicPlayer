@@ -27,7 +27,7 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicSource source) {
-        return new LavaALMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, true);
+        return new LavaALMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, false);
     }
 
     @Override
@@ -35,7 +35,7 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
         if (!loaderType.equals(source.getLoaderType()))
             return false;
 
-        Optional<AudioTrack> track = LavaPlayerUtil.loadTrack(audioPlayerManager, source.getIdentifier());
+        Optional<AudioTrack> track = LavaPlayerUtil.loadCashedTrack(source.getLoaderType(), audioPlayerManager, source.getIdentifier(), false);
         return track.isPresent() && !track.get().getInfo().isStream;
     }
 }

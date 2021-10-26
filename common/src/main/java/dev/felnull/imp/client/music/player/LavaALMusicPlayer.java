@@ -65,7 +65,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     @Override
     public void load(long position) throws Exception {
         startPosition = position;
-        var track = LavaPlayerUtil.loadTrack(audioPlayerManager, musicSource.getIdentifier());
+        var track = LavaPlayerUtil.loadCashedTrack(musicSource.getLoaderType(), audioPlayerManager, musicSource.getIdentifier(), true);
         if (track.isEmpty())
             throw new IllegalStateException("Could not load");
 
@@ -75,7 +75,6 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         stream = AudioPlayerInputStream.createStream(audioPlayer, audioFormat, audioFormat.frameDuration(), false);
 
         stereo = AudioDataFormatTools.toAudioFormat(audioFormat).getChannels() >= 2;
-
         AL11.alSourcef(source, AL11.AL_PITCH, 1f);
         AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_FALSE);
         AL11.alSourcei(source, AL11.AL_LOOPING, AL11.AL_FALSE);
@@ -97,6 +96,11 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         loadThread.start();
 
         loaded = true;
+    }
+
+    @Override
+    public boolean isLoadSuccess() {
+        return loaded;
     }
 
     @Override

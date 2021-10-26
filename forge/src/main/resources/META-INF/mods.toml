@@ -41,3 +41,10 @@ mandatory = true
 versionRange = "[5.0.38,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "otyacraftengine"
+mandatory = true
+versionRange = "[2.0-build3,)"
+ordering = "AFTER"
+side = "BOTH"

@@ -8,18 +8,35 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerUtil {
+    private static final Map<CashEntry, AudioTrack> TRACK_CASH = new HashMap<>();
+
+    public static Optional<AudioTrack> loadCashedTrack(String loadType, AudioPlayerManager audioPlayerManager, String identifier, boolean remove) throws ExecutionException, InterruptedException {
+        CashEntry ce = new CashEntry(loadType, identifier);
+        var track = TRACK_CASH.get(ce);
+        if (track != null) {
+            if (remove)
+                TRACK_CASH.remove(ce);
+            return Optional.of(track);
+        }
+        var lt = loadTrack(audioPlayerManager, identifier);
+        lt.ifPresent(n -> TRACK_CASH.put(ce, n));
+        return lt;
+    }
+
     public static Optional<AudioTrack> loadTrackNonThrow(AudioPlayerManager audioPlayerManager, String identifier) {
         try {
             return loadTrack(audioPlayerManager, identifier);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return null;
+        return Optional.empty();
     }
 
     public static Optional<AudioTrack> loadTrack(AudioPlayerManager audioPlayerManager, String identifier) throws ExecutionException, InterruptedException {
@@ -56,6 +73,9 @@ public class LavaPlayerUtil {
         audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
         return audioPlayerManager;
+    }
+
+    private static record CashEntry(String loadType, String str) {
     }
 
 }
