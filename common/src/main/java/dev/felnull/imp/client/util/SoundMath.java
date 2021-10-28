@@ -1,13 +1,14 @@
 package dev.felnull.imp.client.util;
 
+import dev.felnull.imp.IamMusicPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.AL11;
 
 public class SoundMath {
-    /*public static float calculateVolume(float playerVolume) {
+    public static float calculateVolume(float playerVolume) {
         return Mth.clamp(playerVolume * IamMusicPlayer.CONFIG.volume, 0.0F, 1.0F);
-    }*/
+    }
 
     public static float calculatePseudoAttenuation(Vec3 position, float range, float volume) {
         float[] listenerX = new float[1];

@@ -22,7 +22,7 @@ public class LavaPlayerUtil {
         var track = TRACK_CASH.get(ce);
         if (track != null) {
             if (remove)
-                TRACK_CASH.remove(ce);
+                TRACK_CASH.put(ce, TRACK_CASH.get(ce).makeClone());
             return Optional.of(track);
         }
         var lt = loadTrack(audioPlayerManager, identifier);

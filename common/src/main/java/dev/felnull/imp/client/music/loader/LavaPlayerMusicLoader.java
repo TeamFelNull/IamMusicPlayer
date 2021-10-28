@@ -14,9 +14,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class LavaPlayerMusicLoader implements IMusicLoader {
-    private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
-    private final String loaderType;
-    private final AudioPlayerManager audioPlayerManager;
+    protected static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
+    protected final String loaderType;
+    protected final AudioPlayerManager audioPlayerManager;
 
     public LavaPlayerMusicLoader(String loaderType, AudioSourceManager... sourceManagers) {
         this.loaderType = loaderType;
@@ -27,7 +27,7 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
 
     @Override
     public IMusicPlayer createMusicPlayer(MusicSource source) {
-        return new LavaALMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, false);
+        return new LavaALMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, isSpatial());
     }
 
     @Override
@@ -37,5 +37,9 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
 
         Optional<AudioTrack> track = LavaPlayerUtil.loadCashedTrack(source.getLoaderType(), audioPlayerManager, source.getIdentifier(), false);
         return track.isPresent() && !track.get().getInfo().isStream;
+    }
+
+    protected boolean isSpatial() {
+        return false;
     }
 }

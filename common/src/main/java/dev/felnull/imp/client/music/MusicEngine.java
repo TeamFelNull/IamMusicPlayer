@@ -2,8 +2,10 @@ package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
+import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,10 +16,15 @@ public class MusicEngine {
     private static final MusicEngine INSTANCE = new MusicEngine();
     private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
     private final Map<UUID, MusicLoadThread> MUSIC_LOADS = new HashMap<>();
+    private final Map<UUID, Long> LAST_SUBTITLE = new HashMap<>();
     private final List<UUID> REMOVES_PLAYERS = new ArrayList<>();
     private final List<UUID> REMOVE_LOADS = new ArrayList<>();
+    private final List<UnPauseStartEntry> UNPAUSES_STARTS = new ArrayList<>();
+    private final List<Component> SUBTITLES = new ArrayList<>();
     private long lastTime;
     private long lastProsesTime;
+    private boolean pause;
+    private boolean reloading;
 
     public static MusicEngine getInstance() {
         return INSTANCE;
@@ -31,11 +38,20 @@ public class MusicEngine {
         return 8;
     }
 
+    public boolean isReloading() {
+        return reloading;
+    }
+
     public String getDebugString() {
         return String.format("Musics: %d/%d %d ms", getCurrentMusicPlayed(), getMaxMusicPlayed(), lastProsesTime);
     }
 
     public boolean playMusicPlayer(UUID id, long delay) {
+        if (pause) {
+            UNPAUSES_STARTS.add(new UnPauseStartEntry(id, delay));
+            return true;
+        }
+
         synchronized (MUSIC_PLAYERS) {
             if (!MUSIC_PLAYERS.containsKey(id))
                 return false;
@@ -75,11 +91,11 @@ public class MusicEngine {
 
     public boolean addMusicPlayer(UUID id, MusicPlaybackInfo playbackInfo, IMusicPlayer musicPlayer) {
         synchronized (MUSIC_PLAYERS) {
-            if (getCurrentMusicPlayed() >= getMaxMusicPlayed() || MUSIC_PLAYERS.containsKey(id))
+            if ((getCurrentMusicPlayed() >= getMaxMusicPlayed() && !MUSIC_LOADS.containsKey(id)) || MUSIC_PLAYERS.containsKey(id))
                 return false;
             MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, musicPlayer));
 
-            musicPlayer.setVolume(playbackInfo.getVolume());
+            musicPlayer.setVolume(SoundMath.calculateVolume(playbackInfo.getVolume()));
             musicPlayer.setRange(playbackInfo.getRange());
         }
         return true;
@@ -92,7 +108,7 @@ public class MusicEngine {
             MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, MUSIC_PLAYERS.get(id).player()));
 
             var player = MUSIC_PLAYERS.get(id).player();
-            player.setVolume(playbackInfo.getVolume());
+            player.setVolume(SoundMath.calculateVolume(playbackInfo.getVolume()));
             player.setRange(playbackInfo.getRange());
         }
         return true;
@@ -101,6 +117,7 @@ public class MusicEngine {
     public boolean stopMusicPlayer(UUID id) {
         synchronized (MUSIC_PLAYERS) {
             var rmPly = MUSIC_PLAYERS.remove(id);
+            LAST_SUBTITLE.remove(id);
             if (rmPly != null) {
                 rmPly.player().stop();
                 rmPly.player().destroy();
@@ -132,7 +149,8 @@ public class MusicEngine {
     }
 
     public void reload() {
-        LOGGER.info("Music Engine Start");
+        LOGGER.info("Music engine started");
+        reloading = true;
         Map<UUID, MusicReloadEntry> RELOADS = new HashMap<>();
         synchronized (MUSIC_LOADS) {
             MUSIC_LOADS.forEach((n, m) -> RELOADS.put(n, new MusicReloadEntry(m.getPlaybackInfo(), m.getSource(), m.getPosition(), m.getListener())));
@@ -162,6 +180,7 @@ public class MusicEngine {
                 playMusicPlayer(n, delay);
             }
         }));
+        reloading = false;
     }
 
     public void tick(boolean paused) {
@@ -169,19 +188,26 @@ public class MusicEngine {
         synchronized (MUSIC_PLAYERS) {
             REMOVES_PLAYERS.forEach(this::stopMusicPlayer);
             REMOVES_PLAYERS.clear();
-
+            SUBTITLES.clear();
             MUSIC_PLAYERS.forEach((n, m) -> {
                 if (m.player().isFinished()) {
                     REMOVES_PLAYERS.add(n);
                     return;
                 }
-                var tracker = IMPMusicTrackers.getTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
+                var tracker = IMPMusicTrackers.createTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
                 if (tracker != null) {
                     var ps = tracker.getPosition().get();
                     m.player().setCoordinatePosition(ps);
                     m.player().setFixedSound(ps == null);
                 }
                 m.player().update(m.playbackInfo());
+                var sub = m.player().getSubtitle();
+                if (m.player().isPlaying() && sub != null) {
+                    long pos = m.player().getPosition();
+                    long lst = LAST_SUBTITLE.containsKey(n) ? LAST_SUBTITLE.get(n) : 0;
+                    SUBTITLES.addAll(sub.getSubtitle(lst, pos));
+                    LAST_SUBTITLE.put(n, pos);
+                }
             });
         }
         synchronized (MUSIC_LOADS) {
@@ -196,15 +222,23 @@ public class MusicEngine {
     }
 
     public void pause() {
+        this.pause = true;
         synchronized (MUSIC_PLAYERS) {
             MUSIC_PLAYERS.forEach((n, m) -> m.player().pause());
         }
     }
 
     public void resume() {
+        this.pause = false;
         synchronized (MUSIC_PLAYERS) {
             MUSIC_PLAYERS.forEach((n, m) -> m.player().unpause());
         }
+        UNPAUSES_STARTS.forEach(n -> playMusicPlayer(n.id(), n.delay()));
+        UNPAUSES_STARTS.clear();
+    }
+
+    public List<Component> getSubtitles() {
+        return SUBTITLES;
     }
 
     private static record MusicPlayEntry(MusicPlaybackInfo playbackInfo, IMusicPlayer player) {
@@ -213,4 +247,8 @@ public class MusicEngine {
     private static record MusicReloadEntry(MusicPlaybackInfo playbackInfo, MusicSource source, long position,
                                            MusicLoadThread.MusicLoadResultListener listener) {
     }
+
+    private static record UnPauseStartEntry(UUID id, long delay) {
+    }
+
 }

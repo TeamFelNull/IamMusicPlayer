@@ -22,6 +22,9 @@
     ],
     "client": [
       "dev.felnull.imp.fabric.client.IamMusicPlayerClientFabric"
+    ],
+    "modmenu": [
+      "dev.felnull.imp.fabric.integration.ModMenuIntegration"
     ]
   },
   "depends": {

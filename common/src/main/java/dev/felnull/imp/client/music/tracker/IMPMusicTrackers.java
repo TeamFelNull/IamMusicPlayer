@@ -21,7 +21,7 @@ public class IMPMusicTrackers {
         TRACKERS.put(location, tracker);
     }
 
-    public static IMusicTracker getTracker(ResourceLocation location, CompoundTag tag) {
+    public static IMusicTracker createTracker(ResourceLocation location, CompoundTag tag) {
         if (TRACKERS.containsKey(location))
             return TRACKERS.get(location).apply(tag);
         return null;

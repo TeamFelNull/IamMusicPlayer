@@ -3,6 +3,8 @@ package dev.felnull.imp.client.music;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loader.IMusicLoader;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
+import dev.felnull.imp.client.music.subtitle.IMPMusicSubtitles;
+import dev.felnull.imp.client.music.subtitle.IMusicSubtitle;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import org.apache.logging.log4j.LogManager;
@@ -63,19 +65,32 @@ public class MusicLoadThread extends Thread {
             timer = null;
             if (!player.isLoadSuccess())
                 throw new IllegalStateException("Load failed");
-            listener.onResult(true, System.currentTimeMillis() - time, player, false);
         } catch (InterruptedException ignored) {
             if (timeOut) {
                 LOGGER.error("Load time out: " + source.getIdentifier());
                 listener.onResult(false, System.currentTimeMillis() - time, null, false);
             }
             player.destroy();
+            return;
         } catch (Exception ex) {
             if (player != null)
                 player.destroy();
             LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
             listener.onResult(false, System.currentTimeMillis() - time, null, true);
+            return;
         }
+
+        try {
+            IMusicSubtitle subtitle = IMPMusicSubtitles.createSubtitle(source.getLoaderType(), source);
+            if (subtitle != null && subtitle.isExist()) {
+                subtitle.load();
+                player.setSubtitle(subtitle);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        listener.onResult(true, System.currentTimeMillis() - time, player, false);
     }
 
     public MusicPlaybackInfo getPlaybackInfo() {

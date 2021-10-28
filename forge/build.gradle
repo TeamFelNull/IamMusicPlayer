@@ -76,6 +76,11 @@ dependencies {
     shadowCommon('net.iharder:base64:2.3.9')
     //  shadowCommon group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha5'
 
+    forgeDependencies 'com.github.sealedtx:java-youtube-downloader:3.0.2'
+    shadowCommon 'com.github.sealedtx:java-youtube-downloader:3.0.2'
+
+    forgeDependencies "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
+    shadowCommon "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
 }
 
 processResources {
@@ -102,6 +107,9 @@ shadowJar {
     relocate 'com.sedmelluq.lava', 'dev.felnull.imp.libs.com.sedmelluq.lava'
     relocate 'org.apache.commons', 'dev.felnull.imp.libs.org.apache.commons'
     relocate 'org.apache.http', 'dev.felnull.imp.libs.org.apache.http'
+    relocate 'com.github', 'dev.felnull.imp.libs.com.github'
+    relocate 'com.alibaba', 'dev.felnull.imp.libs.com.alibaba'
+    relocate 'dev.felnull.fnjl', 'dev.felnull.imp.libs.dev.felnull.fnjl'
 }
 
 remapJar {

@@ -5,6 +5,8 @@ import com.sedmelluq.discord.lavaplayer.format.AudioDataFormatTools;
 import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.felnull.imp.client.music.subtitle.IMusicSubtitle;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -23,13 +25,15 @@ import java.io.InterruptedIOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class LavaALMusicPlayer implements IMusicPlayer {
     private static final Logger LOGGER = LogManager.getLogger(LavaALMusicPlayer.class);
     private static final Minecraft mc = Minecraft.getInstance();
-    private final MusicSource musicSource;
+    protected final MusicSource musicSource;
     private final int source;
-    private final AudioPlayerManager audioPlayerManager;
+    protected final AudioPlayerManager audioPlayerManager;
     private final AudioDataFormat audioFormat;
     private final AudioPlayer audioPlayer;
     private final boolean spatial;
@@ -52,6 +56,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     private float noSpatialVolume;
     private LavaLoadThread loadThread;
     private long lastLavaLoad;
+    private IMusicSubtitle subtitle;
 
     public LavaALMusicPlayer(MusicSource musicSource, AudioPlayerManager audioPlayerManager, AudioDataFormat audioFormat, boolean spatial) {
         this.musicSource = musicSource;
@@ -62,10 +67,14 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         this.spatial = spatial;
     }
 
+    protected Optional<AudioTrack> createTrack() throws ExecutionException, InterruptedException {
+        return LavaPlayerUtil.loadCashedTrack(musicSource.getLoaderType(), audioPlayerManager, musicSource.getIdentifier(), true);
+    }
+
     @Override
     public void load(long position) throws Exception {
         startPosition = position;
-        var track = LavaPlayerUtil.loadCashedTrack(musicSource.getLoaderType(), audioPlayerManager, musicSource.getIdentifier(), true);
+        var track = createTrack();
         if (track.isEmpty())
             throw new IllegalStateException("Could not load");
 
@@ -259,6 +268,16 @@ public class LavaALMusicPlayer implements IMusicPlayer {
             } else {
                 linearAttenuation(range);
             }
+    }
+
+    @Override
+    public void setSubtitle(IMusicSubtitle subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    @Override
+    public IMusicSubtitle getSubtitle() {
+        return subtitle;
     }
 
     private void linearAttenuation(float r) {
