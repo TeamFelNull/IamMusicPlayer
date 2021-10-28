@@ -121,6 +121,8 @@ public class LavaALMusicPlayer implements IMusicPlayer {
             startTime = System.currentTimeMillis();
             startPosition += delay;
             float secdelay = delay / 1000f;
+            if (!spatial)
+                AL11.alSourcef(source, AL11.AL_GAIN, 0);
             AL11.alSourcef(source, AL11.AL_SEC_OFFSET, secdelay);
             AL11.alSourcePlay(this.source);
             firstStart = true;
@@ -250,6 +252,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public long getPosition() {
+        //return (long) (AL11.alGetSourcef(source, AL11.AL_SEC_OFFSET) * 1000) + startPosition - pldelay;
         return firstStart ? (System.currentTimeMillis() - startTime + startPosition - pausedTime) : startPosition;
     }
 

@@ -136,7 +136,6 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
             if (nu)
                 break;
         }
-
         return currentSubs;
     }
 

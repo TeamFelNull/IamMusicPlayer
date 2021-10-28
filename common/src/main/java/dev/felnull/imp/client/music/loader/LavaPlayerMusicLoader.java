@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.player.LavaALMusicPlayer;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
@@ -40,6 +41,6 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
     }
 
     protected boolean isSpatial() {
-        return true;
+        return IamMusicPlayer.CONFIG.spatial;
     }
 }

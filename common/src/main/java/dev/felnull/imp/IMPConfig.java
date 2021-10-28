@@ -14,6 +14,9 @@ public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("client")
     public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
+
+    @ConfigEntry.Category("client")
+    public boolean spatial = true;
 /*
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("client")
