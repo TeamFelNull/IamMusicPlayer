@@ -25,6 +25,7 @@ public class MusicEngine {
     private long lastProsesTime;
     private boolean pause;
     private boolean reloading;
+    public boolean reloadFlag;
 
     public static MusicEngine getInstance() {
         return INSTANCE;
@@ -47,11 +48,12 @@ public class MusicEngine {
     }
 
     public boolean playMusicPlayer(UUID id, long delay) {
-        if (pause) {
-            UNPAUSES_STARTS.add(new UnPauseStartEntry(id, delay));
-            return true;
+        synchronized (UNPAUSES_STARTS) {
+            if (pause) {
+                UNPAUSES_STARTS.add(new UnPauseStartEntry(id, delay));
+                return true;
+            }
         }
-
         synchronized (MUSIC_PLAYERS) {
             if (!MUSIC_PLAYERS.containsKey(id))
                 return false;
@@ -115,6 +117,19 @@ public class MusicEngine {
     }
 
     public boolean stopMusicPlayer(UUID id) {
+        synchronized (UNPAUSES_STARTS) {
+            UnPauseStartEntry uss = null;
+            for (UnPauseStartEntry us : UNPAUSES_STARTS) {
+                if (us.id().equals(id)) {
+                    uss = us;
+                    break;
+                }
+            }
+            if (uss != null) {
+                UNPAUSES_STARTS.remove(uss);
+                return true;
+            }
+        }
         synchronized (MUSIC_PLAYERS) {
             var rmPly = MUSIC_PLAYERS.remove(id);
             LAST_SUBTITLE.remove(id);
@@ -140,12 +155,15 @@ public class MusicEngine {
     }
 
     public boolean isPlaying(UUID uuid) {
-        return MUSIC_PLAYERS.containsKey(uuid) && MUSIC_PLAYERS.get(uuid).player().isPlaying();
+        return (MUSIC_PLAYERS.containsKey(uuid) && MUSIC_PLAYERS.get(uuid).player().isPlaying()) || (pause && UNPAUSES_STARTS.stream().anyMatch(m -> m.id().equals(uuid))) || (pause && MUSIC_PLAYERS.get(uuid).player().isPaused());
     }
 
     public void stop() {
-        stopAllMusicLoad();
-        stopAllMusicPlayer();
+        if (!reloadFlag) {
+            stopAllMusicLoad();
+            stopAllMusicPlayer();
+        }
+        reloadFlag = false;
     }
 
     public void reload() {

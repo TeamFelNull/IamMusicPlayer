@@ -40,6 +40,6 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
     }
 
     protected boolean isSpatial() {
-        return false;
+        return true;
     }
 }

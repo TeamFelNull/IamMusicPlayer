@@ -86,7 +86,8 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
                         float dr = Float.parseFloat(att.getNamedItem("dur").getNodeValue());
                         String text = node2.getTextContent();
                         for (Component component : toComponent(text)) {
-                            sb.add(new SubtitleEntry((long) (st * 1000), (long) (dr * 1000), component));
+                            if (component != null)
+                                sb.add(new SubtitleEntry((long) (st * 1000), (long) (dr * 1000), component));
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -102,7 +103,8 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
         List<Component> ls = new ArrayList<>();
         String[] txts = text.split("\n");
         for (String txt : txts) {
-            ls.add(new TextComponent(toDisplayable(txt)));
+            if (!txt.isEmpty())
+                ls.add(new TextComponent(toDisplayable(txt)));
         }
         return ls;
     }
