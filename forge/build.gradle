@@ -81,6 +81,9 @@ dependencies {
 
     forgeDependencies "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowCommon "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
+
+    forgeDependencies 'org.jsoup:jsoup:1.14.3'
+    shadowCommon 'org.jsoup:jsoup:1.14.3'
 }
 
 processResources {

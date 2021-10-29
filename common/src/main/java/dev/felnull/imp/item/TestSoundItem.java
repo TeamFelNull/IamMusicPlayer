@@ -34,11 +34,13 @@ public class TestSoundItem extends Item {
             var idi = itemStack.getHoverName().getString();
             var track = LavaPlayerUtil.loadTrackNonThrow(apm, idi);
             var plb = new MusicPlaybackInfo(MusicPlayManager.FIXED_TRACKER, MusicPlayManager.createFixedTracker(player.position()), 1, 30);
-            var ms = new MusicSource("youtube", idi, track.get().getDuration());
-            me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
-                player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
-                me.playMusicPlayer(id, 0);
-            });
+            if (track.isPresent()) {
+                var ms = new MusicSource("youtube", idi, track.get().getDuration());
+                me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
+                    player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
+                    me.playMusicPlayer(id, 0);
+                });
+            }
         }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);

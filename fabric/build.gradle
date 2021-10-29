@@ -40,6 +40,7 @@ dependencies {
     shadowCommon 'com.sedmelluq:lavaplayer:1.3.78'
     shadowCommon 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowCommon "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
+    shadowCommon 'org.jsoup:jsoup:1.14.3'
 }
 
 processResources {

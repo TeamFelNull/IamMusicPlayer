@@ -3,14 +3,15 @@ package dev.felnull.imp.client.music.subtitle;
 import com.github.kiulian.downloader.downloader.request.RequestSubtitlesDownload;
 import com.github.kiulian.downloader.model.Extension;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
+import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.util.HTMLUtil;
 import dev.felnull.imp.client.util.YoutubeDownloaderUtil;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -101,25 +102,15 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
 
     private static List<Component> toComponent(String text) {
         List<Component> ls = new ArrayList<>();
+        text = FNStringUtil.decodeHTMLSpecialCharacter(text);
         String[] txts = text.split("\n");
         for (String txt : txts) {
             if (!txt.isEmpty())
-                ls.add(new TextComponent(toDisplayable(txt)));
+                ls.add(HTMLUtil.toComponent(txt));
         }
         return ls;
     }
 
-    private static String toDisplayable(String text) {
-        text = text.replace("\u200B", "");
-        text = text.replace("\u3000", " ");
-        text = text.replace("&lt;", "<");
-        text = text.replace("&gt;", ">");
-        text = text.replace("&amp;", "&");
-        text = text.replace("&quot;", "\"");
-        text = text.replace("&#39;", "'");
-        text = text.replace("&nbsp;", " ");
-        return text;
-    }
 
     @Override
     public List<Component> getSubtitle(long last, long current) {
