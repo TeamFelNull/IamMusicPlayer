@@ -1,11 +1,12 @@
 package dev.felnull.imp.client.music;
 
+import dev.felnull.imp.api.event.client.ClientMusicEvent;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
+import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
 import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
-import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,11 +17,10 @@ public class MusicEngine {
     private static final MusicEngine INSTANCE = new MusicEngine();
     private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
     private final Map<UUID, MusicLoadThread> MUSIC_LOADS = new HashMap<>();
-    private final Map<UUID, Long> LAST_SUBTITLE = new HashMap<>();
     private final List<UUID> REMOVES_PLAYERS = new ArrayList<>();
     private final List<UUID> REMOVE_LOADS = new ArrayList<>();
+    private final Map<UUID, Long> LAST_SUBTITLE = new HashMap<>();
     private final List<UnPauseStartEntry> UNPAUSES_STARTS = new ArrayList<>();
-    private final List<Component> SUBTITLES = new ArrayList<>();
     private long lastTime;
     private long lastProsesTime;
     private boolean pause;
@@ -206,7 +206,6 @@ public class MusicEngine {
         synchronized (MUSIC_PLAYERS) {
             REMOVES_PLAYERS.forEach(this::stopMusicPlayer);
             REMOVES_PLAYERS.clear();
-            SUBTITLES.clear();
             MUSIC_PLAYERS.forEach((n, m) -> {
                 if (m.player().isFinished()) {
                     REMOVES_PLAYERS.add(n);
@@ -223,7 +222,8 @@ public class MusicEngine {
                 if (m.player().isPlaying() && sub != null) {
                     long pos = m.player().getPosition();
                     long lst = LAST_SUBTITLE.containsKey(n) ? LAST_SUBTITLE.get(n) : 0;
-                    SUBTITLES.addAll(sub.getSubtitle(lst, pos));
+                    var subs = sub.getSubtitle(m.player(), m.playbackInfo(), lst, pos);
+                    subs.forEach(this::addSubtitle);
                     LAST_SUBTITLE.put(n, pos);
                 }
             });
@@ -255,8 +255,8 @@ public class MusicEngine {
         UNPAUSES_STARTS.clear();
     }
 
-    public List<Component> getSubtitles() {
-        return SUBTITLES;
+    public void addSubtitle(SubtitleEntry subtitle) {
+        ClientMusicEvent.ADD_SUBTITLE.invoker().add(subtitle);
     }
 
     private static record MusicPlayEntry(MusicPlaybackInfo playbackInfo, IMusicPlayer player) {

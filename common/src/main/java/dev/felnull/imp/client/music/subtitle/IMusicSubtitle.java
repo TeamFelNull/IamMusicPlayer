@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.music.subtitle;
 
-import net.minecraft.network.chat.Component;
+import dev.felnull.imp.client.music.player.IMusicPlayer;
+import dev.felnull.imp.music.MusicPlaybackInfo;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ public interface IMusicSubtitle {
 
     void load() throws Exception;
 
-    List<Component> getSubtitle(long last, long current);
+    List<SubtitleEntry> getSubtitle(IMusicPlayer player, MusicPlaybackInfo playbackInfo, long last, long current);
 }

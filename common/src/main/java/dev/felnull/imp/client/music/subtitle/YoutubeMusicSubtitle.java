@@ -6,8 +6,10 @@ import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
 import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.util.HTMLUtil;
 import dev.felnull.imp.client.util.YoutubeDownloaderUtil;
+import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import net.minecraft.client.Minecraft;
@@ -30,8 +32,9 @@ import java.util.Optional;
 
 public class YoutubeMusicSubtitle implements IMusicSubtitle {
     private final List<SubtitlesInfo> subtitlesInfos;
-    private final List<SubtitleEntry> subs = new ArrayList<>();
-    private final List<Component> currentSubs = new ArrayList<>();
+    private final List<YSubtitleEntry> subs = new ArrayList<>();
+    private final List<YSubtitleEntry> rsubs = new ArrayList<>();
+    private final List<SubtitleEntry> currentSubs = new ArrayList<>();
 
     public YoutubeMusicSubtitle(MusicSource source) {
         this.subtitlesInfos = YoutubeDownloaderUtil.getSubtitle(source.getIdentifier());
@@ -68,8 +71,8 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
         return new URL(urlst);
     }
 
-    private List<SubtitleEntry> loadSubtitle(URL url) throws ParserConfigurationException, IOException, SAXException {
-        List<SubtitleEntry> sb = new ArrayList<>();
+    private List<YSubtitleEntry> loadSubtitle(URL url) throws ParserConfigurationException, IOException, SAXException {
+        List<YSubtitleEntry> sb = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document subDocument = builder.parse(FNURLUtil.getStream(url));
@@ -88,7 +91,7 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
                         String text = node2.getTextContent();
                         for (Component component : toComponent(text)) {
                             if (component != null)
-                                sb.add(new SubtitleEntry((long) (st * 1000), (long) (dr * 1000), component));
+                                sb.add(new YSubtitleEntry((long) (st * 1000), (long) (dr * 1000), component));
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -113,23 +116,26 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
 
 
     @Override
-    public List<Component> getSubtitle(long last, long current) {
+    public List<SubtitleEntry> getSubtitle(IMusicPlayer player, MusicPlaybackInfo playbackInfo, long last, long current) {
         currentSubs.clear();
         boolean nu = false;
-        for (SubtitleEntry sub : subs) {
+        for (YSubtitleEntry sub : subs) {
             long st = sub.st();
             long ft = sub.st() + sub.dr();
             if ((st <= last && ft >= last) && (st <= current && ft >= current)) {
-                currentSubs.add(sub.text());
+                currentSubs.add(new SubtitleEntry(sub.text(), player, playbackInfo, sub.dr()));
+                rsubs.add(sub);
                 nu = true;
                 continue;
             }
             if (nu)
                 break;
         }
+        rsubs.forEach(subs::remove);
+        rsubs.clear();
         return currentSubs;
     }
 
-    private static record SubtitleEntry(long st, long dr, Component text) {
+    private static record YSubtitleEntry(long st, long dr, Component text) {
     }
 }

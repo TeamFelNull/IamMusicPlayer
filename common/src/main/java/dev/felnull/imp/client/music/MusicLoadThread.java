@@ -1,10 +1,12 @@
 package dev.felnull.imp.client.music;
 
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loader.IMusicLoader;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.subtitle.IMPMusicSubtitles;
 import dev.felnull.imp.client.music.subtitle.IMusicSubtitle;
+import dev.felnull.imp.client.music.subtitle.SubtitleType;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import org.apache.logging.log4j.LogManager;
@@ -80,14 +82,16 @@ public class MusicLoadThread extends Thread {
             return;
         }
 
-        try {
-            IMusicSubtitle subtitle = IMPMusicSubtitles.createSubtitle(source.getLoaderType(), source);
-            if (subtitle != null && subtitle.isExist()) {
-                subtitle.load();
-                player.setSubtitle(subtitle);
+        if (IamMusicPlayer.CONFIG.subtitleType != SubtitleType.OFF) {
+            try {
+                IMusicSubtitle subtitle = IMPMusicSubtitles.createSubtitle(source.getLoaderType(), source);
+                if (subtitle != null && subtitle.isExist()) {
+                    subtitle.load();
+                    player.setSubtitle(subtitle);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
 
         listener.onResult(true, System.currentTimeMillis() - time, player, false);

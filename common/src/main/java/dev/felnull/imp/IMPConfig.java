@@ -1,5 +1,6 @@
 package dev.felnull.imp;
 
+import dev.felnull.imp.client.music.subtitle.SubtitleType;
 import dev.felnull.imp.client.music.subtitle.YoutubeSubtitleEnum;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
@@ -13,10 +14,15 @@ public class IMPConfig implements ConfigData {
     public float volume = 1f;
 
     @ConfigEntry.Category("client")
+    public boolean spatial = true;
+
+    @ConfigEntry.Category("client")
     public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
 
     @ConfigEntry.Category("client")
-    public boolean spatial = true;
+    public SubtitleType subtitleType = SubtitleType.VANILLA;
+
+
 /*
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("client")

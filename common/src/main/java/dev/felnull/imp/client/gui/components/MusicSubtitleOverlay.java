@@ -1,29 +1,67 @@
 package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MusicSubtitleOverlay extends Overlay {
+    public static final MusicSubtitleOverlay SUBTITLE_OVERLAY = new MusicSubtitleOverlay();
     private static final Minecraft mc = Minecraft.getInstance();
+    private final Map<SubtitleEntry, Long> SUBTITLES = new HashMap<>();
+    private final List<SubtitleEntry> REMOVE_SUBTITLES = new ArrayList<>();
+    private final Map<SubtitleEntry, Long> UPDATE_SUBTITLES = new HashMap<>();
+    private final Map<SubtitleEntry, Boolean> PAUSED_SUBTITLES = new HashMap<>();
+    private final Map<SubtitleEntry, Long> PAUSED_TIME_SUBTITLES = new HashMap<>();
+
+    public void addSubtitle(SubtitleEntry entry) {
+        SUBTITLES.put(entry, System.currentTimeMillis());
+    }
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
-        List<Component> subs = MusicEngine.getInstance().getSubtitles();
-        if (subs.isEmpty())
+        SUBTITLES.forEach((n, m) -> {
+            var pc = PAUSED_SUBTITLES.get(n);
+            var cp = n.musicPlayer().isPaused();
+            if (pc != null && pc != cp) {
+                if (cp) {
+                    PAUSED_TIME_SUBTITLES.put(n, System.currentTimeMillis());
+                } else {
+                    var pt = PAUSED_TIME_SUBTITLES.get(n);
+                    if (pt != null) {
+                        // System.out.println(System.currentTimeMillis() - pt);
+                        UPDATE_SUBTITLES.put(n, m + (System.currentTimeMillis() - pt));
+                    }
+                    //
+                    PAUSED_TIME_SUBTITLES.clear();
+                }
+            }
+            PAUSED_SUBTITLES.put(n, cp);
+
+            if ((m + n.duration()) < System.currentTimeMillis() && n.musicPlayer().isPlaying())
+                REMOVE_SUBTITLES.add(n);
+        });
+        SUBTITLES.putAll(UPDATE_SUBTITLES);
+        UPDATE_SUBTITLES.clear();
+        REMOVE_SUBTITLES.forEach(SUBTITLES::remove);
+        REMOVE_SUBTITLES.clear();
+
+        if (SUBTITLES.isEmpty())
             return;
         int fh = mc.font.lineHeight;
         int mh = mc.getWindow().getGuiScaledHeight() - getMinHeight() - 1;
-        mh -= subs.size() * (fh + 1);
+        mh -= SUBTITLES.size() * (fh + 1);
         int ch = 0;
-        for (Component sub : subs) {
-            drawText(poseStack, mh + ch, sub);
+        for (SubtitleEntry sub : SUBTITLES.keySet()) {
+            drawText(poseStack, mh + ch, sub.component());
             ch += fh + 1;
         }
     }

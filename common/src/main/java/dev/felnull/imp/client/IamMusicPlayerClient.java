@@ -2,6 +2,7 @@ package dev.felnull.imp.client;
 
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.client.handler.ClientHandler;
+import dev.felnull.imp.client.handler.MusicHandler;
 import dev.felnull.imp.client.handler.RenderHandler;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
@@ -17,6 +18,7 @@ public class IamMusicPlayerClient {
         IMPMusicSubtitles.init();
         ClientHandler.init();
         RenderHandler.init();
+        MusicHandler.init();
 
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener((manager, data) -> {
             MusicEngine.getInstance().reload();

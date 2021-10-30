@@ -7,7 +7,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 public class RenderHandler {
-    private static final MusicSubtitleOverlay SUBTITLE_OVERLAY = new MusicSubtitleOverlay();
     private static final Minecraft mc = Minecraft.getInstance();
 
     public static void init() {
@@ -19,7 +18,7 @@ public class RenderHandler {
         if (mc.screen == null) {
             poseStack.pushPose();
             poseStack.translate(0, 0, 1000);
-            SUBTITLE_OVERLAY.render(poseStack, 0, 0, v);
+            MusicSubtitleOverlay.SUBTITLE_OVERLAY.render(poseStack, 0, 0, v);
             poseStack.popPose();
         }
     }
@@ -27,7 +26,7 @@ public class RenderHandler {
     private static void onRenderPost(Screen screen, PoseStack poseStack, int i, int i1, float v) {
         poseStack.pushPose();
         poseStack.translate(0, 0, 1000);
-        SUBTITLE_OVERLAY.render(poseStack, i, i1, v);
+        MusicSubtitleOverlay.SUBTITLE_OVERLAY.render(poseStack, i, i1, v);
         poseStack.popPose();
     }
 }
