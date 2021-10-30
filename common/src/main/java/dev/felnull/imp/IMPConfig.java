@@ -14,14 +14,16 @@ public class IMPConfig implements ConfigData {
     public float volume = 1f;
 
     @ConfigEntry.Category("client")
-    public boolean spatial = true;
+    public int maxPlayCont = 8;
 
     @ConfigEntry.Category("client")
-    public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
+    public boolean spatial = true;
 
     @ConfigEntry.Category("client")
     public SubtitleType subtitleType = SubtitleType.VANILLA;
 
+    @ConfigEntry.Category("client")
+    public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
 
 /*
     @ConfigEntry.Gui.Tooltip

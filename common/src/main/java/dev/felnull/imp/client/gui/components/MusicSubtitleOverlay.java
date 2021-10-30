@@ -1,7 +1,9 @@
 package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
+import dev.felnull.imp.client.music.subtitle.SubtitleType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -28,6 +30,15 @@ public class MusicSubtitleOverlay extends Overlay {
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
+        if (IamMusicPlayer.CONFIG.subtitleType != SubtitleType.OVERLAY) {
+            SUBTITLES.clear();
+            REMOVE_SUBTITLES.clear();
+            UPDATE_SUBTITLES.clear();
+            PAUSED_SUBTITLES.clear();
+            PAUSED_TIME_SUBTITLES.clear();
+            return;
+        }
+
         SUBTITLES.forEach((n, m) -> {
             var pc = PAUSED_SUBTITLES.get(n);
             var cp = n.musicPlayer().isPaused();
@@ -37,17 +48,17 @@ public class MusicSubtitleOverlay extends Overlay {
                 } else {
                     var pt = PAUSED_TIME_SUBTITLES.get(n);
                     if (pt != null) {
-                        // System.out.println(System.currentTimeMillis() - pt);
                         UPDATE_SUBTITLES.put(n, m + (System.currentTimeMillis() - pt));
                     }
-                    //
                     PAUSED_TIME_SUBTITLES.clear();
                 }
             }
             PAUSED_SUBTITLES.put(n, cp);
 
-            if ((m + n.duration()) < System.currentTimeMillis() && n.musicPlayer().isPlaying())
+            if (((m + n.duration()) < System.currentTimeMillis() && n.musicPlayer().isPlaying()) || n.musicPlayer().isFinished() || (!n.musicPlayer().isPaused() && !n.musicPlayer().isPlaying()))
                 REMOVE_SUBTITLES.add(n);
+
+
         });
         SUBTITLES.putAll(UPDATE_SUBTITLES);
         UPDATE_SUBTITLES.clear();

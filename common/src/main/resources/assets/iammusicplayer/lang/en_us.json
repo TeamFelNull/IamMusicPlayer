@@ -1,0 +1,16 @@
+{
+  "_comment.co": "Config",
+  "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
+  "text.autoconfig.iammusicplayer.category.client": "Client",
+  "text.autoconfig.iammusicplayer.option.volume": "Volume",
+  "text.autoconfig.iammusicplayer.option.maxPlayCont": "Max music play cont",
+  "text.autoconfig.iammusicplayer.option.spatial": "Spatial",
+  "text.autoconfig.iammusicplayer.option.subtitleType": "Subtitle",
+  "text.autoconfig.iammusicplayer.option.youtubeSubtitleLanguage": "Youtube subtitle language",
+  "_comment.cc": "Config Value",
+  "subtitleType.off": "Off",
+  "subtitleType.vanilla": "Vanilla",
+  "subtitleType.overlay": "Overlay",
+  "_comment.cr": "CreativeTab",
+  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
+}

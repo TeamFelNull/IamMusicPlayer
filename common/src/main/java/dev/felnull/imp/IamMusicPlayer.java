@@ -1,5 +1,6 @@
 package dev.felnull.imp;
 
+import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.net.IMPPackets;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -12,6 +13,6 @@ public class IamMusicPlayer {
     public static void init() {
         IMPPackets.init();
         IMPItems.init();
-
+        IMPBlocks.init();
     }
 }

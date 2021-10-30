@@ -1,5 +1,6 @@
 package dev.felnull.imp.client.music;
 
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.api.event.client.ClientMusicEvent;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
@@ -36,7 +37,7 @@ public class MusicEngine {
     }
 
     public int getMaxMusicPlayed() {
-        return 8;
+        return Math.max(IamMusicPlayer.CONFIG.maxPlayCont, 0);
     }
 
     public boolean isReloading() {

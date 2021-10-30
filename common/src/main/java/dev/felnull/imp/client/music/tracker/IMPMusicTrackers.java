@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.music.tracker;
 
 import dev.felnull.imp.music.MusicPlayManager;
+import dev.felnull.imp.music.MusicPlaybackInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -19,6 +20,10 @@ public class IMPMusicTrackers {
 
     public static void registerTracker(ResourceLocation location, Function<CompoundTag, IMusicTracker> tracker) {
         TRACKERS.put(location, tracker);
+    }
+
+    public static IMusicTracker createTracker(MusicPlaybackInfo playbackInfo) {
+        return createTracker(playbackInfo.getTracker(), playbackInfo.getTrackerTag());
     }
 
     public static IMusicTracker createTracker(ResourceLocation location, CompoundTag tag) {

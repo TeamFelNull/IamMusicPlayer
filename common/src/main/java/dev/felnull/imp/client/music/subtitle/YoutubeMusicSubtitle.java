@@ -3,7 +3,6 @@ package dev.felnull.imp.client.music.subtitle;
 import com.github.kiulian.downloader.downloader.request.RequestSubtitlesDownload;
 import com.github.kiulian.downloader.model.Extension;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
-import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
@@ -105,11 +104,13 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
 
     private static List<Component> toComponent(String text) {
         List<Component> ls = new ArrayList<>();
-        text = FNStringUtil.decodeHTMLSpecialCharacter(text);
         String[] txts = text.split("\n");
         for (String txt : txts) {
-            if (!txt.isEmpty())
-                ls.add(HTMLUtil.toComponent(txt));
+            if (!txt.isEmpty()) {
+                var tc = HTMLUtil.toComponent(txt);
+                if (tc != null)
+                    ls.add(tc);
+            }
         }
         return ls;
     }
