@@ -25,13 +25,4 @@ public class IMPConfig implements ConfigData {
     @ConfigEntry.Category("client")
     public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
 
-/*
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("client")
-    public MusicPlaySystem playSystem = MusicPlaySystem.OPEN_AL_SPATIAL;
-
-    @ConfigEntry.Category("client")
-    public SubtitleSystem subtitleSystem = SubtitleSystem.VANILLA;
-*/
-
 }
