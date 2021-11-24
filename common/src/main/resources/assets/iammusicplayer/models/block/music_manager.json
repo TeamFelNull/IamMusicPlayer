@@ -2,9 +2,9 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"0": "iammusicplayer:block/music_management_device/music_management_device_1",
-		"1": "iammusicplayer:block/music_management_device/music_management_device_on",
-		"particle": "iammusicplayer:block/music_management_device/music_management_device_1"
+		"0": "iammusicplayer:block/music_manager/music_manager",
+		"1": "iammusicplayer:block/music_manager/music_manager_on",
+		"particle": "iammusicplayer:block/music_manager/music_manager"
 	},
 	"elements": [
 		{

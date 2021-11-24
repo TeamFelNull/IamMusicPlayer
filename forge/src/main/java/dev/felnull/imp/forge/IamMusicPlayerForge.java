@@ -13,7 +13,6 @@ public class IamMusicPlayerForge {
         EventBuses.registerModEventBus(IamMusicPlayer.MODID, FMLJavaModLoadingContext.get().getModEventBus());
         IamMusicPlayer.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-
     }
 
     private void doClientStuff(FMLClientSetupEvent event) {
