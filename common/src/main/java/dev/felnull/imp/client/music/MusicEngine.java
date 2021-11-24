@@ -22,6 +22,8 @@ public class MusicEngine {
     private final List<UUID> REMOVE_LOADS = new ArrayList<>();
     private final Map<UUID, Long> LAST_SUBTITLE = new HashMap<>();
     private final List<UnPauseStartEntry> UNPAUSES_STARTS = new ArrayList<>();
+    private final Map<UUID, MusicReloadEntry> RESTART_LIVES = new HashMap<>();
+    private final List<UUID> RESTART_CHECK = new ArrayList<>();
     private long lastTime;
     private long lastProsesTime;
     private boolean pause;
@@ -118,6 +120,17 @@ public class MusicEngine {
     }
 
     public boolean stopMusicPlayer(UUID id) {
+        synchronized (RESTART_LIVES) {
+            if (RESTART_LIVES.containsKey(id)) {
+                if (RESTART_CHECK.contains(id)) {
+                    RESTART_LIVES.remove(id);
+                    RESTART_CHECK.remove(id);
+                    return true;
+                } else {
+                    RESTART_CHECK.add(id);
+                }
+            }
+        }
         synchronized (UNPAUSES_STARTS) {
             UnPauseStartEntry uss = null;
             for (UnPauseStartEntry us : UNPAUSES_STARTS) {
@@ -243,7 +256,14 @@ public class MusicEngine {
     public void pause() {
         this.pause = true;
         synchronized (MUSIC_PLAYERS) {
-            MUSIC_PLAYERS.forEach((n, m) -> m.player().pause());
+            MUSIC_PLAYERS.forEach((n, m) -> {
+                if (!m.player().getMusicSource().isLive()) {
+                    m.player().pause();
+                } else {
+                    RESTART_LIVES.put(n, new MusicReloadEntry(m.playbackInfo(), m.player().getMusicSource(), 0, null));
+                    REMOVES_PLAYERS.add(n);
+                }
+            });
         }
     }
 
@@ -254,6 +274,12 @@ public class MusicEngine {
         }
         UNPAUSES_STARTS.forEach(n -> playMusicPlayer(n.id(), n.delay()));
         UNPAUSES_STARTS.clear();
+        RESTART_LIVES.forEach((n, m) -> loadAddMusicPlayer(n, m.playbackInfo(), m.source(), 0, (result, time, player, retry) -> {
+            if (result)
+                playMusicPlayer(n, 0);
+        }));
+        RESTART_LIVES.clear();
+        RESTART_CHECK.clear();
     }
 
     public void addSubtitle(SubtitleEntry subtitle) {

@@ -36,7 +36,7 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
     private final List<SubtitleEntry> currentSubs = new ArrayList<>();
 
     public YoutubeMusicSubtitle(MusicSource source) {
-        this.subtitlesInfos = YoutubeDownloaderUtil.getSubtitle(source.getIdentifier());
+        this.subtitlesInfos = source.isLive() ? List.of() : YoutubeDownloaderUtil.getSubtitle(source.getIdentifier());
     }
 
     @Override

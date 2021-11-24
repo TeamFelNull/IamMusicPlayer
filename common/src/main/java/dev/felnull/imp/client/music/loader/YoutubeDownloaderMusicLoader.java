@@ -22,7 +22,7 @@ public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {
 
     @Override
     public boolean canLoad(MusicSource source) throws Exception {
-        if (!"youtube".equals(source.getLoaderType()))
+        if (!"youtube".equals(source.getLoaderType()) || source.isLive())
             return false;
 
         var url = YoutubeDownloaderUtil.getCashedYoutubeRawURL(source.getIdentifier(), false);

@@ -3,6 +3,8 @@ package dev.felnull.imp.music.resource;
 import dev.felnull.otyacraftengine.data.ITAGSerializable;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.Objects;
+
 public class MusicSource implements ITAGSerializable {
     public static final MusicSource EMPTY = new MusicSource("", "", 0);
     private String loaderType;
@@ -40,5 +42,31 @@ public class MusicSource implements ITAGSerializable {
 
     public String getIdentifier() {
         return identifier;
+    }
+
+    public boolean isLive() {
+        return duration < 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MusicSource that = (MusicSource) o;
+        return duration == that.duration && Objects.equals(loaderType, that.loaderType) && Objects.equals(identifier, that.identifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(loaderType, identifier, duration);
+    }
+
+    @Override
+    public String toString() {
+        return "MusicSource{" +
+                "loaderType='" + loaderType + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", duration=" + duration +
+                '}';
     }
 }

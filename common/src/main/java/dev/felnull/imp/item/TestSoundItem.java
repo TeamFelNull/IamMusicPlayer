@@ -1,5 +1,6 @@
 package dev.felnull.imp.item;
 
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
@@ -31,20 +32,18 @@ public class TestSoundItem extends Item {
             MusicEngine me = MusicEngine.getInstance();
             var apm = LavaPlayerUtil.createAudioPlayerManager();
             apm.registerSourceManager(new YoutubeAudioSourceManager());
+            apm.registerSourceManager(new HttpAudioSourceManager());
             var idi = itemStack.getHoverName().getString();
             var track = LavaPlayerUtil.loadTrackNonThrow(apm, idi);
             var plb = new MusicPlaybackInfo(MusicPlayManager.FIXED_TRACKER, MusicPlayManager.createFixedTracker(player.position()), 1, 30);
             if (track.isPresent()) {
-                var ms = new MusicSource("youtube", idi, track.get().getDuration());
+                var ms = new MusicSource("", idi, track.get().getInfo().isStream ? -1 : track.get().getDuration());
                 me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
                     player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
                     me.playMusicPlayer(id, 0);
                 });
             }
         }
-       var st = getClass().getResourceAsStream("/data/iammusicplayer/shape/music_manager.json");
-        //  System.out.println(st);
-
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }
 }

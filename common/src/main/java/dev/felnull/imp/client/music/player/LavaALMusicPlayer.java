@@ -117,7 +117,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         if (!loaded)
             return;
 
-        if (musicSource.getDuration() == 0 || musicSource.getDuration() >= startPosition) {
+        if (musicSource.isLive() || musicSource.getDuration() == 0 || musicSource.getDuration() >= startPosition) {
             startTime = System.currentTimeMillis();
             startPosition += delay;
             float secdelay = delay / 1000f;

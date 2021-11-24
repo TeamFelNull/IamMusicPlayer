@@ -33,11 +33,12 @@ public class LavaPlayerMusicLoader implements IMusicLoader {
 
     @Override
     public boolean canLoad(MusicSource source) throws Exception {
-        if (!loaderType.equals(source.getLoaderType()))
+        if (!source.getLoaderType().isEmpty() && !loaderType.equals(source.getLoaderType()))
             return false;
 
         Optional<AudioTrack> track = LavaPlayerUtil.loadCashedTrack(source.getLoaderType(), audioPlayerManager, source.getIdentifier(), false);
-        return track.isPresent() && !track.get().getInfo().isStream;
+
+        return track.isPresent() && source.isLive() == track.get().getInfo().isStream;
     }
 
     protected boolean isSpatial() {
