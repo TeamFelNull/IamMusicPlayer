@@ -1,12 +1,20 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.music.MusicPlayManager;
+import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.music.resource.MusicSource;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
+import java.util.UUID;
 
 public class TestSoundItem extends Item {
 
@@ -18,7 +26,7 @@ public class TestSoundItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
 
-        /*if (level.isClientSide()) {
+        if (level.isClientSide()) {
             UUID id = UUID.randomUUID();
             MusicEngine me = MusicEngine.getInstance();
             var apm = LavaPlayerUtil.createAudioPlayerManager();
@@ -33,9 +41,9 @@ public class TestSoundItem extends Item {
                     me.playMusicPlayer(id, 0);
                 });
             }
-        }*/
-        var st = getClass().getResourceAsStream("/data/iammusicplayer/shape/music_manager.json");
-        System.out.println(st);
+        }
+       var st = getClass().getResourceAsStream("/data/iammusicplayer/shape/music_manager.json");
+        //  System.out.println(st);
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }
