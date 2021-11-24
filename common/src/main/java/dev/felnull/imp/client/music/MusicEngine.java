@@ -159,6 +159,7 @@ public class MusicEngine {
     public void stopAllMusicPlayer() {
         synchronized (MUSIC_PLAYERS) {
             MUSIC_PLAYERS.forEach((n, m) -> REMOVES_PLAYERS.add(n));
+            RESTART_LIVES.forEach((n, m) -> REMOVES_PLAYERS.add(n));
         }
     }
 
