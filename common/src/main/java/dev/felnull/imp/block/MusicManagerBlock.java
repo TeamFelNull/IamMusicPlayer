@@ -18,8 +18,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class MusicManagerBlock extends HorizontalDirectionalEntityBlock {
-    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "music_manager")));
-    private static final BooleanProperty POWERED = IMPBlockStateProperties.POWER;
+    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "music_manager"), MusicManagerBlock.class));
+    public static final BooleanProperty POWERED = IMPBlockStateProperties.POWER;
 
     protected MusicManagerBlock(Properties properties) {
         super(properties);

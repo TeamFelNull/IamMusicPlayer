@@ -1,6 +1,7 @@
 package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
+import dev.felnull.imp.block.MusicManagerBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -66,4 +67,9 @@ public class MusicManagerBlockEntity extends BaseContainerBlockEntity {
     public void clearContent() {
 
     }
+
+    public boolean isPower() {
+        return getBlockState().getValue(MusicManagerBlock.POWERED);
+    }
+
 }

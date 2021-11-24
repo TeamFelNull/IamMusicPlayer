@@ -4,6 +4,7 @@ import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.client.handler.ClientHandler;
 import dev.felnull.imp.client.handler.MusicHandler;
 import dev.felnull.imp.client.handler.RenderHandler;
+import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.subtitle.IMPMusicSubtitles;
@@ -21,6 +22,7 @@ public class IamMusicPlayerClient {
         ClientHandler.init();
         RenderHandler.init();
         MusicHandler.init();
+        IMPModels.init();
         IMPBlockEntityRenderers.init();
         IMPItemRenderers.init();
 
