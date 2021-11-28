@@ -1,24 +1,22 @@
 package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.block.MusicManagerBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
-    public MusicManagerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(IMPBlockEntitys.MUSIC_MANAGER, blockPos, blockState);
+public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
+    public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
     }
 
     @Override
     protected Component getDefaultName() {
-        return IMPBlocks.MUSIC_MANAGER.getName();
+        return IMPBlocks.BOOMBOX.getName();
     }
 
     @Override
@@ -33,7 +31,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return false;
     }
 
     @Override
@@ -58,14 +56,11 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     public boolean stillValid(Player player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this)
-            return false;
-        return player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D, (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
+        return false;
     }
 
     @Override
     public void clearContent() {
 
     }
-
 }
