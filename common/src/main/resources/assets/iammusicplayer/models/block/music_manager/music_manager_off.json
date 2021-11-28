@@ -1,5 +1,5 @@
 {
-	"parent": "iammusicplayer:block/music_manager/music_manager",
+	"parent": "iammusicplayer:block/music_manager/music_manager_base",
 	"textures": {
 		"1": "iammusicplayer:block/music_manager/music_manager_off"
 	}
