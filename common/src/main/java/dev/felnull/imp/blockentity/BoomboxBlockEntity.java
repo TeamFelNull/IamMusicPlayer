@@ -2,11 +2,9 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
-import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,10 +12,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
-    protected int handleRaisedProgress = 20;
+    protected boolean handleRaising = true;
+    protected int handleRaisedProgressOld = getHandleRaisedAll();
+    protected int handleRaisedProgress = getHandleRaisedAll();
+    protected boolean lidOpen;
+    protected int lidOpenProgressOld;
+    protected int lidOpenProgress;
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
@@ -76,47 +78,66 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
         this.handleRaisedProgress = tag.getInt("HandleRaisedTime");
+        this.handleRaising = tag.getBoolean("HandleRaising");
+        this.lidOpenProgress = tag.getInt("LidOpenTime");
+        this.lidOpen = tag.getBoolean("LidOpen");
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         super.save(tag);
         tag.putInt("HandleRaisedTime", this.handleRaisedProgress);
+        tag.putBoolean("HandleRaising", this.handleRaising);
+        tag.putInt("LidOpenTime", this.lidOpenProgress);
+        tag.putBoolean("LidOpen", this.lidOpen);
         return tag;
     }
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, BoomboxBlockEntity blockEntity) {
         if (!level.isClientSide()) {
-            boolean raised = blockState.getValue(BoomboxBlock.RAISED);
-            if (raised) {
-                if (blockEntity.handleRaisedProgress < blockEntity.getHandleRaisedAll()) {
-                    blockEntity.handleRaisedProgress++;
-                    blockEntity.sync();
-                }
-            } else {
-                if (blockEntity.handleRaisedProgress > 0) {
-                    blockEntity.handleRaisedProgress--;
-                    blockEntity.sync();
-                }
-            }
-        }
-    }
+            blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
+            blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;
 
-    @Nullable
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 4, this.getUpdateTag());
+            blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
+            if (blockEntity.handleRaising) {
+                if (blockEntity.handleRaisedProgress < blockEntity.getHandleRaisedAll())
+                    blockEntity.handleRaisedProgress++;
+            } else {
+                if (blockEntity.handleRaisedProgress > 0)
+                    blockEntity.handleRaisedProgress--;
+            }
+
+            if (blockEntity.lidOpen) {
+                if (blockEntity.lidOpenProgress < blockEntity.getLidOpenProgressAll())
+                    blockEntity.lidOpenProgress++;
+            } else {
+                if (blockEntity.lidOpenProgress > 0)
+                    blockEntity.lidOpenProgress--;
+            }
+
+            blockEntity.sync();
+        }
     }
 
     @Override
     public CompoundTag getSyncData(ServerPlayer player, CompoundTag tag) {
         tag.putInt("HandleRaisedTime", this.handleRaisedProgress);
+        tag.putBoolean("HandleRaising", this.handleRaising);
+        tag.putInt("LidOpenTime", this.lidOpenProgress);
+        tag.putBoolean("LidOpen", this.lidOpen);
+        tag.putInt("HandleRaisedTimeOld", this.handleRaisedProgressOld);
+        tag.putInt("LidOpenTimeOld", this.lidOpenProgressOld);
         return tag;
     }
 
     @Override
     public void onSync(CompoundTag tag) {
         this.handleRaisedProgress = tag.getInt("HandleRaisedTime");
+        this.handleRaising = tag.getBoolean("HandleRaising");
+        this.lidOpenProgress = tag.getInt("LidOpenTime");
+        this.lidOpen = tag.getBoolean("LidOpen");
+        this.handleRaisedProgressOld = tag.getInt("HandleRaisedTimeOld");
+        this.lidOpenProgressOld = tag.getInt("LidOpenTimeOld");
     }
 
     public int getHandleRaisedAll() {
@@ -125,5 +146,74 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public int getHandleRaisedProgress() {
         return handleRaisedProgress;
+    }
+
+    public int getHandleRaisedProgressOld() {
+        return handleRaisedProgressOld;
+    }
+
+    public void setRaisedHandleState(boolean raised) {
+        var bs = getBlockState().setValue(BoomboxBlock.RAISED, raised);
+        getLevel().setBlock(getBlockPos(), bs, 2);
+    }
+
+    public boolean isRaisedHandleState() {
+        return getBlockState().getValue(BoomboxBlock.RAISED);
+    }
+
+    public boolean isHandleRaising() {
+        return handleRaising;
+    }
+
+    public boolean cycleRaisedHandle() {
+        boolean flg = handleRaisedProgress >= getHandleRaisedAll();
+        boolean flg2 = handleRaisedProgress <= 0;
+        if (!flg && !flg2)
+            return false;
+        if (flg) {
+            handleRaising = false;
+        }
+        if (flg2) {
+            handleRaising = true;
+        }
+        return true;
+    }
+
+    public boolean isLidOpen() {
+        return lidOpen;
+    }
+
+    public int getLidOpenProgress() {
+        return lidOpenProgress;
+    }
+
+    public int getLidOpenProgressOld() {
+        return lidOpenProgressOld;
+    }
+
+    public int getLidOpenProgressAll() {
+        return 10;
+    }
+
+    public boolean cycleLidOpen() {
+        boolean flg = lidOpenProgress >= getLidOpenProgressAll();
+        boolean flg2 = lidOpenProgress <= 0;
+        if (!flg && !flg2)
+            return false;
+        if (flg) {
+            lidOpen = false;
+        }
+        if (flg2) {
+            lidOpen = true;
+        }
+        return true;
+    }
+
+    public Buttons getButtons() {
+        return new Buttons(isPower(), false, false, false, false, false, false, false, false);
+    }
+
+    public static record Buttons(boolean power, boolean radio, boolean start, boolean pause, boolean stop,
+                                 boolean loop, boolean volUp, boolean volDown, boolean volMute) {
     }
 }

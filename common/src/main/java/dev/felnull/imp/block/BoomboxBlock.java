@@ -39,14 +39,25 @@ public class BoomboxBlock extends IMPBaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (player.isCrouching()) {
-            if (blockHitResult.getDirection() == Direction.UP) {
-                blockState = blockState.cycle(RAISED);
-                level.setBlock(blockPos, blockState, 2);
-                level.playSound(null, blockPos, blockState.getValue(RAISED) ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-                return InteractionResult.sidedSuccess(level.isClientSide());
+            var be = level.getBlockEntity(blockPos);
+            if (be instanceof BoomboxBlockEntity boombox) {
+                if (blockHitResult.getDirection() == Direction.UP) {
+                    if (boombox.cycleRaisedHandle()) {
+                        level.playSound(null, blockPos, boombox.isHandleRaising() ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+                        return InteractionResult.sidedSuccess(level.isClientSide());
+                    } else {
+                        return InteractionResult.PASS;
+                    }
+                } else if (blockHitResult.getDirection() == blockState.getValue(FACING)) {
+                    if (boombox.cycleLidOpen()) {
+                        level.playSound(null, blockPos, boombox.isHandleRaising() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+                        return InteractionResult.sidedSuccess(level.isClientSide());
+                    } else {
+                        return InteractionResult.PASS;
+                    }
+                }
             }
         }
-
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
