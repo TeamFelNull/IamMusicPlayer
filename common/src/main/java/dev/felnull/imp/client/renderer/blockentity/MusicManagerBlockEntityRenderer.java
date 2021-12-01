@@ -5,22 +5,21 @@ import dev.felnull.imp.block.MusicManagerBlock;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
+import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 
 import java.util.Random;
 
-public class MusicManagerBlockEntityRenderer implements BlockEntityRenderer<MusicManagerBlockEntity> {
+public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer<MusicManagerBlockEntity> {
     private static final Random random = new Random();
 
-    private final BlockEntityRendererProvider.Context context;
-
-    public MusicManagerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.context = context;
+    protected MusicManagerBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
+
 
     @Override
     public void render(MusicManagerBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {

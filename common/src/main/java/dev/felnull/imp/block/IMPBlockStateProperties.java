@@ -4,4 +4,5 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public class IMPBlockStateProperties {
     public static final BooleanProperty POWER = BooleanProperty.create("power");
+    public static final BooleanProperty RAISE = BooleanProperty.create("raise");
 }

@@ -20,6 +20,6 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
         var model = OERenderUtil.getBlockModel(entity.getBlockState());
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         OERenderUtil.renderModel(poseStack, vc, model, i, i1);
-        BoomboxBlockEntityRenderer.renderBoombox(entity, poseStack, multiBufferSource, i, i1, 0);
+        BoomboxBlockEntityRenderer.renderBoombox(entity, poseStack, multiBufferSource, i, i1, 0, 1);
     }
 }

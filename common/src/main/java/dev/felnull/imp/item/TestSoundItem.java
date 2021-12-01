@@ -27,7 +27,7 @@ public class TestSoundItem extends Item {
         ItemStack itemStack = player.getItemInHand(interactionHand);
 
         if (level.isClientSide()) {
-           /* UUID id = UUID.randomUUID();
+          /*  UUID id = UUID.randomUUID();
             MusicEngine me = MusicEngine.getInstance();
             var apm = LavaPlayerUtil.createAudioPlayerManager();
             apm.registerSourceManager(new YoutubeAudioSourceManager());
@@ -42,12 +42,12 @@ public class TestSoundItem extends Item {
                     me.playMusicPlayer(id, 0);
                 });
             }*/
-            /*var shpe = TentativeVoxelShapeGenerator.generate(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox/boombox_fast_handle_shape")), OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox/boombox_fast_shape")));
+            var shpe = TentativeVoxelShapeGenerator.generate(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox")), OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_base")));
             try {
                 Files.writeString(Paths.get("shape.json"), new Gson().toJson(shpe));
             } catch (IOException e) {
                 e.printStackTrace();
-            }*/
+            }
         }
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }
