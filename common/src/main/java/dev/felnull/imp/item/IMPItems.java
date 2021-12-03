@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 public class IMPItems {
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(IamMusicPlayer.MODID, Registry.ITEM_REGISTRY);
     public static final Item TEST_SOUND = register("test_sound", new TestSoundItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
+    public static final Item PARABOLIC_ANTENNA = register("parabolic_antenna", new ParabolicAntennaItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
 
     private static Item register(String name) {
         return register(name, new Item(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
