@@ -1,9 +1,9 @@
 package dev.felnull.imp.client.handler;
 
 import dev.architectury.event.EventResult;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.otyacraftengine.api.event.client.FabricOBJLoaderEvent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
 public class ClientHandler {
@@ -14,10 +14,8 @@ public class ClientHandler {
     }
 
     public static EventResult objLoad(ResourceLocation resourceLocation) {
-        //  if (IamMusicPlayer.MODID.equals(resourceLocation.getNamespace()))
-        if (resourceLocation instanceof ModelResourceLocation modelResourceLocation)
-            System.out.println(modelResourceLocation);
-        //return EventResult.interruptTrue();
+        if (IamMusicPlayer.MODID.equals(resourceLocation.getNamespace()))
+            return EventResult.interruptTrue();
 
         return EventResult.pass();
     }

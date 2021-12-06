@@ -1,4 +1,6 @@
 {
+  "_comment.i": "Item",
+  "item.iammusicplayer.parabolic_antenna": "パラボラアンテナ",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "クライアント",

@@ -3,7 +3,7 @@ package dev.felnull.imp;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.IMPBlockEntitys;
 import dev.felnull.imp.item.IMPItems;
-import dev.felnull.imp.net.IMPPackets;
+import dev.felnull.imp.networking.IMPPackets;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 

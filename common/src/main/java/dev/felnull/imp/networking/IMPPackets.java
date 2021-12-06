@@ -1,4 +1,4 @@
-package dev.felnull.imp.net;
+package dev.felnull.imp.networking;
 
 import dev.felnull.imp.IamMusicPlayer;
 import net.minecraft.resources.ResourceLocation;
