@@ -93,7 +93,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         return tag;
     }
 
-    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, BoomboxBlockEntity blockEntity) {
+    public static void tick(Level level, BlockPos blockPos, BlockState blockState, BoomboxBlockEntity blockEntity) {
         if (!level.isClientSide()) {
             blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
             blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;

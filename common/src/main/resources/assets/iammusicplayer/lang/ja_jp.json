@@ -1,6 +1,9 @@
 {
   "_comment.i": "Item",
   "item.iammusicplayer.parabolic_antenna": "パラボラアンテナ",
+  "_comment.b": "Block",
+  "block.iammusicplayer.music_manager": "音楽管理装置",
+  "block.iammusicplayer.boombox": "ラジカセ",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "クライアント",

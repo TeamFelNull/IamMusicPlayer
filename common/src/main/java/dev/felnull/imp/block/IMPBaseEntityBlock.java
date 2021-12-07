@@ -11,7 +11,7 @@ public abstract class IMPBaseEntityBlock extends HorizontalDirectionalEntityBloc
     public static final BooleanProperty POWERED = IMPBlockStateProperties.POWER;
 
     protected IMPBaseEntityBlock(Properties properties) {
-        super(properties);
+        super(properties.lightLevel((state) -> state.getValue(POWERED) ? 13 : 0));
         this.registerDefaultState(this.defaultBlockState().setValue(POWERED, false));
         setAnalogOutput(true);
     }

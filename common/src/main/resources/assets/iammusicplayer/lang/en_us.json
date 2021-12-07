@@ -1,6 +1,11 @@
 {
   "_comment.i": "Item",
   "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
+  "_comment.b": "Block",
+  "block.iammusicplayer.music_manager": "Music Manager",
+  "block.iammusicplayer.boombox": "Boombox",
+  "_comment.g": "GUI",
+  "monitor.music_manager.test.title": "Test",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "Client",
