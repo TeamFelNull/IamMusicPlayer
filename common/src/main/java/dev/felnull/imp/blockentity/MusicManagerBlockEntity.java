@@ -155,6 +155,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     public static enum MonitorType {
         OFF("off"),
         TEST("test"),
+        FIRST("first"),
         PLAY_LIST("play_list");
         private final String name;
 

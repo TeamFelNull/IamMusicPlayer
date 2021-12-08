@@ -11,6 +11,10 @@ public class MusicSource implements ITAGSerializable {
     private String identifier;
     private long duration;
 
+    public MusicSource() {
+
+    }
+
     public MusicSource(String loaderType, String identifier, long duration) {
         this.loaderType = loaderType;
         this.identifier = identifier;

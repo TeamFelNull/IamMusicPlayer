@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     private static final Map<MusicManagerBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
-    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/back_grand.png");
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/background.png");
     private final MusicManagerBlockEntity.MonitorType type;
     private final MusicManagerScreen screen;
 
@@ -38,6 +38,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     public static void firstInit() {
         registerMonitors(MusicManagerBlockEntity.MonitorType.OFF, OffMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.TEST, TestMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.FIRST, FirstMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.PLAY_LIST, PlayListMMMonitor::new);
     }
 
