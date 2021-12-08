@@ -48,8 +48,17 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
 
     }
 
+    protected <W extends Widget> W addRenderWidget(W widget) {
+        renderables.add(widget);
+        return widget;
+    }
+
     @Override
     public List<? extends GuiEventListener> children() {
         return children;
+    }
+
+    public void tick() {
+
     }
 }

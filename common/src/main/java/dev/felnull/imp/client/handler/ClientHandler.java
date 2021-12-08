@@ -1,9 +1,12 @@
 package dev.felnull.imp.client.handler;
 
 import dev.architectury.event.EventResult;
+import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.otyacraftengine.api.event.client.FabricOBJLoaderEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.resources.ResourceLocation;
 
 public class ClientHandler {
@@ -11,6 +14,7 @@ public class ClientHandler {
 
     public static void init() {
         FabricOBJLoaderEvent.LOAD.register(ClientHandler::objLoad);
+        ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(ClientHandler::onClientLevelLoad);
     }
 
     public static EventResult objLoad(ResourceLocation resourceLocation) {
@@ -19,4 +23,9 @@ public class ClientHandler {
 
         return EventResult.pass();
     }
+
+    public static void onClientLevelLoad(ClientLevel clientLevel) {
+        MusicSyncManager.getInstance().reset();
+    }
+
 }

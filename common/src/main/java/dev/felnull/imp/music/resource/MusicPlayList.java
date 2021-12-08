@@ -16,6 +16,18 @@ public class MusicPlayList implements ITAGSerializable {
     private AuthorityInfo authority;
     private List<UUID> musicList = new ArrayList<>();
 
+    public MusicPlayList() {
+
+    }
+
+    public MusicPlayList(UUID uuid, String name, ImageInfo image, AuthorityInfo authority, List<UUID> musicList) {
+        this.uuid = uuid;
+        this.name = name;
+        this.image = image;
+        this.authority = authority;
+        this.musicList = musicList;
+    }
+
     @Override
     public CompoundTag save(CompoundTag tag) {
         tag.putUUID("UUID", uuid);
@@ -33,6 +45,26 @@ public class MusicPlayList implements ITAGSerializable {
         this.image = OENbtUtil.readSerializable(tag, "Image", new ImageInfo());
         this.authority = OENbtUtil.readSerializable(tag, "Authority", new AuthorityInfo());
         OENbtUtil.readUUIDList(tag, "MusicList", musicList);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public AuthorityInfo getAuthority() {
+        return authority;
+    }
+
+    public ImageInfo getImage() {
+        return image;
+    }
+
+    public List<UUID> getMusicList() {
+        return musicList;
     }
 
     @Override

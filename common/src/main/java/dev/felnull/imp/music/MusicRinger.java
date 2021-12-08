@@ -7,13 +7,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-public class MusicPlayManager {
-    private static final MusicPlayManager INSTANCE = new MusicPlayManager();
+public class MusicRinger {
+    private static final MusicRinger INSTANCE = new MusicRinger();
     public static final ResourceLocation FIXED_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "fixed");
     public static final ResourceLocation ENTITY_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "entity");
     public static final ResourceLocation PLAYER_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "player");
 
-    public static MusicPlayManager getInstance() {
+    public static MusicRinger getInstance() {
         return INSTANCE;
     }
 

@@ -47,7 +47,7 @@ public class AuthorityInfo implements ITAGSerializable {
         return publiced;
     }
 
-    public AuthorityType getAuthority(UUID playerId) {
+    public AuthorityType getAuthorityType(UUID playerId) {
         if (owner.equals(playerId)) return AuthorityType.OWNER;
         var au = authority.get(playerId);
         return au == null ? getDefaultAuthority() : au;
@@ -108,19 +108,19 @@ public class AuthorityInfo implements ITAGSerializable {
             return name;
         }
 
-        public boolean isOwner() {
+        public boolean isMoreOwner() {
             return this.level >= 4;
         }
 
-        public boolean isAdmin() {
+        public boolean isMoreAdmin() {
             return this.level >= 3;
         }
 
-        public boolean isMember() {
+        public boolean isMoreMember() {
             return this.level >= 2;
         }
 
-        public boolean isReadOnly() {
+        public boolean isMoreReadOnly() {
             return this.level >= 1;
         }
 

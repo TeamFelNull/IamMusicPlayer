@@ -1,10 +1,13 @@
 package dev.felnull.imp.util;
 
 import dev.felnull.imp.music.resource.AuthorityInfo;
+import dev.felnull.imp.music.resource.Music;
+import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,4 +23,21 @@ public class IMPNbtUtil {
     public static void readAuthority(CompoundTag tag, String name, Map<UUID, AuthorityInfo.AuthorityType> authority) {
         OENbtUtil.readMap(tag, name, authority, NbtUtils::loadUUID, n -> AuthorityInfo.AuthorityType.getByName(((CompoundTag) n).getString("n")));
     }
+
+    public static CompoundTag writeMusics(CompoundTag tag, String name, List<Music> musics) {
+        return OENbtUtil.writeList(tag, name, musics, n -> OENbtUtil.writeSerializable(new CompoundTag(), "m", n));
+    }
+
+    public static void readMusics(CompoundTag tag, String name, List<Music> musics) {
+        OENbtUtil.readList(tag, name, musics, n -> OENbtUtil.readSerializable((CompoundTag) n, "m", new Music()));
+    }
+
+    public static CompoundTag writeMusicPlayLists(CompoundTag tag, String name, List<MusicPlayList> musics) {
+        return OENbtUtil.writeList(tag, name, musics, n -> OENbtUtil.writeSerializable(new CompoundTag(), "m", n));
+    }
+
+    public static void readMusicPlayLists(CompoundTag tag, String name, List<MusicPlayList> musics) {
+        OENbtUtil.readList(tag, name, musics, n -> OENbtUtil.readSerializable((CompoundTag) n, "m", new MusicPlayList()));
+    }
+
 }

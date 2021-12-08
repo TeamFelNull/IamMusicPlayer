@@ -92,7 +92,10 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     @Override
     protected void containerTick() {
         super.containerTick();
-        if (monitor != null && getBEMonitorType() != monitor.getType())
-            changeScreenMonitor(getBEMonitorType());
+        if (monitor != null) {
+            if (getBEMonitorType() != monitor.getType())
+                changeScreenMonitor(getBEMonitorType());
+            monitor.tick();
+        }
     }
 }
