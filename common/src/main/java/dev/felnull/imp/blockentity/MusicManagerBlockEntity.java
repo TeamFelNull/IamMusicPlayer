@@ -156,7 +156,14 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         OFF("off"),
         TEST("test"),
         FIRST("first"),
-        PLAY_LIST("play_list");
+        PLAY_LIST("play_list"),
+        WELCOME("welcome"),
+        ADD_PLAY_LIST("add_play_list"),
+        CREATE_PLAY_LIST("create_play_list"),
+        DELETE_PLAY_LIST("delete_play_list"),
+        ADD_MUSIC("add_music"),
+        EDIT_MUSIC("edit_music"),
+        DELETE_MUSIC("delete_music");
         private final String name;
 
         private MonitorType(String name) {

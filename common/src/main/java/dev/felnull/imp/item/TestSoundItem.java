@@ -1,8 +1,15 @@
 package dev.felnull.imp.item;
 
 import com.google.common.collect.Lists;
+import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.music.MusicRinger;
 import dev.felnull.imp.music.resource.*;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +30,7 @@ public class TestSoundItem extends Item {
         ItemStack itemStack = player.getItemInHand(interactionHand);
 
         if (level.isClientSide()) {
-          /*  UUID id = UUID.randomUUID();
+            UUID id = UUID.randomUUID();
             MusicEngine me = MusicEngine.getInstance();
             var apm = LavaPlayerUtil.createAudioPlayerManager();
             apm.registerSourceManager(new YoutubeAudioSourceManager());
@@ -37,7 +44,7 @@ public class TestSoundItem extends Item {
                     player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
                     me.playMusicPlayer(id, 0);
                 });
-            }*/
+            }
            /* var shpe = TentativeVoxelShapeGenerator.generate(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox")), OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_base_shape")));
             try {
                 Files.writeString(Paths.get("shape.json"), new Gson().toJson(shpe));
@@ -45,7 +52,7 @@ public class TestSoundItem extends Item {
                 e.printStackTrace();
             }*/
         } else {
-            var ms = new MusicSource("youtube", "FdBVX6bQpCs", 114514);
+           /* var ms = new MusicSource("youtube", "FdBVX6bQpCs", 114514);
             var im = new ImageInfo(ImageInfo.ImageType.URL, "https://i.ytimg.com/vi/FdBVX6bQpCs/maxresdefault.jpg");
             var m = new Music(UUID.randomUUID(), "Kame", ms, im, player.getGameProfile().getId());
             MusicManager.getInstance().addMusic(m);
@@ -53,7 +60,7 @@ public class TestSoundItem extends Item {
             var ar = new AuthorityInfo(true, player.getUUID());
 
             var pl = new MusicPlayList(UUID.randomUUID(), "KamePl", im, ar, Lists.newArrayList(m.getUuid()));
-            MusicManager.getInstance().addPlayList(pl);
+            MusicManager.getInstance().addPlayList(pl);*/
         }
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }

@@ -40,7 +40,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         insMonitor(getBEMonitorType());
     }
 
-    private void insMonitor(MusicManagerBlockEntity.MonitorType type) {
+    public void insMonitor(MusicManagerBlockEntity.MonitorType type) {
         var tag = new CompoundTag();
         tag.putString("type", type.getName());
         instruction("set_monitor", 0, tag);

@@ -32,6 +32,14 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
         this.topPos = topPos;
     }
 
+    protected int getStartX() {
+        return leftPos + x;
+    }
+
+    protected int getStartY() {
+        return topPos + y;
+    }
+
     public void init() {
 
     }
