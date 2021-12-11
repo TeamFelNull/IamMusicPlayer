@@ -7,23 +7,25 @@ import net.minecraft.nbt.CompoundTag;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Music implements ITAGSerializable {
+public class Music implements ITAGSerializable, IIMPComparable {
     private UUID uuid;
     private String name;
     private MusicSource source;
     private ImageInfo image;
     private UUID owner;
+    private long createDate;
 
     public Music() {
 
     }
 
-    public Music(UUID uuid, String name, MusicSource source, ImageInfo image, UUID owner) {
+    public Music(UUID uuid, String name, MusicSource source, ImageInfo image, UUID owner, long createDate) {
         this.uuid = uuid;
         this.name = name;
         this.source = source;
         this.image = image;
         this.owner = owner;
+        this.createDate = createDate;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class Music implements ITAGSerializable {
         OENbtUtil.writeSerializable(tag, "Source", this.source);
         OENbtUtil.writeSerializable(tag, "Image", this.image);
         tag.putUUID("Owner", owner);
+        tag.putLong("CreateDate", createDate);
         return tag;
     }
 
@@ -43,6 +46,7 @@ public class Music implements ITAGSerializable {
         this.source = OENbtUtil.readSerializable(tag, "Source", new MusicSource());
         this.image = OENbtUtil.readSerializable(tag, "Image", new ImageInfo());
         this.owner = tag.getUUID("Owner");
+        this.createDate = tag.getLong("CreateDate");
     }
 
     public String getName() {
@@ -65,17 +69,21 @@ public class Music implements ITAGSerializable {
         return uuid;
     }
 
+    public long getCreateDate() {
+        return createDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Music music = (Music) o;
-        return Objects.equals(uuid, music.uuid) && Objects.equals(name, music.name) && Objects.equals(source, music.source) && Objects.equals(image, music.image) && Objects.equals(owner, music.owner);
+        return createDate == music.createDate && Objects.equals(uuid, music.uuid) && Objects.equals(name, music.name) && Objects.equals(source, music.source) && Objects.equals(image, music.image) && Objects.equals(owner, music.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, name, source, image, owner);
+        return Objects.hash(uuid, name, source, image, owner, createDate);
     }
 
     @Override
@@ -86,6 +94,22 @@ public class Music implements ITAGSerializable {
                 ", source=" + source +
                 ", image=" + image +
                 ", owner=" + owner +
+                ", createDate=" + createDate +
                 '}';
+    }
+
+    @Override
+    public String getCompareName() {
+        return name;
+    }
+
+    @Override
+    public String getComparePlayerName() {
+        return owner.toString();
+    }
+
+    @Override
+    public long getCompareDate() {
+        return createDate;
     }
 }

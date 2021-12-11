@@ -9,23 +9,25 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class MusicPlayList implements ITAGSerializable {
+public class MusicPlayList implements ITAGSerializable, IIMPComparable {
     private UUID uuid;
     private String name;
     private ImageInfo image;
     private AuthorityInfo authority;
     private List<UUID> musicList = new ArrayList<>();
+    private long createDate;
 
     public MusicPlayList() {
 
     }
 
-    public MusicPlayList(UUID uuid, String name, ImageInfo image, AuthorityInfo authority, List<UUID> musicList) {
+    public MusicPlayList(UUID uuid, String name, ImageInfo image, AuthorityInfo authority, List<UUID> musicList, long createDate) {
         this.uuid = uuid;
         this.name = name;
         this.image = image;
         this.authority = authority;
         this.musicList = musicList;
+        this.createDate = createDate;
     }
 
     @Override
@@ -35,6 +37,7 @@ public class MusicPlayList implements ITAGSerializable {
         OENbtUtil.writeSerializable(tag, "Image", image);
         OENbtUtil.writeSerializable(tag, "Authority", authority);
         OENbtUtil.writeUUIDList(tag, "MusicList", musicList);
+        tag.putLong("CreateDate", createDate);
         return tag;
     }
 
@@ -45,6 +48,7 @@ public class MusicPlayList implements ITAGSerializable {
         this.image = OENbtUtil.readSerializable(tag, "Image", new ImageInfo());
         this.authority = OENbtUtil.readSerializable(tag, "Authority", new AuthorityInfo());
         OENbtUtil.readUUIDList(tag, "MusicList", musicList);
+        this.createDate = tag.getLong("CreateDate");
     }
 
     public String getName() {
@@ -67,17 +71,8 @@ public class MusicPlayList implements ITAGSerializable {
         return musicList;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MusicPlayList that = (MusicPlayList) o;
-        return Objects.equals(uuid, that.uuid) && Objects.equals(name, that.name) && Objects.equals(image, that.image) && Objects.equals(authority, that.authority) && Objects.equals(musicList, that.musicList);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid, name, image, authority, musicList);
+    public long getCreateDate() {
+        return createDate;
     }
 
     @Override
@@ -88,6 +83,35 @@ public class MusicPlayList implements ITAGSerializable {
                 ", image=" + image +
                 ", authority=" + authority +
                 ", musicList=" + musicList +
+                ", createDate=" + createDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MusicPlayList that = (MusicPlayList) o;
+        return createDate == that.createDate && Objects.equals(uuid, that.uuid) && Objects.equals(name, that.name) && Objects.equals(image, that.image) && Objects.equals(authority, that.authority) && Objects.equals(musicList, that.musicList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, name, image, authority, musicList, createDate);
+    }
+
+    @Override
+    public String getCompareName() {
+        return name;
+    }
+
+    @Override
+    public String getComparePlayerName() {
+        return authority.getOwner().toString();
+    }
+
+    @Override
+    public long getCompareDate() {
+        return createDate;
     }
 }

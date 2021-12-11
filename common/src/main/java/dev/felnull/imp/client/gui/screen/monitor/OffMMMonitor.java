@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 public class OffMMMonitor extends MusicManagerMonitor {
     public OffMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen, int leftPos, int topPos) {
         super(type, screen, leftPos, topPos);
+        this.header = false;
     }
 
     @Override

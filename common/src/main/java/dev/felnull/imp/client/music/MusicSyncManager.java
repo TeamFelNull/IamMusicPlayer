@@ -12,9 +12,9 @@ import java.util.UUID;
 public class MusicSyncManager {
     private static final Minecraft mc = Minecraft.getInstance();
     private static final MusicSyncManager INSTANCE = new MusicSyncManager();
-    public final List<MusicPlayList> myPlayList = new ArrayList<>();
+    public List<MusicPlayList> myPlayList = new ArrayList<>();
     private long myPlayListLastUpdateTime;
-    public final List<MusicPlayList> canJoinPlayList = new ArrayList<>();
+    public List<MusicPlayList> canJoinPlayList = new ArrayList<>();
     private long canJoinPlayListLastUpdateTime;
 
     public static MusicSyncManager getInstance() {
@@ -41,8 +41,8 @@ public class MusicSyncManager {
         myPlayListLastUpdateTime = 0;
         canJoinPlayListLastUpdateTime = 0;
 
-        myPlayList.clear();
-        canJoinPlayList.clear();
+        myPlayList = null;
+        canJoinPlayList = null;
     }
 
     private void sendRequest(IMPPackets.MusicSyncType type, UUID uuid) {
