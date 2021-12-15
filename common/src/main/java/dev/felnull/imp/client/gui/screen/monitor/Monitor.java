@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.felnull.imp.client.gui.IIMPSmartRender;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -11,7 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEventHandler {
+public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEventHandler implements IIMPSmartRender {
     protected final List<GuiEventListener> children = new ArrayList<>();
     public final List<Widget> renderables = new ArrayList<>();
     protected Component title;
@@ -22,14 +23,12 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
     protected int leftPos;
     protected int topPos;
 
-    public Monitor(Component title, int x, int y, int width, int height, int leftPos, int topPos) {
+    public Monitor(Component title, int x, int y, int width, int height) {
         this.title = title;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.leftPos = leftPos;
-        this.topPos = topPos;
     }
 
     protected int getStartX() {
@@ -40,12 +39,15 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
         return topPos + y;
     }
 
-    public void init() {
-
+    public void init(int leftPos, int topPos) {
+        this.leftPos = leftPos;
+        this.topPos = topPos;
     }
 
     public void depose() {
-
+        renderables.clear();
+        this.leftPos = 0;
+        this.topPos = 0;
     }
 
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {

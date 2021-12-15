@@ -57,8 +57,6 @@ public class MusicSubtitleOverlay extends Overlay {
 
             if (((m + n.duration()) < System.currentTimeMillis() && n.musicPlayer().isPlaying()) || n.musicPlayer().isFinished() || (!n.musicPlayer().isPaused() && !n.musicPlayer().isPlaying()))
                 REMOVE_SUBTITLES.add(n);
-
-
         });
         SUBTITLES.putAll(UPDATE_SUBTITLES);
         UPDATE_SUBTITLES.clear();

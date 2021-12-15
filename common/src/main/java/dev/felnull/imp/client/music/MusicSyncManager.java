@@ -5,16 +5,15 @@ import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.client.Minecraft;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class MusicSyncManager {
     private static final Minecraft mc = Minecraft.getInstance();
     private static final MusicSyncManager INSTANCE = new MusicSyncManager();
-    public List<MusicPlayList> myPlayList = new ArrayList<>();
+    public List<MusicPlayList> myPlayList;
     private long myPlayListLastUpdateTime;
-    public List<MusicPlayList> canJoinPlayList = new ArrayList<>();
+    public List<MusicPlayList> canJoinPlayList;
     private long canJoinPlayListLastUpdateTime;
 
     public static MusicSyncManager getInstance() {

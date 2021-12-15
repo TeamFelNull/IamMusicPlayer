@@ -5,7 +5,7 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 
 public class TestMMMonitor extends MusicManagerMonitor {
 
-    public TestMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen, int leftPos, int topPos) {
-        super(type, screen, leftPos, topPos);
+    public TestMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+        super(type, screen);
     }
 }

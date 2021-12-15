@@ -6,8 +6,8 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 public class OffMMMonitor extends MusicManagerMonitor {
-    public OffMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen, int leftPos, int topPos) {
-        super(type, screen, leftPos, topPos);
+    public OffMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+        super(type, screen);
         this.header = false;
     }
 

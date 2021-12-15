@@ -59,7 +59,7 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
         if (monitors.containsKey(type))
             return monitors.get(type);
 
-        var monitor = MusicManagerMonitor.createdMusicMonitor(type, null, 0, 0);
+        var monitor = MusicManagerMonitor.createdMusicMonitor(type, null);
         monitors.put(type, monitor);
         return monitor;
     }

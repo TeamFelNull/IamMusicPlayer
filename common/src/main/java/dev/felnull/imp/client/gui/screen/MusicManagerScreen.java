@@ -35,7 +35,6 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     protected void init() {
         super.init();
         this.addRenderableWidget(new PowerButton(this, leftPos + 368, topPos + 4, 12, 12, 386, 0, BG_TEXTURE, bgTextureWidth, bgTextureHeight));
-        monitors.clear();
         changeScreenMonitor(getBEMonitorType());
         insMonitor(getBEMonitorType());
     }
@@ -56,10 +55,10 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         }
 
         if (!monitors.containsKey(type))
-            monitors.put(type, MusicManagerMonitor.createdMusicMonitor(type, this, leftPos, topPos));
+            monitors.put(type, MusicManagerMonitor.createdMusicMonitor(type, this));
 
         monitor = monitors.get(type);
-        monitor.init();
+        monitor.init(leftPos, topPos);
         monitor.renderables.forEach(n -> {
             if (n instanceof AbstractWidget widget)
                 addRenderableWidget(widget);

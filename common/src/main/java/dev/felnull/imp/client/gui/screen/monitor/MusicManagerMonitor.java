@@ -21,20 +21,20 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     private static final Map<MusicManagerBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
     protected static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/background.png");
     public static final ResourceLocation WIDGETS_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/widgets.png");
-    protected static final ResourceLocation BASE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/base.png");
+    public static final ResourceLocation BASE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/base.png");
     protected boolean header = true;
     private final MusicManagerBlockEntity.MonitorType type;
     private final MusicManagerScreen screen;
 
-    public MusicManagerMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen, int leftPos, int topPos) {
-        super(new TranslatableComponent("imp.monitor.music_manager." + type.getName()), 8, 20, 370, 199, leftPos, topPos);
+    public MusicManagerMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+        super(new TranslatableComponent("imp.monitor.music_manager." + type.getName()), 8, 20, 370, 199);
         this.type = type;
         this.screen = screen;
     }
 
     @Override
-    public void init() {
-        super.init();
+    public void init(int leftPos, int topPos) {
+        super.init(leftPos, topPos);
         if (header && getParentType() != null) {
             addRenderWidget(new ImageButton(getStartX() + 356, getStartY(), 14, 10, 0, 0, 10, WIDGETS_TEXTURE, 256, 256, n -> {
                 insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
@@ -51,7 +51,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         OERenderUtil.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (header) {
             OERenderUtil.drawTexture(BASE_TEXTURE, poseStack, getStartX(), getStartY(), 0, 0, width, 10, width, height);
-            mc.font.draw(poseStack, title, getStartX() + 1, getStartY() + 1, 0xFF000000);
+            drawSmartString(poseStack, title, getStartX() + 1, getStartY() + 1);
         }
     }
 
@@ -67,7 +67,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
                 OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * 356, monitorHeight - onPxH * 10, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, onPxW * 14, onPxH * 10, 0, 0, 14, 10, 256, 256, i, j);
                 OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * 342, monitorHeight - onPxH * 10, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, onPxW * 14, onPxH * 10, 14, 0, 14, 10, 256, 256, i, j);
             }
-            OERenderUtil.renderTextSprite(poseStack, multiBufferSource, title, onPxW * 1, monitorHeight - onPxH * 11, OERenderUtil.MIN_BREADTH * 3, 0.25f, 0, 0);
+            renderSmartStringSprite(poseStack, multiBufferSource, title, 1, 2, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight);
         }
     }
 
@@ -81,8 +81,8 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         return screen;
     }
 
-    public static MusicManagerMonitor createdMusicMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen, int leftPos, int topPos) {
-        return monitorFactory.get(type).create(type, screen, leftPos, topPos);
+    public static MusicManagerMonitor createdMusicMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+        return monitorFactory.get(type).create(type, screen);
     }
 
     private static void registerMonitors(MusicManagerBlockEntity.MonitorType type, MonitorFactory factory) {
@@ -90,7 +90,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     }
 
     private static interface MonitorFactory {
-        MusicManagerMonitor create(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen, int leftPos, int topPos);
+        MusicManagerMonitor create(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen);
     }
 
     public MusicSyncManager getSyncManager() {
