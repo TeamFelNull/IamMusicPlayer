@@ -9,29 +9,19 @@ public class ImageInfo implements ITAGSerializable {
     public static final ImageInfo EMPTY = new ImageInfo(ImageType.EMPTY, "");
     private ImageType imageType;
     private String identifier;
-    private float widthScale;
-    private float heightScale;
 
     public ImageInfo() {
     }
 
     public ImageInfo(ImageType imageType, String identifier) {
-        this(imageType, identifier, 1, 1);
-    }
-
-    public ImageInfo(ImageType imageType, String identifier, float widthScale, float heightScale) {
         this.imageType = imageType;
         this.identifier = identifier;
-        this.widthScale = widthScale;
-        this.heightScale = heightScale;
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         tag.putString("ImageType", this.imageType.getNmae());
         tag.putString("Identifier", this.identifier);
-        tag.putFloat("WidthScale", widthScale);
-        tag.putFloat("HeightScale", heightScale);
         return tag;
     }
 
@@ -39,16 +29,6 @@ public class ImageInfo implements ITAGSerializable {
     public void load(CompoundTag tag) {
         this.imageType = ImageType.getImageTypeByName(tag.getString("ImageType"));
         this.identifier = tag.getString("Identifier");
-        this.widthScale = tag.getFloat("WidthScale");
-        this.heightScale = tag.getFloat("HeightScale");
-    }
-
-    public float getHeightScale() {
-        return heightScale;
-    }
-
-    public float getWidthScale() {
-        return widthScale;
     }
 
     public ImageType getImageType() {
@@ -64,26 +44,24 @@ public class ImageInfo implements ITAGSerializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ImageInfo that = (ImageInfo) o;
-        return Float.compare(that.widthScale, widthScale) == 0 && Float.compare(that.heightScale, heightScale) == 0 && imageType == that.imageType && Objects.equals(identifier, that.identifier);
-    }
-
-    @Override
     public String toString() {
-        return "MusicImage{" +
+        return "ImageInfo{" +
                 "imageType=" + imageType +
                 ", identifier='" + identifier + '\'' +
-                ", widthScale=" + widthScale +
-                ", heightScale=" + heightScale +
                 '}';
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ImageInfo imageInfo = (ImageInfo) o;
+        return imageType == imageInfo.imageType && Objects.equals(identifier, imageInfo.identifier);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(imageType, identifier, widthScale, heightScale);
+        return Objects.hash(imageType, identifier);
     }
 
     public static enum ImageType {

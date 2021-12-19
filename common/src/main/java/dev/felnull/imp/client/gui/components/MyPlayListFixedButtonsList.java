@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import net.minecraft.network.chat.Component;
 
@@ -17,10 +18,14 @@ public class MyPlayListFixedButtonsList extends PlayListFixedButtonsList {
 
     @Override
     protected void renderOneButton(PoseStack poseStack, MusicPlayList item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
-        //super.renderOneButton(poseStack, item, lnum, bnum, x, y, mx, my, parTick);
         int k = this.getYImage(this.isHovered(bnum));
         if (selected.apply(item))
             k = 0;
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
+
+        var img = item.getImage();
+        if (!img.isEmpty()) {
+            PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
+        }
     }
 }
