@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public interface IIMPSmartRender {
     Minecraft mc = Minecraft.getInstance();
@@ -33,7 +34,11 @@ public interface IIMPSmartRender {
     }
 
     default void drawSmartFixedWidthString(PoseStack poseStack, Component component, float x, float y, float w) {
-        OERenderUtil.drawFixedWidthText(poseStack, component, x, y, 0xFF000000, w);
+        drawSmartFixedWidthString(poseStack, component, x, y, w, 0xFF000000);
+    }
+
+    default void drawSmartFixedWidthString(PoseStack poseStack, Component component, float x, float y, float w, int color) {
+        OERenderUtil.drawFixedWidthText(poseStack, component, x, y, color, w);
     }
 
     default void drawSmartString(PoseStack poseStack, Component component, float x, float y) {
@@ -52,8 +57,12 @@ public interface IIMPSmartRender {
         renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, text, center, null, 0, 0, 0, 0, 0, 0);
     }
 
-    default void renderSmartStringSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight) {
-        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0);
+    default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, float scale) {
+        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0);
+    }
+
+    default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight) {
+        renderSmartTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f);
     }
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, boolean center, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
@@ -72,13 +81,49 @@ public interface IIMPSmartRender {
         }
 
         if (text != null)
-            renderSmartStringSprite(poseStack, multiBufferSource, text, x + ax, y + 2, z + OERenderUtil.MIN_BREADTH * 2, onePixW, onePixH, monitorHeight);
+            renderSmartTextSprite(poseStack, multiBufferSource, text, x + ax, y + 2, z + OERenderUtil.MIN_BREADTH * 2, onePixW, onePixH, monitorHeight);
     }
 
     default void renderSmartButtonBoxSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight) {
         float y1 = monitorHeight - onePixH * y - onePixH * h;
         OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x, y1, z, 0, 0, 0, onePixW * w, onePixH * h, 0, 87, 9, 4, 256, 256, i, j);
         OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x + onePixW, y1 + onePixH, z + OERenderUtil.MIN_BREADTH, 0, 0, 0, onePixW * w - (onePixW * 2), onePixH * h - (onePixH * 2), 0, 83, 9, 4, 256, 256, i, j);
+    }
 
+    default void renderScrollbarSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, int comp, int total) {
+        float s = Mth.clamp(h / ((float) comp / (float) total + 1), 10, h) / h;
+        renderScrollbarSprite(poseStack, multiBufferSource, x, y, z, h, i, j, onePixW, onePixH, monitorHeight, s);
+    }
+
+    default void renderScrollbarSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, float size) {
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, 9, 3, 9, 20, 9, 3, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y + h - 3, z, 9, 3, 9, 39, 9, 3, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+
+        float h1 = h - 6;
+        int ct = (int) h1 / 16;
+        float am = h1 - ct * 16;
+        for (int k = 0; k < ct; k++) {
+            renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y + k * 16 + 3, z, 9, 16, 9, 23, 9, 16, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        }
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y + ct * 16 + 3, z, 9, am, 9, 23, 9, am, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+
+        float h2 = h - 2;
+        float h3 = h2 * size;
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x + 1, y + 1, z + OERenderUtil.MIN_BREADTH, 7, 3, 0, 42, 7, 3, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x + 1, y + 1 + h3 - 3, z + OERenderUtil.MIN_BREADTH, 7, 3, 0, 59, 7, 3, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+
+        float h4 = h3 - 6;
+        int ict = (int) h4 / 14;
+        float iam = h4 - ict * 14;
+
+        for (int k = 0; k < ict; k++) {
+            renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x + 1, y + 1 + k * 14 + 3, z + OERenderUtil.MIN_BREADTH, 7, 14, 0, 45, 7, 14, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        }
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x + 1, y + 1 + ict * 14 + 3, z + OERenderUtil.MIN_BREADTH, 7, iam, 0, 45, 7, iam, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+    }
+
+    default void renderTextureSprite(ResourceLocation location, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, float texStartX, float texStartY, float texFinishX, float texFinishY, float texSizeW, float texSizeH, int combinedLightIn, int combinedOverlayIn, float onePixW, float onePixH, float monitorHeight) {
+        float y1 = monitorHeight - onePixH * y - onePixH * h;
+        OERenderUtil.renderTextureSprite(location, poseStack, multiBufferSource, onePixW * x, y1, z, 0, 0, 0, onePixW * w, onePixH * h, texStartX, texStartY, texFinishX, texFinishY, texSizeW, texSizeH, combinedLightIn, combinedOverlayIn);
     }
 }

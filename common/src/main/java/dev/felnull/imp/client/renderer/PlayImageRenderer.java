@@ -53,12 +53,25 @@ public class PlayImageRenderer {
             return;
         switch (imageInfo.getImageType()) {
             case PLAYER_FACE -> renderPlayerFaceImageSprite(imageInfo.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, i, j);
-            //  case URL -> drawURLImage(imageInfo.getIdentifier(), poseStack, x, y, size, cash);
-            // case YOUTUBE_THUMBNAIL -> drawURLImage(String.format(YOUTUBE_THUMBNAIL_URL, imageInfo.getIdentifier()), poseStack, x, y, size, cash);
+            case URL -> renderURLImageSprite(imageInfo.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, i, j);
+            case YOUTUBE_THUMBNAIL -> renderURLImageSprite(String.format(YOUTUBE_THUMBNAIL_URL, imageInfo.getIdentifier()), poseStack, multiBufferSource, x, y, z, size, i, j);
         }
     }
 
     private void renderPlayerFaceImageSprite(String name, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j) {
         OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, name, x, y, z, 0, 0, 0, size, i, j);
+    }
+
+    private void renderURLImageSprite(String url, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j) {
+        var texture = OETextureUtil.getURLTextureAsyncLoad(url, true);
+        if (texture == null) return;
+        var scale = OETextureUtil.getTextureScale(texture);
+        float w = size;
+        float h = size;
+        if (scale != null) {
+            w *= scale.w();
+            h *= scale.h();
+        }
+        OERenderUtil.renderTextureSprite(texture, poseStack, multiBufferSource, x + (size - w) / 2, y + (size - h) / 2, z, 0, 0, 0, w, h, 0, 0, w, h, w, h, i, j);
     }
 }

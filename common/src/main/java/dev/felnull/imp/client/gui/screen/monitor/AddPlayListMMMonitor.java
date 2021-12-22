@@ -3,16 +3,28 @@ package dev.felnull.imp.client.gui.screen.monitor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.client.gui.IIMPSmartRender;
+import dev.felnull.imp.client.gui.components.JoinPlayListFixedButtonsList;
+import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.renderer.PlayImageRenderer;
+import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class AddPlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation ADD_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_play_list.png");
+    private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
+    private List<MusicPlayList> musicPlayListsCash;
     private SmartButton createPlayListButton;
     private SmartButton addUploadedPlayListButton;
     private SortButton.SortTypeButton playlistSortButton;
@@ -25,6 +37,11 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
+        addRenderWidget(new JoinPlayListFixedButtonsList(getStartX() + 1, getStartY() + 20, musicPlayLists, (fixedButtonsList, playList, i, i1) -> {
+            getScreen().insAddPlayList(playList.getUuid());
+            insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
+        }));
+
         this.createPlayListButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 90, 9, new TranslatableComponent("imp.button.createPlaylist"), n -> {
 
         }));
@@ -57,6 +74,34 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 213, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
         renderSmartButtonSprite(poseStack, multiBufferSource, 222, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
+
+        var pls = getSyncManager().getCanJoinPlayList();
+        int plsc = 0;
+        if (pls != null) {
+            plsc = pls.size();
+            for (int k = 0; k < Math.min(6, pls.size()); k++) {
+                renderSmartButtonBoxSprite(poseStack, multiBufferSource, 1, 20 + (k * 28), OERenderUtil.MIN_BREADTH * 2, 359, 28, i, j, onPxW, onPxH, monitorHeight);
+                var playList = pls.get(k);
+                float sx = 1;
+                if (!playList.getImage().isEmpty()) {
+                    sx += 28 + 2;
+                    PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 28) + 2 + 26) * onPxH, OERenderUtil.MIN_BREADTH * 4, 26 * onPxH, i, j);
+                }
+
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+
+                OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, playList.getAuthority().getOwnerName(), (sx + 101) * onPxW, monitorHeight - (20 + (k * 28) + 2 + 9) * onPxH, OERenderUtil.MIN_BREADTH * 4, 0, 0, 0, onPxH * 9, i, j);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getAuthority().getOwnerName()), sx + 114, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicCount", playList.getMusicList().size()), sx + 101, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+
+                if (playList.getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isInvitation()) {
+                    renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                }
+            }
+        }
+        renderScrollbarSprite(poseStack, multiBufferSource, 360, 20, OERenderUtil.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 6);
     }
 
     @Override
@@ -64,7 +109,18 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
         return MusicManagerBlockEntity.MonitorType.PLAY_LIST;
     }
 
-    private void updateList() {
+    @Override
+    public void tick() {
+        super.tick();
+        if (musicPlayListsCash != getSyncManager().getCanJoinPlayList()) {
+            musicPlayListsCash = getSyncManager().getCanJoinPlayList();
+            updateList();
+        }
+    }
 
+    private void updateList() {
+        musicPlayLists.clear();
+        if (musicPlayListsCash != null)
+            musicPlayLists.addAll(playlistSortButton.sort(musicPlayListsCash, playlistOrderButton));
     }
 }

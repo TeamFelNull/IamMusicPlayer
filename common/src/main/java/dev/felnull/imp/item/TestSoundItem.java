@@ -56,12 +56,13 @@ public class TestSoundItem extends Item {
         } else {
             if (!player.isCrouching()) {
                 var ms = new MusicSource("youtube", "IL60RpmG4P8", 114514);
-                // var im = new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, "IL60RpmG4P8");
-                var im = new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, "MoriMori_0317_jp");
+                var im = new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, "IL60RpmG4P8");
+                //    var im = new ImageInfo(ImageInfo.ImageType.EMPTY, "");
+                // var im = new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, "MoriMori_0317_jp");
                 var m = new Music(UUID.randomUUID(), "Kame", ms, im, player.getGameProfile().getId(), System.currentTimeMillis());
                 MusicManager.getInstance().addMusic(m);
 
-                var ar = new AuthorityInfo(true, player.getUUID());
+                var ar = new AuthorityInfo(true, player.getUUID(), "MoriMori_0317_jp", AuthorityInfo.AuthorityType.MEMBER);
 
                 var pl = new MusicPlayList(UUID.randomUUID(), "KamePl", im, ar, Lists.newArrayList(m.getUuid()), System.currentTimeMillis());
                 MusicManager.getInstance().addPlayList(pl);

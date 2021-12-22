@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu> {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -43,6 +44,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         var tag = new CompoundTag();
         tag.putString("type", type.getName());
         instruction("set_monitor", 0, tag);
+    }
+
+    public void insAddPlayList(UUID playListId) {
+        var tag = new CompoundTag();
+        tag.putUUID("playlist", playListId);
+        instruction("add_playlist", 0, tag);
     }
 
     private void changeScreenMonitor(MusicManagerBlockEntity.MonitorType type) {

@@ -2,6 +2,7 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
+import dev.felnull.imp.music.MusicManager;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -147,6 +148,10 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             var mn = data.getString("type");
             if (!mn.isEmpty())
                 setMonitor(player, MonitorType.getByName(mn));
+            return null;
+        } else if ("add_playlist".equals(name)) {
+            var pl = data.getUUID("playlist");
+            MusicManager.getInstance().addPlayListToPlayer(player, pl);
             return null;
         }
         return super.onInstruction(player, name, num, data);

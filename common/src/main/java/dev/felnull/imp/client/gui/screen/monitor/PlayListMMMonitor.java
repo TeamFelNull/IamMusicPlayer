@@ -11,16 +11,18 @@ import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/play_list.png");
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
-    private List<MusicPlayList> musicPlayListsCash = new ArrayList<>();
+    private List<MusicPlayList> musicPlayListsCash;
     private MusicPlayList selectedMusicPlayList;
     private SortButton.SortTypeButton playlistSortButton;
     private SortButton.OrderTypeButton playlistOrderButton;
@@ -36,7 +38,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        addRenderWidget(new MyPlayListFixedButtonsList(getStartX() + 1, getStartY() + 20, new TranslatableComponent("imp.fixedList.myPlaylist"), musicPlayLists, (fixedButtonsList, playList, i, i1) -> {
+        addRenderWidget(new MyPlayListFixedButtonsList(getStartX() + 1, getStartY() + 20, musicPlayLists, (fixedButtonsList, playList, i, i1) -> {
             selectedMusicPlayList = playList;
         }, n -> n.equals(selectedMusicPlayList)));
 
@@ -77,16 +79,23 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         renderSmartButtonSprite(poseStack, multiBufferSource, 271, 189, OERenderUtil.MIN_BREADTH * 2, 88, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.orderType." + SortButton.OrderType.DESCENDING.getName()), WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
 
         var pls = getSyncManager().getMyPlayList();
+        int plsc = 0;
         if (pls != null) {
-            var imr = PlayImageRenderer.getInstance();
+            plsc = pls.size();
             for (int k = 0; k < Math.min(8, pls.size()); k++) {
                 renderSmartButtonBoxSprite(poseStack, multiBufferSource, 1, 20 + (k * 21), OERenderUtil.MIN_BREADTH * 2, 90, 21, i, j, onPxW, onPxH, monitorHeight);
-                var music = pls.get(k);
-                if (!music.getImage().isEmpty())
-                    imr.renderSprite(music.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 21) + 2 + 17) * onPxH, OERenderUtil.MIN_BREADTH * 4, 17 * onPxH, i, j);
+                var playList = pls.get(k);
+                float sx = 1;
+                if (!playList.getImage().isEmpty()) {
+                    sx += 18 + 2;
+                    PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 21) + 2 + 17) * onPxH, OERenderUtil.MIN_BREADTH * 4, 17 * onPxH, i, j);
+                }
+
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 21) + 3, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 21) + 12, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0.7f);
             }
         }
-
+        renderScrollbarSprite(poseStack, multiBufferSource, 92, 20, OERenderUtil.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 8);
     }
 
     @Override

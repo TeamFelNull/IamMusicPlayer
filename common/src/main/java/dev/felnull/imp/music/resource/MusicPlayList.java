@@ -75,6 +75,10 @@ public class MusicPlayList implements ITAGSerializable, IIMPComparable {
         return createDate;
     }
 
+    public int getPlayerCount() {
+        return (int) authority.getPlayersAuthority().values().stream().filter(AuthorityInfo.AuthorityType::isMoreReadOnly).count();
+    }
+
     @Override
     public String toString() {
         return "MusicPlayList{" +

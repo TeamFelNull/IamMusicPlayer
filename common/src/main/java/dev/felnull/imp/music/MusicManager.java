@@ -63,10 +63,19 @@ public class MusicManager {
         return Collections.unmodifiableList(playLists);
     }
 
+    public void addPlayListToPlayer(ServerPlayer player, UUID playListId) {
+        var uuid = player.getGameProfile().getId();
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl != null && pl.getAuthority().canJoin(uuid)) {
+            pl.getAuthority().getRawAuthority().put(uuid, pl.getAuthority().getInitialAuthority());
+            getSaveData().setDirty();
+        }
+    }
+
     public static enum PlayListGetType {
         NO_BAN(n -> !n.isBan()),
         JOIN(n -> !n.isBan() && n.isMoreReadOnly()),
-        NO_JOIN(n -> !n.isBan() && !n.isMoreReadOnly());
+        NO_JOIN(n -> (!n.isBan() && !n.isMoreReadOnly()) || n.isInvitation());
 
         private final Function<AuthorityInfo.AuthorityType, Boolean> filter;
 

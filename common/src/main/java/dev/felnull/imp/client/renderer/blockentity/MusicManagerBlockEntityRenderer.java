@@ -42,6 +42,8 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
 
         poseStack.pushPose();
         OERenderUtil.poseRotateDirection(poseStack, blockEntity.getBlockState().getValue(MusicManagerBlock.FACING), 1);
+
+        poseStack.pushPose();
         OERenderUtil.renderModel(poseStack, vc, acLmp, i, j);
         poseStack.popPose();
 
@@ -52,6 +54,8 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
         var monitor = getMonitor(blockEntity.getMyMonitor(mc.player));
         float px16 = 1f / 16f;
         monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, px16 * 10.5f, px16 * 6.5f);
+        poseStack.popPose();
+
         poseStack.popPose();
     }
 
