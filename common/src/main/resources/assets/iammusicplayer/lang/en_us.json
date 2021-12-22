@@ -26,6 +26,8 @@
   "imp.text.playerCount": "%s Players",
   "imp.text.musicCount": "%s Musics",
   "imp.text.invitation": "Invitation",
+  "imp.text.addPlaylistInfo": "%s playlists of %s players total %s music",
+  "imp.text.publicPlaylist": "Public playlist",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "Client",

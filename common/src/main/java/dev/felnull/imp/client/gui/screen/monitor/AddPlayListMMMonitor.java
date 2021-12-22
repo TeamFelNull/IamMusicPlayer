@@ -60,6 +60,11 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
         OERenderUtil.drawTexture(ADD_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        var ci = getSyncManager().getCanJoinPlayListInfo();
+        if (ci != null) {
+            var info = new TranslatableComponent("imp.text.addPlaylistInfo", ci.playListCount(), ci.playerCount(), ci.musicCount());
+            drawSmartString(poseStack, info, getStartX() + width - IIMPSmartRender.mc.font.width(info) - 3, getStartY() + 11);
+        }
     }
 
     @Override
@@ -97,7 +102,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
                 renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
 
                 if (playList.getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isInvitation()) {
-                    renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                    renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF);
                 }
             }
         }

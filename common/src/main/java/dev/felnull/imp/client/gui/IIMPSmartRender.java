@@ -61,6 +61,10 @@ public interface IIMPSmartRender {
         OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0);
     }
 
+    default void renderSmartTextSpriteColor(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color) {
+        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0, color);
+    }
+
     default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight) {
         renderSmartTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f);
     }
@@ -91,7 +95,7 @@ public interface IIMPSmartRender {
     }
 
     default void renderScrollbarSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, int comp, int total) {
-        float s = Mth.clamp(h / ((float) comp / (float) total + 1), 10, h) / h;
+        float s = Mth.clamp(h / ((float) comp / (float) total), 10, h) / h;
         renderScrollbarSprite(poseStack, multiBufferSource, x, y, z, h, i, j, onePixW, onePixH, monitorHeight, s);
     }
 

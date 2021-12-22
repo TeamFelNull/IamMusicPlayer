@@ -13,8 +13,10 @@ public class MusicSyncManager {
     private static final MusicSyncManager INSTANCE = new MusicSyncManager();
     public List<MusicPlayList> myPlayList;
     private long myPlayListLastUpdateTime;
+    public PlayListInfo myPlayListInfo;
     public List<MusicPlayList> canJoinPlayList;
     private long canJoinPlayListLastUpdateTime;
+    public PlayListInfo canJoinPlayListInfo;
 
     public static MusicSyncManager getInstance() {
         return INSTANCE;
@@ -28,12 +30,20 @@ public class MusicSyncManager {
         return myPlayList;
     }
 
+    public PlayListInfo getMyPlayListInfo() {
+        return myPlayListInfo;
+    }
+
     public List<MusicPlayList> getCanJoinPlayList() {
         if (System.currentTimeMillis() - canJoinPlayListLastUpdateTime >= 1000 * 60) {
             sendRequest(IMPPackets.MusicSyncType.PLAYLIST_CAN_JOIN, mc.player.getGameProfile().getId());
             canJoinPlayListLastUpdateTime = System.currentTimeMillis();
         }
         return canJoinPlayList;
+    }
+
+    public PlayListInfo getCanJoinPlayListInfo() {
+        return canJoinPlayListInfo;
     }
 
     public void reset() {
@@ -46,5 +56,8 @@ public class MusicSyncManager {
 
     private void sendRequest(IMPPackets.MusicSyncType type, UUID uuid) {
         NetworkManager.sendToServer(IMPPackets.MUSIC_SYNC, new IMPPackets.MusicSyncRequestMessage(type, uuid).toFBB());
+    }
+
+    public static record PlayListInfo(int playerCount, int playListCount, int musicCount) {
     }
 }
