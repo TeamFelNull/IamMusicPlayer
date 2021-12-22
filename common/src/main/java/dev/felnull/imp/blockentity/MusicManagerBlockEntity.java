@@ -108,7 +108,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         var pltag = playerData.get(player.getGameProfile().getId());
         if (pltag != null)
             tag.put("Data", pltag);
-        return super.getSyncData(player, tag);
+        return tag;
     }
 
     @Override

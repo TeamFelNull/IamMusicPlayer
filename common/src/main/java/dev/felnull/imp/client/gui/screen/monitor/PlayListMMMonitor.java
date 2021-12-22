@@ -7,6 +7,7 @@ import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -39,7 +40,9 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             selectedMusicPlayList = playList;
         }, n -> n.equals(selectedMusicPlayList)));
 
-        this.addPlaylistButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 72, 9, new TranslatableComponent("imp.button.addPlaylist"), n -> updateList()));
+        this.addPlaylistButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 72, 9, new TranslatableComponent("imp.button.addPlaylist"), n -> {
+            insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST);
+        }));
         this.addPlaylistButton.setIcon(WIDGETS_TEXTURE, 73, 14, 5, 5);
 
         this.addMusic = addRenderWidget(new SmartButton(getStartX() + 102, getStartY() + 189, 72, 9, new TranslatableComponent("imp.button.addMusic"), n -> updateList()));
@@ -66,6 +69,24 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         OERenderUtil.renderTextureSprite(PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
         renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 72, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.button.addPlaylist"), WIDGETS_TEXTURE, 73, 14, 5, 5, 256, 256);
         renderSmartButtonSprite(poseStack, multiBufferSource, 102, 189, OERenderUtil.MIN_BREADTH * 2, 72, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.button.addMusic"), WIDGETS_TEXTURE, 73, 14, 5, 5, 256, 256);
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 73, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 82, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 174, 189, OERenderUtil.MIN_BREADTH * 2, 97, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.sortType." + SortButton.SortType.NAME.getName()), WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 271, 189, OERenderUtil.MIN_BREADTH * 2, 88, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.orderType." + SortButton.OrderType.DESCENDING.getName()), WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
+
+        var pls = getSyncManager().getMyPlayList();
+        if (pls != null) {
+            var imr = PlayImageRenderer.getInstance();
+            for (int k = 0; k < Math.min(8, pls.size()); k++) {
+                renderSmartButtonBoxSprite(poseStack, multiBufferSource, 1, 20 + (k * 21), OERenderUtil.MIN_BREADTH * 2, 90, 21, i, j, onPxW, onPxH, monitorHeight);
+                var music = pls.get(k);
+                if (!music.getImage().isEmpty())
+                    imr.renderSprite(music.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 21) + 2 + 17) * onPxH, OERenderUtil.MIN_BREADTH * 4, 17 * onPxH, i, j);
+            }
+        }
+
     }
 
     @Override

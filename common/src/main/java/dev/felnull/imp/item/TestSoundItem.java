@@ -55,8 +55,9 @@ public class TestSoundItem extends Item {
             }*/
         } else {
             if (!player.isCrouching()) {
-                var ms = new MusicSource("youtube", "FdBVX6bQpCs", 114514);
-                var im = new ImageInfo(ImageInfo.ImageType.URL, "https://cdn.discordapp.com/attachments/887769442019323924/893111745927856128/broken.gif");
+                var ms = new MusicSource("youtube", "IL60RpmG4P8", 114514);
+                // var im = new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, "IL60RpmG4P8");
+                var im = new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, "MoriMori_0317_jp");
                 var m = new Music(UUID.randomUUID(), "Kame", ms, im, player.getGameProfile().getId(), System.currentTimeMillis());
                 MusicManager.getInstance().addMusic(m);
 

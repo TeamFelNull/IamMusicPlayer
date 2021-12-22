@@ -32,8 +32,16 @@ public interface IIMPSmartRender {
         OERenderUtil.drawCenterText(poseStack, component, x, y, 0xFF000000);
     }
 
+    default void drawSmartFixedWidthString(PoseStack poseStack, Component component, float x, float y, float w) {
+        OERenderUtil.drawFixedWidthText(poseStack, component, x, y, 0xFF000000, w);
+    }
+
     default void drawSmartString(PoseStack poseStack, Component component, float x, float y) {
         mc.font.draw(poseStack, component, x, y, 0xFF000000);
+    }
+
+    default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
+        renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, null, false, iconLocation, iconStX, iconStY, iconW, iconH, iconTexW, iconTexH);
     }
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
@@ -50,21 +58,27 @@ public interface IIMPSmartRender {
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, boolean center, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
         float y1 = monitorHeight - onePixH * y - onePixH * h;
-        OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x, y1, z, 0, 0, 0, onePixW * w, onePixH * h, 0, 87, 9, 4, 256, 256, i, j);
-        OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x + onePixW, y1 + onePixH, z + OERenderUtil.MIN_BREADTH, 0, 0, 0, onePixW * w - (onePixW * 2), onePixH * h - (onePixH * 2), 0, 83, 9, 4, 256, 256, i, j);
-
+        renderSmartButtonBoxSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight);
         float ax = 1;
 
-        if (center)
+        if (text != null && center)
             ax = (w - mc.font.width(text)) / 2f;
 
         if (iconLocation != null) {
-            float itx = 2;
+            float itx = text != null ? 2 : (w - iconW) / 2f;
             float ity = (h - iconH) / 2f;
             ax += itx + iconW;
             OERenderUtil.renderTextureSprite(iconLocation, poseStack, multiBufferSource, onePixW * (x + itx), y1 + onePixH * ity, z + OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, onePixW * iconW, onePixH * iconH, iconStX, iconStY, iconW, iconH, iconTexW, iconTexH, i, j);
         }
 
-        renderSmartStringSprite(poseStack, multiBufferSource, text, x + ax, y + 2, z + OERenderUtil.MIN_BREADTH * 2, onePixW, onePixH, monitorHeight);
+        if (text != null)
+            renderSmartStringSprite(poseStack, multiBufferSource, text, x + ax, y + 2, z + OERenderUtil.MIN_BREADTH * 2, onePixW, onePixH, monitorHeight);
+    }
+
+    default void renderSmartButtonBoxSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight) {
+        float y1 = monitorHeight - onePixH * y - onePixH * h;
+        OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x, y1, z, 0, 0, 0, onePixW * w, onePixH * h, 0, 87, 9, 4, 256, 256, i, j);
+        OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x + onePixW, y1 + onePixH, z + OERenderUtil.MIN_BREADTH, 0, 0, 0, onePixW * w - (onePixW * 2), onePixH * h - (onePixH * 2), 0, 83, 9, 4, 256, 256, i, j);
+
     }
 }

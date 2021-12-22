@@ -75,6 +75,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         registerMonitors(MusicManagerBlockEntity.MonitorType.OFF, OffMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.TEST, TestMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.PLAY_LIST, PlayListMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST, AddPlayListMMMonitor::new);
     }
 
     public MusicManagerScreen getScreen() {
@@ -92,7 +93,6 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     private static interface MonitorFactory {
         MusicManagerMonitor create(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen);
     }
-
     public MusicSyncManager getSyncManager() {
         return MusicSyncManager.getInstance();
     }

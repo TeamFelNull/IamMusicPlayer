@@ -6,7 +6,6 @@ import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
 import dev.felnull.imp.music.resource.IIMPComparable;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -15,11 +14,12 @@ import net.minecraft.network.chat.TranslatableComponent;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class SortButton extends ImageButton implements IIMPSmartRender {
+public abstract class SortButton extends Button implements IIMPSmartRender {
     protected final boolean longed;
 
-    private SortButton(int x, int y, int w, int tx, OnPress onPress, boolean longed, Screen screen) {
-        super(x, y, w, 9, tx, 30, 9, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, onPress, longed ? NO_TOOLTIP : (button, poseStack, px, py) -> screen.renderTooltip(poseStack, getText(button), px, py), new TranslatableComponent("imp.button.sort"));
+    private SortButton(int x, int y, int w, int tx, Component component, OnPress onPress, boolean longed, Screen screen) {
+        super(x, y, w, 9, component, onPress, longed ? NO_TOOLTIP : (button, poseStack, px, py) -> screen.renderTooltip(poseStack, getText(button), px, py));
+        // super(x, y, w, 9, tx, 30, 9, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, onPress, longed ? NO_TOOLTIP : (button, poseStack, px, py) -> screen.renderTooltip(poseStack, getText(button), px, py), new TranslatableComponent("imp.button.sort"));
         this.longed = longed;
     }
 
@@ -36,6 +36,13 @@ public abstract class SortButton extends ImageButton implements IIMPSmartRender 
     public void onPress() {
         cycle();
         super.onPress();
+    }
+
+    @Override
+    public void renderButton(PoseStack poseStack, int mx, int my, float f) {
+        drawSmartButtonBox(poseStack, x, y, width, height, isHovered());
+        if (this.isHovered())
+            this.renderToolTip(poseStack, mx, my);
     }
 
     abstract public void cycle();
@@ -89,7 +96,7 @@ public abstract class SortButton extends ImageButton implements IIMPSmartRender 
         private SortType type = SortType.NAME;
 
         public SortTypeButton(int x, int y, OnPress onPress, boolean longed, Screen screen) {
-            super(x, y, longed ? 97 : 9, longed ? 61 : 52, onPress, longed, screen);
+            super(x, y, longed ? 97 : 9, longed ? 61 : 52, new TranslatableComponent("imp.button.sort"), onPress, longed, screen);
         }
 
         @Override
@@ -119,7 +126,7 @@ public abstract class SortButton extends ImageButton implements IIMPSmartRender 
         private OrderType type = OrderType.DESCENDING;
 
         public OrderTypeButton(int x, int y, OnPress onPress, boolean longed, Screen screen) {
-            super(x, y, longed ? 88 : 9, longed ? 158 : 52, onPress, longed, screen);
+            super(x, y, longed ? 88 : 9, longed ? 158 : 52, new TranslatableComponent("imp.button.order"), onPress, longed, screen);
         }
 
         @Override
