@@ -9,10 +9,12 @@ import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +26,9 @@ import java.util.List;
 public class AddPlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation ADD_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_play_list.png");
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
+    private final Component PUBLIC_TEXT = new TranslatableComponent("imp.text.public");
+    private MusicSyncManager.PlayListInfo lastPlayListInfo;
+    private Component INFO_TEXT;
     private List<MusicPlayList> musicPlayListsCash;
     private SmartButton createPlayListButton;
     private SmartButton addUploadedPlayListButton;
@@ -43,7 +48,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
         }));
 
         this.createPlayListButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 90, 9, new TranslatableComponent("imp.button.createPlaylist"), n -> {
-
+            insMonitor(MusicManagerBlockEntity.MonitorType.CREATE_PLAY_LIST);
         }));
         this.createPlayListButton.setIcon(WIDGETS_TEXTURE, 78, 14, 5, 5);
 
@@ -60,11 +65,9 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
         OERenderUtil.drawTexture(ADD_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-        var ci = getSyncManager().getCanJoinPlayListInfo();
-        if (ci != null) {
-            var info = new TranslatableComponent("imp.text.addPlaylistInfo", ci.playListCount(), ci.playerCount(), ci.musicCount());
-            drawSmartString(poseStack, info, getStartX() + width - IIMPSmartRender.mc.font.width(info) - 3, getStartY() + 11);
-        }
+        if (INFO_TEXT != null)
+            drawSmartString(poseStack, INFO_TEXT, getStartX() + width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, getStartY() + 11);
+        drawSmartString(poseStack, PUBLIC_TEXT, getStartX() + 3, getStartY() + 11);
     }
 
     @Override
@@ -107,6 +110,11 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, 360, 20, OERenderUtil.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 6);
+
+        updateInfoText();
+        if (INFO_TEXT != null)
+            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight);
+        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_TEXT, 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight);
     }
 
     @Override
@@ -121,11 +129,24 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
             musicPlayListsCash = getSyncManager().getCanJoinPlayList();
             updateList();
         }
+        updateInfoText();
     }
 
     private void updateList() {
         musicPlayLists.clear();
         if (musicPlayListsCash != null)
             musicPlayLists.addAll(playlistSortButton.sort(musicPlayListsCash, playlistOrderButton));
+    }
+
+    private void updateInfoText() {
+        var pls = getSyncManager();
+        if (pls.getCanJoinPlayListInfo() != lastPlayListInfo) {
+            lastPlayListInfo = pls.getCanJoinPlayListInfo();
+            if (lastPlayListInfo != null) {
+                INFO_TEXT = new TranslatableComponent("imp.text.addPlaylistInfo", lastPlayListInfo.playListCount(), lastPlayListInfo.playerCount(), lastPlayListInfo.musicCount());
+            } else {
+                INFO_TEXT = null;
+            }
+        }
     }
 }

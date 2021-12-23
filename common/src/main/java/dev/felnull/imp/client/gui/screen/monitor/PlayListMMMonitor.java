@@ -3,14 +3,17 @@ package dev.felnull.imp.client.gui.screen.monitor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +26,8 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/play_list.png");
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
     private List<MusicPlayList> musicPlayListsCash;
+    private MusicSyncManager.PlayListInfo lastPlayListInfo;
+    private Component INFO_TEXT;
     private MusicPlayList selectedMusicPlayList;
     private SortButton.SortTypeButton playlistSortButton;
     private SortButton.OrderTypeButton playlistOrderButton;
@@ -61,6 +66,8 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
         OERenderUtil.drawTexture(PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        if (INFO_TEXT != null)
+            drawSmartString(poseStack, INFO_TEXT, getStartX() + width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, getStartY() + 11);
     }
 
     @Override
@@ -96,6 +103,10 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, 92, 20, OERenderUtil.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 8);
+
+        updateInfoText();
+        if (INFO_TEXT != null)
+            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight);
     }
 
     @Override
@@ -105,6 +116,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             musicPlayListsCash = getSyncManager().getMyPlayList();
             updateList();
         }
+        updateInfoText();
     }
 
     private void updateList() {
@@ -116,4 +128,15 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             selectedMusicPlayList = null;
     }
 
+    private void updateInfoText() {
+        var pls = getSyncManager();
+        if (pls.getMyPlayListInfo() != lastPlayListInfo) {
+            lastPlayListInfo = pls.getMyPlayListInfo();
+            if (lastPlayListInfo != null) {
+                INFO_TEXT = new TranslatableComponent("imp.text.playlistInfo", lastPlayListInfo.playListCount(), lastPlayListInfo.musicCount());
+            } else {
+                INFO_TEXT = null;
+            }
+        }
+    }
 }
