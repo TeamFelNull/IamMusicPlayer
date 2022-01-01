@@ -1,6 +1,7 @@
 package dev.felnull.imp.client;
 
 import dev.felnull.imp.IMPConfig;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.gui.screen.IMPScreenFactorys;
 import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
 import dev.felnull.imp.client.handler.ClientHandler;
@@ -16,6 +17,8 @@ import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.networking.IMPPackets;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.world.InteractionResult;
+
+import java.nio.file.Paths;
 
 public class IamMusicPlayerClient {
     public static void init() {

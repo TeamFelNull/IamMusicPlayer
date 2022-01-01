@@ -6,6 +6,8 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
 import dev.felnull.imp.inventory.MusicManagerMenu;
+import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -78,6 +80,18 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         return MusicManagerBlockEntity.MonitorType.OFF;
     }
 
+    public void insImageURL(String url) {
+        var tag = new CompoundTag();
+        tag.putString("url", url);
+        instruction("set_image_url", 0, tag);
+    }
+
+    public void insImage(ImageInfo image) {
+        var tag = new CompoundTag();
+        OENbtUtil.writeSerializable(tag, "image", image);
+        instruction("set_image", 0, tag);
+    }
+
     @Override
     protected ResourceLocation getBackGrandTexture() {
         return BG_TEXTURE;
@@ -103,5 +117,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
                 changeScreenMonitor(getBEMonitorType());
             monitor.tick();
         }
+    }
+
+    @Override
+    public void onClose() {
+        super.onClose();
+        if (monitor != null)
+            monitor.depose();
     }
 }

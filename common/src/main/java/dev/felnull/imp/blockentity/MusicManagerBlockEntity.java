@@ -3,6 +3,7 @@ package dev.felnull.imp.blockentity;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
 import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -126,11 +127,22 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         return playerData.get(id);
     }
 
-    public MonitorType getMonitor(ServerPlayer player) {
-        var mn = getPlayerData(player).getString("Monitor");
-        if (!mn.isEmpty())
-            return MonitorType.getByName(mn);
-        return MonitorType.getDefault(this, player.getGameProfile().getId());
+    public void setImage(ServerPlayer player, ImageInfo image) {
+        OENbtUtil.writeSerializable(getPlayerData(player), "Image", image);
+    }
+
+    public ImageInfo getMyImage() {
+        if (myData.getCompound("Image").isEmpty())
+            return ImageInfo.EMPTY;
+        return OENbtUtil.readSerializable(myData, "Image", new ImageInfo());
+    }
+
+    public void setImageURL(ServerPlayer player, String url) {
+        getPlayerData(player).putString("ImageURL", url);
+    }
+
+    public String getMyImageURL() {
+        return myData.getString("ImageURL");
     }
 
     public void setMonitor(ServerPlayer player, MonitorType type) {
@@ -152,6 +164,14 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         } else if ("add_playlist".equals(name)) {
             var pl = data.getUUID("playlist");
             MusicManager.getInstance().addPlayListToPlayer(player, pl);
+            return null;
+        } else if ("set_image_url".equals(name)) {
+            var url = data.getString("url");
+            setImageURL(player, url);
+            return null;
+        } else if ("set_image".equals(name)) {
+            var image = OENbtUtil.readSerializable(data, "image", new ImageInfo());
+            setImage(player, image);
             return null;
         }
         return super.onInstruction(player, name, num, data);
