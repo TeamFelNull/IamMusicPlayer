@@ -28,11 +28,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
-public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
+public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
-    private static final ResourceLocation SET_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/set_image_base.png");
+    private static final ResourceLocation SET_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/image_set_base.png");
     private static final Component NO_IMAGE_TEXT = new TranslatableComponent("imp.text.noImage");
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.dropInfo");
     private EditBox imageUrlEditBox;
@@ -40,7 +42,7 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
     private ImageUrlLoader imageUrlLoader;
     private ImageUploader imageUploader;
 
-    public SetImageBaseMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+    public ImageSetBaseMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
     }
 
@@ -57,7 +59,7 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
         addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 14, ImageSetButton.ImageSetType.PLAYER_FACE, n -> setImage(new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, IIMPSmartRender.mc.player.getGameProfile().getName())), getScreen()));
 
         this.imageUrlEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 112, getStartY() + 34, 69, 12, new TranslatableComponent("imp.editBox.imageUrl"));
-        this.imageUrlEditBox.setMaxLength(100);
+        this.imageUrlEditBox.setMaxLength(300);
         this.imageUrlEditBox.setValue(getImageURL());
         this.imageUrlEditBox.setResponder(this::setImageURL);
         addRenderWidget(this.imageUrlEditBox);
@@ -92,6 +94,18 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
         OERenderUtil.renderTextureSprite(SET_IMAGE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+
+        var img = getImage(blockEntity);
+        float sc = onPxW / onPxH;
+        if (!img.isEmpty()) {
+            poseStack.pushPose();
+            poseStack.scale(sc, 1, 1);
+            PlayImageRenderer.getInstance().renderSprite(img, poseStack, multiBufferSource, (6f * onPxW) / sc, monitorHeight - (64 + 15) * onPxH, OERenderUtil.MIN_BREADTH * 4, 64 * onPxH, i, j);
+            poseStack.popPose();
+        } else {
+            int strl = IIMPSmartRender.mc.font.width(NO_IMAGE_TEXT);
+            renderSmartTextSprite(poseStack, multiBufferSource, NO_IMAGE_TEXT, 6 + ((38f * sc) - (float) strl / 2f), 43, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+        }
     }
 
     @Override
@@ -105,10 +119,23 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
         stopImageUrlLoad();
     }
 
+    @Override
+    public void onFilesDrop(List<Path> list) {
+        File[] files = new File[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            files[i] = list.get(i).toFile();
+        }
+        openImage(files);
+    }
+
     private ImageInfo getImage() {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
-            return musicManagerBlockEntity.getMyImage();
+            return getImage(musicManagerBlockEntity);
         return ImageInfo.EMPTY;
+    }
+
+    private ImageInfo getImage(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMyImage();
     }
 
     private void setImage(ImageInfo image) {
@@ -157,12 +184,6 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
     }
 
     private void openImage(File[] files) {
-        System.out.println(files);
-        if (files != null) {
-            for (File file : files) {
-                System.out.println(file.getAbsolutePath());
-            }
-        }
         if (files == null || files.length == 0) return;
         if (files.length != 1) {
             imageSetInfo = new TranslatableComponent("imp.text.imageLoad.tooManyImages");
@@ -170,6 +191,16 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
         }
         imageSetInfo = null;
         File file = files[0];
+        if (file.exists()) {
+            try {
+                startImageUpload(Files.readAllBytes(file.toPath()));
+            } catch (IOException e) {
+                imageSetInfo = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        } else {
+            imageSetInfo = new TranslatableComponent("imp.text.imageLoad.fileNotFound");
+        }
     }
 
     private class ImageUrlLoader extends Thread {
@@ -197,6 +228,7 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
                 imageSetInfo = null;
             } catch (Exception e) {
                 imageSetInfo = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -222,11 +254,21 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
                 }
                 imageSetInfo = new TranslatableComponent("imp.text.imageLoad.uploadImage");
                 Files.write(Paths.get("test.gif"), data);
-                var url = uploadToImgur(data);
+
+                String url;
+                try {
+                    url = uploadToImgur(data);
+                } catch (IOException e) {
+                    imageSetInfo = new TranslatableComponent("imp.text.imageLoad.uploadFailure", e.getMessage());
+                    e.printStackTrace();
+                    return;
+                }
+
                 setImage(new ImageInfo(ImageInfo.ImageType.URL, url));
                 imageSetInfo = null;
             } catch (Exception e) {
                 imageSetInfo = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -235,10 +277,12 @@ public abstract class SetImageBaseMonitor extends MusicManagerMonitor {
         HttpClient hc = HttpClient.newHttpClient();
         HttpRequest hr = HttpRequest.newBuilder(URI.create("https://api.imgur.com/3/image"))
                 .POST(HttpRequest.BodyPublishers.ofByteArray(data))
-                .header("Authorization", "Client-ID d33f23f7c189083")
+                .header("Authorization", "Client-ID 9a0189f3c8b74b9")
                 .build();
         HttpResponse<String> res = hc.send(hr, HttpResponse.BodyHandlers.ofString());
         JsonObject upData = GSON.fromJson(res.body(), JsonObject.class);
+        if (upData.getAsJsonObject("data") == null || upData.getAsJsonObject("data").get("link") == null)
+            throw new IOException("code " + upData.get("status").getAsInt());
         return upData.getAsJsonObject("data").get("link").getAsString();
     }
 }

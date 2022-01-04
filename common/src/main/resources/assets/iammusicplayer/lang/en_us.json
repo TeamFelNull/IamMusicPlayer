@@ -44,6 +44,8 @@
   "imp.text.imageLoad.notImage": "Not an image",
   "imp.text.imageLoad.uploadImage": "Uploading image...",
   "imp.text.imageLoad.tooManyImages": "Too many images",
+  "imp.text.imageLoad.fileNotFound": "File not found",
+  "imp.text.imageLoad.uploadFailure": "Upload failed, please try again: %s",
   "imp.fileChooser.title.image": "Open Image",
   "imp.fileChooser.files.all": "All Files",
   "imp.fileChooser.files.image": "Image Files",

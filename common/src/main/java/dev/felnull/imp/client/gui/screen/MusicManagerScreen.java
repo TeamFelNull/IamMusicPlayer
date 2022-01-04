@@ -11,12 +11,15 @@ import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -124,5 +127,11 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         super.onClose();
         if (monitor != null)
             monitor.depose();
+    }
+
+    @Override
+    public void onFilesDrop(List<Path> list) {
+        if (monitor != null)
+            monitor.onFilesDrop(list);
     }
 }

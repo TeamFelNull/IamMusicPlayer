@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,10 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
     }
 
     public void tick() {
+
+    }
+
+    public void onFilesDrop(List<Path> list) {
 
     }
 }
