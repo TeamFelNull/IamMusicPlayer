@@ -96,16 +96,16 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
                     PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 28) + 2 + 26) * onPxH, OERenderUtil.MIN_BREADTH * 4, 26 * onPxH, i, j);
                 }
 
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
                 OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, playList.getAuthority().getOwnerName(), (sx + 101) * onPxW, monitorHeight - (20 + (k * 28) + 2 + 9) * onPxH, OERenderUtil.MIN_BREADTH * 4, 0, 0, 0, onPxH * 9, i, j);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getAuthority().getOwnerName()), sx + 114, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicCount", playList.getMusicList().size()), sx + 101, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getAuthority().getOwnerName()), sx + 114, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicCount", playList.getMusicList().size()), sx + 101, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
                 if (playList.getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isInvitation()) {
-                    renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF);
+                    renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF, i);
                 }
             }
         }
@@ -113,8 +113,8 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
 
         updateInfoText();
         if (INFO_TEXT != null)
-            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight);
-        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_TEXT, 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight);
+            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_TEXT, 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
     }
 
     @Override

@@ -98,15 +98,15 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
                     PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 21) + 2 + 17) * onPxH, OERenderUtil.MIN_BREADTH * 4, 17 * onPxH, i, j);
                 }
 
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 21) + 3, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 21) + 12, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0.7f);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 21) + 3, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 21) + 12, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0.7f, i);
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, 92, 20, OERenderUtil.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 8);
 
         updateInfoText();
         if (INFO_TEXT != null)
-            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight);
+            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
     }
 
     @Override

@@ -49,12 +49,16 @@ public class PlayImageRenderer {
     }
 
     public void renderSprite(ImageInfo imageInfo, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j) {
+        renderSprite(imageInfo, poseStack, multiBufferSource, x, y, z, size, i, j, true);
+    }
+
+    public void renderSprite(ImageInfo imageInfo, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j, boolean cash) {
         if (imageInfo.isEmpty())
             return;
         switch (imageInfo.getImageType()) {
             case PLAYER_FACE -> renderPlayerFaceImageSprite(imageInfo.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, i, j);
-            case URL -> renderURLImageSprite(imageInfo.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, i, j);
-            case YOUTUBE_THUMBNAIL -> renderURLImageSprite(String.format(YOUTUBE_THUMBNAIL_URL, imageInfo.getIdentifier()), poseStack, multiBufferSource, x, y, z, size, i, j);
+            case URL -> renderURLImageSprite(imageInfo.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, i, j, cash);
+            case YOUTUBE_THUMBNAIL -> renderURLImageSprite(String.format(YOUTUBE_THUMBNAIL_URL, imageInfo.getIdentifier()), poseStack, multiBufferSource, x, y, z, size, i, j, cash);
         }
     }
 
@@ -62,8 +66,8 @@ public class PlayImageRenderer {
         OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, name, x, y, z, 0, 0, 0, size, i, j);
     }
 
-    private void renderURLImageSprite(String url, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j) {
-        var texture = OETextureUtil.getURLTextureAsyncLoad(url, true);
+    private void renderURLImageSprite(String url, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j, boolean cash) {
+        var texture = OETextureUtil.getURLTextureAsyncLoad(url, cash);
         if (texture == null) return;
         var scale = OETextureUtil.getTextureScale(texture);
         float w = size;

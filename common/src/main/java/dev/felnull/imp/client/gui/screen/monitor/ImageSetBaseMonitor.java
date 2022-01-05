@@ -50,9 +50,7 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
 
-        addRenderWidget(new ImageSetButton(getStartX() + 149, getStartY() + 14, ImageSetButton.ImageSetType.DELETE, n -> {
-            setImage(ImageInfo.EMPTY);
-        }, getScreen()));
+        addRenderWidget(new ImageSetButton(getStartX() + 149, getStartY() + 14, ImageSetButton.ImageSetType.DELETE, n -> setImage(ImageInfo.EMPTY), getScreen()));
 
         addRenderWidget(new ImageSetButton(getStartX() + 112, getStartY() + 14, ImageSetButton.ImageSetType.FILE_OPEN, n -> openImage(FileChooserUtil.openImageFileChooser(false)), getScreen()));
 
@@ -97,15 +95,28 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
 
         var img = getImage(blockEntity);
         float sc = onPxW / onPxH;
+        float sch = onPxH / onPxW;
         if (!img.isEmpty()) {
             poseStack.pushPose();
             poseStack.scale(sc, 1, 1);
-            PlayImageRenderer.getInstance().renderSprite(img, poseStack, multiBufferSource, (6f * onPxW) / sc, monitorHeight - (64 + 15) * onPxH, OERenderUtil.MIN_BREADTH * 4, 64 * onPxH, i, j);
+            PlayImageRenderer.getInstance().renderSprite(img, poseStack, multiBufferSource, (6f * onPxW) / sc, monitorHeight - (64 + 15) * onPxH, OERenderUtil.MIN_BREADTH * 4, 64 * onPxH, i, j, false);
             poseStack.popPose();
         } else {
             int strl = IIMPSmartRender.mc.font.width(NO_IMAGE_TEXT);
-            renderSmartTextSprite(poseStack, multiBufferSource, NO_IMAGE_TEXT, 6 + ((38f * sc) - (float) strl / 2f), 43, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight);
+            renderSmartTextSprite(poseStack, multiBufferSource, NO_IMAGE_TEXT, 6 + ((38f * sc) - (float) strl / 2f), 43, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
         }
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 149, 14, OERenderUtil.MIN_BREADTH * 3, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 11, 19, 11, 11, 256, 256);
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 112, 14, OERenderUtil.MIN_BREADTH * 3, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73, 19, 11, 11, 256, 256);
+
+        renderSmartButtonBoxSprite(poseStack, multiBufferSource, 75, 14, OERenderUtil.MIN_BREADTH * 3, 33, 15, i, j, onPxW, onPxH, monitorHeight);
+        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, IIMPSmartRender.mc.player.getGameProfile().getId(), onPxW * (75f + (33f - 11f) / 2f), monitorHeight - (onPxH * (14f + ((15f - 11f) / 2f) * sch)) - 11 * onPxW, OERenderUtil.MIN_BREADTH * 5, 0, 0, 0, 11 * onPxW, i, j);
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 75, 33, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 22, 19, 11, 11, 256, 256);
+
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 34, OERenderUtil.MIN_BREADTH * 3, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
+
     }
 
     @Override
@@ -144,8 +155,12 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
 
     private String getImageURL() {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
-            return musicManagerBlockEntity.getMyImageURL();
+            return getImageURL(musicManagerBlockEntity);
         return "";
+    }
+
+    private String getImageURL(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMyImageURL();
     }
 
     private void setImageURL(String text) {

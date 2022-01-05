@@ -67,7 +67,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
                 OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * 356, monitorHeight - onPxH * 10, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, onPxW * 14, onPxH * 10, 0, 0, 14, 10, 256, 256, i, j);
                 OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * 342, monitorHeight - onPxH * 10, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, onPxW * 14, onPxH * 10, 14, 0, 14, 10, 256, 256, i, j);
             }
-            renderSmartTextSprite(poseStack, multiBufferSource, title, 1, 2, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight);
+            renderSmartTextSprite(poseStack, multiBufferSource, title, 1, 2, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
         }
     }
 
@@ -94,6 +94,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     private static interface MonitorFactory {
         MusicManagerMonitor create(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen);
     }
+
     public MusicSyncManager getSyncManager() {
         return MusicSyncManager.getInstance();
     }

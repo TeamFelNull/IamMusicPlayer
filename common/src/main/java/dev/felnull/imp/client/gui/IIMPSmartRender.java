@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -57,16 +58,16 @@ public interface IIMPSmartRender {
         renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, text, center, null, 0, 0, 0, 0, 0, 0);
     }
 
-    default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, float scale) {
-        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0);
+    default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, float scale, int combinedLightIn) {
+        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0, combinedLightIn);
     }
 
-    default void renderSmartTextSpriteColor(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color) {
-        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0, color);
+    default void renderSmartTextSpriteColor(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color, int combinedLightIn) {
+        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0, color, combinedLightIn);
     }
 
-    default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight) {
-        renderSmartTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f);
+    default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
+        renderSmartTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f, combinedLightIn);
     }
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, boolean center, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
@@ -85,7 +86,7 @@ public interface IIMPSmartRender {
         }
 
         if (text != null)
-            renderSmartTextSprite(poseStack, multiBufferSource, text, x + ax, y + 2, z + OERenderUtil.MIN_BREADTH * 2, onePixW, onePixH, monitorHeight);
+            renderSmartTextSprite(poseStack, multiBufferSource, text, x + ax, y + 2, z + OERenderUtil.MIN_BREADTH * 2, onePixW, onePixH, monitorHeight, i);
     }
 
     default void renderSmartButtonBoxSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight) {
@@ -130,4 +131,30 @@ public interface IIMPSmartRender {
         float y1 = monitorHeight - onePixH * y - onePixH * h;
         OERenderUtil.renderTextureSprite(location, poseStack, multiBufferSource, onePixW * x, y1, z, 0, 0, 0, onePixW * w, onePixH * h, texStartX, texStartY, texFinishX, texFinishY, texSizeW, texSizeH, combinedLightIn, combinedOverlayIn);
     }
+
+    default void renderSmartEditBoxSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, String text) {
+        y--;
+        h += 2;
+        float y1 = monitorHeight - onePixH * y - onePixH * h;
+        OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x, y1, z, 0, 0, 0, onePixW * w, onePixH * h, 0, 91, 9, 4, 256, 256, i, j);
+        OERenderUtil.renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, onePixW * x + onePixW, y1 + onePixH, z + OERenderUtil.MIN_BREADTH, 0, 0, 0, onePixW * w - (onePixW * 2), onePixH * h - (onePixH * 2), 0, 95, 9, 4, 256, 256, i, j);
+        if (text != null) {
+            String str;
+            if (mc.font.width(text) > w - 6) {
+                StringBuilder sb = new StringBuilder();
+                for (char c : text.toCharArray()) {
+                    sb.append(c);
+                    if (mc.font.width(sb.toString()) > w - 6) {
+                        sb.deleteCharAt(sb.length() - 1);
+                        break;
+                    }
+                }
+                str = sb.toString();
+            } else {
+                str = text;
+            }
+            renderSmartTextSpriteColor(poseStack, multiBufferSource, new TextComponent(str), x + 3, y + 5, z + OERenderUtil.MIN_BREADTH * 3, onePixW, onePixH, monitorHeight, 0xFFFFFFFF, i);
+        }
+    }
+
 }
