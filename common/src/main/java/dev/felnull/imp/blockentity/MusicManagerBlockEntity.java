@@ -93,6 +93,13 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         }
     }
 
+    private void updateMonitor(ServerPlayer player, MonitorType newM, MonitorType oldM) {
+        var tag = getPlayerData(player);
+        tag.remove("Image");
+        tag.remove("ImageURL");
+        tag.remove("CreateName");
+    }
+
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
@@ -137,6 +144,14 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         return OENbtUtil.readSerializable(myData, "Image", new ImageInfo());
     }
 
+    public String getMyCreateName() {
+        return myData.getString("CreateName");
+    }
+
+    public void setCreateName(ServerPlayer player, String name) {
+        getPlayerData(player).putString("CreateName", name);
+    }
+
     public void setImageURL(ServerPlayer player, String url) {
         getPlayerData(player).putString("ImageURL", url);
     }
@@ -146,6 +161,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     public void setMonitor(ServerPlayer player, MonitorType type) {
+        var oldM = MonitorType.getByNameOrDefault(getPlayerData(player).getString("Monitor"), this, player.getGameProfile().getId());
+        if (oldM != type)
+            updateMonitor(player, type, oldM);
         getPlayerData(player).putString("Monitor", type.getName());
     }
 
@@ -172,6 +190,10 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         } else if ("set_image".equals(name)) {
             var image = OENbtUtil.readSerializable(data, "image", new ImageInfo());
             setImage(player, image);
+            return null;
+        } else if ("set_create_name".equals(name)) {
+            var cname = data.getString("name");
+            setCreateName(player, cname);
             return null;
         }
         return super.onInstruction(player, name, num, data);

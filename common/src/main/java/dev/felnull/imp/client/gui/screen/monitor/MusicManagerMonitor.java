@@ -38,10 +38,10 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         if (header && getParentType() != null) {
             addRenderWidget(new ImageButton(getStartX() + 356, getStartY(), 14, 10, 0, 0, 10, WIDGETS_TEXTURE, 256, 256, n -> {
                 insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
-            }, new TextComponent("imp.button.close")));
+            }, new TranslatableComponent("imp.button.close")));
             addRenderWidget(new ImageButton(getStartX() + 342, getStartY(), 14, 10, 14, 0, 10, WIDGETS_TEXTURE, 256, 256, n -> {
                 insMonitor(getParentType());
-            }, new TextComponent("imp.button.backScreen")));
+            }, new TranslatableComponent("imp.button.backScreen")));
         }
     }
 

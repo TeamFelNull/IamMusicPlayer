@@ -11,7 +11,6 @@ import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -95,6 +94,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         instruction("set_image", 0, tag);
     }
 
+    public void insCreateName(String name) {
+        var tag = new CompoundTag();
+        tag.putString("name", name);
+        instruction("set_create_name", 0, tag);
+    }
+
     @Override
     protected ResourceLocation getBackGrandTexture() {
         return BG_TEXTURE;
@@ -134,4 +139,5 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         if (monitor != null)
             monitor.onFilesDrop(list);
     }
+
 }

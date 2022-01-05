@@ -8,6 +8,7 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.ImageSetButton;
+import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.client.util.FileChooserUtil;
@@ -30,19 +31,26 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
+public abstract class CreateBaseMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
     private static final ResourceLocation SET_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/image_set_base.png");
     private static final Component NO_IMAGE_TEXT = new TranslatableComponent("imp.text.noImage");
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.dropInfo");
+    private static final Component NAME_TEXT = new TranslatableComponent("imp.text.name");
+    private Component NOT_ENTERED_TEXT;
     private EditBox imageUrlEditBox;
+    private EditBox nameEditBox;
+    private SmartButton createButton;
     private Component imageSetInfo;
     private ImageUrlLoader imageUrlLoader;
     private ImageUploader imageUploader;
+    private List<Component> lastNotEnteredTexts;
 
-    public ImageSetBaseMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+
+    public CreateBaseMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
     }
 
@@ -69,6 +77,24 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
             }
             startImageUrlLoad(this.imageUrlEditBox.getValue());
         }, getScreen()));
+
+        this.nameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 5, getStartY() + 104, 177, 12, new TranslatableComponent("imp.editBox.name"));
+        this.nameEditBox.setMaxLength(300);
+        this.nameEditBox.setValue(getName());
+        this.nameEditBox.setResponder(this::setName);
+        addRenderWidget(this.nameEditBox);
+
+        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, new TranslatableComponent("imp.button.back"), n -> insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST)));
+
+        this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, new TranslatableComponent("imp.button.create"), n -> {
+            if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
+                if (canCreate(musicManagerBlockEntity))
+                    create(getImage(), getName());
+                insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
+            }
+        }));
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            this.createButton.active = canCreate(musicManagerBlockEntity);
     }
 
     @Override
@@ -84,6 +110,47 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
         drawSmartString(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 82);
         if (imageSetInfo != null)
             drawSmartFixedWidthString(poseStack, imageSetInfo, getStartX() + 75, getStartY() + 51, 107);
+
+        drawSmartString(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 94);
+
+        if (NOT_ENTERED_TEXT != null)
+            drawSmartFixedWidthString(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177);
+    }
+
+    public abstract void create(ImageInfo imageInfo, String name);
+
+    public boolean canCreate(MusicManagerBlockEntity blockEntity) {
+        return !getName(blockEntity).isEmpty();
+    }
+
+    public List<Component> getNotEntered(List<Component> names, MusicManagerBlockEntity blockEntity) {
+        if (getName(blockEntity).isEmpty())
+            names.add(NAME_TEXT);
+        return names;
+    }
+
+    private void updateNotEnteredText() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
+            List<Component> notEnteredTexts = getNotEntered(new ArrayList<>(), musicManagerBlockEntity);
+            if (!notEnteredTexts.equals(lastNotEnteredTexts)) {
+                if (!canCreate(musicManagerBlockEntity)) {
+                    StringBuilder sb = new StringBuilder();
+                    for (Component notEnteredText : notEnteredTexts) {
+                        sb.append(notEnteredText.getString()).append(",");
+                    }
+                    sb.deleteCharAt(sb.length() - 1);
+                    NOT_ENTERED_TEXT = new TranslatableComponent("imp.text.notEntered", sb.toString());
+                    this.createButton.active = false;
+                } else {
+                    NOT_ENTERED_TEXT = null;
+                    this.createButton.active = true;
+                }
+                lastNotEnteredTexts = notEnteredTexts;
+            }
+        } else {
+            NOT_ENTERED_TEXT = null;
+            this.createButton.active = false;
+        }
     }
 
     @Override
@@ -139,7 +206,21 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
         openImage(files);
     }
 
-    private ImageInfo getImage() {
+    public String getName() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            return getName(musicManagerBlockEntity);
+        return "";
+    }
+
+    public String getName(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMyCreateName();
+    }
+
+    private void setName(String name) {
+        getScreen().insCreateName(name);
+    }
+
+    public ImageInfo getImage() {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
             return getImage(musicManagerBlockEntity);
         return ImageInfo.EMPTY;
@@ -216,6 +297,12 @@ public abstract class ImageSetBaseMonitor extends MusicManagerMonitor {
         } else {
             imageSetInfo = new TranslatableComponent("imp.text.imageLoad.fileNotFound");
         }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        updateNotEnteredText();
     }
 
     private class ImageUrlLoader extends Thread {

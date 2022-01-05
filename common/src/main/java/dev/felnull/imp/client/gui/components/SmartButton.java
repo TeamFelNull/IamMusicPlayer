@@ -26,14 +26,14 @@ public class SmartButton extends Button implements IIMPSmartRender {
 
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-        drawSmartButtonBox(poseStack, x, y, width, height, isHovered());
+        drawSmartButtonBox(poseStack, x, y, width, height, this.getYImage(this.isHovered()));
         float fx = center ? (float) (width - mc.font.width(getMessage())) / 2f : 2;
         float fy = (float) (height - 7) / 2f;
 
         if (iconTexture != null) {
             float itx = 2;
             float ity = (float) (height - iconHeight) / 2f;
-            fx += itx + iconWidth ;
+            fx += itx + iconWidth;
             OERenderUtil.drawTexture(iconTexture, poseStack, x + itx, y + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
         }
 
