@@ -11,6 +11,6 @@ public class CreatePlayListMMMonitor extends CreateBaseMonitor {
 
     @Override
     public void create(ImageInfo imageInfo, String name) {
-
+        
     }
 }

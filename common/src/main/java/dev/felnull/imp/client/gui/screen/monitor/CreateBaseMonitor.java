@@ -40,6 +40,8 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
     private static final Component NO_IMAGE_TEXT = new TranslatableComponent("imp.text.noImage");
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.dropInfo");
     private static final Component NAME_TEXT = new TranslatableComponent("imp.text.name");
+    private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
+    private static final Component CREATE_TEXT = new TranslatableComponent("imp.button.create");
     private Component NOT_ENTERED_TEXT;
     private EditBox imageUrlEditBox;
     private EditBox nameEditBox;
@@ -84,9 +86,9 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
         this.nameEditBox.setResponder(this::setName);
         addRenderWidget(this.nameEditBox);
 
-        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, new TranslatableComponent("imp.button.back"), n -> insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST)));
+        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST)));
 
-        this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, new TranslatableComponent("imp.button.create"), n -> {
+        this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, CREATE_TEXT, n -> {
             if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
                 if (canCreate(musicManagerBlockEntity))
                     create(getImage(), getName());
@@ -95,6 +97,8 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
         }));
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
             this.createButton.active = canCreate(musicManagerBlockEntity);
+
+
     }
 
     @Override
@@ -114,7 +118,8 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
         drawSmartString(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 94);
 
         if (NOT_ENTERED_TEXT != null)
-            drawSmartFixedWidthString(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177);
+            drawSmartFixedWidthString(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
+
     }
 
     public abstract void create(ImageInfo imageInfo, String name);
@@ -184,6 +189,23 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
 
         renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 34, OERenderUtil.MIN_BREADTH * 3, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
 
+        renderSmartTextSprite(poseStack, multiBufferSource, DROP_INFO_TEXT, 5, 82, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+
+        renderSmartTextSprite(poseStack, multiBufferSource, NAME_TEXT, 5, 94, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 5, 104, OERenderUtil.MIN_BREADTH * 3, 177, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
+
+        if (!canCreate(blockEntity)) {
+            StringBuilder sb = new StringBuilder();
+            for (Component notEnteredText : getNotEntered(new ArrayList<>(), blockEntity)) {
+                sb.append(notEnteredText.getString()).append(",");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
+        }
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 3, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 3, 87, 15, i, j, onPxW, onPxH, monitorHeight, CREATE_TEXT, true, !canCreate(blockEntity));
     }
 
     @Override
