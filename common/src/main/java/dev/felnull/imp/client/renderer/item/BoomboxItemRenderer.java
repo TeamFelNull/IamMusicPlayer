@@ -2,7 +2,7 @@ package dev.felnull.imp.client.renderer.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.client.music.blockentity.BoomboxBlockEntity;
+import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.renderer.blockentity.BoomboxBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;

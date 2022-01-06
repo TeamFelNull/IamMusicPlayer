@@ -3,7 +3,7 @@ package dev.felnull.imp.client.renderer.item;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.client.renderer.blockentity.MusicManagerBlockEntityRenderer;
-import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;

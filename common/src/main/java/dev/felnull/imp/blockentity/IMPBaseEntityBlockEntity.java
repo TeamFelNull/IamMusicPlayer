@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.music.blockentity;
+package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBaseEntityBlock;
 import dev.felnull.otyacraftengine.blockentity.OEBaseContainerBlockEntity;

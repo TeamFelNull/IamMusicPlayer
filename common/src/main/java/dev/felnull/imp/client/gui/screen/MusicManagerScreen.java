@@ -2,9 +2,9 @@ package dev.felnull.imp.client.gui.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
-import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.inventory.MusicManagerMenu;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
@@ -104,6 +104,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         var tag = new CompoundTag();
         tag.putString("publishing", publishing);
         instruction("set_publishing", 0, tag);
+    }
+
+    public void insInitialAuthority(String initialAuthority) {
+        var tag = new CompoundTag();
+        tag.putString("initial_authority", initialAuthority);
+        instruction("set_initial_authority", 0, tag);
     }
 
     @Override

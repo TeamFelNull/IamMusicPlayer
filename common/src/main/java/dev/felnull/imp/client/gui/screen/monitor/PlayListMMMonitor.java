@@ -2,7 +2,7 @@ package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
