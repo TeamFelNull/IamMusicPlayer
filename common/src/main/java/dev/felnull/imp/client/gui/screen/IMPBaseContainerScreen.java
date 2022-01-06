@@ -1,6 +1,6 @@
 package dev.felnull.imp.client.gui.screen;
 
-import dev.felnull.imp.blockentity.IMPBaseEntityBlockEntity;
+import dev.felnull.imp.client.music.blockentity.IMPBaseEntityBlockEntity;
 import dev.felnull.otyacraftengine.client.gui.screen.OEBaseContainerScreen;
 import dev.felnull.otyacraftengine.inventory.OEBaseContainerMenu;
 import net.minecraft.nbt.CompoundTag;

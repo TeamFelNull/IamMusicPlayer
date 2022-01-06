@@ -1,6 +1,6 @@
 package dev.felnull.imp.client.gui.screen.monitor;
 
-import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 
 public class TestMMMonitor extends MusicManagerMonitor {

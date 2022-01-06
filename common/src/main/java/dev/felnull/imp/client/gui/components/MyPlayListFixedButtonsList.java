@@ -36,8 +36,8 @@ public class MyPlayListFixedButtonsList extends PlayListFixedButtonsList {
             PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         }
 
-        drawSmartFixedWidthString(poseStack, new TextComponent(item.getName()), x + sx, y + 2, getOneButtonWidth() - sx - 2);
-        drawSmartFixedWidthString(poseStack, new TextComponent(dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 12, getOneButtonWidth() - sx - 2);
+        drawSmartFixedWidthText(poseStack, new TextComponent(item.getName()), x + sx, y + 2, getOneButtonWidth() - sx - 2);
+        drawSmartFixedWidthText(poseStack, new TextComponent(dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 12, getOneButtonWidth() - sx - 2);
     }
 
 

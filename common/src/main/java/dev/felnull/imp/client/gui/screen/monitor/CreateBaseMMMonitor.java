@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.ImageSetButton;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.client.util.FileChooserUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CreateBaseMonitor extends MusicManagerMonitor {
+public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
     private static final ResourceLocation SET_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/image_set_base.png");
     private static final Component NO_IMAGE_TEXT = new TranslatableComponent("imp.text.noImage");
@@ -52,7 +52,7 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
     private List<Component> lastNotEnteredTexts;
 
 
-    public CreateBaseMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+    public CreateBaseMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
     }
 
@@ -108,17 +108,17 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
         if (!getImage().isEmpty()) {
             PlayImageRenderer.getInstance().draw(getImage(), poseStack, getStartX() + 6, getStartY() + 15, 64, false);
         } else {
-            drawSmartCenterString(poseStack, NO_IMAGE_TEXT, getStartX() + 38, getStartY() + 43);
+            drawSmartCenterText(poseStack, NO_IMAGE_TEXT, getStartX() + 38, getStartY() + 43);
         }
 
-        drawSmartString(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 82);
+        drawSmartText(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 82);
         if (imageSetInfo != null)
-            drawSmartFixedWidthString(poseStack, imageSetInfo, getStartX() + 75, getStartY() + 51, 107);
+            drawSmartFixedWidthText(poseStack, imageSetInfo, getStartX() + 75, getStartY() + 51, 107);
 
-        drawSmartString(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 94);
+        drawSmartText(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 94);
 
         if (NOT_ENTERED_TEXT != null)
-            drawSmartFixedWidthString(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
+            drawSmartFixedWidthText(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
 
     }
 
@@ -141,8 +141,9 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
                 if (!canCreate(musicManagerBlockEntity)) {
                     StringBuilder sb = new StringBuilder();
                     for (Component notEnteredText : notEnteredTexts) {
-                        sb.append(notEnteredText.getString()).append(",");
+                        sb.append(notEnteredText.getString()).append(", ");
                     }
+                    sb.deleteCharAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     NOT_ENTERED_TEXT = new TranslatableComponent("imp.text.notEntered", sb.toString());
                     this.createButton.active = false;
@@ -198,8 +199,9 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
         if (!canCreate(blockEntity)) {
             StringBuilder sb = new StringBuilder();
             for (Component notEnteredText : getNotEntered(new ArrayList<>(), blockEntity)) {
-                sb.append(notEnteredText.getString()).append(",");
+                sb.append(notEnteredText.getString()).append(", ");
             }
+            sb.deleteCharAt(sb.length() - 1);
             sb.deleteCharAt(sb.length() - 1);
             renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
         }
@@ -217,6 +219,7 @@ public abstract class CreateBaseMonitor extends MusicManagerMonitor {
     public void depose() {
         super.depose();
         stopImageUrlLoad();
+        stopImageUpload();
     }
 
     @Override

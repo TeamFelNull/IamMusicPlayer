@@ -2,7 +2,7 @@ package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
@@ -67,7 +67,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         super.render(poseStack, f, mouseX, mouseY);
         OERenderUtil.drawTexture(PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (INFO_TEXT != null)
-            drawSmartString(poseStack, INFO_TEXT, getStartX() + width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, getStartY() + 11);
+            drawSmartText(poseStack, INFO_TEXT, getStartX() + width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, getStartY() + 11);
     }
 
     @Override

@@ -30,19 +30,19 @@ public interface IIMPSmartRender {
         drawFill(poseStack, x + 1, y + 1, w - 2, h - 2, c2);
     }
 
-    default void drawSmartCenterString(PoseStack poseStack, Component component, float x, float y) {
+    default void drawSmartCenterText(PoseStack poseStack, Component component, float x, float y) {
         OERenderUtil.drawCenterText(poseStack, component, x, y, 0xFF000000);
     }
 
-    default void drawSmartFixedWidthString(PoseStack poseStack, Component component, float x, float y, float w) {
-        drawSmartFixedWidthString(poseStack, component, x, y, w, 0xFF000000);
+    default void drawSmartFixedWidthText(PoseStack poseStack, Component component, float x, float y, float w) {
+        drawSmartFixedWidthText(poseStack, component, x, y, w, 0xFF000000);
     }
 
-    default void drawSmartFixedWidthString(PoseStack poseStack, Component component, float x, float y, float w, int color) {
+    default void drawSmartFixedWidthText(PoseStack poseStack, Component component, float x, float y, float w, int color) {
         OERenderUtil.drawFixedWidthText(poseStack, component, x, y, color, w);
     }
 
-    default void drawSmartString(PoseStack poseStack, Component component, float x, float y) {
+    default void drawSmartText(PoseStack poseStack, Component component, float x, float y) {
         mc.font.draw(poseStack, component, x, y, 0xFF000000);
     }
 
@@ -167,6 +167,11 @@ public interface IIMPSmartRender {
             }
             renderSmartTextSpriteColor(poseStack, multiBufferSource, new TextComponent(str), x + 3, y + 5, z + OERenderUtil.MIN_BREADTH * 3, onePixW, onePixH, monitorHeight, 0xFFFFFFFF, i);
         }
+    }
+
+    default void renderSmartRadioButton(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component label, boolean selected) {
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, w, h, 18, 65 + (selected ? 20 : 0), 20, 20, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        renderSmartTextSprite(poseStack, multiBufferSource, label, x + 24, y + (h - 7f) / 2f, z, onePixW, onePixH, monitorHeight, i);
     }
 
 }

@@ -2,14 +2,13 @@ package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -51,7 +50,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         OERenderUtil.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (header) {
             OERenderUtil.drawTexture(BASE_TEXTURE, poseStack, getStartX(), getStartY(), 0, 0, width, 10, width, height);
-            drawSmartString(poseStack, title, getStartX() + 1, getStartY() + 1);
+            drawSmartText(poseStack, title, getStartX() + 1, getStartY() + 1);
         }
     }
 

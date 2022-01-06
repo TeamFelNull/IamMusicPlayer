@@ -37,7 +37,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
             OERenderUtil.drawTexture(iconTexture, poseStack, x + itx, y + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
         }
 
-        drawSmartString(poseStack, getMessage(), x + fx, y + fy);
+        drawSmartText(poseStack, getMessage(), x + fx, y + fy);
 
         if (this.isHovered())
             this.renderToolTip(poseStack, mx, my);

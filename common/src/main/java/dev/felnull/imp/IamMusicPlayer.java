@@ -1,7 +1,7 @@
 package dev.felnull.imp;
 
 import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.blockentity.IMPBlockEntitys;
+import dev.felnull.imp.client.music.blockentity.IMPBlockEntitys;
 import dev.felnull.imp.data.IMPWorldData;
 import dev.felnull.imp.inventory.IMPMenus;
 import dev.felnull.imp.item.IMPItems;

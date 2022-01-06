@@ -29,16 +29,16 @@ public class JoinPlayListFixedButtonsList extends PlayListFixedButtonsList {
             PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         }
 
-        drawSmartFixedWidthString(poseStack, new TextComponent(item.getName()), x + sx, y + 3, 90);
-        drawSmartFixedWidthString(poseStack, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 17, 90);
+        drawSmartFixedWidthText(poseStack, new TextComponent(item.getName()), x + sx, y + 3, 90);
+        drawSmartFixedWidthText(poseStack, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 17, 90);
 
         OERenderUtil.drawPlayerFace(poseStack, item.getAuthority().getOwnerName(), x + sx + 101, y + 2, 9);
-        drawSmartFixedWidthString(poseStack, new TextComponent(item.getAuthority().getOwnerName()), x + sx + 112, y + 3, 90);
-        drawSmartFixedWidthString(poseStack, new TranslatableComponent("imp.text.musicCount", item.getMusicList().size()), x + sx + 101, y + 17, 45);
-        drawSmartFixedWidthString(poseStack, new TranslatableComponent("imp.text.playerCount", item.getPlayerCount()), x + sx + 156, y + 17, 45);
+        drawSmartFixedWidthText(poseStack, new TextComponent(item.getAuthority().getOwnerName()), x + sx + 112, y + 3, 90);
+        drawSmartFixedWidthText(poseStack, new TranslatableComponent("imp.text.musicCount", item.getMusicList().size()), x + sx + 101, y + 17, 45);
+        drawSmartFixedWidthText(poseStack, new TranslatableComponent("imp.text.playerCount", item.getPlayerCount()), x + sx + 156, y + 17, 45);
 
         if (item.getAuthority().getAuthorityType(mc.player.getGameProfile().getId()).isInvitation()) {
-            drawSmartFixedWidthString(poseStack, new TranslatableComponent("imp.text.invitation"), x + sx + 204, y + 3, 100, 0xFF0000FF);
+            drawSmartFixedWidthText(poseStack, new TranslatableComponent("imp.text.invitation"), x + sx + 204, y + 3, 100, 0xFF0000FF);
         }
     }
 }

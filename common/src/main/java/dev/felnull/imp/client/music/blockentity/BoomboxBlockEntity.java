@@ -1,4 +1,4 @@
-package dev.felnull.imp.blockentity;
+package dev.felnull.imp.client.music.blockentity;
 
 import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;

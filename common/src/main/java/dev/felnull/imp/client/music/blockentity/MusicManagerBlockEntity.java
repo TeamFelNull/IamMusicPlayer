@@ -1,4 +1,4 @@
-package dev.felnull.imp.blockentity;
+package dev.felnull.imp.client.music.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
@@ -98,6 +98,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         tag.remove("Image");
         tag.remove("ImageURL");
         tag.remove("CreateName");
+        tag.remove("Publishing");
     }
 
     @Override
@@ -142,6 +143,14 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         if (myData.getCompound("Image").isEmpty())
             return ImageInfo.EMPTY;
         return OENbtUtil.readSerializable(myData, "Image", new ImageInfo());
+    }
+
+    public String getMyPublishing() {
+        return myData.getString("Publishing");
+    }
+
+    public void setPublishing(ServerPlayer player, String publishing) {
+        getPlayerData(player).putString("Publishing", publishing);
     }
 
     public String getMyCreateName() {
@@ -194,6 +203,10 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         } else if ("set_create_name".equals(name)) {
             var cname = data.getString("name");
             setCreateName(player, cname);
+            return null;
+        } else if ("set_publishing".equals(name)) {
+            var pub = data.getString("publishing");
+            setPublishing(player, pub);
             return null;
         }
         return super.onInstruction(player, name, num, data);

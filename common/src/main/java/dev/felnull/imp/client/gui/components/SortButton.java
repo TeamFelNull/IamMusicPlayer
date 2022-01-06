@@ -117,7 +117,7 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
             super.renderButton(poseStack, mx, my, f);
             OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 1, y + 1, 73 + getSortType().ordinal() * 7, 0, 7, 7);
             if (longed) {
-                drawSmartString(poseStack, SortButton.getText(this), x + 9, y + 1);
+                drawSmartText(poseStack, SortButton.getText(this), x + 9, y + 1);
             }
         }
     }
@@ -143,7 +143,7 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
             super.renderButton(poseStack, mx, my, f);
             OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 1, y + 1, 73 + getOrderType().ordinal() * 7, 7, 7, 7);
             if (longed) {
-                drawSmartString(poseStack, SortButton.getText(this), x + 9, y + 1);
+                drawSmartText(poseStack, SortButton.getText(this), x + 9, y + 1);
             }
         }
     }

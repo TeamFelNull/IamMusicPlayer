@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.client.music.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import net.minecraft.client.renderer.MultiBufferSource;
 

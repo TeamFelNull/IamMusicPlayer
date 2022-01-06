@@ -1,8 +1,8 @@
 package dev.felnull.imp.block;
 
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.blockentity.BoomboxBlockEntity;
-import dev.felnull.imp.blockentity.IMPBlockEntitys;
+import dev.felnull.imp.client.music.blockentity.BoomboxBlockEntity;
+import dev.felnull.imp.client.music.blockentity.IMPBlockEntitys;
 import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

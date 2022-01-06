@@ -1,4 +1,4 @@
-package dev.felnull.imp.blockentity;
+package dev.felnull.imp.client.music.blockentity;
 
 import dev.architectury.hooks.block.BlockEntityHooks;
 import dev.architectury.registry.registries.DeferredRegister;
