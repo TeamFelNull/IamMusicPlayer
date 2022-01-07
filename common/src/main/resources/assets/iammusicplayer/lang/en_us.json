@@ -64,6 +64,8 @@
   "imp.text.publishingSettings": "Publishing settings",
   "imp.text.initialAuthority": "Initial authority",
   "imp.text.invite": "Invite",
+  "imp.text.uninvited": "Uninvited",
+  "imp.text.invited": "Invited",
   "imp.text.invitePlayerByMCIDOrUUID": "Invite player by mcid or uuid",
   "imp.fileChooser.title.image": "Open Image",
   "imp.fileChooser.files.all": "All Files",

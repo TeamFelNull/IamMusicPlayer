@@ -10,10 +10,13 @@ import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
+import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.util.OEPlayerUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,7 +34,9 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
     private static final Component MEMBER_RDO_TEXT = new TranslatableComponent("imp.radioButton.member");
     private static final Component INITIAL_AUTHORITY_TEXT = new TranslatableComponent("imp.text.initialAuthority");
     private static final Component INVITE_TEXT = new TranslatableComponent("imp.text.invite");
-    private static final Component INVITE_PLAYER_BY_MCID_OR_UUID = new TranslatableComponent("imp.text.invitePlayerByMCIDOrUUID");
+    private static final Component INVITE_PLAYER_BY_MCID_OR_UUID_TEXT = new TranslatableComponent("imp.text.invitePlayerByMCIDOrUUID");
+    private static final Component UNINVITED_TEXT = new TranslatableComponent("imp.text.uninvited");
+    private static final Component INVITED_TEXT = new TranslatableComponent("imp.text.invited");
     private final List<UUID> onlinePlayers = new ArrayList<>();
     private final List<UUID> invitePlayers = new ArrayList<>();
     private RadioButton publicRadio;
@@ -70,13 +75,13 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
 
         this.addInvitePlayerButton = addRenderWidget(new SmartButton(getStartX() + 333, getStartY() + 111, 33, 14, new TranslatableComponent("imp.button.addInvitePlayer"), n -> {
             startPlayerUUIDLoad(invitePlayerByNameEditBox.getValue());
+            invitePlayerByNameEditBox.setValue("");
         }));
         this.addInvitePlayerButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 106, 19, 11, 11);
         this.addInvitePlayerButton.setHideText(true);
 
         addRenderWidget(new PlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 87, 65, 5, new TranslatableComponent("imp.fixedList.onlinePlayers"), onlinePlayers, (fixedButtonsList, uuid, i, i1) -> addInvitePlayer(uuid)));
         addRenderWidget(new PlayersFixedButtonsList(getStartX() + 278, getStartY() + 23, 87, 65, 5, new TranslatableComponent("imp.fixedList.invitePlayers"), invitePlayers, (fixedButtonsList, uuid, i, i1) -> removeInvitePlayer(uuid)));
-
     }
 
     @Override
@@ -110,7 +115,10 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
 
         drawSmartText(poseStack, INVITE_TEXT, getStartX() + 189, getStartY() + 13);
 
-        drawSmartText(poseStack, INVITE_PLAYER_BY_MCID_OR_UUID, getStartX() + 189, getStartY() + 102);
+        drawSmartText(poseStack, INVITE_PLAYER_BY_MCID_OR_UUID_TEXT, getStartX() + 189, getStartY() + 102);
+
+        drawSmartCenterText(poseStack, UNINVITED_TEXT, getStartX() + 230, getStartY() + 90);
+        drawSmartCenterText(poseStack, INVITED_TEXT, getStartX() + 312, getStartY() + 90);
     }
 
     @Override
@@ -119,6 +127,9 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
         OERenderUtil.renderTextureSprite(CREATE_PLAYLIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+
+        renderSmartTextSprite(poseStack, multiBufferSource, INVITE_TEXT, 189, 13, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+
 
         renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_ST_TEXT, 5, 131, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
 
@@ -129,6 +140,43 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
 
         renderSmartRadioButton(poseStack, multiBufferSource, 189, 140, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, READONLY_RDO_TEXT, getInitialAuthorityType(blockEntity) == InitialAuthorityType.READ_ONLY);
         renderSmartRadioButton(poseStack, multiBufferSource, 279, 140, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, MEMBER_RDO_TEXT, getInitialAuthorityType(blockEntity) == InitialAuthorityType.MEMBER);
+
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, UNINVITED_TEXT, 230, 91, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, INVITED_TEXT, 312, 91, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+
+        renderSmartTextSprite(poseStack, multiBufferSource, INVITE_PLAYER_BY_MCID_OR_UUID_TEXT, 189, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 189, 112, OERenderUtil.MIN_BREADTH * 4, 141, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, 333, 111, OERenderUtil.MIN_BREADTH * 4, 33, 14, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 106, 19, 11, 11, 256, 256);
+
+        var opl = new ArrayList<>(IIMPSmartRender.mc.player.connection.getOnlinePlayerIds());
+        opl.remove(IIMPSmartRender.mc.player.getGameProfile().getId());
+        opl.removeAll(getInvitePlayers(blockEntity));
+
+        for (int k = 0; k < Math.min(5, opl.size()); k++) {
+            renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 23 + (k * 13), OERenderUtil.MIN_BREADTH * 4, 87 - 10, 13, i, j, onPxW, onPxH, monitorHeight);
+            OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, opl.get(k), (189 + 1) * onPxW, monitorHeight - (23 + (k * 13) + 1 + 11) * onPxH, OERenderUtil.MIN_BREADTH * 6, 0, 0, 0, onPxH * 11, i, j);
+            String name = OEClientUtil.getPlayerNameByUUID(opl.get(k)).orElse(opl.get(k).toString());
+            var tx = new TextComponent(name);
+            float sc = Math.min(1, (87f - 10f - 11f - 4f - 3f) / (float) IIMPSmartRender.mc.font.width(tx));
+            renderSmartTextSprite(poseStack, multiBufferSource, tx, 189 + 11 + 4, 23 + (k * 13) + (13f - 6f) / 2f, OERenderUtil.MIN_BREADTH * 6, onPxW, onPxH, monitorHeight, sc, i);
+        }
+
+        renderScrollbarSprite(poseStack, multiBufferSource, 267, 23, OERenderUtil.MIN_BREADTH * 4, 65, i, j, onPxW, onPxH, monitorHeight, opl.size(), 5);
+
+        var ipl = getInvitePlayers(blockEntity);
+
+        for (int k = 0; k < Math.min(5, ipl.size()); k++) {
+            renderSmartButtonBoxSprite(poseStack, multiBufferSource, 278, 23 + (k * 13), OERenderUtil.MIN_BREADTH * 4, 87 - 10, 13, i, j, onPxW, onPxH, monitorHeight);
+            OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, ipl.get(k), (278 + 1) * onPxW, monitorHeight - (23 + (k * 13) + 1 + 11) * onPxH, OERenderUtil.MIN_BREADTH * 6, 0, 0, 0, onPxH * 11, i, j);
+            String name = OEClientUtil.getPlayerNameByUUID(ipl.get(k)).orElse(ipl.get(k).toString());
+            var tx = new TextComponent(name);
+            float sc = Math.min(1, (87f - 10f - 11f - 4f - 3f) / (float) IIMPSmartRender.mc.font.width(tx));
+            renderSmartTextSprite(poseStack, multiBufferSource, tx, 278 + 11 + 4, 23 + (k * 13) + (13f - 6f) / 2f, OERenderUtil.MIN_BREADTH * 6, onPxW, onPxH, monitorHeight, sc, i);
+        }
+
+        renderScrollbarSprite(poseStack, multiBufferSource, 355, 23, OERenderUtil.MIN_BREADTH * 4, 65, i, j, onPxW, onPxH, monitorHeight, ipl.size(), 5);
     }
 
     private void removeInvitePlayer(UUID uuid) {
@@ -269,8 +317,7 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
                 return;
             } catch (Exception ignored) {
             }
-
-
+            OEPlayerUtil.getUUIDByName(name).ifPresent(CreatePlayListMMMonitor.this::addInvitePlayer);
         }
     }
 

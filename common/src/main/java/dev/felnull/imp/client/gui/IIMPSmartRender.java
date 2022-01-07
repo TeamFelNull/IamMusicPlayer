@@ -62,12 +62,20 @@ public interface IIMPSmartRender {
         renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, text, center, null, 0, 0, 0, 0, 0, 0);
     }
 
+    default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, float scale, int combinedLightIn) {
+        OERenderUtil.renderCenterTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0, combinedLightIn);
+    }
+
     default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, float scale, int combinedLightIn) {
         OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0, combinedLightIn);
     }
 
     default void renderSmartTextSpriteColor(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color, int combinedLightIn) {
         OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0, color, combinedLightIn);
+    }
+
+    default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f, combinedLightIn);
     }
 
     default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
