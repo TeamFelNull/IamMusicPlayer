@@ -112,6 +112,18 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         instruction("set_initial_authority", 0, tag);
     }
 
+    public void insInvitePlayerName(String name) {
+        var tag = new CompoundTag();
+        tag.putString("name", name);
+        instruction("set_invite_player_name", 0, tag);
+    }
+
+    public void insInvitePlayers(List<UUID> players) {
+        var tag = new CompoundTag();
+        OENbtUtil.writeUUIDList(tag, "players", players);
+        instruction("set_invite_players", 0, tag);
+    }
+
     @Override
     protected ResourceLocation getBackGrandTexture() {
         return BG_TEXTURE;

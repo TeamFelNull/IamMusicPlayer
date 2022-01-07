@@ -11,6 +11,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
     private boolean center = true;
     private ResourceLocation iconTexture;
     private int iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight;
+    private boolean hideText;
 
     public SmartButton(int x, int y, int w, int h, Component text, OnPress onPress, OnTooltip onTooltip) {
         super(x, y, w, h, text, onPress, onTooltip);
@@ -24,6 +25,10 @@ public class SmartButton extends Button implements IIMPSmartRender {
         super(x, y, w, h, text, onPress);
     }
 
+    public void setHideText(boolean hideText) {
+        this.hideText = hideText;
+    }
+
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
         drawSmartButtonBox(poseStack, x, y, width, height, this.getYImage(this.isHovered()));
@@ -31,13 +36,14 @@ public class SmartButton extends Button implements IIMPSmartRender {
         float fy = (float) (height - 7) / 2f;
 
         if (iconTexture != null) {
-            float itx = 2;
+            float itx = hideText ? (width - iconWidth) / 2f : 2;
             float ity = (float) (height - iconHeight) / 2f;
             fx += itx + iconWidth;
             OERenderUtil.drawTexture(iconTexture, poseStack, x + itx, y + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
         }
 
-        drawSmartText(poseStack, getMessage(), x + fx, y + fy);
+        if (!hideText)
+            drawSmartText(poseStack, getMessage(), x + fx, y + fy);
 
         if (this.isHovered())
             this.renderToolTip(poseStack, mx, my);

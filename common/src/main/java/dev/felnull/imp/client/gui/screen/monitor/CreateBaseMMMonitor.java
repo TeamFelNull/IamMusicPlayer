@@ -184,22 +184,22 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
             renderSmartTextSprite(poseStack, multiBufferSource, NO_IMAGE_TEXT, 6 + ((38f * sc) - (float) strl / 2f), 51, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
         }
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 149, 22, OERenderUtil.MIN_BREADTH * 3, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 11, 19, 11, 11, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 149, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 11, 19, 11, 11, 256, 256);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 112, 22, OERenderUtil.MIN_BREADTH * 3, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73, 19, 11, 11, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 112, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73, 19, 11, 11, 256, 256);
 
-        renderSmartButtonBoxSprite(poseStack, multiBufferSource, 75, 22, OERenderUtil.MIN_BREADTH * 3, 33, 15, i, j, onPxW, onPxH, monitorHeight);
-        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, IIMPSmartRender.mc.player.getGameProfile().getId(), onPxW * (75f + (33f - 11f) / 2f), monitorHeight - (onPxH * (22f + ((15f - 11f) / 2f) * sch)) - 11 * onPxW, OERenderUtil.MIN_BREADTH * 5, 0, 0, 0, 11 * onPxW, i, j);
+        renderSmartButtonBoxSprite(poseStack, multiBufferSource, 75, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight);
+        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, IIMPSmartRender.mc.player.getGameProfile().getId(), onPxW * (75f + (33f - 11f) / 2f), monitorHeight - (onPxH * (22f + ((15f - 11f) / 2f) * sch)) - 11 * onPxW, OERenderUtil.MIN_BREADTH * 6, 0, 0, 0, 11 * onPxW, i, j);
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 75, 41, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 22, 19, 11, 11, 256, 256);
 
-        renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 42, OERenderUtil.MIN_BREADTH * 3, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 42, OERenderUtil.MIN_BREADTH * 4, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
 
         renderSmartTextSprite(poseStack, multiBufferSource, DROP_INFO_TEXT, 5, 90, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
 
-        renderSmartTextSprite(poseStack, multiBufferSource, NAME_TEXT, 5, 102, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, NAME_TEXT, 5, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-        renderSmartEditBoxSprite(poseStack, multiBufferSource, 5, 112, OERenderUtil.MIN_BREADTH * 3, 177, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 5, 112, OERenderUtil.MIN_BREADTH * 4, 177, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
 
         if (!canCreate(blockEntity)) {
             StringBuilder sb = new StringBuilder();
@@ -208,11 +208,11 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
             }
             sb.deleteCharAt(sb.length() - 1);
             sb.deleteCharAt(sb.length() - 1);
-            renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
+            renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
         }
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 3, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 3, 87, 15, i, j, onPxW, onPxH, monitorHeight, CREATE_TEXT, true, !canCreate(blockEntity));
+        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, CREATE_TEXT, true, !canCreate(blockEntity));
     }
 
 

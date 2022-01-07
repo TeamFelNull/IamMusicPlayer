@@ -16,9 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     protected final Map<UUID, CompoundTag> playerData = new HashMap<>();
@@ -100,6 +98,8 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         tag.remove("CreateName");
         tag.remove("Publishing");
         tag.remove("InitialAuthority");
+        tag.remove("InvitePlayerName");
+        tag.remove("InvitePlayers");
     }
 
     @Override
@@ -134,6 +134,26 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         if (!playerData.containsKey(id))
             playerData.put(id, new CompoundTag());
         return playerData.get(id);
+    }
+
+    public List<UUID> getMyInvitePlayers() {
+        List<UUID> pls = new ArrayList<>();
+        OENbtUtil.readUUIDList(myData, "InvitePlayers", pls);
+        return pls;
+    }
+
+    public void setInvitePlayers(ServerPlayer player, List<UUID> players) {
+        var tag = getPlayerData(player);
+        tag.remove("InvitePlayers");
+        OENbtUtil.writeUUIDList(tag, "InvitePlayers", players);
+    }
+
+    public String getMyInvitePlayerName() {
+        return myData.getString("InvitePlayerName");
+    }
+
+    public void setInvitePlayerName(ServerPlayer player, String name) {
+        getPlayerData(player).putString("InvitePlayerName", name);
     }
 
     public void setImage(ServerPlayer player, ImageInfo image) {
@@ -220,6 +240,15 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         } else if ("set_initial_authority".equals(name)) {
             var ina = data.getString("initial_authority");
             setInitialAuthority(player, ina);
+            return null;
+        } else if ("set_invite_player_name".equals(name)) {
+            var pname = data.getString("name");
+            setInvitePlayerName(player, pname);
+            return null;
+        } else if ("set_invite_players".equals(name)) {
+            List<UUID> pls = new ArrayList<>();
+            OENbtUtil.readUUIDList(data, "players", pls);
+            setInvitePlayers(player, pls);
             return null;
         }
         return super.onInstruction(player, name, num, data);
