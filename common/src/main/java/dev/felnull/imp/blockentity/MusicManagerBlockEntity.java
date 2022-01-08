@@ -84,9 +84,13 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
                     var type = MonitorType.getByName(monst);
                     if ((blockEntity.isPower() && type == MonitorType.OFF) || (!blockEntity.isPower() && type != MonitorType.OFF))
                         m.putString("Monitor", MonitorType.getDefault(blockEntity, n).getName());
+                    if (type == MonitorType.OFF)
+                        m.remove("SelectedPlayList");
+                    if ((type == MonitorType.ADD_MUSIC || type == MonitorType.EDIT_MUSIC || type == MonitorType.EDIT_PLAY_LIST) && !m.contains("SelectedPlayList")) {
+                        m.putString("Monitor", MonitorType.PLAY_LIST.getName());
+                    }
                 }
             });
-
             blockEntity.sync();
         }
     }
@@ -135,6 +139,29 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             playerData.put(id, new CompoundTag());
         return playerData.get(id);
     }
+
+    public UUID getMySelectedPlayList() {
+        if (!myData.contains("SelectedPlayList"))
+            return null;
+        return myData.getUUID("SelectedPlayList");
+    }
+
+    public void setSelectedPlayList(ServerPlayer player, UUID selectedPlayList) {
+        var type = getMonitor(player);
+        if (type == MonitorType.ADD_MUSIC || type == MonitorType.EDIT_MUSIC || type == MonitorType.EDIT_PLAY_LIST) {
+            if (getPlayerData(player).contains("SelectedPlayList")) {
+                var old = getPlayerData(player).getUUID("SelectedPlayList");
+                if (selectedPlayList == null || !selectedPlayList.equals(old))
+                    setMonitor(player, MonitorType.PLAY_LIST);
+            }
+        }
+        if (selectedPlayList != null) {
+            getPlayerData(player).putUUID("SelectedPlayList", selectedPlayList);
+        } else {
+            getPlayerData(player).remove("SelectedPlayList");
+        }
+    }
+
 
     public List<UUID> getMyInvitePlayers() {
         List<UUID> pls = new ArrayList<>();
@@ -198,6 +225,10 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         return myData.getString("ImageURL");
     }
 
+    public MonitorType getMonitor(ServerPlayer player) {
+        return MonitorType.getByNameOrDefault(getPlayerData(player).getString("Monitor"), this, player.getGameProfile().getId());
+    }
+
     public void setMonitor(ServerPlayer player, MonitorType type) {
         var oldM = MonitorType.getByNameOrDefault(getPlayerData(player).getString("Monitor"), this, player.getGameProfile().getId());
         if (oldM != type)
@@ -218,9 +249,11 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
                 setMonitor(player, MonitorType.getByName(mn));
             return null;
         } else if ("add_playlist".equals(name)) {
-            var pl = data.getUUID("playlist");
-            MusicManager.getInstance().addPlayListToPlayer(player, pl);
-            return null;
+            if (data.contains("playlist")) {
+                var pl = data.getUUID("playlist");
+                MusicManager.getInstance().addPlayListToPlayer(pl, player);
+            }
+            return data;
         } else if ("set_image_url".equals(name)) {
             var url = data.getString("url");
             setImageURL(player, url);
@@ -250,6 +283,13 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             OENbtUtil.readUUIDList(data, "players", pls);
             setInvitePlayers(player, pls);
             return null;
+        } else if ("set_selected_playlist".equals(name)) {
+            if (data.contains("playlist")) {
+                var id = data.getUUID("playlist");
+                setSelectedPlayList(player, id);
+            } else {
+                setSelectedPlayList(player, null);
+            }
         }
         return super.onInstruction(player, name, num, data);
     }
@@ -259,6 +299,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         TEST("test"),
         PLAY_LIST("play_list"),
         ADD_PLAY_LIST("add_play_list"),
+        EDIT_PLAY_LIST("edit_play_list"),
         CREATE_PLAY_LIST("create_play_list"),
         DELETE_PLAY_LIST("delete_play_list"),
         ADD_MUSIC("add_music"),
@@ -293,7 +334,5 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         public static MonitorType getDefault(MusicManagerBlockEntity blockEntity, UUID player) {
             return blockEntity.isPower() ? PLAY_LIST : OFF;
         }
-
     }
-
 }

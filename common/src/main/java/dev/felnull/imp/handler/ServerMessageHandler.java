@@ -2,17 +2,33 @@ package dev.felnull.imp.handler;
 
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.utils.GameInstance;
+import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ServerMessageHandler {
+    public static void onMusicPlayListAddMessage(IMPPackets.MusicPlayListAddMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            Map<UUID, AuthorityInfo.AuthorityType> authTypes = new HashMap<>();
+            message.invitePlayers.forEach(n -> authTypes.put(n, AuthorityInfo.AuthorityType.INVITATION));
+            var auth = new AuthorityInfo(message.publiced, packetContext.getPlayer().getGameProfile().getId(), packetContext.getPlayer().getGameProfile().getName(), authTypes, message.initMember ? AuthorityInfo.AuthorityType.MEMBER : AuthorityInfo.AuthorityType.READ_ONLY);
+            var pl = new MusicPlayList(UUID.randomUUID(), message.name, message.image, auth, new ArrayList<>(), System.currentTimeMillis());
+            var mm = MusicManager.getInstance();
+            mm.addPlayList(pl);
+            mm.addPlayListToPlayer(pl.getUuid(), (ServerPlayer) packetContext.getPlayer());
+            if (message.blockEntityExistence.check(((ServerPlayer) packetContext.getPlayer()).getLevel())) {
+                var be = (MusicManagerBlockEntity) ((ServerPlayer) packetContext.getPlayer()).getLevel().getBlockEntity(message.blockEntityExistence.blockPos());
+                be.setSelectedPlayList((ServerPlayer) packetContext.getPlayer(), pl.getUuid());
+            }
+        });
+    }
+
     public static void onMusicSyncRequestMessage(IMPPackets.MusicSyncRequestMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             var mm = MusicManager.getInstance();

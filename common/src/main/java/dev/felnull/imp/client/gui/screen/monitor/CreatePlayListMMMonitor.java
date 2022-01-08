@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
@@ -9,9 +10,11 @@ import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import dev.felnull.otyacraftengine.util.OEPlayerUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -54,7 +57,9 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
     @Override
     public void create(ImageInfo imageInfo, String name) {
         var pubType = getPublishingType();
-        var intAuthType = getInitialAuthorityType();
+        var initAuthType = getInitialAuthorityType();
+        var invitePlayers = getInvitePlayers();
+        NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_ADD, new IMPPackets.MusicPlayListAddMessage(name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
     }
 
     @Override
@@ -331,5 +336,10 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
     private void updateInvitePlayers() {
         invitePlayers.clear();
         invitePlayers.addAll(getInvitePlayers());
+    }
+
+    @Override
+    protected MusicManagerBlockEntity.MonitorType getParentType() {
+        return MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST;
     }
 }

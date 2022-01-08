@@ -63,7 +63,7 @@ public class MusicManager {
         return Collections.unmodifiableList(playLists);
     }
 
-    public void addPlayListToPlayer(ServerPlayer player, UUID playListId) {
+    public void addPlayListToPlayer(UUID playListId, ServerPlayer player) {
         var uuid = player.getGameProfile().getId();
         var pl = getSaveData().getPlayLists().get(playListId);
         if (pl != null && pl.getAuthority().canJoin(uuid)) {

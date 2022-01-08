@@ -50,6 +50,10 @@ public interface IIMPSmartRender {
         renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, null, false, iconLocation, iconStX, iconStY, iconW, iconH, iconTexW, iconTexH);
     }
 
+    default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH, boolean disActive) {
+        renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, text, false, iconLocation, iconStX, iconStY, iconW, iconH, iconTexW, iconTexH, disActive);
+    }
+
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
         renderSmartButtonSprite(poseStack, multiBufferSource, x, y, z, w, h, i, j, onePixW, onePixH, monitorHeight, text, false, iconLocation, iconStX, iconStY, iconW, iconH, iconTexW, iconTexH);
     }

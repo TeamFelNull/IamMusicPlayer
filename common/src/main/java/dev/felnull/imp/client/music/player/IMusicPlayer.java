@@ -45,4 +45,8 @@ public interface IMusicPlayer {
     void setSubtitle(IMusicSubtitle subtitle);
 
     IMusicSubtitle getSubtitle();
+
+    default float getPositionProgress() {
+        return (float) getPosition() / (float) getMusicSource().getDuration();
+    }
 }

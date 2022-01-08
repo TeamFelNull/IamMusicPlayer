@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
@@ -76,6 +77,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         registerMonitors(MusicManagerBlockEntity.MonitorType.PLAY_LIST, PlayListMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST, AddPlayListMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.CREATE_PLAY_LIST, CreatePlayListMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.ADD_MUSIC, AddMusicMMMonitor::new);
     }
 
     public MusicManagerScreen getScreen() {
@@ -96,6 +98,10 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
 
     public MusicSyncManager getSyncManager() {
         return MusicSyncManager.getInstance();
+    }
+
+    public MusicEngine getMusicEngine() {
+        return MusicEngine.getInstance();
     }
 
     public MusicManagerBlockEntity.MonitorType getType() {

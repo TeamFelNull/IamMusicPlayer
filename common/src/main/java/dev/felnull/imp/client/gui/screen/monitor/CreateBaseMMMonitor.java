@@ -87,7 +87,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
         this.nameEditBox.setResponder(this::setName);
         addRenderWidget(this.nameEditBox);
 
-        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST)));
+        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> insMonitor(getParentType())));
 
         this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, CREATE_TEXT, n -> {
             if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
@@ -213,12 +213,6 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
         renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, CREATE_TEXT, true, !canCreate(blockEntity));
-    }
-
-
-    @Override
-    protected MusicManagerBlockEntity.MonitorType getParentType() {
-        return MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST;
     }
 
     @Override

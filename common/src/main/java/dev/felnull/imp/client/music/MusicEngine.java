@@ -283,8 +283,19 @@ public class MusicEngine {
         RESTART_CHECK.clear();
     }
 
+    public IMusicPlayer getMusicPlayer(UUID uuid) {
+        var en = MUSIC_PLAYERS.get(uuid);
+        if (en != null)
+            return MUSIC_PLAYERS.get(uuid).player();
+        return null;
+    }
+
     public void addSubtitle(SubtitleEntry subtitle) {
         ClientMusicEvent.ADD_SUBTITLE.invoker().add(subtitle);
+    }
+
+    public boolean isLoading(UUID musicPlayerId) {
+        return MUSIC_LOADS.containsKey(musicPlayerId);
     }
 
     private static record MusicPlayEntry(MusicPlaybackInfo playbackInfo, IMusicPlayer player) {

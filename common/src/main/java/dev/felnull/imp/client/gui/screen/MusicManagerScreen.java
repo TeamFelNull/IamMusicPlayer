@@ -5,8 +5,13 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
+import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.inventory.MusicManagerMenu;
+import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.music.MusicRinger;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -26,6 +31,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     private static final Minecraft mc = Minecraft.getInstance();
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/music_manager_base.png");
     private final Map<MusicManagerBlockEntity.MonitorType, MusicManagerMonitor> monitors = new HashMap<>();
+    private final UUID musicPlayerId = UUID.randomUUID();
     protected MusicManagerMonitor monitor;
 
     public MusicManagerScreen(MusicManagerMenu abstractContainerMenu, Inventory inventory, Component component) {
@@ -45,6 +51,9 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     }
 
     public void insMonitor(MusicManagerBlockEntity.MonitorType type) {
+        if (monitor != null && monitor.getType() != type)
+            stopMusic();
+
         var tag = new CompoundTag();
         tag.putString("type", type.getName());
         instruction("set_monitor", 0, tag);
@@ -124,6 +133,23 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         instruction("set_invite_players", 0, tag);
     }
 
+    public void insSelectedPlayList(UUID selectedPlayList) {
+        var tag = new CompoundTag();
+        if (selectedPlayList != null)
+            tag.putUUID("playlist", selectedPlayList);
+        instruction("set_selected_playlist", 0, tag);
+    }
+
+    @Override
+    public void onInstructionReturn(String name, int num, CompoundTag data) {
+        super.onInstructionReturn(name, num, data);
+        if ("add_playlist".equals(name)) {
+            if (data.contains("playlist")) {
+                insSelectedPlayList(data.getUUID("playlist"));
+            }
+        }
+    }
+
     @Override
     protected ResourceLocation getBackGrandTexture() {
         return BG_TEXTURE;
@@ -156,12 +182,43 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         super.onClose();
         if (monitor != null)
             monitor.depose();
+
+        stopMusic();
     }
 
     @Override
     public void onFilesDrop(List<Path> list) {
         if (monitor != null)
             monitor.onFilesDrop(list);
+    }
+
+    public void playMusic(MusicSource source, long postion) {
+        stopMusic();
+        getMusicEngine().loadAddMusicPlayer(musicPlayerId, new MusicPlaybackInfo(MusicRinger.PLAYER_TRACKER, MusicRinger.createPlayerTracker(mc.player), 1, 10), source, postion, (result, time, player, retry) -> {
+            getMusicEngine().playMusicPlayer(musicPlayerId, 0);
+        });
+    }
+
+    public void stopMusic() {
+        getMusicEngine().stopMusicPlayer(musicPlayerId);
+        getMusicEngine().stopLoadMusicPlayer(musicPlayerId);
+    }
+
+    public boolean isMusicPlaying() {
+        return getMusicEngine().isPlaying(musicPlayerId);
+    }
+
+    public boolean isMusicLoading() {
+        return getMusicEngine().isLoading(musicPlayerId);
+    }
+
+
+    private MusicEngine getMusicEngine() {
+        return MusicEngine.getInstance();
+    }
+
+    public IMusicPlayer getMusicPlayer() {
+        return getMusicEngine().getMusicPlayer(musicPlayerId);
     }
 
 }
