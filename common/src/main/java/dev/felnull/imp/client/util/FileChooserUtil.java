@@ -20,11 +20,11 @@ public class FileChooserUtil {
     }
 
     private static File[] trayOpenFileChooser(String name, Path initPath, boolean multiSelect, FNJLNativeWrapper.FileChooserFilterWrapper filter) {
-        if (FNJLNativeWrapper.isSupportNativeFileChooser()) {
+       /* if (FNJLNativeWrapper.isSupportNativeFileChooser()) {
             var flg = new FNJLNativeWrapper.FileChooserFlagWrapper().hideReadOnly(true);
             if (multiSelect) flg.allowMultiSelect(true).explorer(true);
             return FNJLNativeWrapper.openNativeFileChooser(name, initPath, flg, filter);
-        }
+        }*/
         Util.getPlatform().openFile(initPath.toFile());
         return null;
     }

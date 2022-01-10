@@ -40,7 +40,7 @@ public class ImageInfo implements ITAGSerializable {
     }
 
     public boolean isEmpty() {
-        return this.imageType == ImageType.EMPTY;
+        return this == EMPTY || this.imageType == ImageType.EMPTY;
     }
 
     @Override

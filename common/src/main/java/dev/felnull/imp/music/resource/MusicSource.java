@@ -52,6 +52,10 @@ public class MusicSource implements ITAGSerializable {
         return duration < 0;
     }
 
+    public boolean isEmpty() {
+        return this == EMPTY || (loaderType.isEmpty() && identifier.isEmpty());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

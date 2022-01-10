@@ -45,7 +45,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
     private static final Component CREATE_TEXT = new TranslatableComponent("imp.button.create");
     private Component NOT_ENTERED_TEXT;
     private EditBox imageUrlEditBox;
-    private EditBox nameEditBox;
+    protected EditBox nameEditBox;
     private SmartButton createButton;
     private Component imageSetInfo;
     private ImageUrlLoader imageUrlLoader;
@@ -241,7 +241,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
         return musicManagerBlockEntity.getMyCreateName();
     }
 
-    private void setName(String name) {
+    protected void setName(String name) {
         getScreen().insCreateName(name);
     }
 
@@ -255,7 +255,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
         return musicManagerBlockEntity.getMyImage();
     }
 
-    private void setImage(ImageInfo image) {
+    protected void setImage(ImageInfo image) {
         getScreen().insImage(image);
     }
 

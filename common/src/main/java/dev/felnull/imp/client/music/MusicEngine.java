@@ -290,6 +290,10 @@ public class MusicEngine {
         return null;
     }
 
+    public MusicLoadThread getLoadingMusic(UUID uuid) {
+        return MUSIC_LOADS.get(uuid);
+    }
+
     public void addSubtitle(SubtitleEntry subtitle) {
         ClientMusicEvent.ADD_SUBTITLE.invoker().add(subtitle);
     }

@@ -6,6 +6,7 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.MusicLoadThread;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.inventory.MusicManagerMenu;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -140,6 +141,26 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         instruction("set_selected_playlist", 0, tag);
     }
 
+    public void insMusicLoaderType(String name) {
+        var tag = new CompoundTag();
+        tag.putString("name", name);
+        instruction("set_music_loader_type", 0, tag);
+    }
+
+    public void insMusicSourceName(String name) {
+        var tag = new CompoundTag();
+        tag.putString("name", name);
+        instruction("set_music_source_name", 0, tag);
+    }
+
+    public void insMusicSource(MusicSource source) {
+        if (source == null)
+            source = MusicSource.EMPTY;
+        var tag = new CompoundTag();
+        OENbtUtil.writeSerializable(tag, "MusicSource", source);
+        instruction("set_music_source", 0, tag);
+    }
+
     @Override
     public void onInstructionReturn(String name, int num, CompoundTag data) {
         super.onInstructionReturn(name, num, data);
@@ -212,7 +233,6 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         return getMusicEngine().isLoading(musicPlayerId);
     }
 
-
     private MusicEngine getMusicEngine() {
         return MusicEngine.getInstance();
     }
@@ -221,4 +241,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         return getMusicEngine().getMusicPlayer(musicPlayerId);
     }
 
+    public MusicLoadThread getLoadingMusic() {
+        return getMusicEngine().getLoadingMusic(musicPlayerId);
+    }
 }

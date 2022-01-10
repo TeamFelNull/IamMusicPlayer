@@ -3,6 +3,7 @@ package dev.felnull.imp.client.music.loader;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class IMPMusicLoaders {
 
     public static void init() {
         registerLoader(YOUTUBE_DOWNLOADER, new YoutubeDownloaderMusicLoader());
-        registerLoader(LAVA_YOUTUBE, new LavaPlayerMusicLoader("youtube", new YoutubeAudioSourceManager()));
-        registerLoader(LAVA_HTTP, new LavaPlayerMusicLoader("http", new HttpAudioSourceManager()));
+        registerLoader(LAVA_YOUTUBE, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.YOUTUBE, new YoutubeAudioSourceManager()));
+        registerLoader(LAVA_HTTP, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.HTTP, new HttpAudioSourceManager()));
     }
 
     public static void registerLoader(ResourceLocation location, IMusicLoader loader) {

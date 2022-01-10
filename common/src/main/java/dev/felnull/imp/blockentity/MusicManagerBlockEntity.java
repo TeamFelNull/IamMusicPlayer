@@ -4,6 +4,7 @@ import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
 import dev.felnull.imp.music.MusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -104,6 +105,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         tag.remove("InitialAuthority");
         tag.remove("InvitePlayerName");
         tag.remove("InvitePlayers");
+
+        tag.remove("MusicLoaderType");
+        tag.remove("MusicSourceName");
     }
 
     @Override
@@ -144,6 +148,32 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         if (!myData.contains("SelectedPlayList"))
             return null;
         return myData.getUUID("SelectedPlayList");
+    }
+
+    public MusicSource getMyMusicSource() {
+        if (myData.contains("MusicSource"))
+            return OENbtUtil.readSerializable(myData, "MusicSource", new MusicSource());
+        return MusicSource.EMPTY;
+    }
+
+    public void setMusicSource(ServerPlayer player, MusicSource source) {
+        OENbtUtil.writeSerializable(getPlayerData(player), "MusicSource", source);
+    }
+
+    public String getMyMusicSourceName() {
+        return myData.getString("MusicSourceName");
+    }
+
+    public void setMusicSourceName(ServerPlayer player, String name) {
+        getPlayerData(player).putString("MusicSourceName", name);
+    }
+
+    public String getMyMusicLoaderType() {
+        return myData.getString("MusicLoaderType");
+    }
+
+    public void setMusicLoaderType(ServerPlayer player, String name) {
+        getPlayerData(player).putString("MusicLoaderType", name);
     }
 
     public void setSelectedPlayList(ServerPlayer player, UUID selectedPlayList) {
@@ -225,6 +255,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         return myData.getString("ImageURL");
     }
 
+
     public MonitorType getMonitor(ServerPlayer player) {
         return MonitorType.getByNameOrDefault(getPlayerData(player).getString("Monitor"), this, player.getGameProfile().getId());
     }
@@ -290,6 +321,18 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             } else {
                 setSelectedPlayList(player, null);
             }
+            return null;
+        } else if ("set_music_loader_type".equals(name)) {
+            var lname = data.getString("name");
+            setMusicLoaderType(player, lname);
+            return null;
+        } else if ("set_music_source_name".equals(name)) {
+            var mname = data.getString("name");
+            setMusicSourceName(player, mname);
+            return null;
+        } else if ("set_music_source".equals(name)) {
+            var ms = OENbtUtil.readSerializable(data, "MusicSource", new MusicSource());
+            setMusicSource(player, ms);
         }
         return super.onInstruction(player, name, num, data);
     }
