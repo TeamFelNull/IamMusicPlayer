@@ -20,11 +20,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class AddMusicMMMonitor extends CreateBaseMMMonitor {
     private static final ResourceLocation ADD_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_music.png");
@@ -269,7 +267,7 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
                 if (loader != null) {
                     setLoadResult(loader.load(name), autoIn);
                 } else if ("auto".equals(loaderType)) {
-                    var ar = loadAuto(name);
+                    var ar = IMPMusicLoaderTypes.loadAuto(name);
                     if (ar != null) {
                         setMusicLoaderType(ar.getKey());
                         IIMPSmartRender.mc.submit(() -> {
@@ -282,14 +280,5 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
             }
             musicLoadThread = null;
         }
-    }
-
-    private static Pair<String, MusicLoadResult> loadAuto(String sourceName) throws InterruptedException {
-        for (Map.Entry<String, IMusicLoaderType> entry : IMPMusicLoaderTypes.getMusicLoaderTypes().entrySet()) {
-            var src = entry.getValue().load(sourceName);
-            if (src != null)
-                return Pair.of(entry.getKey(), src);
-        }
-        return null;
     }
 }

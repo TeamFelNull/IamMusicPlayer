@@ -83,6 +83,7 @@
   "imp.loaderType.upload": "Upload",
   "imp.loaderType.youtube": "Youtube",
   "imp.loaderType.http": "Http URL",
+  "imp.loaderType.soundcloud": "Sound Cloud",
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "Client",

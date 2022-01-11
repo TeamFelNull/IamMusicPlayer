@@ -1,6 +1,5 @@
 package dev.felnull.imp.client.music.loader;
 
-import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
@@ -13,7 +12,7 @@ import java.util.Optional;
 
 public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {
     public YoutubeDownloaderMusicLoader() {
-        super(IMPMusicLoaderTypes.HTTP, new HttpAudioSourceManager());
+        super(IMPMusicLoaderTypes.HTTP);
     }
 
     @Override

@@ -17,12 +17,17 @@ public class YoutubeMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
     }
 
     @Override
-    protected void registerSourceManager(AudioPlayerManager audioPlayerManager) {
+    public void registerSourceManager(AudioPlayerManager audioPlayerManager) {
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
     }
 
     @Override
     protected ImageInfo createThumbnail(AudioTrack track) {
         return new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, track.getIdentifier());
+    }
+
+    @Override
+    public boolean match(AudioTrack track) {
+        return track.getSourceManager() instanceof YoutubeAudioSourceManager;
     }
 }
