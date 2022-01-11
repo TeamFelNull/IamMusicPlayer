@@ -1,14 +1,10 @@
 package dev.felnull.imp.item;
 
-import com.google.common.collect.Lists;
-import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import dev.felnull.imp.client.music.MusicEngine;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
-import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.MusicRinger;
-import dev.felnull.imp.music.resource.*;
+import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -33,19 +29,20 @@ public class TestSoundItem extends Item {
             if (player.isCrouching()) {
                 UUID id = UUID.randomUUID();
                 MusicEngine me = MusicEngine.getInstance();
-                var apm = LavaPlayerUtil.createAudioPlayerManager();
+             /*   var apm = LavaPlayerUtil.createAudioPlayerManager();
                 apm.registerSourceManager(new YoutubeAudioSourceManager());
                 apm.registerSourceManager(new HttpAudioSourceManager());
                 var idi = itemStack.getHoverName().getString();
                 var track = LavaPlayerUtil.loadTrackNonThrow(apm, idi);
+
+                if (track.isPresent()) {*/
                 var plb = new MusicPlaybackInfo(MusicRinger.FIXED_TRACKER, MusicRinger.createFixedTracker(player.position()), 1, 30);
-                if (track.isPresent()) {
-                    var ms = new MusicSource("youtube", idi, track.get().getInfo().isStream ? -1 : track.get().getDuration());
-                    me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
-                        player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
-                        me.playMusicPlayer(id, 0);
-                    });
-                }
+                var ms = new MusicSource(IMPMusicLoaderTypes.HTTP, "https://cdn.discordapp.com/attachments/358878159615164416/930375940578619392/mgs2.nbs", 100 * 1000);
+                me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
+                    player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
+                    me.playMusicPlayer(id, 0);
+                });
+                //}
             }
            /* var shpe = TentativeVoxelShapeGenerator.generate(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox")), OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_base_shape")));
             try {

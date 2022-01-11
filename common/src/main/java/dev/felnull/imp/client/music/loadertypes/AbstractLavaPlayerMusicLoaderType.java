@@ -51,7 +51,7 @@ public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderT
     public MusicLoadResult load(String sourceName) throws InterruptedException {
         try {
             var otrack = LavaPlayerUtil.loadTrack(getAudioPlayerManager(), sourceName);
-            if (otrack.isPresent())
+            if (otrack.isPresent() && !otrack.get().getInfo().isStream)
                 return createResult(otrack.get());
         } catch (ExecutionException ignored) {
         }

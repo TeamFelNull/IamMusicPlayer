@@ -12,13 +12,15 @@ public class IMPMusicLoaderTypes {
     private static final Map<String, IMusicLoaderType> LOADER_TYPES = new LinkedHashMap<>();
     private static AudioPlayerManager allAudioPlayerManager;
     public static final String YOUTUBE = "youtube";
-    public static final String HTTP = "http";
     public static final String SOUNDCLOUD = "soundcloud";
+    public static final String HTTP = "http";
+    //  public static final String NICONICO = "niconico";
 
     public static void init() {
         registerLoaderType(YOUTUBE, new YoutubeMusicLoaderType());
         registerLoaderType(SOUNDCLOUD, new SoundCloudMusicLoaderType());
         registerLoaderType(HTTP, new HttpURLMusicLoaderType());
+        //   registerLoaderType(NICONICO, new NicoNicoMusicLoaderType());
     }
 
     public static IMusicLoaderType getLoaderType(String name) {
@@ -40,7 +42,7 @@ public class IMPMusicLoaderTypes {
     public static Pair<String, MusicLoadResult> loadAuto(String sourceName) throws InterruptedException {
         try {
             var otrack = LavaPlayerUtil.loadTrack(allAudioPlayerManager, sourceName);
-            if (otrack.isPresent()) {
+            if (otrack.isPresent() && !otrack.get().getInfo().isStream) {
                 var track = otrack.get();
                 for (Map.Entry<String, IMusicLoaderType> entry : IMPMusicLoaderTypes.getMusicLoaderTypes().entrySet()) {
                     if (entry.getValue() instanceof AbstractLavaPlayerMusicLoaderType lLoaderType) {
