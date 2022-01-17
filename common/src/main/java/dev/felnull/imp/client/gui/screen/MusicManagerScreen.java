@@ -33,6 +33,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     private static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/music_manager_base.png");
     private final Map<MusicManagerBlockEntity.MonitorType, MusicManagerMonitor> monitors = new HashMap<>();
     private final UUID musicPlayerId = UUID.randomUUID();
+    public boolean lastSearch;
     protected MusicManagerMonitor monitor;
 
     public MusicManagerScreen(MusicManagerMenu abstractContainerMenu, Inventory inventory, Component component) {
@@ -159,6 +160,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         var tag = new CompoundTag();
         OENbtUtil.writeSerializable(tag, "MusicSource", source);
         instruction("set_music_source", 0, tag);
+    }
+
+    public void insMusicSearchName(String name){
+        var tag = new CompoundTag();
+        tag.putString("name", name);
+        instruction("set_music_search_name", 0, tag);
     }
 
     @Override

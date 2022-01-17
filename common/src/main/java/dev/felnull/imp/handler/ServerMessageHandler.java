@@ -13,6 +13,17 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 
 public class ServerMessageHandler {
+    public static void onMusicAddMessage(IMPPackets.MusicAddMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            var mm = MusicManager.getInstance();
+            var pl = mm.getSaveData().getPlayLists().get(message.playlist);
+            if (pl != null && pl.getAuthority().getAuthorityType(packetContext.getPlayer().getGameProfile().getId()).isMoreMember()) {
+                var m = new Music(UUID.randomUUID(), message.name, message.source, message.image, packetContext.getPlayer().getGameProfile().getId(), System.currentTimeMillis());
+                mm.addMusicToPlayList(pl.getUuid(), m);
+            }
+        });
+    }
+
     public static void onMusicPlayListAddMessage(IMPPackets.MusicPlayListAddMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             Map<UUID, AuthorityInfo.AuthorityType> authTypes = new HashMap<>();

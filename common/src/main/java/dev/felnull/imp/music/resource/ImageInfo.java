@@ -68,7 +68,8 @@ public class ImageInfo implements ITAGSerializable {
         EMPTY("empty"),
         URL("url"),
         PLAYER_FACE("player_face"),
-        YOUTUBE_THUMBNAIL("youtube_thumbnail");
+        YOUTUBE_THUMBNAIL("youtube_thumbnail"),
+        SOUND_CLOUD_ARTWORK("sound_cloud_artwork");
         private final String name;
 
         private ImageType(String name) {

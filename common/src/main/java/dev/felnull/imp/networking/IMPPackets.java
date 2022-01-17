@@ -7,6 +7,7 @@ import dev.felnull.imp.handler.ServerMessageHandler;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
+import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import dev.felnull.otyacraftengine.networking.PacketMessage;
@@ -23,14 +24,47 @@ import java.util.UUID;
 public class IMPPackets {
     public static final ResourceLocation MUSIC_SYNC = new ResourceLocation(IamMusicPlayer.MODID, "music_sync");
     public static final ResourceLocation MUSIC_PLAYLIST_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_playlist_add");
+    public static final ResourceLocation MUSIC_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_add");
 
     public static void init() {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListAddMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicAddMessage(friendlyByteBuf), packetContext));
     }
 
     public static void clientInit() {
         NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicSyncResponseMessage(new MusicSyncResponseMessage(friendlyByteBuf), packetContext));
+    }
+
+    public static class MusicAddMessage implements PacketMessage {
+        public final UUID playlist;
+        public final String name;
+        public final ImageInfo image;
+        public final MusicSource source;
+
+        public MusicAddMessage(FriendlyByteBuf bf) {
+            this.playlist = bf.readUUID();
+            this.name = bf.readUtf();
+            this.image = OENbtUtil.readSerializable(bf.readNbt(), "Image", new ImageInfo());
+            this.source = OENbtUtil.readSerializable(bf.readNbt(), "Source", new MusicSource());
+        }
+
+        public MusicAddMessage(UUID playlist, String name, ImageInfo image, MusicSource source) {
+            this.playlist = playlist;
+            this.name = name;
+            this.image = image;
+            this.source = source;
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB() {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(playlist);
+            buf.writeUtf(this.name);
+            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Image", image));
+            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Source", source));
+            return buf;
+        }
     }
 
     public static class MusicPlayListAddMessage implements PacketMessage {

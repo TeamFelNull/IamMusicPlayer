@@ -60,7 +60,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             insMonitor(MusicManagerBlockEntity.MonitorType.ADD_MUSIC);
         }));
         this.addMusic.setIcon(WIDGETS_TEXTURE, 73, 14, 5, 5);
-        this.addMusic.active = getSelectedPlayList() != null;
+        this.addMusic.active = getSelectedMusicPlayList() != null && getSelectedMusicPlayList().getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isMoreMember();
 
         this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 73, getStartY() + 189, n -> updateList(), false, getScreen()));
         this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 82, getStartY() + 189, n -> updateList(), false, getScreen()));
@@ -125,7 +125,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         }
         updateInfoText();
 
-        addMusic.active = getSelectedPlayList() != null;
+        addMusic.active = getSelectedMusicPlayList() != null && getSelectedMusicPlayList().getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isMoreMember();
     }
 
     private void updateList() {

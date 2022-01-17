@@ -4,8 +4,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.music.resource.ImageInfo;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 public class SoundCloudMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
     public SoundCloudMusicLoaderType() {
@@ -35,13 +33,6 @@ public class SoundCloudMusicLoaderType extends AbstractLavaPlayerMusicLoaderType
 
     @Override
     protected ImageInfo createThumbnail(AudioTrack track) {
-        try {
-            Document doc = Jsoup.connect(track.getInfo().uri).get();
-            var img = doc.select("img").attr("itemprop", "image").first();
-            var src = img.attr("src");
-            return new ImageInfo(ImageInfo.ImageType.URL, src);
-        } catch (Exception ignored) {
-        }
-        return null;
+        return new ImageInfo(ImageInfo.ImageType.SOUND_CLOUD_ARTWORK, track.getInfo().uri);
     }
 }

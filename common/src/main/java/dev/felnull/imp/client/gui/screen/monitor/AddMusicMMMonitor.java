@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.architectury.networking.NetworkManager;
 import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
@@ -14,6 +15,7 @@ import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
 import dev.felnull.imp.client.music.loadertypes.MusicLoadResult;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
@@ -36,6 +38,7 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
     private final List<Component> musicLoadInfos = new ArrayList<>();
     private SmartButton playControlButton;
     private EditBox musicSourceNameEditBox;
+    private SmartButton searchButton;
     private MusicLoadThread musicLoadThread;
 
     public AddMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
@@ -82,7 +85,16 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
         this.musicSourceNameEditBox.setResponder(this::setMusicSourceName);
         addRenderWidget(this.musicSourceNameEditBox);
 
-        startMusicLoad(getMusicSourceName(), false);
+        startMusicLoad(getMusicSourceName(), getScreen().lastSearch);
+        getScreen().lastSearch = false;
+
+        this.searchButton = this.addRenderWidget(new SmartButton(getStartX() + 331, getStartY() + 111, 35, 14, new TranslatableComponent("imp.button.search"), n -> {
+            setMusicSourceName("");
+            insMonitor(MusicManagerBlockEntity.MonitorType.SEARCH_MUSIC);
+        }));
+        this.searchButton.setHideText(true);
+        this.searchButton.setIcon(WIDGETS_TEXTURE, 24, 107, 12, 12);
+        this.searchButton.visible = isMSNVisible() && isMSNShortWidth();
     }
 
     @Override
@@ -122,6 +134,9 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
 
     @Override
     public void create(ImageInfo imageInfo, String name) {
+        var ms = getMusicSource();
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
+            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicAddMessage(musicManagerBlock.getMySelectedPlayList(), name, imageInfo, ms).toFBB());
     }
 
     @Override
@@ -154,6 +169,8 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
 
         this.musicSourceNameEditBox.visible = isMSNVisible();
         this.musicSourceNameEditBox.setWidth(isMSNShortWidth() ? 141 : 177);
+
+        this.searchButton.visible = isMSNVisible() && isMSNShortWidth();
 
         if ((getScreen().isMusicPlaying() && !getMusicSource().equals(getScreen().getMusicPlayer().getMusicSource())) || (getScreen().isMusicLoading() && !getMusicSource().equals(getScreen().getLoadingMusic().getSource())))
             getScreen().stopMusic();

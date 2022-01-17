@@ -8,9 +8,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -78,4 +76,32 @@ public class LavaPlayerUtil {
     private static record CashEntry(String loadType, String str) {
     }
 
+    public static List<AudioTrack> searchYoutube(AudioPlayerManager audioPlayerManager, String name) throws ExecutionException, InterruptedException {
+        List<AudioTrack> tracks = new ArrayList<>();
+        AtomicReference<AudioTrack> audioTrack = new AtomicReference<>();
+        AtomicReference<FriendlyException> fe = new AtomicReference<>();
+        audioPlayerManager.loadItem("ytsearch:" + name, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                tracks.add(track);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                tracks.addAll(playlist.getTracks());
+            }
+
+            @Override
+            public void noMatches() {
+            }
+
+            @Override
+            public void loadFailed(FriendlyException ex) {
+                fe.set(ex);
+            }
+        }).get();
+        if (fe.get() != null)
+            throw fe.get();
+        return tracks;
+    }
 }
