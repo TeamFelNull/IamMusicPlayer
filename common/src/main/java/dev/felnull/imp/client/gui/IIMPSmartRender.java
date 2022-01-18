@@ -43,7 +43,11 @@ public interface IIMPSmartRender {
     }
 
     default void drawSmartText(PoseStack poseStack, Component component, float x, float y) {
-        mc.font.draw(poseStack, component, x, y, 0xFF000000);
+        drawSmartText(poseStack, component, x, y, 0xFF000000);
+    }
+
+    default void drawSmartText(PoseStack poseStack, Component component, float x, float y, int color) {
+        mc.font.draw(poseStack, component, x, y, color);
     }
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {

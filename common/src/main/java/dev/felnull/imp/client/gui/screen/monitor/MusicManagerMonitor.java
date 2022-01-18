@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -118,4 +119,7 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         return null;
     }
 
+    public void onUpdateSelectedPlayList(UUID playListId) {
+
+    }
 }

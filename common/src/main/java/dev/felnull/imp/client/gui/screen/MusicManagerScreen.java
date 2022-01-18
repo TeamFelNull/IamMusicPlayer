@@ -181,6 +181,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
             if (data.contains("playlist")) {
                 insSelectedPlayList(data.getUUID("playlist"));
             }
+        } else if ("set_selected_playlist".equals(name)) {
+            if (data.contains("playlist")) {
+                monitor.onUpdateSelectedPlayList(data.getUUID("playlist"));
+            } else {
+                monitor.onUpdateSelectedPlayList(null);
+            }
         }
     }
 

@@ -347,7 +347,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             } else {
                 setSelectedPlayList(player, null);
             }
-            return null;
+            return data;
         } else if ("set_music_loader_type".equals(name)) {
             var lname = data.getString("name");
             setMusicLoaderType(player, lname);

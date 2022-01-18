@@ -1,11 +1,14 @@
 package dev.felnull.imp.client.music;
 
 import dev.architectury.networking.NetworkManager;
+import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.client.Minecraft;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class MusicSyncManager {
@@ -17,9 +20,25 @@ public class MusicSyncManager {
     public List<MusicPlayList> canJoinPlayList;
     private long canJoinPlayListLastUpdateTime;
     public PlayListInfo canJoinPlayListInfo;
+    public final Map<UUID, List<Music>> musics = new HashMap<>();
+    private final Map<UUID, Long> musicUpdateTimes = new HashMap<>();
 
     public static MusicSyncManager getInstance() {
         return INSTANCE;
+    }
+
+    public List<Music> getMusics(UUID playList) {
+        long time = 0;
+        if (musicUpdateTimes.containsKey(playList)) {
+            time = musicUpdateTimes.get(playList);
+        } else {
+            musicUpdateTimes.put(playList, 0L);
+        }
+        if (System.currentTimeMillis() - time >= 1000 * 60) {
+            sendRequest(IMPPackets.MusicSyncType.MUSIC_BY_PLAYLIST, playList);
+            musicUpdateTimes.put(playList, System.currentTimeMillis());
+        }
+        return musics.get(playList);
     }
 
     public List<MusicPlayList> getMyPlayList() {
@@ -49,12 +68,15 @@ public class MusicSyncManager {
     public void reset() {
         myPlayListLastUpdateTime = 0;
         canJoinPlayListLastUpdateTime = 0;
+        musicUpdateTimes.clear();
 
         myPlayList = null;
         canJoinPlayList = null;
+        musics.clear();
     }
 
     private void sendRequest(IMPPackets.MusicSyncType type, UUID uuid) {
+        if (uuid == null) return;
         NetworkManager.sendToServer(IMPPackets.MUSIC_SYNC, new IMPPackets.MusicSyncRequestMessage(type, uuid).toFBB());
     }
 

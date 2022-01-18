@@ -10,6 +10,7 @@ import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
+import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +31,9 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     private static final Component SORT_TYPE_NAME_TEXT = new TranslatableComponent("imp.sortType." + SortButton.SortType.NAME.getName());
     private static final Component ORDER_TYPE_DESCENDING_TEXT = new TranslatableComponent("imp.orderType." + SortButton.OrderType.DESCENDING.getName());
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
+    private final List<Music> musics = new ArrayList<>();
     private List<MusicPlayList> musicPlayListsCash;
+    private List<Music> musicsCash;
     private MusicSyncManager.PlayListInfo lastPlayListInfo;
     private Component INFO_TEXT;
     private SortButton.SortTypeButton playlistSortButton;
@@ -123,6 +126,12 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             musicPlayListsCash = getSyncManager().getMyPlayList();
             updateList();
         }
+
+        if (musicsCash != getSyncManager().getMusics(getSelectedPlayList())) {
+            musicsCash = getSyncManager().getMusics(getSelectedPlayList());
+            updateMusics();
+        }
+
         updateInfoText();
 
         addMusic.active = getSelectedMusicPlayList() != null && getSelectedMusicPlayList().getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isMoreMember();
@@ -135,6 +144,12 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
 
         if (getSelectedMusicPlayList() == null)
             setSelectedPlayList(null);
+    }
+
+    private void updateMusics() {
+        musics.clear();
+        if (musicsCash != null)
+            musics.addAll(musicSortButton.sort(musicsCash, musicOrderButton));
     }
 
     private void updateInfoText() {
@@ -165,5 +180,10 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
 
     private void setSelectedPlayList(UUID selectedPlayList) {
         getScreen().insSelectedPlayList(selectedPlayList);
+    }
+
+    @Override
+    public void onUpdateSelectedPlayList(UUID playListId) {
+        updateMusics();
     }
 }

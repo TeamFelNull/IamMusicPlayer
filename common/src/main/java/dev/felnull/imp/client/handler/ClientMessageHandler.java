@@ -29,6 +29,10 @@ public class ClientMessageHandler {
                     }
                     msm.canJoinPlayListInfo = new MusicSyncManager.PlayListInfo((int) msm.canJoinPlayList.stream().map(n -> n.getAuthority().getOwner()).distinct().count(), msm.canJoinPlayList.size(), msmc);
                 }
+                case MUSIC_BY_PLAYLIST -> {
+                    msm.musics.remove(message.syncId);
+                    msm.musics.put(message.syncId, Collections.unmodifiableList(message.musics));
+                }
             }
         });
     }

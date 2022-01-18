@@ -56,6 +56,7 @@ public class ServerMessageHandler {
                             if (music != null)
                                 musics.add(music);
                         });
+
                         sendMusicSyncData(pl, message.syncType, message.syncId, new ArrayList<>(), musics);
                     }
                 }

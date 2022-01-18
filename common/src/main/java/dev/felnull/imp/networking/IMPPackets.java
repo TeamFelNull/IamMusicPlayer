@@ -123,7 +123,7 @@ public class IMPPackets {
             this.playLists = new ArrayList<>();
             IMPNbtUtil.readMusicPlayLists(bf.readNbt(), "PlayLists", playLists);
             this.musics = new ArrayList<>();
-            IMPNbtUtil.writeMusics(bf.readNbt(), "Musics", musics);
+            IMPNbtUtil.readMusics(bf.readNbt(), "Musics", musics);
         }
 
         public MusicSyncResponseMessage(MusicSyncType syncType, UUID syncId, List<MusicPlayList> playLists, List<Music> musics) {
