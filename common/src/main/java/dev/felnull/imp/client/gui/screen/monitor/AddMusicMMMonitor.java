@@ -26,7 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddMusicMMMonitor extends CreateBaseMMMonitor {
+public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     private static final ResourceLocation ADD_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_music.png");
     private static final Component PLAYBACK_CONTROL_TEXT = new TranslatableComponent("imp.button.playbackControl");
     private static final Component PLAYBACK_TEXT = new TranslatableComponent("imp.text.playback");
@@ -34,12 +34,20 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
     private static final Component PLAYBACK_LOADING_PROGRESS_TEXT = new TranslatableComponent("imp.text.playbackLoading");
     private static final Component MUSIC_SOURCE_TEXT = new TranslatableComponent("imp.text.musicSource");
     private static final Component MUSIC_CHECKING_TEXT = new TranslatableComponent("imp.text.musicChecking");
+    private static final Component MUSIC_GUESSING_TEXT = new TranslatableComponent("imp.text.musicGuessing");
+    private static final Component MUSIC_LOAD_FAILURE_TEXT = new TranslatableComponent("imp.text.loadFailure");
+    private static final Component AUTO_ENTER_TEXT = new TranslatableComponent("imp.text.enterText.auto");
+    private static final Component AUTO_INFO_TEXT = new TranslatableComponent("imp.text.loaderTypeInfo.auto");
+    private static final Component AUTO_FAILURE_TEXT = new TranslatableComponent("imp.text.loadFailure.auto");
+    private static final Component UPLOAD_MUSIC_TEXT = new TranslatableComponent("imp.button.uploadMusic");
     private final List<String> musicLoaderTypes = new ArrayList<>();
-    private final List<Component> musicLoadInfos = new ArrayList<>();
     private SmartButton playControlButton;
     private EditBox musicSourceNameEditBox;
     private SmartButton searchButton;
+    private SmartButton uploadButton;
     private MusicLoadThread musicLoadThread;
+    private boolean loadFailure;
+    private Component AUTHOR_TEXT;
 
     public AddMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -76,7 +84,10 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
             }
         }));
 
-        this.addRenderWidget(new MusicLoaderTypesFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 65, 5, new TranslatableComponent("imp.fixedList.musicLoaderTypes"), musicLoaderTypes, (fixedButtonsList, s, i, i1) -> setMusicLoaderType(s), n -> getMusicLoaderType().equals(n)));
+        this.addRenderWidget(new MusicLoaderTypesFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 65, 5, new TranslatableComponent("imp.fixedList.musicLoaderTypes"), musicLoaderTypes, (fixedButtonsList, s, i, i1) -> {
+            setMusicLoaderType(s);
+            loadFailure = false;
+        }, n -> getMusicLoaderType().equals(n)));
 
         this.musicSourceNameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 189, getStartY() + 112, isMSNShortWidth() ? 141 : 177, 12, new TranslatableComponent("imp.editBox.musicSourceName"));
         this.musicSourceNameEditBox.setMaxLength(300);
@@ -89,18 +100,27 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
         getScreen().lastSearch = false;
 
         this.searchButton = this.addRenderWidget(new SmartButton(getStartX() + 331, getStartY() + 111, 35, 14, new TranslatableComponent("imp.button.search"), n -> {
-            setMusicSourceName("");
             insMonitor(MusicManagerBlockEntity.MonitorType.SEARCH_MUSIC);
         }));
         this.searchButton.setHideText(true);
         this.searchButton.setIcon(WIDGETS_TEXTURE, 24, 107, 12, 12);
         this.searchButton.visible = isMSNVisible() && isMSNShortWidth();
+
+        this.uploadButton = this.addRenderWidget(new SmartButton(getStartX() + 189, getStartY() + 111, 177, 14, UPLOAD_MUSIC_TEXT, n -> {
+            insMonitor(MusicManagerBlockEntity.MonitorType.UPLOAD_MUSIC);
+        }));
+        this.uploadButton.setIcon(WIDGETS_TEXTURE, 36, 107, 12, 12);
+        this.uploadButton.visible = "upload".equals(getMusicLoaderType());
+
+        if (!getMusicAuthor().isEmpty())
+            AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", getMusicAuthor());
     }
 
     @Override
     public void depose() {
         super.depose();
         stopMusicLoad();
+        AUTHOR_TEXT = null;
     }
 
     @Override
@@ -125,18 +145,28 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
 
         drawSmartText(poseStack, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
 
+        if (musicLoadThread != null)
+            drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? MUSIC_GUESSING_TEXT : MUSIC_CHECKING_TEXT, getStartX() + 189, getStartY() + 128);
+
         if (getRawMusicLoaderType() != null) {
-            if (musicLoadThread != null)
-                drawSmartText(poseStack, MUSIC_CHECKING_TEXT, getStartX() + 189, getStartY() + 128);
+            drawSmartText(poseStack, getRawMusicLoaderType().getEnterText(), getStartX() + 189, getStartY() + 102);
+        } else if ("auto".equals(getMusicLoaderType())) {
+            drawSmartText(poseStack, AUTO_ENTER_TEXT, getStartX() + 189, getStartY() + 102);
+            drawSmartText(poseStack, AUTO_INFO_TEXT, getStartX() + 189, getStartY() + 90);
         }
 
+        if (loadFailure && !getMusicSourceName().isEmpty())
+            drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? AUTO_FAILURE_TEXT : MUSIC_LOAD_FAILURE_TEXT, getStartX() + 189, getStartY() + 128);
+
+        if (AUTHOR_TEXT != null)
+            drawSmartText(poseStack, AUTHOR_TEXT, getStartX() + 5, getStartY() + 162);
     }
 
     @Override
     public void create(ImageInfo imageInfo, String name) {
         var ms = getMusicSource();
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicAddMessage(musicManagerBlock.getMySelectedPlayList(), name, imageInfo, ms).toFBB());
+            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicAddMessage(musicManagerBlock.getMySelectedPlayList(), name, getMusicAuthor(), imageInfo, ms).toFBB());
     }
 
     @Override
@@ -171,6 +201,7 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
         this.musicSourceNameEditBox.setWidth(isMSNShortWidth() ? 141 : 177);
 
         this.searchButton.visible = isMSNVisible() && isMSNShortWidth();
+        this.uploadButton.visible = "upload".equals(getMusicLoaderType());
 
         if ((getScreen().isMusicPlaying() && !getMusicSource().equals(getScreen().getMusicPlayer().getMusicSource())) || (getScreen().isMusicLoading() && !getMusicSource().equals(getScreen().getLoadingMusic().getSource())))
             getScreen().stopMusic();
@@ -180,9 +211,29 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
         return !getMusicLoaderType().equals("upload");
     }
 
+    @Override
+    protected DoneType getDoneType() {
+        return DoneType.ADD;
+    }
+
     private boolean isMSNShortWidth() {
         var rtp = getRawMusicLoaderType();
         return rtp != null && rtp.isSearchable();
+    }
+
+    public String getMusicAuthor() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
+            return getMusicAuthor(musicManagerBlock);
+        return "";
+    }
+
+    public String getMusicAuthor(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMyMusicAuthor();
+    }
+
+    private void setMusicAuthor(String author) {
+        AUTHOR_TEXT = author.isEmpty() ? null : new TranslatableComponent("imp.text.musicAuthor", author);
+        getScreen().insMusicAuthor(author);
     }
 
     public MusicSource getMusicSource() {
@@ -230,29 +281,29 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
         return blockEntity.getMyMusicSource();
     }
 
-    private void setMusicSource(MusicSource source) {
+    private void setMusicSource(MusicSource source, String author) {
         getScreen().insMusicSource(source);
+        setMusicAuthor(author);
     }
 
     private void setLoadResult(MusicLoadResult result, boolean autoIn) {
-        musicLoadInfos.clear();
         if (result != null) {
-            setMusicSource(result.source());
+            setMusicSource(result.source(), result.author());
             if (autoIn) {
                 if (result.imageInfo() != null)
                     setImage(result.imageInfo());
                 if (result.name() != null)
                     this.nameEditBox.setValue(result.name());
             }
-            musicLoadInfos.addAll(result.info());
         } else {
-            setMusicSource(MusicSource.EMPTY);
+            setMusicSource(MusicSource.EMPTY, "");
         }
     }
 
     private void startMusicLoad(String name, boolean autoIn) {
         stopMusicLoad();
         if (getRawMusicLoaderType() != null || "auto".equals(getMusicLoaderType())) {
+            this.loadFailure = false;
             this.musicLoadThread = new MusicLoadThread(getMusicLoaderType(), name, autoIn);
             this.musicLoadThread.start();
         }
@@ -282,7 +333,10 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
             try {
                 var loader = IMPMusicLoaderTypes.getMusicLoaderTypes().get(loaderType);
                 if (loader != null) {
-                    setLoadResult(loader.load(name), autoIn);
+                    var r = loader.load(name);
+                    setLoadResult(r, autoIn);
+                    if (r == null)
+                        loadFailure = true;
                 } else if ("auto".equals(loaderType)) {
                     var ar = IMPMusicLoaderTypes.loadAuto(name);
                     if (ar != null) {
@@ -291,6 +345,8 @@ public class AddMusicMMMonitor extends CreateBaseMMMonitor {
                             musicSourceNameEditBox.setValue(ar.getValue().source().getIdentifier());
                             startMusicLoad(ar.getValue().source().getIdentifier(), autoIn);
                         });
+                    } else {
+                        loadFailure = true;
                     }
                 }
             } catch (InterruptedException ignored) {

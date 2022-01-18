@@ -18,7 +18,7 @@ public class ServerMessageHandler {
             var mm = MusicManager.getInstance();
             var pl = mm.getSaveData().getPlayLists().get(message.playlist);
             if (pl != null && pl.getAuthority().getAuthorityType(packetContext.getPlayer().getGameProfile().getId()).isMoreMember()) {
-                var m = new Music(UUID.randomUUID(), message.name, message.source, message.image, packetContext.getPlayer().getGameProfile().getId(), System.currentTimeMillis());
+                var m = new Music(UUID.randomUUID(), message.name, message.author, message.source, message.image, packetContext.getPlayer().getGameProfile().getId(), System.currentTimeMillis());
                 mm.addMusicToPlayList(pl.getUuid(), m);
             }
         });

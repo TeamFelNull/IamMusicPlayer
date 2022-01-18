@@ -8,15 +8,13 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderType {
+    private static final Component ENTER_TEXT = new TranslatableComponent("imp.text.enterText.default");
     private final String rawName;
     private final Component name;
     private final ResourceLocation icon;
@@ -60,17 +58,11 @@ public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderT
 
     public MusicLoadResult createResult(AudioTrack track) {
         var ms = new MusicSource(rawName, getIdentifier(track), track.getDuration());
-        return new MusicLoadResult(ms, createThumbnail(track), track.getInfo().title, createInfos(track));
+        return new MusicLoadResult(ms, createThumbnail(track), track.getInfo().title, track.getInfo().author);
     }
 
     protected ImageInfo createThumbnail(AudioTrack track) {
         return null;
-    }
-
-    private List<Component> createInfos(AudioTrack track) {
-        List<Component> infos = new ArrayList<>();
-        infos.add(new TextComponent("test"));
-        return infos;
     }
 
     abstract public boolean match(AudioTrack track);
@@ -81,5 +73,10 @@ public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderT
 
     public String getRawName() {
         return rawName;
+    }
+
+    @Override
+    public Component getEnterText() {
+        return ENTER_TEXT;
     }
 }

@@ -10,6 +10,7 @@ import java.util.UUID;
 public class Music implements ITAGSerializable, IIMPComparable {
     private UUID uuid;
     private String name;
+    private String author;
     private MusicSource source;
     private ImageInfo image;
     private UUID owner;
@@ -19,9 +20,10 @@ public class Music implements ITAGSerializable, IIMPComparable {
 
     }
 
-    public Music(UUID uuid, String name, MusicSource source, ImageInfo image, UUID owner, long createDate) {
+    public Music(UUID uuid, String name, String author, MusicSource source, ImageInfo image, UUID owner, long createDate) {
         this.uuid = uuid;
         this.name = name;
+        this.author = author;
         this.source = source;
         this.image = image;
         this.owner = owner;
@@ -32,6 +34,7 @@ public class Music implements ITAGSerializable, IIMPComparable {
     public CompoundTag save(CompoundTag tag) {
         tag.putUUID("UUID", this.uuid);
         tag.putString("Name", this.name);
+        tag.putString("Author", this.author);
         OENbtUtil.writeSerializable(tag, "Source", this.source);
         OENbtUtil.writeSerializable(tag, "Image", this.image);
         tag.putUUID("Owner", owner);
@@ -43,6 +46,7 @@ public class Music implements ITAGSerializable, IIMPComparable {
     public void load(CompoundTag tag) {
         this.uuid = tag.getUUID("UUID");
         this.name = tag.getString("Name");
+        this.author = tag.getString("Author");
         this.source = OENbtUtil.readSerializable(tag, "Source", new MusicSource());
         this.image = OENbtUtil.readSerializable(tag, "Image", new ImageInfo());
         this.owner = tag.getUUID("Owner");
@@ -73,17 +77,21 @@ public class Music implements ITAGSerializable, IIMPComparable {
         return createDate;
     }
 
+    public String getAuthor() {
+        return author;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Music music = (Music) o;
-        return createDate == music.createDate && Objects.equals(uuid, music.uuid) && Objects.equals(name, music.name) && Objects.equals(source, music.source) && Objects.equals(image, music.image) && Objects.equals(owner, music.owner);
+        return createDate == music.createDate && Objects.equals(uuid, music.uuid) && Objects.equals(name, music.name) && Objects.equals(author, music.author) && Objects.equals(source, music.source) && Objects.equals(image, music.image) && Objects.equals(owner, music.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, name, source, image, owner, createDate);
+        return Objects.hash(uuid, name, author, source, image, owner, createDate);
     }
 
     @Override
@@ -91,6 +99,7 @@ public class Music implements ITAGSerializable, IIMPComparable {
         return "Music{" +
                 "uuid=" + uuid +
                 ", name='" + name + '\'' +
+                ", author='" + author + '\'' +
                 ", source=" + source +
                 ", image=" + image +
                 ", owner=" + owner +

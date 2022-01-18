@@ -20,4 +20,6 @@ public interface IMusicLoaderType {
     default public List<SearchMusicMMMonitor.SearchMusicEntry> search(String name) throws InterruptedException {
         return new ArrayList<>();
     }
+
+    public Component getEnterText();
 }

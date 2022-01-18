@@ -5,11 +5,11 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.ImageSetButton;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.client.util.FileChooserUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
@@ -34,7 +34,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
+public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
     private static final ResourceLocation SET_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/image_set_base.png");
     private static final Component IMAGE_TEXT = new TranslatableComponent("imp.text.image");
@@ -42,7 +42,6 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.dropInfo");
     private static final Component NAME_TEXT = new TranslatableComponent("imp.text.name");
     private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
-    private static final Component CREATE_TEXT = new TranslatableComponent("imp.button.create");
     private Component NOT_ENTERED_TEXT;
     private EditBox imageUrlEditBox;
     protected EditBox nameEditBox;
@@ -52,8 +51,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
     private ImageUploader imageUploader;
     private List<Component> lastNotEnteredTexts;
 
-
-    public CreateBaseMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
+    public ImageNameBaseMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
     }
 
@@ -89,7 +87,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
 
         addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> insMonitor(getParentType())));
 
-        this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, CREATE_TEXT, n -> {
+        this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, getDoneType().getText(), n -> {
             if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
                 if (canCreate(musicManagerBlockEntity))
                     create(getImage(), getName());
@@ -212,7 +210,7 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
         }
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, CREATE_TEXT, true, !canCreate(blockEntity));
+        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, getDoneType().getText(), true, !canCreate(blockEntity));
     }
 
     @Override
@@ -411,5 +409,22 @@ public abstract class CreateBaseMMMonitor extends MusicManagerMonitor {
         if (upData.getAsJsonObject("data") == null || upData.getAsJsonObject("data").get("link") == null)
             throw new IOException("code " + upData.get("status").getAsInt());
         return upData.getAsJsonObject("data").get("link").getAsString();
+    }
+
+    abstract protected DoneType getDoneType();
+
+    public static enum DoneType {
+        CREATE(new TranslatableComponent("imp.button.create")),
+        ADD(new TranslatableComponent("imp.button.add")),
+        SAVE(new TranslatableComponent("imp.button.save"));
+        private final Component text;
+
+        private DoneType(Component text) {
+            this.text = text;
+        }
+
+        public Component getText() {
+            return text;
+        }
     }
 }

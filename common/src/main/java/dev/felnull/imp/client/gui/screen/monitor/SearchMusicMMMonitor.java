@@ -72,6 +72,8 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
         float onPxH = monitorHeight / (float) height;
         OERenderUtil.renderTextureSprite(SEARCH_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
         renderSmartEditBoxSprite(poseStack, multiBufferSource, 2, 11, OERenderUtil.MIN_BREADTH * 3, 367, 12, i, j, onPxW, onPxH, monitorHeight, getMusicSearchName(blockEntity));
+
+        renderScrollbarSprite(poseStack, multiBufferSource, 359, 25, OERenderUtil.MIN_BREADTH * 3, 172, i, j, onPxW, onPxH, monitorHeight, 0, 6);
     }
 
     private void startMusicSearch(String name) {

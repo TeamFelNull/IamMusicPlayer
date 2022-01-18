@@ -6,12 +6,15 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.client.gui.screen.monitor.SearchMusicMMMonitor;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class YoutubeMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
+    private static final Component YT_ENTER_TEXT = new TranslatableComponent("imp.text.enterText.youtube");
 
     public YoutubeMusicLoaderType() {
         super(IMPMusicLoaderTypes.YOUTUBE);
@@ -51,5 +54,10 @@ public class YoutubeMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
             musics.add(new SearchMusicMMMonitor.SearchMusicEntry(ret.name(), track.getInfo().author, ret.source(), ret.imageInfo()));
         }
         return musics;
+    }
+
+    @Override
+    public Component getEnterText() {
+        return YT_ENTER_TEXT;
     }
 }

@@ -162,10 +162,16 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         instruction("set_music_source", 0, tag);
     }
 
-    public void insMusicSearchName(String name){
+    public void insMusicSearchName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
         instruction("set_music_search_name", 0, tag);
+    }
+
+    public void insMusicAuthor(String author) {
+        var tag = new CompoundTag();
+        tag.putString("author", author);
+        instruction("set_music_author", 0, tag);
     }
 
     @Override

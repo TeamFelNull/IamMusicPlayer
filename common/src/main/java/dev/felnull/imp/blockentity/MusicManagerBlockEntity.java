@@ -100,8 +100,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         var tag = getPlayerData(player);
 
         boolean keepFlg = (oldM == MonitorType.ADD_MUSIC && newM == MonitorType.SEARCH_MUSIC) || (oldM == MonitorType.SEARCH_MUSIC && newM == MonitorType.ADD_MUSIC);
+        boolean keepFlg2 = (oldM == MonitorType.ADD_MUSIC && newM == MonitorType.UPLOAD_MUSIC) || (oldM == MonitorType.UPLOAD_MUSIC && newM == MonitorType.ADD_MUSIC);
 
-        if (!keepFlg) {
+        if (!keepFlg && !keepFlg2) {
             tag.remove("Image");
             tag.remove("ImageURL");
             tag.remove("CreateName");
@@ -112,6 +113,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             tag.remove("MusicLoaderType");
             tag.remove("MusicSourceName");
             tag.remove("MusicSource");
+            tag.remove("MusicAuthor");
         }
 
         tag.remove("MusicSearchName");
@@ -174,6 +176,14 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicSourceName(ServerPlayer player, String name) {
         getPlayerData(player).putString("MusicSourceName", name);
+    }
+
+    public String getMyMusicAuthor() {
+        return myData.getString("MusicAuthor");
+    }
+
+    public void setMusicAuthor(ServerPlayer player, String name) {
+        getPlayerData(player).putString("MusicAuthor", name);
     }
 
     public String getMyMusicSearchName() {
@@ -349,9 +359,15 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         } else if ("set_music_source".equals(name)) {
             var ms = OENbtUtil.readSerializable(data, "MusicSource", new MusicSource());
             setMusicSource(player, ms);
+            return null;
         } else if ("set_music_search_name".equals(name)) {
             var sname = data.getString("name");
             setMusicSearchName(player, sname);
+            return null;
+        } else if ("set_music_author".equals(name)) {
+            var author = data.getString("author");
+            setMusicAuthor(player, author);
+            return null;
         }
         return super.onInstruction(player, name, num, data);
     }
@@ -366,6 +382,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         DELETE_PLAY_LIST("delete_play_list"),
         ADD_MUSIC("add_music"),
         SEARCH_MUSIC("search_music"),
+        UPLOAD_MUSIC("upload_music"),
         EDIT_MUSIC("edit_music"),
         DELETE_MUSIC("delete_music");
         private final String name;

@@ -20,7 +20,7 @@ public class IMPConfig implements ConfigData {
     public boolean spatial = true;
 
     @ConfigEntry.Category("client")
-    public SubtitleType subtitleType = SubtitleType.VANILLA;
+    public SubtitleType subtitleType = SubtitleType.OFF;
 
     @ConfigEntry.Category("client")
     public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;

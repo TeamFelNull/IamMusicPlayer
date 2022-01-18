@@ -39,19 +39,22 @@ public class IMPPackets {
     public static class MusicAddMessage implements PacketMessage {
         public final UUID playlist;
         public final String name;
+        public final String author;
         public final ImageInfo image;
         public final MusicSource source;
 
         public MusicAddMessage(FriendlyByteBuf bf) {
             this.playlist = bf.readUUID();
             this.name = bf.readUtf();
+            this.author = bf.readUtf();
             this.image = OENbtUtil.readSerializable(bf.readNbt(), "Image", new ImageInfo());
             this.source = OENbtUtil.readSerializable(bf.readNbt(), "Source", new MusicSource());
         }
 
-        public MusicAddMessage(UUID playlist, String name, ImageInfo image, MusicSource source) {
+        public MusicAddMessage(UUID playlist, String name, String author, ImageInfo image, MusicSource source) {
             this.playlist = playlist;
             this.name = name;
+            this.author = author;
             this.image = image;
             this.source = source;
         }
@@ -61,6 +64,7 @@ public class IMPPackets {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(playlist);
             buf.writeUtf(this.name);
+            buf.writeUtf(this.author);
             buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Image", image));
             buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Source", source));
             return buf;

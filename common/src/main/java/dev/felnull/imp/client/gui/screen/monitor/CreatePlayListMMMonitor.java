@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
+public class CreatePlayListMMMonitor extends ImageNameBaseMMMonitor {
     private static final ResourceLocation CREATE_PLAYLIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/create_play_list.png");
     private static final Component PUBLIC_ST_TEXT = new TranslatableComponent("imp.text.publishingSettings");
     private static final Component PUBLIC_RDO_TEXT = new TranslatableComponent("imp.radioButton.public");
@@ -182,6 +182,11 @@ public class CreatePlayListMMMonitor extends CreateBaseMMMonitor {
         }
 
         renderScrollbarSprite(poseStack, multiBufferSource, 355, 23, OERenderUtil.MIN_BREADTH * 4, 65, i, j, onPxW, onPxH, monitorHeight, ipl.size(), 5);
+    }
+
+    @Override
+    protected DoneType getDoneType() {
+        return DoneType.CREATE;
     }
 
     private void removeInvitePlayer(UUID uuid) {
