@@ -200,7 +200,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 connected = true;
                 SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.response", (System.currentTimeMillis() - st), rt);
                 maxFileSize = 1024 * 1024 * 8;
-                UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize));
+                UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
             } catch (Exception ex) {
                 SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.error", ex.getMessage()).withStyle(ChatFormatting.RED);
                 ex.printStackTrace();

@@ -332,10 +332,9 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         public void run() {
             try {
                 var loader = IMPMusicLoaderTypes.getMusicLoaderTypes().get(loaderType);
-                if ("upload".equals(loaderType)) {
+                if ("upload".equals(loaderType))
                     loader = IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.HTTP);
-                  //  autoIn = false;
-                }
+
                 if (loader != null) {
                     var r = loader.load(name);
                     setLoadResult(r, autoIn);
