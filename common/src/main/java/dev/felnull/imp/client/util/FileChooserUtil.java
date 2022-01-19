@@ -12,6 +12,13 @@ import java.nio.file.Paths;
 public class FileChooserUtil {
     private static final Minecraft mc = Minecraft.getInstance();
 
+    public static File[] openMusicFileChooser(boolean multiSelect) {
+        Path initPath = Paths.get(".");
+        if (FNJLNativeWrapper.isSupportSpecialFolder())
+            initPath = FNJLNativeWrapper.getMyMusicFolder();
+        return trayOpenFileChooser("music", initPath, multiSelect, new FNJLNativeWrapper.FileChooserFilterWrapper(I18n.get("imp.fileChooser.files.music"), "mp3", "mp4", "wav", "m4a"));
+    }
+
     public static File[] openImageFileChooser(boolean multiSelect) {
         Path initPath = Paths.get(".");
         if (FNJLNativeWrapper.isSupportSpecialFolder())

@@ -42,11 +42,12 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.dropInfo");
     private static final Component NAME_TEXT = new TranslatableComponent("imp.text.name");
     private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
+    private static final Component UPLOADING_IMAGE_TEXT = new TranslatableComponent("imp.text.imageLoad.uploadImage");
     private Component NOT_ENTERED_TEXT;
+    private Component IMAGE_SET_ERROR_TEXT;
     private EditBox imageUrlEditBox;
     protected EditBox nameEditBox;
     private SmartButton createButton;
-    private Component imageSetInfo;
     private ImageUrlLoader imageUrlLoader;
     private ImageUploader imageUploader;
     private List<Component> lastNotEnteredTexts;
@@ -58,6 +59,11 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
+
+        if (getScreen().musicFileImage != null) {
+            startImageUpload(getScreen().musicFileImage);
+            getScreen().musicFileImage = null;
+        }
 
         addRenderWidget(new ImageSetButton(getStartX() + 149, getStartY() + 22, ImageSetButton.ImageSetType.DELETE, n -> setImage(ImageInfo.EMPTY), getScreen()));
 
@@ -73,7 +79,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
         addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 41, ImageSetButton.ImageSetType.URL, n -> {
             if (this.imageUrlEditBox.getValue().isEmpty()) {
-                imageSetInfo = new TranslatableComponent("imp.text.imageLoad.empty");
+                IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.empty");
                 return;
             }
             startImageUrlLoad(this.imageUrlEditBox.getValue());
@@ -113,8 +119,13 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         }
 
         drawSmartText(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 90);
-        if (imageSetInfo != null)
-            drawSmartFixedWidthText(poseStack, imageSetInfo, getStartX() + 75, getStartY() + 59, 107);
+
+        if (imageUploader != null && imageUploader.isAlive()) {
+            drawSmartFixedWidthText(poseStack, UPLOADING_IMAGE_TEXT, getStartX() + 75, getStartY() + 59, 107);
+        } else {
+            if (IMAGE_SET_ERROR_TEXT != null)
+                drawSmartFixedWidthText(poseStack, IMAGE_SET_ERROR_TEXT, getStartX() + 75, getStartY() + 59, 107, 0xFFFF0000);
+        }
 
         drawSmartText(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 102);
 
@@ -273,7 +284,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     private void startImageUrlLoad(String url) {
         stopImageUrlLoad();
-        imageSetInfo = new TranslatableComponent("imp.text.imageLoad.loadingImage");
+        IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.loadingImage");
         imageUrlLoader = new ImageUrlLoader(url);
         imageUrlLoader.start();
     }
@@ -283,12 +294,12 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
             imageUrlLoader.interrupt();
             imageUrlLoader = null;
         }
-        imageSetInfo = null;
+        IMAGE_SET_ERROR_TEXT = null;
     }
 
     private void startImageUpload(byte[] data) {
         stopImageUpload();
-        imageSetInfo = new TranslatableComponent("imp.text.imageLoad.loadingImage");
+        IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.loadingImage");
         imageUploader = new ImageUploader(data);
         imageUploader.start();
     }
@@ -299,26 +310,31 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
             imageUploader.interrupt();
             imageUploader = null;
         }
-        imageSetInfo = null;
+        IMAGE_SET_ERROR_TEXT = null;
     }
 
     private void openImage(File[] files) {
         if (files == null || files.length == 0) return;
         if (files.length != 1) {
-            imageSetInfo = new TranslatableComponent("imp.text.imageLoad.tooManyImages");
+            IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.tooManyImages");
             return;
         }
-        imageSetInfo = null;
+        IMAGE_SET_ERROR_TEXT = null;
         File file = files[0];
+        if (file.isDirectory()) {
+            IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.directory");
+            return;
+        }
+
         if (file.exists()) {
             try {
                 startImageUpload(Files.readAllBytes(file.toPath()));
             } catch (IOException e) {
-                imageSetInfo = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
+                IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.error", e.getMessage());
                 e.printStackTrace();
             }
         } else {
-            imageSetInfo = new TranslatableComponent("imp.text.imageLoad.fileNotFound");
+            IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.fileNotFound");
         }
     }
 
@@ -346,13 +362,13 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 }
                 byte[] img = urll.getInputStream().readAllBytes();
                 if (!OEImageUtil.isImage(img)) {
-                    imageSetInfo = new TranslatableComponent("imp.text.imageLoad.notImageUrl");
+                    IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.notImageUrl");
                     return;
                 }
                 setImage(new ImageInfo(ImageInfo.ImageType.URL, url));
-                imageSetInfo = null;
+                IMAGE_SET_ERROR_TEXT = null;
             } catch (Exception e) {
-                imageSetInfo = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
+                IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
@@ -369,30 +385,29 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         public void run() {
             try {
                 if (!OEImageUtil.isImage(data)) {
-                    imageSetInfo = new TranslatableComponent("imp.text.imageLoad.notImage");
+                    IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.notImage");
                     return;
                 }
                 long max = 3145728L;
                 if (data.length > max) {
-                    imageSetInfo = new TranslatableComponent("imp.text.imageLoad.optimizationImage");
+                    IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.optimizationImage");
                     data = OEImageUtil.reductionSize(data, max - 100);
                 }
-                imageSetInfo = new TranslatableComponent("imp.text.imageLoad.uploadImage");
                 Files.write(Paths.get("test.gif"), data);
 
                 String url;
                 try {
                     url = uploadToImgur(data);
                 } catch (IOException e) {
-                    imageSetInfo = new TranslatableComponent("imp.text.imageLoad.uploadFailure", e.getMessage());
+                    IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.uploadFailure", e.getMessage());
                     e.printStackTrace();
                     return;
                 }
 
                 setImage(new ImageInfo(ImageInfo.ImageType.URL, url));
-                imageSetInfo = null;
+                IMAGE_SET_ERROR_TEXT = null;
             } catch (Exception e) {
-                imageSetInfo = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
+                IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }

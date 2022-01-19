@@ -35,6 +35,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     private final UUID musicPlayerId = UUID.randomUUID();
     public boolean lastSearch;
     protected MusicManagerMonitor monitor;
+    public byte[] musicFileImage;
 
     public MusicManagerScreen(MusicManagerMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -69,6 +70,8 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
     private void changeScreenMonitor(MusicManagerBlockEntity.MonitorType type) {
         if (monitor != null) {
+            if (monitor.getType() != MusicManagerBlockEntity.MonitorType.UPLOAD_MUSIC || type != MusicManagerBlockEntity.MonitorType.ADD_MUSIC)
+                musicFileImage = null;
             monitor.renderables.forEach(n -> {
                 if (n instanceof GuiEventListener guiEventListener)
                     removeWidget(guiEventListener);

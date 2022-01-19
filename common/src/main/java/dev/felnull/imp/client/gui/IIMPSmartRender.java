@@ -38,6 +38,7 @@ public interface IIMPSmartRender {
         drawSmartFixedWidthText(poseStack, component, x, y, w, 0xFF000000);
     }
 
+
     default void drawSmartFixedWidthText(PoseStack poseStack, Component component, float x, float y, float w, int color) {
         OERenderUtil.drawFixedWidthText(poseStack, component, x, y, color, w);
     }

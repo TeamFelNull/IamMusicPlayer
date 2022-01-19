@@ -35,7 +35,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.searchMusicsFixedButtonsList = this.addRenderWidget(new SearchMusicsFixedButtonsList(getStartX() + 2, getStartY() + 25, 366, 172, 6, new TranslatableComponent("imp.fixedList.searchMusic"), searchMusics, (fixedButtonsList, searchMusicEntry, i, i1) -> {
+        this.searchMusicsFixedButtonsList = this.addRenderWidget(new SearchMusicsFixedButtonsList(getStartX() + 2, getStartY() + 25, 366, 172, 4, new TranslatableComponent("imp.fixedList.searchMusic"), searchMusics, (fixedButtonsList, searchMusicEntry, i, i1) -> {
             setMusicSourceName(searchMusicEntry.source().getIdentifier());
             getScreen().lastSearch = true;
             insMonitor(MusicManagerBlockEntity.MonitorType.ADD_MUSIC);

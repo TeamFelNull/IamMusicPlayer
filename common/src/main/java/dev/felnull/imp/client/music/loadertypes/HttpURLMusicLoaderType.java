@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class HttpURLMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
     private static final Component URL_ENTER_TEXT = new TranslatableComponent("imp.text.enterText.url");
@@ -32,5 +33,10 @@ public class HttpURLMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
     @Override
     public Component getEnterText() {
         return URL_ENTER_TEXT;
+    }
+
+    @Override
+    public ResourceLocation getIcon() {
+        return null;
     }
 }

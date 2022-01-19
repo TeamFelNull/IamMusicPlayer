@@ -25,9 +25,9 @@ public class SearchMusicsFixedButtonsList extends FixedButtonsList<SearchMusicMM
         if (!img.isEmpty()) {
             sx += getOneButtonHeight() - 2 + 1;
             PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2, false);
-
-            drawSmartFixedWidthText(poseStack, new TextComponent(item.name()), x + sx, y + 2, getOneButtonWidth() - sx - 2);
-            drawSmartFixedWidthText(poseStack, new TextComponent(item.artist()), x + sx, y + 12, getOneButtonWidth() - sx - 2);
         }
+        drawSmartFixedWidthText(poseStack, new TextComponent(item.name()), x + sx, y + 2, getOneButtonWidth() - sx - 2);
+        drawSmartFixedWidthText(poseStack, new TextComponent(item.artist()), x + sx, y + 12, getOneButtonWidth() - sx - 2);
+
     }
 }

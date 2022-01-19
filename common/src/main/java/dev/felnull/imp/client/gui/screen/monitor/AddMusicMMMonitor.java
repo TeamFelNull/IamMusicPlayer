@@ -145,7 +145,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
 
         drawSmartText(poseStack, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
 
-        if (musicLoadThread != null)
+        if (musicLoadThread != null && !getMusicSourceName().isEmpty())
             drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? MUSIC_GUESSING_TEXT : MUSIC_CHECKING_TEXT, getStartX() + 189, getStartY() + 128);
 
         if (getRawMusicLoaderType() != null) {
@@ -302,7 +302,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
 
     private void startMusicLoad(String name, boolean autoIn) {
         stopMusicLoad();
-        if (getRawMusicLoaderType() != null || "auto".equals(getMusicLoaderType())) {
+        if (getRawMusicLoaderType() != null || "auto".equals(getMusicLoaderType()) || "upload".equals(getMusicLoaderType())) {
             this.loadFailure = false;
             this.musicLoadThread = new MusicLoadThread(getMusicLoaderType(), name, autoIn);
             this.musicLoadThread.start();
@@ -319,7 +319,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     private class MusicLoadThread extends Thread {
         private final String name;
         private final String loaderType;
-        private final boolean autoIn;
+        private boolean autoIn;
 
         private MusicLoadThread(String loaderType, String name, boolean autoIn) {
             setName("Music Load Thread");
@@ -332,6 +332,10 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         public void run() {
             try {
                 var loader = IMPMusicLoaderTypes.getMusicLoaderTypes().get(loaderType);
+                if ("upload".equals(loaderType)) {
+                    loader = IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.HTTP);
+                  //  autoIn = false;
+                }
                 if (loader != null) {
                     var r = loader.load(name);
                     setLoadResult(r, autoIn);

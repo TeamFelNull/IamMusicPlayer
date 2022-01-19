@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
+import dev.felnull.imp.client.gui.components.MusicsFixedButtonsList;
 import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
@@ -70,6 +71,10 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
 
         this.musicSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 174, getStartY() + 189, n -> updateList(), true, getScreen()));
         this.musicOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 271, getStartY() + 189, n -> updateList(), true, getScreen()));
+
+        this.addRenderWidget(new MusicsFixedButtonsList(getStartX() + 102, getStartY() + 40, 267, 148, 4, new TranslatableComponent("imp.fixedList.musics"), musics, (fixedButtonsList, music, i, i1) -> {
+
+        }));
     }
 
     @Override
