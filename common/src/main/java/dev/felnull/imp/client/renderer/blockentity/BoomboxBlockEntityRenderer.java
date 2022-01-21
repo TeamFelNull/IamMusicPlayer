@@ -2,15 +2,14 @@ package dev.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.block.MusicManagerBlock;
-import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
+import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.Mth;
 
 public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<BoomboxBlockEntity> {
 
@@ -20,12 +19,9 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
 
     @Override
     public void render(BoomboxBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        float handleRaised = (float) blockEntity.getHandleRaisedProgress() / (float) blockEntity.getHandleRaisedAll();
-        float handleRaisedOld = (float) blockEntity.getHandleRaisedProgressOld() / (float) blockEntity.getHandleRaisedAll();
-
-        float lidOpen = (float) blockEntity.getLidOpenProgress() / (float) blockEntity.getLidOpenProgressAll();
-        float lidOpenOld = (float) blockEntity.getLidOpenProgressOld() / (float) blockEntity.getLidOpenProgressAll();
-        renderBoombox(blockEntity, poseStack, multiBufferSource, i, j, f, Mth.lerp(f, handleRaisedOld, handleRaised), Mth.lerp(f, lidOpenOld, lidOpen), blockEntity.getButtons());
+        float handleRaised = blockEntity.getHandleRaisedProgress(f) / (float) blockEntity.getHandleRaisedAll();
+        float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
+        renderBoombox(blockEntity, poseStack, multiBufferSource, i, j, f, handleRaised, lidOpen, blockEntity.getButtons());
     }
 
     public static void renderBoombox(BoomboxBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons) {

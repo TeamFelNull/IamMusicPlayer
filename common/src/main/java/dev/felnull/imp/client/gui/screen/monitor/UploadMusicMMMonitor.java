@@ -10,8 +10,10 @@ import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.util.FileChooserUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.util.OEURLUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -36,6 +38,8 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.uploadDropInfo");
     private static final Component OPEN_FILE_TEXT = new TranslatableComponent("imp.button.openFile");
     private static final Component UPLOADING_TEXT = new TranslatableComponent("imp.text.relayServer.uploading");
+    private static final Component WARNING_TEXT = new TranslatableComponent("imp.text.relayServer.warning");
+    private static final Component RESPONSIBILITY_TEXT = new TranslatableComponent("imp.text.relayServer.responsibility");
     private SmartButton openFileButton;
     private Component RELAY_SERVER_URL_TEXT;
     private Component UPLOAD_INFO_TEXT;
@@ -138,11 +142,23 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             if (UPLOAD_INFO_TEXT != null)
                 drawSmartText(poseStack, UPLOAD_INFO_TEXT, st, getStartY() + 43);
             if (UPLOAD_ERROR_TEXT != null && !isUploading())
-                drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 53, 0xFFFF0000);
+                drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 73, 0xFFFF0000);
+
+            drawSmartFixedWidthText(poseStack, WARNING_TEXT, st, getStartY() + 53, 270, 0xFFFF0000);
+            drawSmartFixedWidthText(poseStack, RESPONSIBILITY_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
 
             if (isUploading())
-                drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 53);
+                drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 73);
         }
+    }
+
+    @Override
+    public void renderAppearance(MusicManagerBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight) {
+        super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
+        float onPxW = monitorWidth / (float) width;
+        float onPxH = monitorHeight / (float) height;
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, ((float) width - 270f) / 2f, 180, OERenderUtil.MIN_BREADTH * 2, 270, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true, false);
     }
 
     @Override

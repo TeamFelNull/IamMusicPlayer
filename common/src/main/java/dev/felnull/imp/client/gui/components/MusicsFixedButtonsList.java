@@ -10,11 +10,14 @@ import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Date;
 import java.util.List;
 
 public class MusicsFixedButtonsList extends FixedButtonsList<Music> implements IIMPSmartRender {
+    public static final Component UNKNOWN_PLAYER_TEXT = new TranslatableComponent("imp.text.unknownPlayer");
+
     public MusicsFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<Music> list, PressEntry<Music> onPressEntry) {
         super(x, y, w, h, MusicManagerMonitor.WIDGETS_TEXTURE, 0, 20, 256, 256, num, name, list, n -> new TextComponent(n.getName()), onPressEntry);
     }
@@ -32,10 +35,10 @@ public class MusicsFixedButtonsList extends FixedButtonsList<Music> implements I
 
         drawSmartFixedWidthText(poseStack, new TextComponent(item.getName()), x + sx, y + 2, getOneButtonWidth() - sx - 2);
         drawSmartFixedWidthText(poseStack, new TextComponent(item.getAuthor()), x + sx, y + 13, 90);
-
         OERenderUtil.drawPlayerFace(poseStack, item.getOwner(), x + sx, y + 23, 9);
-        drawSmartFixedWidthText(poseStack, new TextComponent(OEClientUtil.getPlayerNameByUUID(item.getOwner()).orElseGet(() -> item.getOwner().toString())), x + sx + 12, y + 24, 80);
+        var pname = OEClientUtil.getPlayerNameByUUID(item.getOwner()).map(n -> (Component) new TextComponent(n)).orElse(UNKNOWN_PLAYER_TEXT);
+        drawSmartFixedWidthText(poseStack, pname, x + sx + 12, y + 24, 90);
+        drawSmartFixedWidthText(poseStack, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(item.getCreateDate()))), x + sx + 88 + 15, y + 24, 90);
 
-        drawSmartFixedWidthText(poseStack, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(item.getCreateDate()))), x + sx + 94, y + 24, 90);
     }
 }

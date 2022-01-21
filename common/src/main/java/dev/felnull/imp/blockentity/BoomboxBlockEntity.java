@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -95,9 +96,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BoomboxBlockEntity blockEntity) {
         if (!level.isClientSide()) {
-            blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
-            blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;
-
             blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
             if (blockEntity.handleRaising) {
                 if (blockEntity.handleRaisedProgress < blockEntity.getHandleRaisedAll())
@@ -116,6 +114,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
             }
 
             blockEntity.sync();
+        } else {
+            blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
+            blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;
         }
     }
 
@@ -125,8 +126,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         tag.putBoolean("HandleRaising", this.handleRaising);
         tag.putInt("LidOpenTime", this.lidOpenProgress);
         tag.putBoolean("LidOpen", this.lidOpen);
-        tag.putInt("HandleRaisedTimeOld", this.handleRaisedProgressOld);
-        tag.putInt("LidOpenTimeOld", this.lidOpenProgressOld);
         return tag;
     }
 
@@ -136,8 +135,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         this.handleRaising = tag.getBoolean("HandleRaising");
         this.lidOpenProgress = tag.getInt("LidOpenTime");
         this.lidOpen = tag.getBoolean("LidOpen");
-        this.handleRaisedProgressOld = tag.getInt("HandleRaisedTimeOld");
-        this.lidOpenProgressOld = tag.getInt("LidOpenTimeOld");
     }
 
     public int getHandleRaisedAll() {
@@ -148,8 +145,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         return handleRaisedProgress;
     }
 
-    public int getHandleRaisedProgressOld() {
-        return handleRaisedProgressOld;
+    public float getHandleRaisedProgress(float partialTicks) {
+        return Mth.lerp(partialTicks, handleRaisedProgressOld, handleRaisedProgress);
     }
 
     public void setRaisedHandleState(boolean raised) {
@@ -187,8 +184,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         return lidOpenProgress;
     }
 
-    public int getLidOpenProgressOld() {
-        return lidOpenProgressOld;
+    public float getLidOpenProgress(float partialTicks) {
+        return Mth.lerp(partialTicks, lidOpenProgressOld, lidOpenProgress);
     }
 
     public int getLidOpenProgressAll() {
