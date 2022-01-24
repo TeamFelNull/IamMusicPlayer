@@ -78,62 +78,55 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.handleRaisedProgress = tag.getInt("HandleRaisedTime");
         this.handleRaising = tag.getBoolean("HandleRaising");
-        this.lidOpenProgress = tag.getInt("LidOpenTime");
         this.lidOpen = tag.getBoolean("LidOpen");
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         super.save(tag);
-        tag.putInt("HandleRaisedTime", this.handleRaisedProgress);
         tag.putBoolean("HandleRaising", this.handleRaising);
-        tag.putInt("LidOpenTime", this.lidOpenProgress);
         tag.putBoolean("LidOpen", this.lidOpen);
         return tag;
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BoomboxBlockEntity blockEntity) {
+
+        blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
+        blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;
+
+        if (blockEntity.handleRaising) {
+            if (blockEntity.handleRaisedProgress < blockEntity.getHandleRaisedAll())
+                blockEntity.handleRaisedProgress++;
+        } else {
+            if (blockEntity.handleRaisedProgress > 0)
+                blockEntity.handleRaisedProgress--;
+        }
+
+        if (blockEntity.lidOpen) {
+            if (blockEntity.lidOpenProgress < blockEntity.getLidOpenProgressAll())
+                blockEntity.lidOpenProgress++;
+        } else {
+            if (blockEntity.lidOpenProgress > 0)
+                blockEntity.lidOpenProgress--;
+        }
+
         if (!level.isClientSide()) {
             blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
-            if (blockEntity.handleRaising) {
-                if (blockEntity.handleRaisedProgress < blockEntity.getHandleRaisedAll())
-                    blockEntity.handleRaisedProgress++;
-            } else {
-                if (blockEntity.handleRaisedProgress > 0)
-                    blockEntity.handleRaisedProgress--;
-            }
-
-            if (blockEntity.lidOpen) {
-                if (blockEntity.lidOpenProgress < blockEntity.getLidOpenProgressAll())
-                    blockEntity.lidOpenProgress++;
-            } else {
-                if (blockEntity.lidOpenProgress > 0)
-                    blockEntity.lidOpenProgress--;
-            }
-
             blockEntity.sync();
-        } else {
-            blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
-            blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;
         }
     }
 
     @Override
     public CompoundTag getSyncData(ServerPlayer player, CompoundTag tag) {
-        tag.putInt("HandleRaisedTime", this.handleRaisedProgress);
         tag.putBoolean("HandleRaising", this.handleRaising);
-        tag.putInt("LidOpenTime", this.lidOpenProgress);
         tag.putBoolean("LidOpen", this.lidOpen);
         return tag;
     }
 
     @Override
     public void onSync(CompoundTag tag) {
-        this.handleRaisedProgress = tag.getInt("HandleRaisedTime");
         this.handleRaising = tag.getBoolean("HandleRaising");
-        this.lidOpenProgress = tag.getInt("LidOpenTime");
         this.lidOpen = tag.getBoolean("LidOpen");
     }
 

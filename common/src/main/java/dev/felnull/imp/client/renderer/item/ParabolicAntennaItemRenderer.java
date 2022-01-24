@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
     @Override
-    public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
+    public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
         var spml = SpecialModelLoader.getInstance();
         var antenaName = IMPModels.PARABOLIC_ANTENNA;
         var name = itemStack.getHoverName().getString();

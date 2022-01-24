@@ -16,7 +16,7 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
     private final BoomboxBlockEntity entity = new BoomboxBlockEntity(BlockPos.ZERO, IMPBlocks.BOOMBOX.defaultBlockState());
 
     @Override
-    public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int i1) {
+    public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
         var model = OERenderUtil.getBlockModel(entity.getBlockState());
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         OERenderUtil.renderModel(poseStack, vc, model, i, i1);

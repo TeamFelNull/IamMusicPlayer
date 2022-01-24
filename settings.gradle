@@ -12,3 +12,7 @@ include("fabric")
 include("forge")
 
 rootProject.name = "IamMusicPlayer"
+
+if (JavaVersion.current().ordinal() + 1 < 16) {
+    throw new IllegalStateException("申し訳ないがJava16+以外はNG")
+}
