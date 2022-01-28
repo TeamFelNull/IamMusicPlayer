@@ -6,7 +6,7 @@ import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.client.gui.components.MusicSubtitleOverlay;
 import dev.felnull.imp.client.renderer.hand.BoomboxHandRenderer;
-import dev.felnull.otyacraftengine.api.event.client.RenderPlayerEvent;
+import dev.felnull.otyacraftengine.api.event.client.MoreRenderEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -19,7 +19,7 @@ public class RenderHandler {
     public static void init() {
         ClientGuiEvent.RENDER_HUD.register(RenderHandler::onRenderHUD);
         ClientGuiEvent.RENDER_POST.register(RenderHandler::onRenderPost);
-        RenderPlayerEvent.RENDER_HAND.register(RenderHandler::onRenderHand);
+        MoreRenderEvent.RENDER_ITEM_IN_HAND.register(RenderHandler::onRenderItemInHand);
     }
 
     private static void onRenderHUD(PoseStack poseStack, float v) {
@@ -38,7 +38,7 @@ public class RenderHandler {
         poseStack.popPose();
     }
 
-    public static EventResult onRenderHand(PoseStack poseStack, MultiBufferSource multiBufferSource, InteractionHand hand, int packedLight, float partialTicks, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
+    public static EventResult onRenderItemInHand(PoseStack poseStack, MultiBufferSource multiBufferSource, InteractionHand hand, int packedLight, float partialTicks, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
         if (stack.is(IMPBlocks.BOOMBOX.asItem())) {
             BoomboxHandRenderer.render(poseStack, multiBufferSource, hand, packedLight, partialTicks, interpolatedPitch, swingProgress, equipProgress, stack);
             return EventResult.interruptFalse();

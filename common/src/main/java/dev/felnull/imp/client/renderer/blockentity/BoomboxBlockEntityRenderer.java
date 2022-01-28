@@ -10,6 +10,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
 
 public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<BoomboxBlockEntity> {
 
@@ -21,10 +22,11 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
     public void render(BoomboxBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         float handleRaised = blockEntity.getHandleRaisedProgress(f) / (float) blockEntity.getHandleRaisedAll();
         float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
-        renderBoombox(blockEntity, poseStack, multiBufferSource, i, j, f, handleRaised, lidOpen, blockEntity.getButtons());
+        var state = blockEntity.getBlockState();
+        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, handleRaised, lidOpen, blockEntity.getButtons());
     }
 
-    public static void renderBoombox(BoomboxBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons) {
+    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons) {
         var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
@@ -33,7 +35,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         var buttonsM = spml.getModel(IMPModels.BOOMBOX_BUTTONS);
 
         poseStack.pushPose();
-        OERenderUtil.poseRotateDirection(poseStack, blockEntity.getBlockState().getValue(MusicManagerBlock.FACING), 1);
+        OERenderUtil.poseRotateDirection(poseStack, direction, 1);
 
         poseStack.pushPose();
         OERenderUtil.poseTrans16(poseStack, 1, 8, 6);
