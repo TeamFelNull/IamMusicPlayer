@@ -7,6 +7,7 @@ import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,46 +36,6 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
         return new MusicManagerMenu(i, getBlockPos(), this, inventory);
-    }
-
-    @Override
-    public int getContainerSize() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return true;
-    }
-
-    @Override
-    public ItemStack getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public ItemStack removeItem(int i, int j) {
-        return null;
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int i) {
-        return null;
-    }
-
-    @Override
-    public void setItem(int i, ItemStack itemStack) {
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this)
-            return false;
-        return player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D, (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
-    }
-
-    @Override
-    public void clearContent() {
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, MusicManagerBlockEntity blockEntity) {
@@ -370,6 +331,11 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             return null;
         }
         return super.onInstruction(player, name, num, data);
+    }
+
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return null;
     }
 
     public static enum MonitorType {

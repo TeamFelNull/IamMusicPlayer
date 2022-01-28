@@ -7,12 +7,16 @@ import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 
 public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<BoomboxBlockEntity> {
+    private static final Minecraft mc = Minecraft.getInstance();
 
     protected BoomboxBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -23,10 +27,10 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         float handleRaised = blockEntity.getHandleRaisedProgress(f) / (float) blockEntity.getHandleRaisedAll();
         float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
         var state = blockEntity.getBlockState();
-        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, handleRaised, lidOpen, blockEntity.getButtons());
+        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, handleRaised, lidOpen, blockEntity.getButtons(), blockEntity.getCassetteTape());
     }
 
-    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons) {
+    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons, ItemStack cassetteTape) {
         var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
@@ -37,6 +41,14 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         poseStack.pushPose();
         OERenderUtil.poseRotateDirection(poseStack, direction, 1);
 
+        if (lidOpen != 0) {
+            poseStack.pushPose();
+            OERenderUtil.poseTrans16(poseStack, 7.7, 3.225, 6);
+            OERenderUtil.poseScaleAll(poseStack, 0.72f);
+            mc.getItemRenderer().renderStatic(cassetteTape, ItemTransforms.TransformType.FIXED, i, j, poseStack, multiBufferSource, 0);
+            poseStack.popPose();
+        }
+        
         poseStack.pushPose();
         OERenderUtil.poseTrans16(poseStack, 1, 8, 6);
         OERenderUtil.poseTrans16(poseStack, 0.5, 0.5, 0.5);

@@ -1,6 +1,8 @@
 {
   "_comment.i": "Item",
   "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
+  "item.iammusicplayer.cassette_tape": "Cassette Tape",
+  "item.iammusicplayer.cassette_tape_glass": "Glass Cassette Tape",
   "_comment.b": "Block",
   "block.iammusicplayer.music_manager": "Music Manager",
   "block.iammusicplayer.boombox": "Boombox",

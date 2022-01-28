@@ -3,12 +3,12 @@ package dev.felnull.imp.blockentity;
 import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,6 +21,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     protected boolean lidOpen;
     protected int lidOpenProgressOld;
     protected int lidOpenProgress;
+    protected NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
@@ -33,46 +34,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
+
         return null;
-    }
-
-    @Override
-    public int getContainerSize() {
-        return 0;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public ItemStack getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public ItemStack removeItem(int i, int j) {
-        return null;
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int i) {
-        return null;
-    }
-
-    @Override
-    public void setItem(int i, ItemStack itemStack) {
-
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return false;
-    }
-
-    @Override
-    public void clearContent() {
     }
 
     @Override
@@ -121,13 +84,19 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     public CompoundTag getSyncData(ServerPlayer player, CompoundTag tag) {
         tag.putBoolean("HandleRaising", this.handleRaising);
         tag.putBoolean("LidOpen", this.lidOpen);
-        return tag;
+        return super.getSyncData(player, tag);
     }
 
     @Override
     public void onSync(CompoundTag tag) {
+        super.onSync(tag);
         this.handleRaising = tag.getBoolean("HandleRaising");
         this.lidOpen = tag.getBoolean("LidOpen");
+    }
+
+    @Override
+    public NonNullList<ItemStack> getItems() {
+        return items;
     }
 
     public int getHandleRaisedAll() {
@@ -197,6 +166,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
             lidOpen = true;
         }
         return true;
+    }
+
+    public ItemStack getCassetteTape() {
+        return getItem(0);
     }
 
     public Buttons getButtons() {

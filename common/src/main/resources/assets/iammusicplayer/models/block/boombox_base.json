@@ -1133,11 +1133,5 @@
 				"down": {"uv": [0, 0, 1, 1], "texture": "#1"}
 			}
 		}
-	],
-	"display": {
-		"firstperson_righthand": {
-			"rotation": [8.42, 36.24, 2.72],
-			"translation": [0.75, 3.5, 0.25]
-		}
-	}
+	]
 }

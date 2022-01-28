@@ -9,5 +9,8 @@ public class IMPItemRenderers {
         ItemRendererRegister.register(IMPBlocks.MUSIC_MANAGER, new MusicManagerItemRenderer());
         ItemRendererRegister.register(IMPBlocks.BOOMBOX, new BoomboxItemRenderer());
         ItemRendererRegister.register(IMPItems.PARABOLIC_ANTENNA, new ParabolicAntennaItemRenderer());
+        var cr = new CassetteTapeItemRenderer();
+        ItemRendererRegister.register(IMPItems.CASSETTE_TAPE, cr);
+        ItemRendererRegister.register(IMPItems.CASSETTE_TAPE_GLASS, cr);
     }
 }

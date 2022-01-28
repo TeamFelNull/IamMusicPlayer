@@ -18,6 +18,18 @@ public class IMPModels {
     public static final ResourceLocation IKISUGI_ANTENNA = new ResourceLocation(IamMusicPlayer.MODID, "item/parabolic_antenna/ikisugi_antenna");
     public static final ResourceLocation FCOH_ANTENNA = new ResourceLocation(IamMusicPlayer.MODID, "item/parabolic_antenna/fcoh_antenna");
 
+    public static final ResourceLocation CASSETTE_TAPE_BASE_NORMAL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_nomal");
+    public static final ResourceLocation CASSETTE_TAPE_BASE_GLASS_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_glass");
+    public static final ResourceLocation CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/base_glass_color");
+    public static final ResourceLocation CASSETTE_TAPE_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape");
+    public static final ResourceLocation CASSETTE_TAPE_CONECTER = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_conecter");
+    public static final ResourceLocation CASSETTE_TAPE_GLASS_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/glass");
+    public static final ResourceLocation CASSETTE_TAPE_CORE_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_core");
+    public static final ResourceLocation CASSETTE_TAPE_CORE_AROUND_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_core_around");
+    public static final ResourceLocation CASSETTE_TAPE_ROLL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/tape_roll");
+    public static final ResourceLocation CASSETTE_TAPE_LABEL_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/label");
+    public static final ResourceLocation CASSETTE_TAPE_LABEL_NO_IMAGE_MODEL = new ResourceLocation(IamMusicPlayer.MODID, "item/cassette_tape/label_no_image");
+
     public static void init() {
         register(MUSIC_MANAGER_ACCESS_LAMP);
         register(MUSIC_MANAGER_OFF_ACCESS_LAMP);
@@ -29,6 +41,17 @@ public class IMPModels {
         register(KATYOU_ANTENNA);
         register(IKISUGI_ANTENNA);
         register(FCOH_ANTENNA);
+        register(CASSETTE_TAPE_BASE_NORMAL_MODEL);
+        register(CASSETTE_TAPE_BASE_GLASS_MODEL);
+        register(CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL);
+        register(CASSETTE_TAPE_MODEL);
+        register(CASSETTE_TAPE_CONECTER);
+        register(CASSETTE_TAPE_GLASS_MODEL);
+        register(CASSETTE_TAPE_CORE_MODEL);
+        register(CASSETTE_TAPE_CORE_AROUND_MODEL);
+        register(CASSETTE_TAPE_ROLL_MODEL);
+        register(CASSETTE_TAPE_LABEL_MODEL);
+        register(CASSETTE_TAPE_LABEL_NO_IMAGE_MODEL);
     }
 
     private static void register(ResourceLocation location) {
