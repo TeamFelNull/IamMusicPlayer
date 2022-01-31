@@ -1,15 +1,14 @@
 package dev.felnull.imp.inventory;
 
-import dev.felnull.otyacraftengine.inventory.OEBaseContainerMenu;
+import dev.felnull.otyacraftengine.inventory.OEBEBaseMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 
-public class MusicManagerMenu extends OEBaseContainerMenu {
+public class MusicManagerMenu extends OEBEBaseMenu {
 
-    public MusicManagerMenu(int windowId, BlockPos pos, Container container, Inventory playerInventory) {
-        super(IMPMenus.MUSIC_MANAGER, windowId, pos, container, playerInventory, -1, -1);
+    public MusicManagerMenu(int windowId, Inventory playerInventory, Container container, BlockPos pos) {
+        super(IMPMenus.MUSIC_MANAGER, windowId, playerInventory, container, pos, -1, -1);
     }
 
     @Override

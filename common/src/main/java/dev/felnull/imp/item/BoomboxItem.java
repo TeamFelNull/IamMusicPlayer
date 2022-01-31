@@ -1,6 +1,11 @@
 package dev.felnull.imp.item;
 
+import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.otyacraftengine.item.ItemContainer;
+import dev.felnull.otyacraftengine.item.location.HandItemLocation;
+import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -28,14 +33,22 @@ public class BoomboxItem extends BlockItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
-        if (player.isCrouching()) {
-            ItemStack itemStack = player.getItemInHand(interactionHand);
-            if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
-                if (!level.isClientSide())
+
+        ItemStack itemStack = player.getItemInHand(interactionHand);
+        if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
+            if (!level.isClientSide()) {
+                if (player.isCrouching()) {
                     setPowerOn(itemStack, !isPowerOn(itemStack));
-                return InteractionResultHolder.pass(itemStack);
+                } else {
+                    if (isPowerOn(itemStack)) {
+                        var loc = new HandItemLocation(interactionHand);
+                        OEMenuUtil.openItemMenu((ServerPlayer) player, ItemContainer.createMenuProvider(itemStack, loc, 2, "BoomboxItems", BoomboxMenu::new), loc, itemStack, 2);
+                    }
+                }
             }
+            return InteractionResultHolder.pass(itemStack);
         }
+
         return super.use(level, player, interactionHand);
     }
 

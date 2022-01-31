@@ -35,7 +35,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-        return new MusicManagerMenu(i, getBlockPos(), this, inventory);
+        return new MusicManagerMenu(i, inventory, this, getBlockPos());
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, MusicManagerBlockEntity blockEntity) {

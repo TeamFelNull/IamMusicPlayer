@@ -2,6 +2,7 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
+import dev.felnull.imp.inventory.BoomboxMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -34,8 +35,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-
-        return null;
+        return new BoomboxMenu(i, inventory, this, getBlockPos(), ItemStack.EMPTY, null);
     }
 
     @Override
