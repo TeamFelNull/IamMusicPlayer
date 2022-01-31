@@ -48,7 +48,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
             mc.getItemRenderer().renderStatic(cassetteTape, ItemTransforms.TransformType.FIXED, i, j, poseStack, multiBufferSource, 0);
             poseStack.popPose();
         }
-        
+
         poseStack.pushPose();
         OERenderUtil.poseTrans16(poseStack, 1, 8, 6);
         OERenderUtil.poseTrans16(poseStack, 0.5, 0.5, 0.5);
@@ -66,7 +66,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         poseStack.popPose();
 
         poseStack.pushPose();
-        OERenderUtil.poseTrans16(poseStack, 12.25, 9 - (buttons.power() ? 0.5 : 0), 5.75);
+        OERenderUtil.poseTrans16(poseStack, 12.25, 9, 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
@@ -85,21 +85,25 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         OERenderUtil.poseTrans16(poseStack, 8.25, 9 - (buttons.stop() ? 0.5 : 0), 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
+        poseStack.pushPose();
+        OERenderUtil.poseTrans16(poseStack, 7.25, 9 - (buttons.loop() ? 0.5 : 0), 5.75);
+        OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
+        poseStack.popPose();
 
         poseStack.pushPose();
-        OERenderUtil.poseTrans16(poseStack, 5.95, 9 - (buttons.loop() ? 0.5 : 0), 5.75);
+        OERenderUtil.poseTrans16(poseStack, 5.55, 9, 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
-        OERenderUtil.poseTrans16(poseStack, 4.95, 9 - (buttons.volUp() ? 0.5 : 0), 5.75);
+        OERenderUtil.poseTrans16(poseStack, 4.55, 9, 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
-        OERenderUtil.poseTrans16(poseStack, 3.95, 9 - (buttons.volDown() ? 0.5 : 0), 5.75);
+        OERenderUtil.poseTrans16(poseStack, 3.55, 9 - (buttons.volMute() ? 0.5 : 0), 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
-        OERenderUtil.poseTrans16(poseStack, 2.95, 9 - (buttons.volMute() ? 0.5 : 0), 5.75);
+        OERenderUtil.poseTrans16(poseStack, 2.55, 9 - (buttons.volMax() ? 0.5 : 0), 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
 
