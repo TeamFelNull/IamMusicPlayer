@@ -1,19 +1,25 @@
 package dev.felnull.imp.client.gui.screen;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.components.BoomboxButton;
 import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.client.gui.screen.OEItemBEContainerBaseScreen;
+import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     private static final Minecraft mc = Minecraft.getInstance();
     public static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/boombox_base.png");
+    public static final ResourceLocation EMPTY_CASSETTE_TAPE_SLOT = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/slot/cassette_tape_slot.png");
+    public static final ResourceLocation EMPTY_ANTENNA_SLOT = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/slot/antenna_slot.png");
 
     public BoomboxScreen(BoomboxMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -64,6 +70,29 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 9 + 14, topPos + 17, BoomboxBlockEntity.ButtonType.VOL_MAX, n -> {
             insPressButton(BoomboxBlockEntity.ButtonType.VOL_MAX);
         }, this::getButtons));
+
+    }
+
+    @Override
+    public void render(PoseStack poseStack, int i, int j, float f) {
+        super.render(poseStack, i, j, f);
+    }
+
+    @Override
+    protected void renderBg(PoseStack poseStack, float f, int i, int j) {
+        super.renderBg(poseStack, f, i, j);
+        if (getCassetteTape().isEmpty())
+            OERenderUtil.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 98, 0, 0, 16, 16, 16, 16);
+        if (getAntenna().isEmpty())
+            OERenderUtil.drawTexture(EMPTY_ANTENNA_SLOT, poseStack, leftPos + 183, topPos + 124, 0, 0, 16, 16, 16, 16);
+    }
+
+    public ItemStack getCassetteTape() {
+        return getMenu().getItems().get(0);
+    }
+
+    public ItemStack getAntenna() {
+        return getMenu().getItems().get(1);
     }
 
     @Override
@@ -76,7 +105,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
             if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
                 return boomboxBlockEntity.getButtons();
         }
-        return BoomboxBlockEntity.Buttons.EMPTY;
+        return BoomboxItem.getButtons(getItem());
     }
 
     private void insPressButton(BoomboxBlockEntity.ButtonType type) {

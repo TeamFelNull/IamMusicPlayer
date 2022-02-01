@@ -1,6 +1,8 @@
 package dev.felnull.imp.item;
 
+import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.otyacraftengine.item.IInstructionItem;
 import dev.felnull.otyacraftengine.item.ItemContainer;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
@@ -19,7 +21,7 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.UUID;
 
-public class BoomboxItem extends BlockItem {
+public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     public BoomboxItem(Block block, Properties properties) {
         super(block, properties);
@@ -54,11 +56,9 @@ public class BoomboxItem extends BlockItem {
 
     public static void tick(Level level, Entity entity, ItemStack stack) {
         if (!level.isClientSide()) {
-            if (getUUID(stack) == null) {
+            if (getUUID(stack) == null)
                 setUUID(stack, UUID.randomUUID());
-            }
         }
-
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.getMainHandItem() == stack || livingEntity.getOffhandItem() == stack) {
                 boolean power = isPowerOn(stack);
@@ -130,5 +130,47 @@ public class BoomboxItem extends BlockItem {
 
     public static void setUUID(ItemStack stack, UUID id) {
         getOrCreateBoomboxTag(stack).putUUID("Identification", id);
+    }
+
+    public static boolean isLoop(ItemStack itemStack) {
+        if (getBoomboxTag(itemStack) != null)
+            return getBoomboxTag(itemStack).getBoolean("Loop");
+        return false;
+    }
+
+    public static void setLoop(ItemStack itemStack, boolean loop) {
+        getOrCreateBoomboxTag(itemStack).putBoolean("Loop", loop);
+    }
+
+    public static BoomboxBlockEntity.Buttons getButtons(ItemStack stack) {
+        return new BoomboxBlockEntity.Buttons(false, false, false, false, isLoop(stack), false, false);
+    }
+
+    @Override
+    public CompoundTag onInstruction(ItemStack itemStack, ServerPlayer player, String name, int num, CompoundTag data) {
+        if ("ButtonsPress".equals(name)) {
+            BoomboxBlockEntity.ButtonType type = BoomboxBlockEntity.ButtonType.getByName(data.getString("Type"));
+            switch (type) {
+                case POWER -> setPowerOn(itemStack, !isPowerOn(itemStack));
+                case LOOP -> setLoop(itemStack, !isLoop(itemStack));
+              /*   case VOL_DOWN -> {
+                    if (isPower())
+                        setVolume(Math.max(volume - 10, 0));
+                }
+                case VOL_UP -> {
+                    if (isPower())
+                        setVolume(Math.min(volume + 10, 200));
+                    setMute(false);
+                }
+                case VOL_MUTE -> setMute(!isMute());
+                case VOL_MAX -> {
+                    if (isPower())
+                        setVolume(200);
+                    setMute(false);
+                }*/
+            }
+            return null;
+        }
+        return null;
     }
 }

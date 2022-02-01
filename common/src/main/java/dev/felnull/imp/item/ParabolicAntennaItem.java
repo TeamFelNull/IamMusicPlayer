@@ -2,12 +2,11 @@ package dev.felnull.imp.item;
 
 import dev.felnull.otyacraftengine.item.IEquipmentItem;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public class ParabolicAntennaItem extends Item implements IEquipmentItem {
+public class ParabolicAntennaItem extends AntennaItem implements IEquipmentItem {
     public ParabolicAntennaItem(Properties properties) {
-        super(properties.stacksTo(1));
+        super(properties);
     }
 
     @Override

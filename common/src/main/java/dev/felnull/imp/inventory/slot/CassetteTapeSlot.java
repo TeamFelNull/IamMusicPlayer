@@ -6,6 +6,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class CassetteTapeSlot extends Slot {
+
     public CassetteTapeSlot(Container container, int i, int j, int k) {
         super(container, i, j, k);
     }

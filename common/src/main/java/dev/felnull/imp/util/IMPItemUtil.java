@@ -1,7 +1,7 @@
 package dev.felnull.imp.util;
 
+import dev.felnull.imp.item.AntennaItem;
 import dev.felnull.imp.item.CassetteTapeItem;
-import dev.felnull.imp.item.ParabolicAntennaItem;
 import net.minecraft.world.item.ItemStack;
 
 public class IMPItemUtil {
@@ -10,6 +10,6 @@ public class IMPItemUtil {
     }
 
     public static boolean isAntenna(ItemStack itemStack) {
-        return itemStack.getItem() instanceof ParabolicAntennaItem;
+        return itemStack.getItem() instanceof AntennaItem;
     }
 }

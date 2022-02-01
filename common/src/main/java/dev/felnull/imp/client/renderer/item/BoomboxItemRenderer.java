@@ -33,8 +33,7 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
             handleRaised = 1f - BoomboxItem.getTransferProgress(itemStack, f);
         }
 
-        var buttons = BoomboxBlockEntity.Buttons.EMPTY;
-        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, 0, handleRaised, 0, buttons, ItemStack.EMPTY);
+        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, 0, handleRaised, 0, BoomboxItem.getButtons(itemStack), ItemStack.EMPTY);
     }
 
 }

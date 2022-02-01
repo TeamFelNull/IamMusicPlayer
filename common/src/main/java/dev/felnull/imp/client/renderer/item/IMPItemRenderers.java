@@ -12,5 +12,6 @@ public class IMPItemRenderers {
         var cr = new CassetteTapeItemRenderer();
         ItemRendererRegister.register(IMPItems.CASSETTE_TAPE, cr);
         ItemRendererRegister.register(IMPItems.CASSETTE_TAPE_GLASS, cr);
+        ItemRendererRegister.register(IMPItems.ANTENNA, new AntennaItemRenderer());
     }
 }
