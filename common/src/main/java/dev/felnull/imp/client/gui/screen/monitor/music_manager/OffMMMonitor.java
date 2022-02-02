@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.gui.screen.monitor;
+package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;

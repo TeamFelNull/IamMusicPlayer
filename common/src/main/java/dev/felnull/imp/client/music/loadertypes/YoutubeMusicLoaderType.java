@@ -3,7 +3,7 @@ package dev.felnull.imp.client.music.loadertypes;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.gui.screen.monitor.SearchMusicMMMonitor;
+import dev.felnull.imp.client.gui.screen.monitor.music_manager.SearchMusicMMMonitor;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import net.minecraft.network.chat.Component;

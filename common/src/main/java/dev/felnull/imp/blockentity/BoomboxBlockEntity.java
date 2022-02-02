@@ -3,6 +3,7 @@ package dev.felnull.imp.blockentity;
 import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.util.IMPItemUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -10,6 +11,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -20,16 +23,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.function.Function;
 
 public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
-    protected boolean handleRaising = true;
-    protected int handleRaisedProgressOld = getHandleRaisedAll();
-    protected int handleRaisedProgress = getHandleRaisedAll();
-    protected boolean lidOpen;
-    protected int lidOpenProgressOld;
-    protected int lidOpenProgress;
-    protected NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
+    private boolean handleRaising = true;
+    private int handleRaisedProgressOld = getHandleRaisedAll();
+    private int handleRaisedProgress = getHandleRaisedAll();
+    private boolean lidOpen;
+    private int lidOpenProgressOld;
+    private int lidOpenProgress;
+    private int parabolicAntennaProgressOld;
+    private int parabolicAntennaProgress;
+    private int antennaProgressOld;
+    private int antennaProgress;
+    private NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
+    private ItemStack lastCassetteTape = ItemStack.EMPTY;
+    private ItemStack oldCassetteTape = ItemStack.EMPTY;
+    private boolean changeCassetteTape;
     private int volume = 100;
     private boolean loop;
     private boolean mute;
+    private boolean radio;
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
@@ -50,9 +61,14 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         super.load(tag);
         this.handleRaising = tag.getBoolean("HandleRaising");
         this.lidOpen = tag.getBoolean("LidOpen");
+        this.handleRaisedProgress = tag.getInt("HandleRaisedProgress");
+        this.lidOpenProgress = tag.getInt("LidOpenProgress");
+        this.parabolicAntennaProgress = tag.getInt("ParabolicAntennaProgress");
+        this.antennaProgress = tag.getInt("AntennaProgress");
         this.volume = tag.getInt("Volume");
         this.loop = tag.getBoolean("Loop");
         this.mute = tag.getBoolean("Mute");
+        this.radio = tag.getBoolean("Radio");
     }
 
     @Override
@@ -60,9 +76,14 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         super.save(tag);
         tag.putBoolean("HandleRaising", this.handleRaising);
         tag.putBoolean("LidOpen", this.lidOpen);
+        tag.putInt("HandleRaisedProgress", this.handleRaisedProgress);
+        tag.putInt("LidOpenProgress", this.lidOpenProgress);
+        tag.putInt("ParabolicAntennaProgress", this.parabolicAntennaProgress);
+        tag.putInt("AntennaProgress", this.antennaProgress);
         tag.putInt("Volume", this.volume);
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("Mute", this.mute);
+        tag.putBoolean("Radio", this.radio);
         return tag;
     }
 
@@ -70,6 +91,13 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
         blockEntity.handleRaisedProgressOld = blockEntity.handleRaisedProgress;
         blockEntity.lidOpenProgressOld = blockEntity.lidOpenProgress;
+        blockEntity.parabolicAntennaProgressOld = blockEntity.parabolicAntennaProgress;
+        blockEntity.antennaProgressOld = blockEntity.antennaProgress;
+
+        blockEntity.antennaProgress = Mth.clamp(blockEntity.antennaProgress + (blockEntity.isRadio() ? 1 : -1), 0, 30);
+
+        if (blockEntity.isPower() && blockEntity.isRadio() && IMPItemUtil.isAntenna(blockEntity.getAntenna()) && !blockEntity.getAntenna().is(IMPItems.ANTENNA))
+            blockEntity.parabolicAntennaProgress += 2;
 
         if (blockEntity.handleRaising) {
             if (blockEntity.handleRaisedProgress < blockEntity.getHandleRaisedAll())
@@ -90,6 +118,22 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         if (!level.isClientSide()) {
             blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
             blockEntity.sync();
+
+            if (!ItemStack.matches(blockEntity.lastCassetteTape, blockEntity.getCassetteTape()))
+                blockEntity.changeCassetteTape(blockEntity.lastCassetteTape);
+
+            blockEntity.lastCassetteTape = blockEntity.getCassetteTape().copy();
+
+            if (blockEntity.changeCassetteTape) {
+
+                if (!blockEntity.isLidOpen())
+                    blockEntity.startLidOpen(true);
+
+                if (blockEntity.lidOpenProgress >= blockEntity.getLidOpenProgressAll()) {
+                    blockEntity.changeCassetteTape = false;
+                    blockEntity.startLidOpen(false);
+                }
+            }
         }
     }
 
@@ -100,6 +144,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         tag.putInt("Volume", this.volume);
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("Mute", this.mute);
+        tag.putBoolean("Radio", this.radio);
+        tag.put("OldCassetteTape", this.oldCassetteTape.save(new CompoundTag()));
+        tag.putBoolean("ChangeCassetteTape", this.changeCassetteTape);
         return super.getSyncData(player, tag);
     }
 
@@ -111,6 +158,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         this.volume = tag.getInt("Volume");
         this.loop = tag.getBoolean("Loop");
         this.mute = tag.getBoolean("Mute");
+        this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
+        this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
+        this.radio = tag.getBoolean("Radio");
     }
 
     @Override
@@ -130,8 +180,22 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         return loop;
     }
 
+    public boolean isChangeCassetteTape() {
+        return changeCassetteTape;
+    }
+
+    public ItemStack getOldCassetteTape() {
+        return oldCassetteTape;
+    }
+
     public void setLoop(boolean loop) {
         this.loop = loop;
+    }
+
+    public void changeCassetteTape(ItemStack old) {
+        this.oldCassetteTape = old;
+        if (!(getCassetteTape().isEmpty() && isLidOpen()))
+            this.changeCassetteTape = true;
     }
 
     @Override
@@ -149,6 +213,30 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public float getHandleRaisedProgress(float partialTicks) {
         return Mth.lerp(partialTicks, handleRaisedProgressOld, handleRaisedProgress);
+    }
+
+    public int getParabolicAntennaProgress() {
+        return parabolicAntennaProgress;
+    }
+
+    private boolean isRadio() {
+        return this.radio;
+    }
+
+    public void setRadio(boolean radio) {
+        this.radio = radio;
+    }
+
+    public int getAntennaProgress() {
+        return antennaProgress;
+    }
+
+    public float getAntennaProgress(float partialTicks) {
+        return Mth.lerp(partialTicks, antennaProgressOld, antennaProgress);
+    }
+
+    public float getParabolicAntennaProgress(float partialTicks) {
+        return Mth.lerp(partialTicks, parabolicAntennaProgressOld, parabolicAntennaProgress);
     }
 
     public void setRaisedHandleState(boolean raised) {
@@ -228,11 +316,18 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
                         setVolume(200);
                     setMute(false);
                 }
+                case RADIO -> setRadio(!isRadio());
             }
             return null;
         }
         return super.onInstruction(player, name, num, data);
     }
+
+    public void startLidOpen(boolean open) {
+        lidOpen = open;
+        level.playSound(null, getBlockPos(), isHandleRaising() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+    }
+
 
     public boolean cycleLidOpen() {
         boolean flg = lidOpenProgress >= getLidOpenProgressAll();
@@ -240,10 +335,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         if (!flg && !flg2)
             return false;
         if (flg) {
-            lidOpen = false;
+            startLidOpen(false);
         }
         if (flg2) {
-            lidOpen = true;
+            startLidOpen(true);
         }
         return true;
     }
@@ -253,7 +348,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     public Buttons getButtons() {
-        return new Buttons(false, false, false, false, isLoop(), volume <= 0 || isMute(), !isMute() && volume >= 200);
+        return new Buttons(isRadio(), false, false, false, isLoop(), volume <= 0 || isMute(), !isMute() && volume >= 200);
     }
 
     public ItemStack getAntenna() {
@@ -305,6 +400,43 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
                     return value;
             }
             return NONE;
+        }
+    }
+
+    public MonitorType getMonitorType() {
+        return MonitorType.getTypeByBE(this);
+    }
+
+    public static enum MonitorType {
+        OFF("off"),
+        PLAYING("playing"),
+        RADIO("radio");
+
+        private final String name;
+
+        private MonitorType(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static MonitorType getByName(String name) {
+            for (MonitorType value : values()) {
+                if (value.getName().equals(name))
+                    return value;
+            }
+            return MonitorType.OFF;
+        }
+
+        public static MonitorType getTypeByBE(BoomboxBlockEntity blockEntity) {
+            if (blockEntity.isPower()) {
+                if (blockEntity.isRadio())
+                    return RADIO;
+                return PLAYING;
+            }
+            return OFF;
         }
     }
 }

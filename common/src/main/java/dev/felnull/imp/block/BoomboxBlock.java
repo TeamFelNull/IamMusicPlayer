@@ -47,10 +47,8 @@ public class BoomboxBlock extends IMPBaseEntityBlock {
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 } else if (blockHitResult.getDirection() == blockState.getValue(FACING)) {
-                    if (boombox.cycleLidOpen()) {
-                        level.playSound(null, blockPos, boombox.isHandleRaising() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+                    if (boombox.cycleLidOpen())
                         return InteractionResult.sidedSuccess(level.isClientSide());
-                    }
                 }
             }
         } else {

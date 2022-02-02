@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.gui.screen.monitor;
+package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

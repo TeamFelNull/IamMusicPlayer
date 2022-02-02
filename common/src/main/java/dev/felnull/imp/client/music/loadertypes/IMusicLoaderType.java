@@ -1,6 +1,6 @@
 package dev.felnull.imp.client.music.loadertypes;
 
-import dev.felnull.imp.client.gui.screen.monitor.SearchMusicMMMonitor;
+import dev.felnull.imp.client.gui.screen.monitor.music_manager.SearchMusicMMMonitor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

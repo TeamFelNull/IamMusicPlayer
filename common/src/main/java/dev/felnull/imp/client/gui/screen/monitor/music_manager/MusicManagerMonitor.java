@@ -1,9 +1,10 @@
-package dev.felnull.imp.client.gui.screen.monitor;
+package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.client.gui.screen.monitor.Monitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
-    private static final Minecraft mc = Minecraft.getInstance();
     private static final Map<MusicManagerBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
     protected static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/background.png");
     public static final ResourceLocation WIDGETS_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/widgets.png");

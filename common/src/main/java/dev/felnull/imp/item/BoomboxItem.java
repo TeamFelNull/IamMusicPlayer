@@ -6,6 +6,7 @@ import dev.felnull.otyacraftengine.item.IInstructionItem;
 import dev.felnull.otyacraftengine.item.ItemContainer;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -144,6 +145,20 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     public static BoomboxBlockEntity.Buttons getButtons(ItemStack stack) {
         return new BoomboxBlockEntity.Buttons(false, false, false, false, isLoop(stack), false, false);
+    }
+
+    public static NonNullList<ItemStack> getContainItem(ItemStack stack) {
+        NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
+        ItemContainer.loadItemList(stack, stacks, "BoomboxItems");
+        return stacks;
+    }
+
+    public static ItemStack getCassetteTape(ItemStack stack) {
+        return getContainItem(stack).get(0);
+    }
+
+    public static ItemStack getAntenna(ItemStack stack) {
+        return getContainItem(stack).get(1);
     }
 
     @Override

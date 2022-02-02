@@ -2,7 +2,8 @@ package dev.felnull.imp.client;
 
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.client.gui.screen.IMPScreenFactorys;
-import dev.felnull.imp.client.gui.screen.monitor.MusicManagerMonitor;
+import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
+import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.handler.ClientHandler;
 import dev.felnull.imp.client.handler.MusicHandler;
 import dev.felnull.imp.client.handler.RenderHandler;
@@ -33,6 +34,7 @@ public class IamMusicPlayerClient {
         IMPItemRenderers.init();
         IMPScreenFactorys.init();
         MusicManagerMonitor.firstInit();
+        BoomboxMonitor.firstInit();
 
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener((manager, data) -> {
             MusicEngine.getInstance().reload();
