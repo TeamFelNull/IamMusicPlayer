@@ -1,6 +1,0 @@
-{
-	"parent": "iammusicplayer:block/music_manager/music_manager_access_lamp",
-	"textures": {
-		"1": "iammusicplayer:block/music_manager/music_manager_off"
-	}
-}

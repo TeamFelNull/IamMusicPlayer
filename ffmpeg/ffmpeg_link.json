@@ -1,0 +1,10 @@
+{
+    "1": {
+        "windows-amd64": "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/1.16.5/ffmpeg/ffmpeg-windows-amd64.exe",
+        "windows-x86": "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/1.16.5/ffmpeg/ffmpeg-windows-x86.exe",
+        "linux-amd64": "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/1.16.5/ffmpeg/ffmpeg-linux-amd64",
+        "linux-i386": "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/1.16.5/ffmpeg/ffmpeg-linux-i386",
+        "linux-aarch64": "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/1.16.5/ffmpeg/ffmpeg-linux-aarch64",
+        "osx-x86": "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/1.16.5/ffmpeg/ffmpeg-osx-x86"
+    }
+}
