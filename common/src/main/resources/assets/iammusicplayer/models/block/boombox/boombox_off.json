@@ -1,0 +1,6 @@
+{
+	"parent": "iammusicplayer:block/boombox/boombox_base",
+	"textures": {
+		"1": "iammusicplayer:block/boombox/boombox_off"
+	}
+}
