@@ -1,9 +1,8 @@
 package red.felnull.imp.client.util;
 
 import com.github.kiulian.downloader.YoutubeDownloader;
-import com.github.kiulian.downloader.YoutubeException;
-import com.github.kiulian.downloader.model.YoutubeVideo;
-import com.github.kiulian.downloader.model.formats.AudioFormat;
+import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
+import com.github.kiulian.downloader.model.videos.VideoInfo;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
@@ -13,7 +12,7 @@ import red.felnull.imp.client.data.YoutubeData;
 import java.util.*;
 
 public class YoutubeUtils {
-
+    private static YoutubeDownloader youtubeDownloader = new YoutubeDownloader();
     public static final Map<String, String> YOUTUBE_THUMBNAILURL = new HashMap<>();
 
     public static List<AudioTrack> getVideoSearchResults(String searchText) {
@@ -69,10 +68,10 @@ public class YoutubeUtils {
         return ur[ur.length - 1];
     }
 
-    public static String getYoutubeMa4DirectLink(String videoID) throws YoutubeException {
-        YoutubeDownloader yd = new YoutubeDownloader();
-        YoutubeVideo yv = yd.getVideo(videoID);
-        AudioFormat audioformat = yv.audioFormats().get(0);
-        return audioformat.url();
+    public static String getYoutubeMa4DirectLink(String videoID) {
+        VideoInfo video = youtubeDownloader.getVideoInfo(new RequestVideoInfo(videoID)).data();
+        if (video != null)
+            return video.bestAudioFormat().url();
+        return null;
     }
 }

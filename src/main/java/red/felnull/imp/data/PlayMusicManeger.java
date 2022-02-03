@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import red.felnull.imp.client.data.MusicSourceClientReferencesType;
-import red.felnull.imp.client.util.YoutubeUtils;
 import red.felnull.imp.handler.MusicReceiveHandler;
 import red.felnull.imp.music.resource.PlayImage;
 import red.felnull.imp.music.resource.PlayList;
@@ -139,7 +138,7 @@ public class PlayMusicManeger {
                 }
             } else if (uploadtype == MusicSourceClientReferencesType.YOUTUBE) {
                 try {
-                    leth = MusicUtils.getMillisecondDuration(new URL(YoutubeUtils.getYoutubeMa4DirectLink(location.getIdOrURL())));
+                    leth = MusicUtils.getMillisecondDuration(location.getIdOrURL());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

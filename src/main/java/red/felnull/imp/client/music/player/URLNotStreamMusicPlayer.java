@@ -28,7 +28,7 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     protected final AudioDataFormat dataformat;
     protected final AudioPlayer audioPlayer;
     private final List<Integer> buffers = new ArrayList<>();
-    private final URL url;
+    protected final URL url;
     protected boolean trackLoaded;
     private long readyTime;
     protected boolean stereo;
@@ -46,8 +46,14 @@ public class URLNotStreamMusicPlayer implements IMusicPlayer {
     private int trig;
     protected boolean ready;
 
-    public URLNotStreamMusicPlayer(long readyTime, URL url, LavaMusicLoader loader) {
-        this.url = url;
+    public URLNotStreamMusicPlayer(long readyTime, String url, LavaMusicLoader loader) {
+        URL url1 = null;
+        try {
+            if (url != null)
+                url1 = new URL(url);
+        } catch (Exception ignored) {
+        }
+        this.url = url1;
         this.readyTime = readyTime;
         this.dataformat = loader.getFormat();
         this.audioPlayerManager = loader.getAudioPlayerManager();

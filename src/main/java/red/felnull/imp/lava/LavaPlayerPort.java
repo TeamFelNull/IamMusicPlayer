@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LavaPlayerPort {
     private static AudioPlayerManager localAudioPlayerManager;
     private static AudioPlayerManager urlAudioPlayerManager;
+    private static AudioPlayerManager youtubeAudioPlayerManager;
 
     public static void init() {
         localAudioPlayerManager = new DefaultAudioPlayerManager();
@@ -27,6 +29,10 @@ public class LavaPlayerPort {
         urlAudioPlayerManager = new DefaultAudioPlayerManager();
         managerInit(urlAudioPlayerManager);
         urlAudioPlayerManager.registerSourceManager(new HttpAudioSourceManager());
+
+        youtubeAudioPlayerManager = new DefaultAudioPlayerManager();
+        managerInit(youtubeAudioPlayerManager);
+        youtubeAudioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
     }
 
     private static void managerInit(AudioPlayerManager audioPlayerManager) {
@@ -39,6 +45,13 @@ public class LavaPlayerPort {
     public static boolean isSupport(String url) {
         AudioTrack track = search(urlAudioPlayerManager, url);
         return track != null && !track.getInfo().isStream;
+    }
+
+    public static long getDurationByYoutube(String videoID) {
+        AudioTrack track = search(youtubeAudioPlayerManager, videoID);
+        if (track == null)
+            return 0;
+        return track.getInfo().length;
     }
 
     public static long getDuration(String url) {

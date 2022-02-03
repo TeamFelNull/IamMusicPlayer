@@ -15,7 +15,6 @@ import red.felnull.imp.music.resource.PlayLocation;
 import red.felnull.imp.music.resource.PlayMusic;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 
 public enum MusicSourceClientReferencesType {
@@ -56,7 +55,7 @@ public enum MusicSourceClientReferencesType {
             case YOUTUBE:
                 return new YoutubeMusicPlayer(rerytime, src, urlMusicLoader, youtubeMusicLoader);
             case URL:
-                return new URLNotStreamMusicPlayer(rerytime, new URL(src), urlMusicLoader);
+                return new URLNotStreamMusicPlayer(rerytime, src, urlMusicLoader);
             //   case LOCAL_FILE:
             //       return new WorldFileMusicPlayer(rerytime, src);
             default:

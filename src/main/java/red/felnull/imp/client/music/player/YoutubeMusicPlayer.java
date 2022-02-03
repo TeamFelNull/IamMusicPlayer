@@ -10,20 +10,23 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import red.felnull.imp.client.util.YoutubeUtils;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class YoutubeMusicPlayer extends URLNotStreamMusicPlayer {
     private final LavaMusicLoader youtubeMusicLoader;
     private final String videoID;
 
     public YoutubeMusicPlayer(long rery, String videoID, LavaMusicLoader loader, LavaMusicLoader youtubeLoader) throws IOException, YoutubeException {
-        super(rery, new URL(YoutubeUtils.getYoutubeMa4DirectLink(videoID)), loader);
+        super(rery, YoutubeUtils.getYoutubeMa4DirectLink(videoID), loader);
         this.videoID = videoID;
         this.youtubeMusicLoader = youtubeLoader;
     }
 
     @Override
     public void ready(long position) throws Exception {
+        if (url != null) {
+            super.ready(position);
+            if (ready) return;
+        }
         startPosition = position;
         this.trackLoaded = false;
         youtubeMusicLoader.getAudioPlayerManager().loadItem(videoID, new AudioLoadResultHandler() {
@@ -63,7 +66,6 @@ public class YoutubeMusicPlayer extends URLNotStreamMusicPlayer {
         if (exception != null) {
             exception = null;
             trackLoaded = false;
-            super.ready(position);
         } else {
             stream = AudioPlayerInputStream.createStream(audioPlayer, dataformat, dataformat.frameDuration(), false);
             stereo = AudioDataFormatTools.toAudioFormat(dataformat).getChannels() >= 2;

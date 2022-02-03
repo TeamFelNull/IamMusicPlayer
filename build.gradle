@@ -90,6 +90,7 @@ allprojects {
     repositories {
         maven { url = 'https://jitpack.io' }
         jcenter()
+        mavenCentral()
     }
 }
 dependencies {
@@ -97,10 +98,10 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_version}")
     compile fg.deobf("red.felnull:otyacraftengine:${oe_version}")
-    shadowAll 'com.sedmelluq:lavaplayer:1.3.75'
+    shadowAll 'com.sedmelluq:lavaplayer:1.3.78'
     shadowAll 'org.apache.httpcomponents:httpclient:4.5.13'
-    shadowAll 'dev.felnull:felnull-java-library:1.8'
-    shadowAll 'com.github.sealedtx:java-youtube-downloader:2.4.3'
+    shadowAll 'dev.felnull:felnull-java-library:1.41'
+    shadowAll 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     implementation 'com.madgag:animated-gif-lib:1.4';
 }
 tasks.withType(AbstractCompile)*.options*.encoding = tasks.withType(GroovyCompile)*.groovyOptions*.encoding = 'UTF-8'
@@ -120,9 +121,14 @@ shadowJar {
     relocate 'org.apache.http', 'red.felnull.imp.libs.org.apache.http'
     relocate 'com.alibaba.fastjson', 'red.felnull.imp.libs.com.alibaba.fastjson'
     relocate 'dev.felnull.fnjl', 'red.felnull.imp.libs.dev.felnull.fnjl'
-    relocate 'org.apache.commons.codec', 'red.felnull.imp.libs.org.apache.commons.codec'
-    relocate 'org.apache.commons.logging', 'red.felnull.imp.libs.org.apache.commons.logging'
-    relocate 'org.apache.commons.io', 'red.felnull.imp.libs.org.apache.commons.io'
+    relocate('org.apache.commons', 'dev.felnull.imp.libs.org.apache.commons') {
+        include 'org.apache.commons.logging.**'
+        include 'org.apache.commons.io.**'
+        include 'org.apache.commons.codec.**'
+    }
+    relocate ('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.libs.com.sedmelluq.discord.lavaplayer'){
+        exclude  'com.sedmelluq.discord.lavaplayer.natives.**'
+    }
 }
 
 afterEvaluate {
