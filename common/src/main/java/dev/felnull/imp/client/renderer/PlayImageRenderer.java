@@ -49,7 +49,7 @@ public class PlayImageRenderer {
         OERenderUtil.drawTexture(texture, poseStack, x, y, size * 5, size, size, size, size * 8, size * 8);
     }
 
-    public void drawTextureImage(ResourceLocation location, PoseStack poseStack, float wScale, float hScale, float x, float y, float size) {
+    private void drawTextureImage(ResourceLocation location, PoseStack poseStack, float wScale, float hScale, float x, float y, float size) {
         if (location == null) return;
         float w = size * wScale;
         float h = size * hScale;

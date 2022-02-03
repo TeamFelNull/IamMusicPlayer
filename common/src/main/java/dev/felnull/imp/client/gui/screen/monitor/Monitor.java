@@ -2,6 +2,7 @@ package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
+import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -75,5 +76,9 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
 
     public void onFilesDrop(List<Path> list) {
 
+    }
+
+    public PlayImageRenderer getPlayImageRenderer() {
+        return PlayImageRenderer.getInstance();
     }
 }
