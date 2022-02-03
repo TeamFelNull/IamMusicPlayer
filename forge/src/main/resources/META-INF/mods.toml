@@ -1,0 +1,50 @@
+modLoader = "javafml"
+loaderVersion = "[37,)"
+issueTrackerURL = "https://github.com/TeamFelnull/IamMusicPlayer/issues"
+license = "GNU LGPLv3"
+
+[[mods]]
+modId = "iammusicplayer"
+version = "${version}"
+displayName = "Iam Music Player"
+authors = "MORIMORI0317, nin8995, TeamFelNull"
+description = '''
+Thank you for downloading!
+This mod is The Ikisugi Music Player MOD.
+'''
+#logoFile = ""
+
+[[dependencies.iammusicplayer]]
+modId = "forge"
+mandatory = true
+versionRange = "[37,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.17.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "architectury"
+mandatory = true
+versionRange = "[2.3.23,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[5.0.38,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "otyacraftengine"
+mandatory = true
+versionRange = "[2.0-build3,)"
+ordering = "AFTER"
+side = "BOTH"
