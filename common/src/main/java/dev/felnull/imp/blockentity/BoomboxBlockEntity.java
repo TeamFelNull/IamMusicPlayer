@@ -116,8 +116,12 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         }
 
         if (!level.isClientSide()) {
+            if (blockEntity.isRadio()) {
+                if (blockEntity.getAntenna().isEmpty() || !IMPItemUtil.isAntenna(blockEntity.getAntenna()))
+                    blockEntity.setRadio(false);
+            }
+
             blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
-            blockEntity.sync();
 
             if (!ItemStack.matches(blockEntity.lastCassetteTape, blockEntity.getCassetteTape()))
                 blockEntity.changeCassetteTape(blockEntity.lastCassetteTape);
@@ -134,6 +138,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
                     blockEntity.startLidOpen(false);
                 }
             }
+
+            blockEntity.sync();
         }
     }
 
@@ -316,7 +322,14 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
                         setVolume(200);
                     setMute(false);
                 }
-                case RADIO -> setRadio(!isRadio());
+                case RADIO -> {
+                    if (isRadio()) {
+                        setRadio(false);
+                    } else {
+                        if (!getAntenna().isEmpty() && IMPItemUtil.isAntenna(getAntenna()))
+                            setRadio(true);
+                    }
+                }
             }
             return null;
         }

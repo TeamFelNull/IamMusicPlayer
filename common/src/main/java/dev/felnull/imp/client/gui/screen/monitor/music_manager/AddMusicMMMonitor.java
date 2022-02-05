@@ -18,6 +18,7 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -29,7 +30,6 @@ import java.util.List;
 public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     private static final ResourceLocation ADD_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_music.png");
     private static final Component PLAYBACK_CONTROL_TEXT = new TranslatableComponent("imp.button.playbackControl");
-    private static final Component PLAYBACK_TEXT = new TranslatableComponent("imp.text.playback");
     private static final Component PLAYBACK_NON_PROGRESS_TEXT = new TextComponent("--:--/--:--");
     private static final Component PLAYBACK_LOADING_PROGRESS_TEXT = new TranslatableComponent("imp.text.playbackLoading");
     private static final Component MUSIC_SOURCE_TEXT = new TranslatableComponent("imp.text.musicSource");
@@ -61,7 +61,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         this.musicLoaderTypes.add("upload");
         this.musicLoaderTypes.addAll(IMPMusicLoaderTypes.getMusicLoaderTypes().keySet());
 
-        this.playControlButton = this.addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 140, 20, 20, PLAYBACK_CONTROL_TEXT, n -> {
+        this.playControlButton = this.addRenderWidget(new SmartButton(getStartX() + 189, getStartY() + 140, 20, 20, PLAYBACK_CONTROL_TEXT, n -> {
             if (getScreen().isMusicPlaying()) {
                 getScreen().stopMusic();
             } else {
@@ -72,8 +72,9 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         }));
         this.playControlButton.setHideText(true);
         this.playControlButton.setIcon(WIDGETS_TEXTURE, 0, 123, 11, 11);
+        this.playControlButton.active = !getMusicSource().isEmpty();
 
-        this.addRenderWidget(new PlaybackProgressBar(getStartX() + 27, getStartY() + 154, new TranslatableComponent("imp.progressBar.playbackControl"), () -> {
+        this.addRenderWidget(new PlaybackProgressBar(getStartX() + 211, getStartY() + 154, new TranslatableComponent("imp.progressBar.playbackControl"), () -> {
             if (getScreen().isMusicPlaying())
                 return getScreen().getMusicPlayer().getPositionProgress();
             return 0f;
@@ -128,8 +129,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         super.render(poseStack, f, mouseX, mouseY);
         OERenderUtil.drawTexture(ADD_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
 
-        drawSmartText(poseStack, PLAYBACK_TEXT, getStartX() + 5, getStartY() + 131);
-
         Component pt;
         if (getScreen().isMusicPlaying()) {
             var mp = getScreen().getMusicPlayer();
@@ -141,7 +140,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         } else {
             pt = PLAYBACK_NON_PROGRESS_TEXT;
         }
-        drawSmartText(poseStack, pt, getStartX() + 27, getStartY() + 144);
+        drawSmartText(poseStack, pt, getStartX() + 211, getStartY() + 144);
 
         drawSmartText(poseStack, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
 
@@ -159,7 +158,73 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
             drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? AUTO_FAILURE_TEXT : MUSIC_LOAD_FAILURE_TEXT, getStartX() + 189, getStartY() + 128);
 
         if (AUTHOR_TEXT != null)
-            drawSmartText(poseStack, AUTHOR_TEXT, getStartX() + 5, getStartY() + 162);
+            drawSmartText(poseStack, AUTHOR_TEXT, getStartX() + 189, getStartY() + 165);
+
+    }
+
+    @Override
+    public void renderAppearance(MusicManagerBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight) {
+        super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
+
+        this.musicLoaderTypes.clear();
+        this.musicLoaderTypes.add("auto");
+        this.musicLoaderTypes.add("upload");
+        this.musicLoaderTypes.addAll(IMPMusicLoaderTypes.getMusicLoaderTypes().keySet());
+
+        float onPxW = monitorWidth / (float) width;
+        float onPxH = monitorHeight / (float) height;
+        OERenderUtil.renderTextureSprite(ADD_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+
+        renderSmartTextSprite(poseStack, multiBufferSource, MUSIC_SOURCE_TEXT, 189, 13, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+
+        var ml = getRawMusicLoaderType(blockEntity);
+
+        if (ml != null) {
+            renderSmartTextSprite(poseStack, multiBufferSource, ml.getEnterText(), 189, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+        } else if ("auto".equals(getMusicLoaderType(blockEntity))) {
+            renderSmartTextSprite(poseStack, multiBufferSource, AUTO_ENTER_TEXT, 189, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, AUTO_INFO_TEXT, 189, 91, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+        }
+
+        if (!getMusicAuthor(blockEntity).isEmpty()) {
+            var aut = OERenderUtil.getWidthString(getMusicAuthor(blockEntity), 140, "...");
+            renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicAuthor", aut), 189, 165, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+        }
+
+        if (!"upload".equals(getMusicLoaderType(blockEntity))) {
+            var rtp = getRawMusicLoaderType(blockEntity);
+            renderSmartEditBoxSprite(poseStack, multiBufferSource, 189, 112, OERenderUtil.MIN_BREADTH * 4, (rtp != null && rtp.isSearchable()) ? 141 : 177, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
+            if (rtp != null && rtp.isSearchable())
+                renderSmartButtonSprite(poseStack, multiBufferSource, 333, 111, OERenderUtil.MIN_BREADTH * 4, 33, 14, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 24, 107, 11, 11, 256, 256);
+        } else {
+            renderSmartButtonSprite(poseStack, multiBufferSource, 189, 111, OERenderUtil.MIN_BREADTH * 4, 177, 14, i, j, onPxW, onPxH, monitorHeight, UPLOAD_MUSIC_TEXT, WIDGETS_TEXTURE, 36, 107, 12, 12, 256, 256);
+        }
+        renderSmartButtonSprite(poseStack, multiBufferSource, 189, 140, OERenderUtil.MIN_BREADTH * 3, 20, 20, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 0, 123, 11, 11, 256, 256, getMusicSource(blockEntity).isEmpty());
+
+        Component pt;
+        if (!getMusicSource(blockEntity).isEmpty()) {
+            pt = new TextComponent(FNStringUtil.getTimeProgress(0, getMusicSource(blockEntity).getDuration()));
+        } else {
+            pt = PLAYBACK_NON_PROGRESS_TEXT;
+        }
+        renderSmartTextSprite(poseStack, multiBufferSource, pt, 211, 144, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+
+        OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * 211, monitorHeight - onPxH * (154 + 3), OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, onPxW * 153f, onPxH * 3f, 52, 54, 153, 3, 256, 256, i, j);
+
+        renderScrollbarSprite(poseStack, multiBufferSource, 355, 23, OERenderUtil.MIN_BREADTH * 3, 65, i, j, onPxW, onPxH, monitorHeight, musicLoaderTypes.size(), 5);
+
+        for (int k = 0; k < Math.min(5, musicLoaderTypes.size()); k++) {
+            var lt = musicLoaderTypes.get(k);
+            renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 23 + (k * 13), OERenderUtil.MIN_BREADTH * 3, 165, 13, i, j, onPxW, onPxH, monitorHeight, lt.equals(getMusicLoaderType(blockEntity)));
+            var type = IMPMusicLoaderTypes.getMusicLoaderTypes().get(lt);
+            int tx = 189 + 2;
+            if ((type != null && type.getIcon() != null) || "upload".equals(lt)) {
+                var icon = type != null ? type.getIcon() : MusicLoaderTypesFixedButtonsList.UPLOAD_ICON;
+                OERenderUtil.renderTextureSprite(icon, poseStack, multiBufferSource, (189f + 1f) * onPxW, monitorHeight - (23f + ((float) k * 13f) + 1f + 11f) * onPxH, OERenderUtil.MIN_BREADTH * 5, 0, 0, 0, 11f * onPxW, 11f * onPxH, 0, 0, 11f * onPxW, 11f * onPxH, 11f * onPxW, 11f * onPxH, i, j);
+                tx += 13 - 1;
+            }
+            renderSmartTextSprite(poseStack, multiBufferSource, type == null ? new TranslatableComponent("imp.loaderType." + lt) : type.getName(), tx, 23 + (k * 13) + (13f - 6.5f) / 2f + 1f, OERenderUtil.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
+        }
     }
 
     @Override
@@ -208,7 +273,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     private boolean isMSNVisible() {
-        return !getMusicLoaderType().equals("upload");
+        return !"upload".equals(getMusicLoaderType());
     }
 
     @Override
@@ -232,7 +297,12 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     private void setMusicAuthor(String author) {
-        AUTHOR_TEXT = author.isEmpty() ? null : new TranslatableComponent("imp.text.musicAuthor", author);
+        if (author.isEmpty()) {
+            AUTHOR_TEXT = null;
+        } else {
+            var aut = OERenderUtil.getWidthString(author, 140, "...");
+            AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", aut);
+        }
         getScreen().insMusicAuthor(author);
     }
 
@@ -240,6 +310,10 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity blockEntity)
             return getMusicSource(blockEntity);
         return MusicSource.EMPTY;
+    }
+
+    public IMusicLoaderType getRawMusicLoaderType(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return IMPMusicLoaderTypes.getMusicLoaderTypes().get(getMusicLoaderType(musicManagerBlockEntity));
     }
 
     public IMusicLoaderType getRawMusicLoaderType() {

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
 public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
+    private NonNullList<ItemStack> items = NonNullList.withSize(0, ItemStack.EMPTY);
     protected final Map<UUID, CompoundTag> playerData = new HashMap<>();
     private CompoundTag myData = new CompoundTag();
 
@@ -335,7 +336,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     public NonNullList<ItemStack> getItems() {
-        return null;
+        return items;
     }
 
     public static enum MonitorType {

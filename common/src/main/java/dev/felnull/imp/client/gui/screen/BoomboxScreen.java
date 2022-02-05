@@ -7,6 +7,7 @@ import dev.felnull.imp.client.gui.components.BoomboxButton;
 import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.BoomboxItem;
+import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.gui.screen.OEItemBEContainerBaseScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -28,6 +29,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     public static final ResourceLocation EMPTY_ANTENNA_SLOT = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/slot/antenna_slot.png");
     private final Map<BoomboxBlockEntity.MonitorType, BoomboxMonitor> monitors = new HashMap<>();
     protected BoomboxMonitor monitor;
+    public long lastNoAntenna;
 
     public BoomboxScreen(BoomboxMenu abstractContainerMenu, Inventory inventory, Component component) {
         super(abstractContainerMenu, inventory, component);
@@ -44,7 +46,11 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         }, this::getButtons));
 
         this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19, topPos + 17, BoomboxBlockEntity.ButtonType.RADIO, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.RADIO);
+            if (!getAntenna().isEmpty() && IMPItemUtil.isAntenna(getAntenna())) {
+                insPressButton(BoomboxBlockEntity.ButtonType.RADIO);
+            } else {
+                lastNoAntenna = System.currentTimeMillis();
+            }
         }, this::getButtons));
 
         this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 2, topPos + 17, BoomboxBlockEntity.ButtonType.START, n -> {

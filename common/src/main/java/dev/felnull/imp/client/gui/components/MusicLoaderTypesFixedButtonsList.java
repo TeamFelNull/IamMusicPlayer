@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class MusicLoaderTypesFixedButtonsList extends FixedButtonsList<String> implements IIMPSmartRender {
-    private static final ResourceLocation UPLOAD_ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/loader_types/upload.png");
+    public static final ResourceLocation UPLOAD_ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/loader_types/upload.png");
     private final Function<String, Boolean> selected;
 
     public MusicLoaderTypesFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<String> list, PressEntry<String> onPressEntry, Function<String, Boolean> selected) {
