@@ -50,7 +50,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
     }
 
     public void setIcon(ResourceLocation location, int stX, int stY, int w, int h) {
-        setIcon(location, stX, stY, w, w, 256, 256);
+        setIcon(location, stX, stY, w, h, 256, 256);
     }
 
     public void setIcon(ResourceLocation location, int stX, int stY, int w, int h, int texW, int texH) {

@@ -21,6 +21,7 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
         boolean power = BoomboxItem.isPowerOn(itemStack);
+        boolean radio = false;
 
         var state = power ? onEntity.getBlockState() : offEntity.getBlockState();
         var model = OERenderUtil.getBlockModel(state);
@@ -33,7 +34,7 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
             handleRaised = 1f - BoomboxItem.getTransferProgress(itemStack, f);
         }
 
-        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, 0, handleRaised, 0, BoomboxItem.getButtons(itemStack), BoomboxItem.getCassetteTape(itemStack), BoomboxItem.getAntenna(itemStack), 0, 0, false, ItemStack.EMPTY);
+        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, 0, handleRaised, 0, BoomboxItem.getButtons(itemStack), BoomboxItem.getCassetteTape(itemStack), BoomboxItem.getAntenna(itemStack), 0, 0, false, ItemStack.EMPTY, power, radio);
     }
 
 }

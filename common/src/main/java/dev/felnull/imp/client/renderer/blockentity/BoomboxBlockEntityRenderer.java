@@ -3,6 +3,7 @@ package dev.felnull.imp.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.block.MusicManagerBlock;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
+import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.client.renderer.item.AntennaItemRenderer;
 import dev.felnull.imp.item.IMPItems;
@@ -18,7 +19,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<BoomboxBlockEntity> {
+    private static final Map<BoomboxBlockEntity.MonitorType, BoomboxMonitor> monitors = new HashMap<>();
     private static final Minecraft mc = Minecraft.getInstance();
 
     protected BoomboxBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -30,10 +35,10 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         float handleRaised = blockEntity.getHandleRaisedProgress(f) / (float) blockEntity.getHandleRaisedAll();
         float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
         var state = blockEntity.getBlockState();
-        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, handleRaised, lidOpen, blockEntity.getButtons(), blockEntity.getCassetteTape(), blockEntity.getAntenna(), blockEntity.getParabolicAntennaProgress(f), blockEntity.getAntennaProgress(f) / 30f, blockEntity.isChangeCassetteTape(), blockEntity.getOldCassetteTape());
+        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, handleRaised, lidOpen, blockEntity.getButtons(), blockEntity.getCassetteTape(), blockEntity.getAntenna(), blockEntity.getParabolicAntennaProgress(f), blockEntity.getAntennaProgress(f) / 30f, blockEntity.isChangeCassetteTape(), blockEntity.getOldCassetteTape(), blockEntity.isPower(), blockEntity.isRadio());
     }
 
-    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons, ItemStack cassetteTape, ItemStack antenna, float parabolicAntennaRoted, float antennaPar, boolean changeCassetteTape, ItemStack oldCassetteTape) {
+    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons, ItemStack cassetteTape, ItemStack antenna, float parabolicAntennaRoted, float antennaPar, boolean changeCassetteTape, ItemStack oldCassetteTape, boolean power, boolean radio) {
         var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
@@ -113,6 +118,15 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         poseStack.popPose();
 
 
+        poseStack.pushPose();
+        poseStack.translate(1, 0, 0);
+        OERenderUtil.poseRotateY(poseStack, 180);
+        OERenderUtil.poseTrans16(poseStack, 0.6, 5.6, -4.9);
+        var monitor = getMonitor(BoomboxBlockEntity.MonitorType.getTypeByData(power, radio));
+        float px16 = 1f / 16f;
+        monitor.renderAppearance(poseStack, multiBufferSource, i, j, f, px16 * 14.8f, px16 * 2.8f, cassetteTape);
+        poseStack.popPose();
+
         poseStack.popPose();
     }
 
@@ -143,4 +157,12 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         }
     }
 
+    private static BoomboxMonitor getMonitor(BoomboxBlockEntity.MonitorType type) {
+        if (monitors.containsKey(type))
+            return monitors.get(type);
+
+        var monitor = BoomboxMonitor.createdBoomBoxMonitor(type, null);
+        monitors.put(type, monitor);
+        return monitor;
+    }
 }

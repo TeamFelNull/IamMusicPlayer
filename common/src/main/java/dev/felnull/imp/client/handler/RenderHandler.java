@@ -5,7 +5,7 @@ import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.client.gui.components.MusicSubtitleOverlay;
-import dev.felnull.imp.client.renderer.hand.BoomboxHandRenderer;
+import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.otyacraftengine.api.event.client.MoreRenderEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;

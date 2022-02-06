@@ -8,10 +8,12 @@ import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class PlayingBMonitor extends BoomboxMonitor {
     protected static final ResourceLocation PLAYING_BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing.png");
@@ -59,6 +61,29 @@ public class PlayingBMonitor extends BoomboxMonitor {
             float sy = ((float) height - 10f) / 2f;
             drawFill(poseStack, (int) (getStartX() + st), (int) (getStartY() + sy), (int) fl, 10, 0xa9a9a9 | (ad << 24));
             drawSmartText(poseStack, NO_ANTENNA_TEXT, getStartX() + st + 3, getStartY() + sy + 1f, (Math.max(ad, 5) << 24));
+        }
+    }
+
+    @Override
+    public void renderAppearance(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight, ItemStack cassetteTape) {
+        super.renderAppearance(poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight, cassetteTape);
+        float onPxW = monitorWidth / (float) width;
+        float onPxH = monitorHeight / (float) height;
+        if (!cassetteTape.isEmpty() && IMPItemUtil.isCassetteTape(cassetteTape)) {
+            Music music = CassetteTapeItem.getMusic(cassetteTape);
+            if (music != null) {
+                OERenderUtil.renderTextureSprite(music.getImage().isEmpty() ? PLAYING_NO_IMAGE_BG_TEXTURE : PLAYING_BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+                int sx = 2;
+                if (!music.getImage().isEmpty()) {
+                    getPlayImageRenderer().renderSprite(music.getImage(), poseStack, multiBufferSource, 1 * onPxW, monitorHeight - (1 + height - 2) * onPxH, OERenderUtil.MIN_BREADTH * 3, (height - 3) * onPxH, i, j);
+                    sx += height - 2;
+                }
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 2, i);
+            } else {
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 2, i);
+            }
+        } else {
+            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 2, i);
         }
     }
 }

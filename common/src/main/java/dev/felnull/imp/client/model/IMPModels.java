@@ -34,6 +34,7 @@ public class IMPModels {
     public static final ResourceLocation ANTENNA_TOP = new ResourceLocation(IamMusicPlayer.MODID, "item/antenna/antenna_top");
     public static final ResourceLocation ANTENNA_ROOT = new ResourceLocation(IamMusicPlayer.MODID, "item/antenna/antenna_root");
 
+    public static final ResourceLocation CASSETTE_DECK_LID = new ResourceLocation(IamMusicPlayer.MODID, "block/cassette_deck/cassette_deck_lid");
     public static void init() {
         register(MUSIC_MANAGER_ACCESS_LAMP);
         register(MUSIC_MANAGER_OFF_ACCESS_LAMP);
@@ -59,6 +60,7 @@ public class IMPModels {
         register(ANTENNA);
         register(ANTENNA_TOP);
         register(ANTENNA_ROOT);
+        register(CASSETTE_DECK_LID);
     }
 
     private static void register(ResourceLocation location) {

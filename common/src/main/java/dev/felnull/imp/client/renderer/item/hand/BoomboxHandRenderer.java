@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.renderer.hand;
+package dev.felnull.imp.client.renderer.item.hand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.item.BoomboxItem;

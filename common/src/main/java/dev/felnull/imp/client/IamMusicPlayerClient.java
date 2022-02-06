@@ -3,6 +3,7 @@ package dev.felnull.imp.client;
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.client.gui.screen.IMPScreenFactorys;
 import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
+import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonitor;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.handler.ClientHandler;
 import dev.felnull.imp.client.handler.MusicHandler;
@@ -34,6 +35,7 @@ public class IamMusicPlayerClient {
         IMPItemRenderers.init();
         IMPScreenFactorys.init();
         MusicManagerMonitor.firstInit();
+        CassetteDeckMonitor.firstInit();
         BoomboxMonitor.firstInit();
 
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener((manager, data) -> {

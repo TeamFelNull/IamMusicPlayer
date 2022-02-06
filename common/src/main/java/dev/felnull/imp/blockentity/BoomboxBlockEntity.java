@@ -225,7 +225,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         return parabolicAntennaProgress;
     }
 
-    private boolean isRadio() {
+    public boolean isRadio() {
         return this.radio;
     }
 
@@ -338,7 +338,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void startLidOpen(boolean open) {
         lidOpen = open;
-        level.playSound(null, getBlockPos(), isHandleRaising() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+        level.playSound(null, getBlockPos(), isLidOpen() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 
 
@@ -443,13 +443,17 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
             return MonitorType.OFF;
         }
 
-        public static MonitorType getTypeByBE(BoomboxBlockEntity blockEntity) {
-            if (blockEntity.isPower()) {
-                if (blockEntity.isRadio())
+        public static MonitorType getTypeByData(boolean power, boolean radio) {
+            if (power) {
+                if (radio)
                     return RADIO;
                 return PLAYING;
             }
             return OFF;
+        }
+
+        public static MonitorType getTypeByBE(BoomboxBlockEntity blockEntity) {
+            return getTypeByData(blockEntity.isPower(), blockEntity.isRadio());
         }
     }
 }
