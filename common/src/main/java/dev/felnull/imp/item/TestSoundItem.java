@@ -1,19 +1,11 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.imp.client.music.MusicEngine;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.music.MusicPlaybackInfo;
-import dev.felnull.imp.music.MusicRinger;
-import dev.felnull.imp.music.resource.MusicSource;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import java.util.UUID;
 
 public class TestSoundItem extends Item {
 
@@ -25,46 +17,16 @@ public class TestSoundItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
 
-        if (level.isClientSide()) {
-            if (player.isCrouching()) {
-                UUID id = UUID.randomUUID();
-                MusicEngine me = MusicEngine.getInstance();
-             /*   var apm = LavaPlayerUtil.createAudioPlayerManager();
-                apm.registerSourceManager(new YoutubeAudioSourceManager());
-                apm.registerSourceManager(new HttpAudioSourceManager());
-                var idi = itemStack.getHoverName().getString();
-                var track = LavaPlayerUtil.loadTrackNonThrow(apm, idi);
-
-                if (track.isPresent()) {*/
-                var plb = new MusicPlaybackInfo(MusicRinger.FIXED_TRACKER, MusicRinger.createFixedTracker(player.position()), 1, 30);
-                var ms = new MusicSource(IMPMusicLoaderTypes.HTTP, "https://cdn.discordapp.com/attachments/358878159615164416/930375940578619392/mgs2.nbs", 100 * 1000);
-                me.loadAddMusicPlayer(id, plb, ms, 0, (result, time, player1, retry) -> {
-                    player.displayClientMessage(new TextComponent(result + ":" + time + ":" + retry), false);
-                    me.playMusicPlayer(id, 0);
-                });
-                //}
-            }
-           /* var shpe = TentativeVoxelShapeGenerator.generate(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox")), OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_base_shape")));
+/*
+        if (!level.isClientSide()) {
+            var shp = TentativeVoxelShapeGenerator.generate(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "test/boombox_no_raised_shape_fast"), TestSoundItem.class), OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "test/boombox_no_raised_shape"), TestSoundItem.class));
             try {
-                Files.writeString(Paths.get("shape.json"), new Gson().toJson(shpe));
+                Files.writeString(Paths.get("./test_shape.json"), new Gson().toJson(shp));
             } catch (IOException e) {
                 e.printStackTrace();
-            }*/
-        } else {
-            if (!player.isCrouching()) {
-             /*   var ms = new MusicSource("youtube", "IL60RpmG4P8", 114514);
-                var im = new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, "IL60RpmG4P8");
-                //    var im = new ImageInfo(ImageInfo.ImageType.EMPTY, "");
-                // var im = new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, "MoriMori_0317_jp");
-                var m = new Music(UUID.randomUUID(), "Kame", ms, im, player.getGameProfile().getId(), System.currentTimeMillis());
-                MusicManager.getInstance().addMusic(m);
-
-                var ar = new AuthorityInfo(true, player.getUUID(), "MoriMori_0317_jp", AuthorityInfo.AuthorityType.MEMBER);
-
-                var pl = new MusicPlayList(UUID.randomUUID(), "KamePl", im, ar, Lists.newArrayList(m.getUuid()), System.currentTimeMillis());
-                MusicManager.getInstance().addPlayList(pl);*/
             }
-        }
+        }*/
+
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
     }
 }

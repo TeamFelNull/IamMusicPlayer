@@ -27,8 +27,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class BoomboxBlock extends IMPBaseEntityBlock {
-    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox"), MusicManagerBlock.class));
-    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE_NO_RAISED = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_no_raised"), MusicManagerBlock.class));
+    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox"), BoomboxBlock.class));
+    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE_NO_RAISED = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_no_raised"), BoomboxBlock.class));
     public static final BooleanProperty RAISED = IMPBlockStateProperties.RAISE;
 
     protected BoomboxBlock(Properties properties) {
