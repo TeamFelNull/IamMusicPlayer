@@ -3,6 +3,7 @@ package dev.felnull.imp;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.IMPBlockEntitys;
 import dev.felnull.imp.data.IMPWorldData;
+import dev.felnull.imp.handler.ServerMusicHandler;
 import dev.felnull.imp.inventory.IMPMenus;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.networking.IMPPackets;
@@ -20,5 +21,6 @@ public class IamMusicPlayer {
         IMPBlockEntitys.init();
         IMPMenus.init();
         IMPWorldData.init();
+        ServerMusicHandler.init();
     }
 }

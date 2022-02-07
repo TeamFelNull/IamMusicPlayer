@@ -3,6 +3,7 @@
   "package": "dev.felnull.imp.fabric.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "client.IntegratedServerMixin",
     "client.LibraryMixin",
     "client.SoundEngineMixin"
   ],

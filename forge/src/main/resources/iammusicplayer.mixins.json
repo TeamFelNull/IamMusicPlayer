@@ -4,6 +4,7 @@
   "package": "dev.felnull.imp.forge.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
+    "client.IntegratedServerMixin",
     "client.LibraryMixin",
     "client.SoundEngineMixin"
   ],

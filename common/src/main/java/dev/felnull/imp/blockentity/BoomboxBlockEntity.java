@@ -3,13 +3,19 @@ package dev.felnull.imp.blockentity;
 import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.item.IMPItems;
+import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.music.ringer.IMusicRinger;
+import dev.felnull.imp.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,10 +25,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
 import java.util.function.Function;
 
-public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
+public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMusicRinger {
     private boolean handleRaising = true;
     private int handleRaisedProgressOld = getHandleRaisedAll();
     private int handleRaisedProgress = getHandleRaisedAll();
@@ -42,6 +53,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     private boolean mute;
     private boolean radio;
     private boolean noChangeCassetteTape;
+    private boolean playing;
+    private final UUID ringerUUID = UUID.randomUUID();
+    private long ringerPosition;
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
@@ -70,7 +84,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         this.loop = tag.getBoolean("Loop");
         this.mute = tag.getBoolean("Mute");
         this.radio = tag.getBoolean("Radio");
-
+        this.playing = tag.getBoolean("Playing");
+        this.ringerPosition = tag.getLong("RingerPosition");
         noChangeCassetteTape = true;
     }
 
@@ -83,6 +98,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("Mute", this.mute);
         tag.putBoolean("Radio", this.radio);
+        tag.putBoolean("Playing", this.playing);
+        tag.putLong("RingerPosition", this.ringerPosition);
         return tag;
     }
 
@@ -138,6 +155,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
                 }
             }
 
+            blockEntity.ringerTick((ServerLevel) level);
             blockEntity.sync();
         }
     }
@@ -150,8 +168,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("Mute", this.mute);
         tag.putBoolean("Radio", this.radio);
+        tag.putBoolean("Playing", this.playing);
         tag.put("OldCassetteTape", this.oldCassetteTape.save(new CompoundTag()));
         tag.putBoolean("ChangeCassetteTape", this.changeCassetteTape);
+        tag.putLong("RingerPosition", this.ringerPosition);
         return super.getSyncData(player, tag);
     }
 
@@ -166,6 +186,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
         this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
         this.radio = tag.getBoolean("Radio");
+        this.playing = tag.getBoolean("Playing");
+        this.ringerPosition = tag.getLong("RingerPosition");
     }
 
     @Override
@@ -179,6 +201,15 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMute(boolean mute) {
         this.mute = mute;
+        setChanged();
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
         setChanged();
     }
 
@@ -347,6 +378,14 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
                             setRadio(true);
                     }
                 }
+                case START -> {
+                    if (!isPlaying())
+                        setPlaying(true);
+                }
+                case STOP -> {
+                    if (isPlaying())
+                        setPlaying(false);
+                }
             }
             return null;
         }
@@ -378,16 +417,83 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     public Buttons getButtons() {
-        return new Buttons(isRadio(), false, false, false, isLoop(), volume <= 0 || isMute(), !isMute() && volume >= 200);
+        return new Buttons(isRadio(), isPlaying(), false, isLoop(), volume <= 0 || isMute(), !isMute() && volume >= 200);
     }
 
     public ItemStack getAntenna() {
         return getItem(1);
     }
 
-    public static record Buttons(boolean radio, boolean start, boolean pause, boolean stop, boolean loop,
+    @Override
+    public UUID getRingerUUID() {
+        return ringerUUID;
+    }
+
+    @Override
+    public boolean isRingerExist(ServerLevel level) {
+        if (getLevel() == null || level != getLevel()) return false;
+        return getBlockPos() != null && level.getBlockEntity(getBlockPos()) == this;
+    }
+
+    @Override
+    public boolean isRingerPlaying(ServerLevel level) {
+        return isPlaying();
+    }
+
+    @Override
+    public void setRingerPlaying(ServerLevel level, boolean playing) {
+        setPlaying(playing);
+    }
+
+    @Override
+    public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
+        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+            var m = CassetteTapeItem.getMusic(getCassetteTape());
+            if (m != null)
+                return m.getSource();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isRingerLoop(ServerLevel level) {
+        return isLoop();
+    }
+
+    @Override
+    public long getRingerPosition(ServerLevel level) {
+        return this.ringerPosition;
+    }
+
+    @Override
+    public void setRingerPosition(ServerLevel level, long position) {
+        this.ringerPosition = position;
+        setChanged();
+    }
+
+    @Override
+    public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level) {
+        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerVec3Position(level)));
+    }
+
+    @Override
+    public @NotNull Vec3 getRingerVec3Position(ServerLevel level) {
+        return new Vec3(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
+    }
+
+    @Override
+    public float getRingerVolume(ServerLevel level) {
+        return 1f;
+    }
+
+    @Override
+    public float getRingerRange(ServerLevel level) {
+        return 30f;
+    }
+
+    public static record Buttons(boolean radio, boolean start, boolean pause, boolean loop,
                                  boolean volMute, boolean volMax) {
-        public static final Buttons EMPTY = new Buttons(false, false, false, false, false, false, false);
+        public static final Buttons EMPTY = new Buttons(false, false, false, false, false, false);
     }
 
     public static enum ButtonType {
@@ -396,7 +502,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         RADIO("radio", n -> n.radio()),
         START("start", n -> n.start()),
         PAUSE("pause", n -> n.pause()),
-        STOP("stop", n -> n.stop()),
+        STOP("stop", n -> false),
         LOOP("loop", n -> n.loop()),
         VOL_DOWN("volDown", n -> false),
         VOL_UP("volUp", n -> false),

@@ -7,12 +7,18 @@ import dev.felnull.imp.music.MusicManager;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
+import dev.felnull.imp.music.ringer.MusicRingManager;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
 public class ServerMessageHandler {
+
+    public static void onMusicReadyResultMessage(IMPPackets.MusicReadyResultMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> MusicRingManager.getInstance().addReadyPlayer((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitID, message.result, message.retry));
+    }
+
     public static void onMusicAddMessage(IMPPackets.MusicAddMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             var mm = MusicManager.getInstance();

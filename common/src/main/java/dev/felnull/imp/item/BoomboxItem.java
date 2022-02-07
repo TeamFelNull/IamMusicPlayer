@@ -144,7 +144,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     public static BoomboxBlockEntity.Buttons getButtons(ItemStack stack) {
-        return new BoomboxBlockEntity.Buttons(false, false, false, false, isLoop(stack), false, false);
+        return new BoomboxBlockEntity.Buttons(false,  false, false, isLoop(stack), false, false);
     }
 
     public static NonNullList<ItemStack> getContainItem(ItemStack stack) {

@@ -10,7 +10,7 @@ import dev.felnull.imp.client.music.MusicLoadThread;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.inventory.MusicManagerMenu;
 import dev.felnull.imp.music.MusicPlaybackInfo;
-import dev.felnull.imp.music.MusicRinger;
+import dev.felnull.imp.music.ringer.MusicRingManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
@@ -237,7 +237,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
     public void playMusic(MusicSource source, long postion) {
         stopMusic();
-        getMusicEngine().loadAddMusicPlayer(musicPlayerId, new MusicPlaybackInfo(MusicRinger.PLAYER_TRACKER, MusicRinger.createPlayerTracker(mc.player), 1, 10), source, postion, (result, time, player, retry) -> {
+        getMusicEngine().loadAddMusicPlayer(musicPlayerId, new MusicPlaybackInfo(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(mc.player), 1, 10), source, postion, (result, time, player, retry) -> {
             getMusicEngine().playMusicPlayer(musicPlayerId, 0);
         });
     }

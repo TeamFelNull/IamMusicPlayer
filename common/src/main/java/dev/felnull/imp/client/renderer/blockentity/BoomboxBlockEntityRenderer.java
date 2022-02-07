@@ -92,7 +92,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
-        OERenderUtil.poseTrans16(poseStack, 8.25, 9 - (buttons.stop() ? 0.5 : 0), 5.75);
+        OERenderUtil.poseTrans16(poseStack, 8.25, 9, 5.75);
         OERenderUtil.renderModel(poseStack, vc, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
