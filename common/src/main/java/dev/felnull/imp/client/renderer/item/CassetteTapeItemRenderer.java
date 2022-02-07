@@ -28,8 +28,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
 
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float v, int i, int i1) {
-        long tim = System.currentTimeMillis() % 3000;
-        float par = (float) tim / 3000f;
+        float par = CassetteTapeItem.getTapePercentage(itemStack);
         var spml = SpecialModelLoader.getInstance();
 
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());

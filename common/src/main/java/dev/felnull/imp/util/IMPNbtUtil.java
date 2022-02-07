@@ -40,4 +40,11 @@ public class IMPNbtUtil {
         OENbtUtil.readList(tag, name, musics, n -> OENbtUtil.readSerializable((CompoundTag) n, "m", new MusicPlayList()));
     }
 
+    public static CompoundTag writeUUIDMap(CompoundTag tag, String name, Map<UUID, UUID> ids) {
+        return OENbtUtil.writeMap(tag, name, ids, NbtUtils::createUUID, NbtUtils::createUUID);
+    }
+
+    public static void readUUIDMap(CompoundTag tag, String name, Map<UUID, UUID> ids) {
+        OENbtUtil.readMap(tag, name, ids, NbtUtils::loadUUID, NbtUtils::loadUUID);
+    }
 }

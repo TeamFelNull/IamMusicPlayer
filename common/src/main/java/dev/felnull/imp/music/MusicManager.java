@@ -29,6 +29,14 @@ public class MusicManager {
         getSaveData().setDirty();
     }
 
+    public MusicPlayList getPlaylistByMusic(UUID musicId) {
+        for (MusicPlayList value : getSaveData().getPlayLists().values()) {
+            if (value.getMusicList().contains(musicId))
+                return value;
+        }
+        return null;
+    }
+
     public void addPlayList(MusicPlayList playList) {
         getSaveData().getPlayLists().put(playList.getUuid(), playList);
         getSaveData().setDirty();

@@ -99,10 +99,6 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         MusicManagerMonitor create(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen);
     }
 
-    public MusicSyncManager getSyncManager() {
-        return MusicSyncManager.getInstance();
-    }
-
     public MusicEngine getMusicEngine() {
         return MusicEngine.getInstance();
     }

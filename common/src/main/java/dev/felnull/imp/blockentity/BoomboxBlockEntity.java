@@ -41,6 +41,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     private boolean loop;
     private boolean mute;
     private boolean radio;
+    private boolean noChangeCassetteTape;
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
@@ -60,15 +61,17 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
         this.handleRaising = tag.getBoolean("HandleRaising");
+        if (this.handleRaising)
+            handleRaisedProgress = getHandleRaisedAll();
         this.lidOpen = tag.getBoolean("LidOpen");
-        this.handleRaisedProgress = tag.getInt("HandleRaisedProgress");
-        this.lidOpenProgress = tag.getInt("LidOpenProgress");
-        this.parabolicAntennaProgress = tag.getInt("ParabolicAntennaProgress");
-        this.antennaProgress = tag.getInt("AntennaProgress");
+        if (this.lidOpen)
+            lidOpenProgress = getLidOpenProgressAll();
         this.volume = tag.getInt("Volume");
         this.loop = tag.getBoolean("Loop");
         this.mute = tag.getBoolean("Mute");
         this.radio = tag.getBoolean("Radio");
+
+        noChangeCassetteTape = true;
     }
 
     @Override
@@ -76,10 +79,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         super.save(tag);
         tag.putBoolean("HandleRaising", this.handleRaising);
         tag.putBoolean("LidOpen", this.lidOpen);
-        tag.putInt("HandleRaisedProgress", this.handleRaisedProgress);
-        tag.putInt("LidOpenProgress", this.lidOpenProgress);
-        tag.putInt("ParabolicAntennaProgress", this.parabolicAntennaProgress);
-        tag.putInt("AntennaProgress", this.antennaProgress);
         tag.putInt("Volume", this.volume);
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("Mute", this.mute);
@@ -180,6 +179,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMute(boolean mute) {
         this.mute = mute;
+        setChanged();
     }
 
     public boolean isLoop() {
@@ -196,9 +196,14 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setLoop(boolean loop) {
         this.loop = loop;
+        setChanged();
     }
 
     public void changeCassetteTape(ItemStack old) {
+        if (noChangeCassetteTape) {
+            noChangeCassetteTape = false;
+            return;
+        }
         this.oldCassetteTape = old;
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
             this.changeCassetteTape = true;
@@ -231,6 +236,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setRadio(boolean radio) {
         this.radio = radio;
+        setChanged();
     }
 
     public int getAntennaProgress() {
@@ -264,12 +270,22 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
         if (!flg && !flg2)
             return false;
         if (flg) {
-            handleRaising = false;
+            setHandleRaising(false);
         }
         if (flg2) {
-            handleRaising = true;
+            setHandleRaising(true);
         }
         return true;
+    }
+
+    public void setHandleRaising(boolean handleRaising) {
+        this.handleRaising = handleRaising;
+        setChanged();
+    }
+
+    public void setLidOpen(boolean lidOpen) {
+        this.lidOpen = lidOpen;
+        setChanged();
     }
 
     public boolean isLidOpen() {
@@ -298,6 +314,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setVolume(int volume) {
         this.volume = volume;
+        setChanged();
     }
 
     @Override
@@ -337,7 +354,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     public void startLidOpen(boolean open) {
-        lidOpen = open;
+        setLidOpen(open);
         level.playSound(null, getBlockPos(), isLidOpen() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 

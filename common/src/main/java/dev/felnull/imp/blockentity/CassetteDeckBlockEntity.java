@@ -2,7 +2,12 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.CassetteDeckMenu;
+import dev.felnull.imp.item.CassetteTapeItem;
+import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
+import dev.felnull.imp.util.IMPNbtUtil;
+import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -17,8 +22,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+    private final Map<UUID, UUID> playerSelectPlaylists = new HashMap<>();
+    private UUID myPlayerSelectPlaylist;
+    private Music music = null;
     private MonitorType monitor = MonitorType.OFF;
     private ItemStack lastCassetteTape = ItemStack.EMPTY;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
@@ -26,6 +38,9 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
     private boolean lidOpen;
     private int lidOpenProgressOld;
     private int lidOpenProgress;
+    private boolean noChangeCassetteTape;
+    private boolean noChangeMusicCassetteTape;
+    private int cassetteWriteProgress;
 
     public CassetteDeckBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.CASSETTE_DECK, blockPos, blockState);
@@ -47,9 +62,26 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
 
             if (blockEntity.isPower()) {
                 if (blockEntity.monitor == MonitorType.OFF)
-                    blockEntity.monitor = MonitorType.MENU;
+                    blockEntity.setMonitor(MonitorType.MENU);
             } else {
-                blockEntity.monitor = MonitorType.OFF;
+                if (blockEntity.monitor != MonitorType.OFF)
+                    blockEntity.setMonitor(MonitorType.OFF);
+            }
+
+            if ((blockEntity.getMusic() == null || blockEntity.getCassetteTape().isEmpty() || IMPItemUtil.isAntenna(blockEntity.getCassetteTape())) && blockEntity.monitor == MonitorType.WRITE_EXECUTION)
+                blockEntity.setMonitor(MonitorType.WRITE);
+
+            if (blockEntity.monitor == MonitorType.WRITE_EXECUTION) {
+                if (blockEntity.getCassetteWriteProgress() >= blockEntity.getCassetteWriteProgressAll()) {
+                    blockEntity.writeCassetteTape();
+                    blockEntity.setMonitor(MonitorType.WRITE);
+                    blockEntity.setCassetteWriteProgress(0);
+                } else {
+                    blockEntity.setCassetteWriteProgress(blockEntity.getCassetteWriteProgress() + 1);
+                }
+            } else {
+                if (blockEntity.getCassetteWriteProgress() != 0)
+                    blockEntity.setCassetteWriteProgress(0);
             }
 
             if (!ItemStack.matches(blockEntity.lastCassetteTape, blockEntity.getCassetteTape()))
@@ -72,20 +104,41 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         }
     }
 
+    private void writeCassetteTape() {
+        if (getMusic() != null && !getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+            var ol = getCassetteTape().copy();
+            CassetteTapeItem.setMusic(getCassetteTape(), getMusic());
+            setChanged();
+            if (!ItemStack.matches(ol, getCassetteTape()))
+                noChangeCassetteTape = true;
+            if (!CassetteTapeItem.isSameCassetteTape(ol, getCassetteTape()))
+                noChangeMusicCassetteTape = true;
+        }
+    }
+
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
         this.lidOpen = tag.getBoolean("LidOpen");
-        this.lidOpenProgress = tag.getInt("LidOpenProgress");
+        if (this.lidOpen)
+            lidOpenProgress = getLidOpenProgressAll();
         this.monitor = MonitorType.getByName(tag.getString("Monitor"));
+        IMPNbtUtil.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        if (tag.contains("Music"))
+            this.music = OENbtUtil.readSerializable(tag, "Music", new Music());
+        noChangeCassetteTape = true;
+        this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
     }
 
     @Override
     public CompoundTag save(CompoundTag tag) {
         super.save(tag);
         tag.putBoolean("LidOpen", this.lidOpen);
-        tag.putInt("LidOpenProgress", this.lidOpenProgress);
         tag.putString("Monitor", monitor.getName());
+        IMPNbtUtil.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        if (this.music != null)
+            OENbtUtil.writeSerializable(tag, "Music", music);
+        tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
         return tag;
     }
 
@@ -95,6 +148,11 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         tag.put("OldCassetteTape", this.oldCassetteTape.save(new CompoundTag()));
         tag.putBoolean("ChangeCassetteTape", this.changeCassetteTape);
         tag.putString("Monitor", monitor.getName());
+        if (playerSelectPlaylists.containsKey(player.getGameProfile().getId()))
+            tag.putUUID("PlayerSelectPlaylist", playerSelectPlaylists.get(player.getGameProfile().getId()));
+        if (this.music != null)
+            OENbtUtil.writeSerializable(tag, "Music", music);
+        tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
         return super.getSyncData(player, tag);
     }
 
@@ -105,6 +163,36 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
         this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
         this.monitor = MonitorType.getByName(tag.getString("Monitor"));
+        if (tag.contains("PlayerSelectPlaylist"))
+            this.myPlayerSelectPlaylist = tag.getUUID("PlayerSelectPlaylist");
+        if (tag.contains("Music"))
+            this.music = OENbtUtil.readSerializable(tag, "Music", new Music());
+        else
+            this.music = null;
+        this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
+    }
+
+    public UUID getMyPlayerSelectPlaylist() {
+        return myPlayerSelectPlaylist;
+    }
+
+    public void setPlayerSelectPlayList(ServerPlayer player, UUID uuid) {
+        this.playerSelectPlaylists.put(player.getGameProfile().getId(), uuid);
+    }
+
+    public int getCassetteWriteProgress() {
+        return cassetteWriteProgress;
+    }
+
+    public void setCassetteWriteProgress(int cassetteWriteProgress) {
+        this.cassetteWriteProgress = cassetteWriteProgress;
+        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+            var ol = getCassetteTape().copy();
+            CassetteTapeItem.setTapePercentage(getCassetteTape(), (float) cassetteWriteProgress / (float) getCassetteWriteProgressAll());
+            if (!ItemStack.matches(ol, getCassetteTape()))
+                noChangeCassetteTape = true;
+        }
+        setChanged();
     }
 
     public int getLidOpenProgressAll() {
@@ -120,8 +208,13 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     public void startLidOpen(boolean open) {
-        lidOpen = open;
+        setLidOpen(open);
         level.playSound(null, getBlockPos(), isLidOpen() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+    }
+
+    public void setLidOpen(boolean lidOpen) {
+        this.lidOpen = lidOpen;
+        setChanged();
     }
 
     public boolean isLidOpen() {
@@ -154,6 +247,10 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         return super.canPlaceItem(i, itemStack);
     }
 
+    public Music getMusic() {
+        return music;
+    }
+
     public ItemStack getCassetteTape() {
         return getItem(0);
     }
@@ -162,15 +259,61 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         return oldCassetteTape;
     }
 
-    public void changeCassetteTape(ItemStack old) {
+    protected void changeCassetteTape(ItemStack old) {
+        boolean ncFlg = false;
+        if (!CassetteTapeItem.isSameCassetteTape(old, getCassetteTape())) {
+            if (monitor == MonitorType.WRITE_EXECUTION)
+                setMonitor(MonitorType.WRITE);
+            ncFlg = true;
+        }
+
+        if (noChangeMusicCassetteTape) {
+            noChangeMusicCassetteTape = false;
+            ncFlg = false;
+        }
+
+        if (noChangeCassetteTape && !ncFlg) {
+            noChangeCassetteTape = false;
+            return;
+        }
+
         this.oldCassetteTape = old;
         this.changeCassetteTape = true;
+    }
+
+    public void setMusic(Music music) {
+        this.music = music;
+        setChanged();
+    }
+
+    public int getCassetteWriteProgressAll() {
+        return 200;
+    }
+
+    public void setMonitor(MonitorType monitor) {
+        this.monitor = monitor;
+        setChanged();
     }
 
     @Override
     public CompoundTag onInstruction(ServerPlayer player, String name, int num, CompoundTag data) {
         if ("monitor".equals(name)) {
             this.monitor = MonitorType.getByName(data.getString("name"));
+            return null;
+        } else if ("select_playlist".equals(name)) {
+            if (data.contains("uuid"))
+                setPlayerSelectPlayList(player, data.getUUID("uuid"));
+            return null;
+        } else if ("set_music".equals(name)) {
+            if (data.contains("music")) {
+                var mm = MusicManager.getInstance();
+                var m = mm.getSaveData().getMusics().get(data.getUUID("music"));
+                if (m != null) {
+                    var pl = mm.getPlaylistByMusic(m.getUuid());
+                    if (pl != null && pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).isMoreReadOnly())
+                        setMusic(m);
+                }
+            }
             return null;
         }
         return super.onInstruction(player, name, num, data);
@@ -180,7 +323,8 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         OFF("off"),
         MENU("menu"),
         WRITE("write"),
-        PLAYBACK("playback");
+        PLAYBACK("playback"),
+        WRITE_EXECUTION("write_execution");
         private final String name;
 
         private MonitorType(String name) {

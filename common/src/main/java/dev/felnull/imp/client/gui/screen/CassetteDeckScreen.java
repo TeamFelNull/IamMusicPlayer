@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu> {
     public static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/cassette_deck/cassette_deck_base.png");
@@ -86,6 +87,18 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
         var tag = new CompoundTag();
         tag.putString("name", monitorType.getName());
         instruction("monitor", 0, tag);
+    }
+
+    public void insSelectPlaylist(UUID uuid) {
+        var tag = new CompoundTag();
+        tag.putUUID("uuid", uuid);
+        instruction("select_playlist", 0, tag);
+    }
+
+    public void insMusic(UUID uuid) {
+        var tag = new CompoundTag();
+        tag.putUUID("music", uuid);
+        instruction("set_music", 0, tag);
     }
 
     public CassetteDeckBlockEntity.MonitorType getRawMonitorType() {

@@ -130,6 +130,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicSource(ServerPlayer player, MusicSource source) {
         OENbtUtil.writeSerializable(getPlayerData(player), "MusicSource", source);
+        setChanged();
     }
 
     public String getMyMusicSourceName() {
@@ -138,6 +139,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicSourceName(ServerPlayer player, String name) {
         getPlayerData(player).putString("MusicSourceName", name);
+        setChanged();
     }
 
     public String getMyMusicAuthor() {
@@ -146,6 +148,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicAuthor(ServerPlayer player, String name) {
         getPlayerData(player).putString("MusicAuthor", name);
+        setChanged();
     }
 
     public String getMyMusicSearchName() {
@@ -154,6 +157,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicSearchName(ServerPlayer player, String name) {
         getPlayerData(player).putString("MusicSearchName", name);
+        setChanged();
     }
 
     public String getMyMusicLoaderType() {
@@ -162,6 +166,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicLoaderType(ServerPlayer player, String name) {
         getPlayerData(player).putString("MusicLoaderType", name);
+        setChanged();
     }
 
     public void setSelectedPlayList(ServerPlayer player, UUID selectedPlayList) {
@@ -178,6 +183,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         } else {
             getPlayerData(player).remove("SelectedPlayList");
         }
+        setChanged();
     }
 
 
@@ -191,6 +197,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         var tag = getPlayerData(player);
         tag.remove("InvitePlayers");
         OENbtUtil.writeUUIDList(tag, "InvitePlayers", players);
+        setChanged();
     }
 
     public String getMyInvitePlayerName() {
@@ -199,10 +206,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setInvitePlayerName(ServerPlayer player, String name) {
         getPlayerData(player).putString("InvitePlayerName", name);
+        setChanged();
     }
 
     public void setImage(ServerPlayer player, ImageInfo image) {
         OENbtUtil.writeSerializable(getPlayerData(player), "Image", image);
+        setChanged();
     }
 
     public ImageInfo getMyImage() {
@@ -217,6 +226,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setInitialAuthority(ServerPlayer player, String initialAuthority) {
         getPlayerData(player).putString("InitialAuthority", initialAuthority);
+        setChanged();
     }
 
     public String getMyPublishing() {
@@ -225,6 +235,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setPublishing(ServerPlayer player, String publishing) {
         getPlayerData(player).putString("Publishing", publishing);
+        setChanged();
     }
 
     public String getMyCreateName() {
@@ -233,10 +244,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setCreateName(ServerPlayer player, String name) {
         getPlayerData(player).putString("CreateName", name);
+        setChanged();
     }
 
     public void setImageURL(ServerPlayer player, String url) {
         getPlayerData(player).putString("ImageURL", url);
+        setChanged();
     }
 
     public String getMyImageURL() {
@@ -253,6 +266,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         if (oldM != type)
             updateMonitor(player, type, oldM);
         getPlayerData(player).putString("Monitor", type.getName());
+        setChanged();
     }
 
     public MonitorType getMyMonitor(Player player) {

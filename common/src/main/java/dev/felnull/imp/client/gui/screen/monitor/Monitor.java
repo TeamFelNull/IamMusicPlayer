@@ -2,6 +2,7 @@ package dev.felnull.imp.client.gui.screen.monitor;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
+import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
@@ -80,5 +81,9 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
 
     public PlayImageRenderer getPlayImageRenderer() {
         return PlayImageRenderer.getInstance();
+    }
+
+    public MusicSyncManager getSyncManager() {
+        return MusicSyncManager.getInstance();
     }
 }

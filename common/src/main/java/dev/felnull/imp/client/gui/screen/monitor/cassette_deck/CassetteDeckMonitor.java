@@ -9,6 +9,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,11 +38,16 @@ public class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntity> {
         return monitorFactory.get(type).create(type, screen);
     }
 
+    public BlockEntity getBlockEntity() {
+        return getScreen().getBlockEntity();
+    }
+
     public static void firstInit() {
         registerMonitors(CassetteDeckBlockEntity.MonitorType.OFF, OffCDMonitor::new);
         registerMonitors(CassetteDeckBlockEntity.MonitorType.MENU, MenuCDMonitor::new);
         registerMonitors(CassetteDeckBlockEntity.MonitorType.WRITE, WriteCDMonitor::new);
         registerMonitors(CassetteDeckBlockEntity.MonitorType.PLAYBACK, PlaybackCDMonitor::new);
+        registerMonitors(CassetteDeckBlockEntity.MonitorType.WRITE_EXECUTION, WriteExecutionCDMonitor::new);
     }
 
     private static void registerMonitors(CassetteDeckBlockEntity.MonitorType type, MonitorFactory factory) {

@@ -136,6 +136,7 @@
   "imp.text.unknownPlayer": "Unknown",
   "imp.text.noAntenna": "Antenna is not set",
   "imp.text.noCassetteTape": "Please set the cassette tape",
+  "imp.text.writing": "Writing",
   "imp.text.noMusicCassetteTape": "No music has been written",
   "imp.fileChooser.title.image": "Open Image",
   "imp.fileChooser.files.all": "All Files",
