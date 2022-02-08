@@ -15,8 +15,8 @@ import java.util.*;
 
 public class ServerMessageHandler {
 
-    public static void onMusicReadyResultMessage(IMPPackets.MusicReadyResultMessage message, NetworkManager.PacketContext packetContext) {
-        packetContext.queue(() -> MusicRingManager.getInstance().addReadyPlayer((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitID, message.result, message.retry));
+    public static void onMusicReadyResultMessage(IMPPackets.MusicRingReadyResultMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> MusicRingManager.getInstance().addReadyPlayer((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitID, message.result, message.retry, message.elapsed));
     }
 
     public static void onMusicAddMessage(IMPPackets.MusicAddMessage message, NetworkManager.PacketContext packetContext) {

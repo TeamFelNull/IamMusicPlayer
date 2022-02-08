@@ -46,10 +46,10 @@ public class MusicRingManager {
         return false;
     }
 
-    public void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry) {
+    public void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry, long elapsed) {
         var ring = MUSIC_RINGERS.get(player.getLevel());
         if (ring != null)
-            ring.addReadyPlayer(player, uuid, waitUUID, result, retry);
+            ring.addReadyPlayer(player, uuid, waitUUID, result, retry, elapsed);
 
     }
 

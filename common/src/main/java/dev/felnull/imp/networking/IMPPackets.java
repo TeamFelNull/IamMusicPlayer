@@ -26,39 +26,76 @@ public class IMPPackets {
     public static final ResourceLocation MUSIC_SYNC = new ResourceLocation(IamMusicPlayer.MODID, "music_sync");
     public static final ResourceLocation MUSIC_PLAYLIST_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_playlist_add");
     public static final ResourceLocation MUSIC_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_add");
-    public static final ResourceLocation MUSIC_READY = new ResourceLocation(IamMusicPlayer.MODID, "music_ring");
-    public static final ResourceLocation MUSIC_READY_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ready_result");
+    public static final ResourceLocation MUSIC_RING_READY = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready");
+    public static final ResourceLocation MUSIC_RING_READY_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready_result");
+    public static final ResourceLocation MUSIC_RING_STATE = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_state");
+    public static final ResourceLocation MUSIC_RING_MIDDLE_PLAY = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_middle_play");
 
     public static void init() {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListAddMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicAddMessage(friendlyByteBuf), packetContext));
-        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicReadyResultMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicRingReadyResultMessage(friendlyByteBuf), packetContext));
     }
 
     public static void clientInit() {
         NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicSyncResponseMessage(new MusicSyncResponseMessage(friendlyByteBuf), packetContext));
-        NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_READY, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicReadyResponseMessage(new MusicReadyMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_RING_READY, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicRingReadyResponseMessage(new MusicReadyMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_RING_STATE, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicRingStateResponseMessage(new MusicRingStateMessage(friendlyByteBuf), packetContext));
     }
 
-    public static class MusicReadyResultMessage implements PacketMessage {
+    public static class MusicRingStateMessage implements PacketMessage {
+        public final UUID uuid;
+        public final int num;
+        public final long elapsed;
+
+        public MusicRingStateMessage(FriendlyByteBuf bf) {
+            this.uuid = bf.readUUID();
+            this.num = bf.readInt();
+            this.elapsed = bf.readLong();
+        }
+
+        public MusicRingStateMessage(UUID uuid, int num) {
+            this(uuid, num, 0);
+        }
+
+        public MusicRingStateMessage(UUID uuid, int num, long elapsed) {
+            this.uuid = uuid;
+            this.num = num;
+            this.elapsed = elapsed;
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB() {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(uuid);
+            buf.writeInt(num);
+            buf.writeLong(elapsed);
+            return buf;
+        }
+    }
+
+    public static class MusicRingReadyResultMessage implements PacketMessage {
         public final UUID waitID;
         public final UUID uuid;
         public final boolean result;
         public final boolean retry;
+        public final long elapsed;
 
-        public MusicReadyResultMessage(FriendlyByteBuf bf) {
+        public MusicRingReadyResultMessage(FriendlyByteBuf bf) {
             this.waitID = bf.readUUID();
             this.uuid = bf.readUUID();
             this.result = bf.readBoolean();
             this.retry = bf.readBoolean();
+            this.elapsed = bf.readLong();
         }
 
-        public MusicReadyResultMessage(UUID waitID, UUID uuid, boolean result, boolean retry) {
+        public MusicRingReadyResultMessage(UUID waitID, UUID uuid, boolean result, boolean retry, long elapsed) {
             this.waitID = waitID;
             this.uuid = uuid;
             this.result = result;
             this.retry = retry;
+            this.elapsed = elapsed;
         }
 
         @Override
@@ -68,6 +105,7 @@ public class IMPPackets {
             buf.writeUUID(uuid);
             buf.writeBoolean(result);
             buf.writeBoolean(retry);
+            buf.writeLong(elapsed);
             return buf;
         }
     }

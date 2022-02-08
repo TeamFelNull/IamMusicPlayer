@@ -52,8 +52,9 @@ public class CassetteTapeItem extends Item implements DyeableLeatherItem {
         return 0;
     }
 
-    public static void setTapePercentage(ItemStack stack, float par) {
+    public static ItemStack setTapePercentage(ItemStack stack, float par) {
         stack.getOrCreateTag().putFloat("TapePercentage", par);
+        return stack;
     }
 
     public static boolean isSameCassetteTape(ItemStack stack, ItemStack stack2) {

@@ -137,6 +137,12 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                     blockEntity.setRadio(false);
             }
 
+            if (!blockEntity.isPower()) {
+                if (blockEntity.isPlaying())
+                    blockEntity.setPlaying(false);
+                blockEntity.setRingerPosition((ServerLevel) level, 0);
+            }
+
             blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
 
             if (!ItemStack.matches(blockEntity.lastCassetteTape, blockEntity.getCassetteTape()))
@@ -379,12 +385,19 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                     }
                 }
                 case START -> {
-                    if (!isPlaying())
+                    if (isPower() && !isPlaying())
                         setPlaying(true);
                 }
                 case STOP -> {
-                    if (isPlaying())
+                    if (isPower() && isPlaying()) {
                         setPlaying(false);
+                        setRingerPosition(player.getLevel(), 0);
+                    }
+                }
+                case PAUSE -> {
+                    if (isPower() && isPlaying()) {
+                        setPlaying(false);
+                    }
                 }
             }
             return null;
@@ -468,6 +481,15 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     @Override
     public void setRingerPosition(ServerLevel level, long position) {
         this.ringerPosition = position;
+        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+            var m = getRingerMusicSource(level);
+            if (m != null) {
+                var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
+                if (!ItemStack.matches(nc, getCassetteTape()))
+                    noChangeCassetteTape = true;
+                setItem(0, nc);
+            }
+        }
         setChanged();
     }
 

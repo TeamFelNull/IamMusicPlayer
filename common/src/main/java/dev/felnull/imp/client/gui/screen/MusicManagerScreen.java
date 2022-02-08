@@ -252,7 +252,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     }
 
     public boolean isMusicLoading() {
-        return getMusicEngine().isLoading(musicPlayerId);
+        return getMusicEngine().isLoad(musicPlayerId);
     }
 
     private MusicEngine getMusicEngine() {

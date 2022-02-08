@@ -25,6 +25,9 @@ public class MusicRing {
         for (IMusicRinger value : ringers.values()) {
             if (!value.isRingerExist(level)) {
                 ringers.remove(value.getRingerUUID());
+                var pr = playerInfos.get(value.getRingerUUID());
+                if (pr != null)
+                    pr.depose(level);
                 playerInfos.remove(value.getRingerUUID());
                 waitRingers.remove(value.getRingerUUID());
                 break;
@@ -52,6 +55,7 @@ public class MusicRing {
             var pr = playerInfos.get(value.getRingerUUID());
             if (pr != null) {
                 if (stopFlg) {
+                    pr.depose(level);
                     playerInfos.remove(value.getRingerUUID());
                     waitRingers.remove(value.getRingerUUID());
                 } else {
@@ -63,6 +67,7 @@ public class MusicRing {
                         } else {
                             value.setRingerPosition(level, 0);
                             if (value.isRingerLoop(level)) {
+                                pr.depose(level);
                                 playerInfos.remove(value.getRingerUUID());
                             } else {
                                 value.setRingerPlaying(level, false);
@@ -113,17 +118,19 @@ public class MusicRing {
         return new MusicPlaybackInfo(tr.getKey(), tr.getValue(), ringer.getRingerVolume(level), ringer.getRingerRange(level));
     }
 
-    protected void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry) {
+    protected void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry, long elapsed) {
         var pr = playerInfos.get(uuid);
         if (pr != null && pr.waitUUID.equals(waitUUID))
-            pr.addReadyPlayer(player, result, result);
+            pr.addReadyPlayer(player, result, retry, elapsed);
     }
 
     private class RingedPlayerInfos {
         private final UUID uuid;
         private final UUID waitUUID = UUID.randomUUID();
         private final List<UUID> firstWaitPlayers = new ArrayList<>();
+        private final List<UUID> firstReadyPlayers = new ArrayList<>();
         private final List<UUID> listenPlayers = new ArrayList<>();
+        private final Map<UUID, Long> failurePlayers = new HashMap<>();
         private final long startTime;
         private boolean notWait;
 
@@ -135,30 +142,48 @@ public class MusicRing {
 
         private void sendFirstPackets(ServerLevel level) {
             for (UUID firstWaitPlayer : firstWaitPlayers) {
-                var player = level.getPlayerByUUID(firstWaitPlayer);
-                if (player instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRinger().getRingerPosition(level)).toFBB());
+                if (level.getPlayerByUUID(firstWaitPlayer) instanceof ServerPlayer serverPlayer)
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRinger().getRingerPosition(level)).toFBB());
             }
         }
 
         private void sendStopPackets(UUID player, ServerLevel level) {
-            var pl = level.getPlayerByUUID(player);
-            if (pl != null) {
-
-            }
-            System.out.println("stop");
+            if (level.getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
+                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(uuid, 1).toFBB());
         }
 
-        private void sendStartPacket(UUID player, ServerLevel level) {
-            System.out.println("start");
+        private void sendMiddleStartPacket(UUID player, ServerLevel level) {
+            if (level.getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
+                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRinger().getRingerPosition(level)).toFBB());
         }
 
-        private void addReadyPlayer(ServerPlayer player, boolean result, boolean retry) {
+        private void addReadyPlayer(ServerPlayer player, boolean result, boolean retry, long elapsed) {
             var id = player.getGameProfile().getId();
-            if (result) {
-                listenPlayers.add(id);
+            if (notWait) {
+                if (listenPlayers.contains(id)) {
+                    if (result) {
+                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(uuid, 0, elapsed).toFBB());
+                    } else {
+                        failurePlayers.put(id, System.currentTimeMillis());
+                        listenPlayers.remove(id);
+                    }
+                }
+            } else {
+                if (result) {
+                    listenPlayers.add(id);
+                    firstReadyPlayers.add(id);
+                } else {
+                    failurePlayers.put(id, System.currentTimeMillis());
+                }
+                firstWaitPlayers.remove(id);
             }
-            firstWaitPlayers.remove(id);
+        }
+
+        private void startReadyWaitPlayers(ServerLevel level) {
+            for (UUID pl : firstReadyPlayers) {
+                if (level.getPlayerByUUID(pl) instanceof ServerPlayer serverPlayer)
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(uuid, 0).toFBB());
+            }
         }
 
         private boolean tick(ServerLevel level, long currentTime) {
@@ -167,9 +192,11 @@ public class MusicRing {
                 for (ServerPlayer player : level.players()) {
                     if (canListen(player, level)) {
                         var id = player.getGameProfile().getId();
-                        nl.add(id);
-                        if (!listenPlayers.contains(id))
-                            sendStartPacket(id, level);
+                        if (!isFailureCoolDown(id)) {
+                            nl.add(id);
+                            if (!listenPlayers.contains(id))
+                                sendMiddleStartPacket(id, level);
+                        }
                     }
                 }
 
@@ -184,9 +211,17 @@ public class MusicRing {
                 return true;
             }
             if (canPlayPlayersCheck(level, currentTime)) {
+                startReadyWaitPlayers(level);
                 notWait = true;
                 return true;
             }
+            return false;
+        }
+
+        protected boolean isFailureCoolDown(UUID uuid) {
+            Long fr = failurePlayers.get(uuid);
+            if (fr != null)
+                return (System.currentTimeMillis() - fr) <= getReTryTime();
             return false;
         }
 
@@ -212,9 +247,20 @@ public class MusicRing {
         private IMusicRinger getRinger() {
             return ringers.get(uuid);
         }
+
+        private void depose(ServerLevel level) {
+            for (UUID listenPlayer : listenPlayers) {
+                sendStopPackets(listenPlayer, level);
+            }
+        }
     }
+
 
     public static long getMaxWaitTime() {
         return 1000 * 10;
+    }
+
+    public static long getReTryTime() {
+        return 1000 * 3;
     }
 }

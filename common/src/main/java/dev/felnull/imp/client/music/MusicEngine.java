@@ -298,7 +298,7 @@ public class MusicEngine {
         ClientMusicEvent.ADD_SUBTITLE.invoker().add(subtitle);
     }
 
-    public boolean isLoading(UUID musicPlayerId) {
+    public boolean isLoad(UUID musicPlayerId) {
         return MUSIC_LOADS.containsKey(musicPlayerId);
     }
 
