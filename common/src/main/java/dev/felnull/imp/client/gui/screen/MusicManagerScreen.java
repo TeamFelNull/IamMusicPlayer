@@ -10,7 +10,7 @@ import dev.felnull.imp.client.music.MusicLoadThread;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.inventory.MusicManagerMenu;
 import dev.felnull.imp.music.MusicPlaybackInfo;
-import dev.felnull.imp.music.ringer.MusicRingManager;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.OENbtUtil;

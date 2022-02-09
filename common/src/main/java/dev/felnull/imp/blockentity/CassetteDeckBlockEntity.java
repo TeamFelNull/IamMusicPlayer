@@ -3,7 +3,7 @@ package dev.felnull.imp.blockentity;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.CassetteDeckMenu;
 import dev.felnull.imp.item.CassetteTapeItem;
-import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.imp.util.IMPNbtUtil;

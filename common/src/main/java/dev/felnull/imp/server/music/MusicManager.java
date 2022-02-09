@@ -1,6 +1,6 @@
-package dev.felnull.imp.music;
+package dev.felnull.imp.server.music;
 
-import dev.felnull.imp.data.MusicSaveData;
+import dev.felnull.imp.server.data.MusicSaveData;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;

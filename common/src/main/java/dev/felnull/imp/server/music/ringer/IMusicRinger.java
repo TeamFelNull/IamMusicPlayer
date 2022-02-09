@@ -1,7 +1,8 @@
-package dev.felnull.imp.music.ringer;
+package dev.felnull.imp.server.music.ringer;
 
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
@@ -12,6 +13,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public interface IMusicRinger {
+    public Component getRingerName(ServerLevel level);
+
+    public ServerLevel getRingerLevel();
+
     public UUID getRingerUUID();
 
     public boolean isRingerExist(ServerLevel level);

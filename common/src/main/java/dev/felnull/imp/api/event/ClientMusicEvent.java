@@ -1,4 +1,4 @@
-package dev.felnull.imp.api.event.client;
+package dev.felnull.imp.api.event;
 
 import dev.architectury.event.Event;
 import dev.architectury.event.EventFactory;

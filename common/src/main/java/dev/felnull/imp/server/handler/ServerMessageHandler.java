@@ -1,13 +1,13 @@
-package dev.felnull.imp.handler;
+package dev.felnull.imp.server.handler;
 
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.utils.GameInstance;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
-import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.imp.music.ringer.MusicRingManager;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerPlayer;
 

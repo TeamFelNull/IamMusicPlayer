@@ -36,7 +36,12 @@ public class ClientMessageHandler {
                 NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, false, false, 0).toFBB());
             }
         } else {
-            MusicEngine.getInstance().loadAddMusicPlayer(uuid, playbackInfo, source, position, (result, time, player, retry) -> {
+            var mm = MusicEngine.getInstance();
+            if (mm.isPlaying(uuid))
+                mm.stopMusicPlayer(uuid);
+            if (mm.isLoad(uuid))
+                mm.stopLoadMusicPlayer(uuid);
+            mm.loadAddMusicPlayer(uuid, playbackInfo, source, position, (result, time, player, retry) -> {
                 if (!result && retry) {
                     Thread th = new Thread(() -> {
                         try {
@@ -49,7 +54,7 @@ public class ClientMessageHandler {
                 } else {
                     if (autoPlay) {
                         if (result) {
-                            MusicEngine.getInstance().playMusicPlayer(uuid, time);
+                            mm.playMusicPlayer(uuid, time);
                         }
                     } else {
                         NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, result, retry, time).toFBB());

@@ -1,7 +1,7 @@
-package dev.felnull.imp.data;
+package dev.felnull.imp.server.data;
 
 import com.google.common.collect.Lists;
-import dev.felnull.imp.handler.ServerMessageHandler;
+import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.util.IMPNbtUtil;

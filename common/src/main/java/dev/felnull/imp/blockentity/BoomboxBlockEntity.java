@@ -6,8 +6,8 @@ import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.imp.music.ringer.IMusicRinger;
-import dev.felnull.imp.music.ringer.MusicRingManager;
+import dev.felnull.imp.server.music.ringer.IMusicRinger;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -132,15 +132,16 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
         }
 
         if (!level.isClientSide()) {
+            var monitor = MonitorType.getTypeByBE(blockEntity);
             if (blockEntity.isRadio()) {
                 if (blockEntity.getAntenna().isEmpty() || !IMPItemUtil.isAntenna(blockEntity.getAntenna()))
                     blockEntity.setRadio(false);
             }
 
-            if (!blockEntity.isPower()) {
+            if (monitor != MonitorType.PLAYING || blockEntity.getCassetteTape().isEmpty() || !IMPItemUtil.isCassetteTape(blockEntity.getCassetteTape())) {
+                blockEntity.setRingerPosition((ServerLevel) level, 0);
                 if (blockEntity.isPlaying())
                     blockEntity.setPlaying(false);
-                blockEntity.setRingerPosition((ServerLevel) level, 0);
             }
 
             blockEntity.setRaisedHandleState(blockEntity.handleRaisedProgress >= blockEntity.getHandleRaisedAll());
@@ -241,6 +242,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
             noChangeCassetteTape = false;
             return;
         }
+        setRingerPosition(getRingerLevel(), 0);
         this.oldCassetteTape = old;
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
             this.changeCassetteTape = true;
@@ -438,6 +440,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     }
 
     @Override
+    public Component getRingerName(ServerLevel level) {
+        return getDefaultName();
+    }
+
+    @Override
     public UUID getRingerUUID() {
         return ringerUUID;
     }
@@ -476,6 +483,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     @Override
     public long getRingerPosition(ServerLevel level) {
         return this.ringerPosition;
+    }
+
+    @Override
+    public ServerLevel getRingerLevel() {
+        return (ServerLevel) this.level;
     }
 
     @Override

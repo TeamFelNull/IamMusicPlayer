@@ -2,7 +2,7 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
-import dev.felnull.imp.music.MusicManager;
+import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.OENbtUtil;

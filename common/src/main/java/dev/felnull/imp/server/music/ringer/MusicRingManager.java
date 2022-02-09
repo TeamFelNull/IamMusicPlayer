@@ -1,4 +1,4 @@
-package dev.felnull.imp.music.ringer;
+package dev.felnull.imp.server.music.ringer;
 
 import dev.felnull.imp.IamMusicPlayer;
 import net.minecraft.nbt.CompoundTag;
@@ -31,6 +31,10 @@ public class MusicRingManager {
             MUSIC_RINGERS.put(level, ringer);
         }
         ringer.tick(level);
+    }
+
+    public Map<ServerLevel, MusicRing> getMusicRingers() {
+        return MUSIC_RINGERS;
     }
 
     public void addRinger(ServerLevel level, IMusicRinger ringer) {

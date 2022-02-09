@@ -1,4 +1,4 @@
-package dev.felnull.imp.data;
+package dev.felnull.imp.server.data;
 
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.otyacraftengine.data.OEBaseSaveData;

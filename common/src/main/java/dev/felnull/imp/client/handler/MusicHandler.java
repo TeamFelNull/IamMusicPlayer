@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.handler;
 
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.api.event.client.ClientMusicEvent;
+import dev.felnull.imp.api.event.ClientMusicEvent;
 import dev.felnull.imp.client.gui.components.MusicSubtitleOverlay;
 import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
 import dev.felnull.imp.client.music.subtitle.SubtitleType;

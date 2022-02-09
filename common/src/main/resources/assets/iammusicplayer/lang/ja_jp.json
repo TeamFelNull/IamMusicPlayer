@@ -23,6 +23,17 @@
   "subtitleType.off": "オフ",
   "subtitleType.vanilla": "バニラ",
   "subtitleType.overlay": "オーバーレイ",
+  "_comment.c": "Command",
+  "commands.imp.ringer.info": "現在存在する音源は %s 個、再生中は %s 個です (%s)",
+  "commands.imp.ringer.info.all": "現在存在する音源は %s 個、再生中は %s 個です",
+  "commands.imp.ringer.list.all": "存在する音源は以下の通りです",
+  "commands.imp.ringer.list": "%s に存在する音源は以下の通りです",
+  "commands.imp.ringer.list.all.notFound": "音源は見つかりませんでした",
+  "commands.imp.ringer.list.notFound": "%s に存在する音源は見つかりませんでした",
+  "commands.imp.ringer.list.entry.playing": "%s、場所は %s、現在再生中",
+  "commands.imp.ringer.list.entry": "%s、場所は %s",
+  "commands.imp.ringer.list.all.entry.playing": "%s、場所は %s (%s)、現在再生中",
+  "commands.imp.ringer.list.all.entry": "%s、場所は %s (%s)",
   "_comment.cr": "CreativeTab",
-  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
+  "itemGroup.iammusicplayer.iammusicplayer": "IamMusicPlayer"
 }

@@ -1,8 +1,8 @@
-package dev.felnull.imp.handler;
+package dev.felnull.imp.server.handler;
 
 import dev.architectury.event.events.common.LifecycleEvent;
 import dev.architectury.event.events.common.TickEvent;
-import dev.felnull.imp.music.ringer.MusicRingManager;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 

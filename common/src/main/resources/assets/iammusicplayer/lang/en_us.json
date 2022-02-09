@@ -158,6 +158,17 @@
   "subtitleType.off": "Off",
   "subtitleType.vanilla": "Vanilla",
   "subtitleType.overlay": "Overlay",
+  "_comment.c": "Command",
+  "commands.imp.ringer.info": "There are currently %s ringers and %s during playback (%s)",
+  "commands.imp.ringer.info.all": "There are currently %s ringers and %s during playback",
+  "commands.imp.ringer.list": "The existing ringer are as follows in %s",
+  "commands.imp.ringer.list.all.notFound": "Ringer was not found",
+  "commands.imp.ringer.list.notFound": "Ringer was not found in %s",
+  "commands.imp.ringer.list.all": "The existing ringer are as follows",
+  "commands.imp.ringer.list.entry.playing": "%s, exists at %s, and is playing",
+  "commands.imp.ringer.list.entry": "%s, exists at %s",
+  "commands.imp.ringer.list.all.entry.playing": "%s, exists at %s (%s), and is playing",
+  "commands.imp.ringer.list.all.entry": "%s, exists at %s (%s)",
   "_comment.cr": "CreativeTab",
-  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
+  "itemGroup.iammusicplayer.iammusicplayer": "IamMusicPlayer"
 }

@@ -1,4 +1,4 @@
-package dev.felnull.imp.music.ringer;
+package dev.felnull.imp.server.music.ringer;
 
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -22,6 +22,7 @@ public class MusicRing {
     }
 
     protected void tick(ServerLevel level) {
+
         for (IMusicRinger value : ringers.values()) {
             if (!value.isRingerExist(level)) {
                 ringers.remove(value.getRingerUUID());
@@ -90,7 +91,7 @@ public class MusicRing {
             ringers.put(ringer.getRingerUUID(), ringer);
     }
 
-    protected Map<UUID, IMusicRinger> getRingers() {
+    public Map<UUID, IMusicRinger> getRingers() {
         return ringers;
     }
 
@@ -186,6 +187,13 @@ public class MusicRing {
             }
         }
 
+        private void sendHeartBeat(ServerLevel level){
+            for (UUID player : listenPlayers) {
+             //   if (level.getPlayerByUUID(firstWaitPlayer) instanceof ServerPlayer serverPlayer)
+            //        NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRinger().getRingerPosition(level)).toFBB());
+            }
+        }
+
         private boolean tick(ServerLevel level, long currentTime) {
             if (notWait) {
                 List<UUID> nl = new ArrayList<>();
@@ -218,7 +226,7 @@ public class MusicRing {
             return false;
         }
 
-        protected boolean isFailureCoolDown(UUID uuid) {
+        private boolean isFailureCoolDown(UUID uuid) {
             Long fr = failurePlayers.get(uuid);
             if (fr != null)
                 return (System.currentTimeMillis() - fr) <= getReTryTime();

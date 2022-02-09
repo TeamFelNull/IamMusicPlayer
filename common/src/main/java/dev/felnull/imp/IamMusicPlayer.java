@@ -2,11 +2,12 @@ package dev.felnull.imp;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.IMPBlockEntitys;
-import dev.felnull.imp.data.IMPWorldData;
-import dev.felnull.imp.handler.ServerMusicHandler;
 import dev.felnull.imp.inventory.IMPMenus;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.imp.server.data.IMPWorldData;
+import dev.felnull.imp.server.handler.ServerHandler;
+import dev.felnull.imp.server.handler.ServerMusicHandler;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 
@@ -22,5 +23,6 @@ public class IamMusicPlayer {
         IMPMenus.init();
         IMPWorldData.init();
         ServerMusicHandler.init();
+        ServerHandler.init();
     }
 }

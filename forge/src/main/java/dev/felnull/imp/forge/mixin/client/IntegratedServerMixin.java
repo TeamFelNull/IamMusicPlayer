@@ -1,7 +1,7 @@
 package dev.felnull.imp.forge.mixin.client;
 
 
-import dev.felnull.imp.music.ringer.MusicRingManager;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.client.server.IntegratedServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
