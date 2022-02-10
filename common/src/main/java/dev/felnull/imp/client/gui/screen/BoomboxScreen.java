@@ -43,7 +43,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         super.init();
         this.addRenderableWidget(new BoomboxButton(leftPos + 5, topPos + 17, BoomboxBlockEntity.ButtonType.POWER, n -> {
             insPressButton(BoomboxBlockEntity.ButtonType.POWER);
-        }, this::getButtons));
+        }, this::getButtons, this::isPower));
 
         this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19, topPos + 17, BoomboxBlockEntity.ButtonType.RADIO, n -> {
             if (!getAntenna().isEmpty() && IMPItemUtil.isAntenna(getAntenna())) {
@@ -115,12 +115,52 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         }
     }
 
+    public boolean isPlaying() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.isPlaying();
+        }
+        return false;
+    }
+
+    public int getVolume() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.getVolume();
+        }
+        return 0;
+    }
+
+    public long getMusicPosition() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.getMusicPosition();
+        }
+        return 0;
+    }
+
+    private boolean isPower() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.isPower();
+        } else {
+            return BoomboxItem.isPowerOn(getItem());
+        }
+        return false;
+    }
+
     public ItemStack getCassetteTape() {
         return getMenu().getItems().get(0);
     }
 
     public ItemStack getAntenna() {
         return getMenu().getItems().get(1);
+    }
+
+    public void insVolume(int volume) {
+        var tag = new CompoundTag();
+        tag.putInt("volume", volume);
+        instruction("set_volume", 0, tag);
     }
 
     @Override
@@ -139,7 +179,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     private void insPressButton(BoomboxBlockEntity.ButtonType type) {
         var tag = new CompoundTag();
         tag.putString("Type", type.getName());
-        instruction("ButtonsPress", 0, tag);
+        instruction("buttons_press", 0, tag);
     }
 
     private void changeScreenMonitor(BoomboxBlockEntity.MonitorType type) {

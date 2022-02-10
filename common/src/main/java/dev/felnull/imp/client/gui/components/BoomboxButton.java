@@ -6,16 +6,23 @@ import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.Button;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class BoomboxButton extends Button {
     private final BoomboxBlockEntity.ButtonType type;
     private final Supplier<BoomboxBlockEntity.Buttons> buttons;
+    private final BooleanSupplier downShift;
 
     public BoomboxButton(int x, int y, BoomboxBlockEntity.ButtonType type, OnPress onPress, Supplier<BoomboxBlockEntity.Buttons> buttons) {
+        this(x, y, type, onPress, buttons, () -> false);
+    }
+
+    public BoomboxButton(int x, int y, BoomboxBlockEntity.ButtonType type, OnPress onPress, Supplier<BoomboxBlockEntity.Buttons> buttons, BooleanSupplier downShift) {
         super(x, y, 19, 13, type.getComponent(), onPress);
         this.type = type;
         this.buttons = buttons;
+        this.downShift = downShift;
     }
 
     @Override
@@ -27,7 +34,7 @@ public class BoomboxButton extends Button {
 
         float zx = ((float) width - 9f) / 2f;
         float zy = ((float) height - 9f) / 2f;
-        OERenderUtil.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x + zx, y + zy, (type.ordinal() - 1) * 9, 188, 9, 9);
+        OERenderUtil.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x + zx, y + zy, (type.ordinal() - 1) * 9, 188 + (downShift.getAsBoolean() ? 9 : 0), 9, 9);
     }
 
     public BoomboxBlockEntity.ButtonType getType() {

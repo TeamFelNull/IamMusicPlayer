@@ -76,6 +76,7 @@
   "imp.editBox.invitePlayerByName": "Invite player by name",
   "imp.editBox.musicSourceName": "Music source name",
   "imp.editBox.musicSearchName": "Music search name",
+  "imp.widget.volume": "Volume",
   "imp.text.playerCount": "%s Players",
   "imp.text.musicCount": "%s Musics",
   "imp.text.invitation": "Invitation",

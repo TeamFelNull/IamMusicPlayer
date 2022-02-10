@@ -1,6 +1,6 @@
 package dev.felnull.imp.music;
 
-import dev.felnull.otyacraftengine.data.ITAGSerializable;
+import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 

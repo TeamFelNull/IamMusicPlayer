@@ -242,8 +242,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
             noChangeCassetteTape = false;
             return;
         }
+
         setRingerPosition(getRingerLevel(), 0);
-        this.playing = false;
+        setPlaying(false);
+
         this.oldCassetteTape = old;
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
             this.changeCassetteTape = true;
@@ -345,11 +347,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     }
 
     public int getVolume() {
-        return Mth.clamp(this.volume, 0, 200);
+        return Mth.clamp(this.volume, 0, 300);
     }
 
     public float getRawVolume() {
-        return (float) getVolume() / 100f;
+        return (float) getVolume() / 300f;
     }
 
     public void setVolume(int volume) {
@@ -359,7 +361,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public CompoundTag onInstruction(ServerPlayer player, String name, int num, CompoundTag data) {
-        if ("ButtonsPress".equals(name)) {
+        if ("buttons_press".equals(name)) {
             ButtonType type = ButtonType.getByName(data.getString("Type"));
             switch (type) {
                 case POWER -> setPower(!isPower());
@@ -370,13 +372,13 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                 }
                 case VOL_UP -> {
                     if (isPower())
-                        setVolume(Math.min(volume + 10, 200));
+                        setVolume(Math.min(volume + 10, 300));
                     setMute(false);
                 }
                 case VOL_MUTE -> setMute(!isMute());
                 case VOL_MAX -> {
                     if (isPower())
-                        setVolume(200);
+                        setVolume(300);
                     setMute(false);
                 }
                 case RADIO -> {
@@ -388,8 +390,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                     }
                 }
                 case START -> {
-                    if (isPower() && !isPlaying())
+                    if (isMusicCassetteTapeExist()) {
+                        setPower(true);
                         setPlaying(true);
+                    }
                 }
                 case STOP -> {
                     if (isPower() && isPlaying()) {
@@ -404,6 +408,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                 }
             }
             return null;
+        } else if ("set_volume".equals(name)) {
+            setVolume(data.getInt("volume"));
+            return null;
         }
         return super.onInstruction(player, name, num, data);
     }
@@ -413,6 +420,13 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
         level.playSound(null, getBlockPos(), isLidOpen() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 
+    private boolean isMusicCassetteTapeExist() {
+        return isCassetteTapeExist() && CassetteTapeItem.getMusic(getCassetteTape()) != null;
+    }
+
+    private boolean isCassetteTapeExist() {
+        return !getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape());
+    }
 
     public boolean cycleLidOpen() {
         boolean flg = lidOpenProgress >= getLidOpenProgressAll();
@@ -433,7 +447,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     }
 
     public Buttons getButtons() {
-        return new Buttons(isRadio(), isPlaying(), false, isLoop(), volume <= 0 || isMute(), !isMute() && volume >= 200);
+        return new Buttons(isRadio(), isPlaying(), false, isLoop(), volume <= 0 || isMute(), !isMute() && volume >= 300);
     }
 
     public ItemStack getAntenna() {
@@ -468,7 +482,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
-        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+        if (isMusicCassetteTapeExist()) {
             var m = CassetteTapeItem.getMusic(getCassetteTape());
             if (m != null)
                 return m.getSource();
@@ -486,6 +500,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
         return this.ringerPosition;
     }
 
+    public long getMusicPosition() {
+        return ringerPosition;
+    }
+
     @Override
     public ServerLevel getRingerLevel() {
         return (ServerLevel) this.level;
@@ -494,7 +512,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     @Override
     public void setRingerPosition(ServerLevel level, long position) {
         this.ringerPosition = position;
-        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+        if (isMusicCassetteTapeExist()) {
             var m = getRingerMusicSource(level);
             if (m != null) {
                 var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
@@ -518,7 +536,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public float getRingerVolume(ServerLevel level) {
-        return 1f;
+        return getRawVolume();
     }
 
     @Override

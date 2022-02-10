@@ -1,8 +1,8 @@
 package dev.felnull.imp.server.data;
 
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.otyacraftengine.data.OEBaseSaveData;
-import dev.felnull.otyacraftengine.data.WorldDataManager;
+import dev.felnull.otyacraftengine.server.data.OEBaseSaveData;
+import dev.felnull.otyacraftengine.server.data.WorldDataManager;
 import net.minecraft.resources.ResourceLocation;
 
 public class IMPWorldData {

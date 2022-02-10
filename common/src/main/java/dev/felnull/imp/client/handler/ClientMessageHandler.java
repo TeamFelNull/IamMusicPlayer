@@ -7,13 +7,16 @@ import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.networking.IMPPackets;
+import net.minecraft.client.Minecraft;
 
 import java.util.Collections;
 import java.util.UUID;
 
 public class ClientMessageHandler {
+    private static final Minecraft mc = Minecraft.getInstance();
 
     public static void onMusicRingStateResponseMessage(IMPPackets.MusicRingStateMessage message, NetworkManager.PacketContext packetContext) {
+        if (mc.getConnection() == null) return;
         var mm = MusicEngine.getInstance();
         if (message.num == 0) {
             mm.playMusicPlayer(message.uuid, message.elapsed);
@@ -37,6 +40,7 @@ public class ClientMessageHandler {
     }
 
     private static void loadMusic(UUID waitID, UUID uuid, MusicPlaybackInfo playbackInfo, MusicSource source, long position, int tryCont, boolean autoPlay) {
+        if (mc.getConnection() == null) return;
         if (tryCont >= 3) {
             if (!autoPlay) {
                 NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, false, false, 0).toFBB());
