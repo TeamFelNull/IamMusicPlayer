@@ -3,17 +3,21 @@ package dev.felnull.imp.server.handler;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.utils.GameInstance;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
-import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.imp.server.music.MusicManager;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
 public class ServerMessageHandler {
+
+    public static void onMusicUpdateResultMessage(IMPPackets.MusicRingUpdateResultMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> MusicRingManager.getInstance().onUpdate((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitId, message.state));
+    }
 
     public static void onMusicReadyResultMessage(IMPPackets.MusicRingReadyResultMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> MusicRingManager.getInstance().addReadyPlayer((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitID, message.result, message.retry, message.elapsed));

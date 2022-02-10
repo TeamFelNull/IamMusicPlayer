@@ -243,6 +243,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
             return;
         }
         setRingerPosition(getRingerLevel(), 0);
+        this.playing = false;
         this.oldCassetteTape = old;
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
             this.changeCassetteTape = true;

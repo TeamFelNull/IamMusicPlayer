@@ -3,12 +3,12 @@ package dev.felnull.imp.networking;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.handler.ClientMessageHandler;
-import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import dev.felnull.otyacraftengine.networking.PacketMessage;
@@ -29,13 +29,14 @@ public class IMPPackets {
     public static final ResourceLocation MUSIC_RING_READY = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready");
     public static final ResourceLocation MUSIC_RING_READY_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready_result");
     public static final ResourceLocation MUSIC_RING_STATE = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_state");
-    public static final ResourceLocation MUSIC_RING_HEART_BEAT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_heart_beat");
+    public static final ResourceLocation MUSIC_RING_UPDATE_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_update_result");
 
     public static void init() {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListAddMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicAddMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicRingReadyResultMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_UPDATE_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicUpdateResultMessage(new MusicRingUpdateResultMessage(friendlyByteBuf), packetContext));
     }
 
     public static void clientInit() {
@@ -45,33 +46,69 @@ public class IMPPackets {
 
     }
 
+    public static class MusicRingUpdateResultMessage implements PacketMessage {
+        public final UUID uuid;
+        public final UUID waitId;
+        public final int state;
+
+        public MusicRingUpdateResultMessage(FriendlyByteBuf bf) {
+            this.uuid = bf.readUUID();
+            this.waitId = bf.readUUID();
+            this.state = bf.readInt();
+
+        }
+
+        public MusicRingUpdateResultMessage(UUID uuid, UUID waitId, int state) {
+            this.uuid = uuid;
+            this.waitId = waitId;
+            this.state = state;
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB() {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(this.uuid);
+            buf.writeUUID(this.waitId);
+            buf.writeInt(this.state);
+            return buf;
+        }
+    }
+
     public static class MusicRingStateMessage implements PacketMessage {
         public final UUID uuid;
+        public final UUID waitId;
         public final int num;
         public final long elapsed;
+        public final MusicPlaybackInfo playbackInfo;
 
         public MusicRingStateMessage(FriendlyByteBuf bf) {
             this.uuid = bf.readUUID();
+            this.waitId = bf.readUUID();
             this.num = bf.readInt();
             this.elapsed = bf.readLong();
+            this.playbackInfo = OENbtUtil.readSerializable(bf.readNbt(), "pbi", new MusicPlaybackInfo());
         }
 
-        public MusicRingStateMessage(UUID uuid, int num) {
-            this(uuid, num, 0);
+        public MusicRingStateMessage(UUID uuid, UUID waitId, int num) {
+            this(uuid, waitId, num, 0, MusicPlaybackInfo.EMPTY);
         }
 
-        public MusicRingStateMessage(UUID uuid, int num, long elapsed) {
+        public MusicRingStateMessage(UUID uuid, UUID waitId, int num, long elapsed, MusicPlaybackInfo playbackInfo) {
             this.uuid = uuid;
+            this.waitId = waitId;
             this.num = num;
             this.elapsed = elapsed;
+            this.playbackInfo = playbackInfo;
         }
 
         @Override
         public FriendlyByteBuf toFBB() {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(uuid);
+            buf.writeUUID(waitId);
             buf.writeInt(num);
             buf.writeLong(elapsed);
+            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "pbi", this.playbackInfo));
             return buf;
         }
     }

@@ -35,5 +35,5 @@
   "commands.imp.ringer.list.all.entry.playing": "%s、場所は %s (%s)、現在再生中",
   "commands.imp.ringer.list.all.entry": "%s、場所は %s (%s)",
   "_comment.cr": "CreativeTab",
-  "itemGroup.iammusicplayer.iammusicplayer": "IamMusicPlayer"
+  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
 }

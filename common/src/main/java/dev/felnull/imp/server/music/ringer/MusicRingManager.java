@@ -50,11 +50,16 @@ public class MusicRingManager {
         return false;
     }
 
+    public void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, int state) {
+        var ring = MUSIC_RINGERS.get(player.getLevel());
+        if (ring != null)
+            ring.onUpdate(player, uuid, waitUUID, state);
+    }
+
     public void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry, long elapsed) {
         var ring = MUSIC_RINGERS.get(player.getLevel());
         if (ring != null)
             ring.addReadyPlayer(player, uuid, waitUUID, result, retry, elapsed);
-
     }
 
     public boolean isExistRinger(ServerLevel level, UUID uuid) {

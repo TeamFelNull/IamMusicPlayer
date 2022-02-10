@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 public class MusicPlaybackInfo implements ITAGSerializable {
+    public static final MusicPlaybackInfo EMPTY = new MusicPlaybackInfo(new ResourceLocation("empty"), new CompoundTag(), 0, 0);
     private ResourceLocation tracker;
     private CompoundTag trackerTag;
     private float volume;

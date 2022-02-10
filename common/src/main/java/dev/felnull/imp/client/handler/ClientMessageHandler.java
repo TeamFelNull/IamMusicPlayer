@@ -16,13 +16,19 @@ public class ClientMessageHandler {
     public static void onMusicRingStateResponseMessage(IMPPackets.MusicRingStateMessage message, NetworkManager.PacketContext packetContext) {
         var mm = MusicEngine.getInstance();
         if (message.num == 0) {
-            if (!mm.isPlaying(message.uuid) && mm.isLoad(message.uuid))
-                mm.playMusicPlayer(message.uuid, message.elapsed);
+            mm.playMusicPlayer(message.uuid, message.elapsed);
         } else if (message.num == 1) {
-            if (mm.isPlaying(message.uuid))
-                mm.stopMusicPlayer(message.uuid);
-            if (mm.isLoad(message.uuid))
-                mm.stopLoadMusicPlayer(message.uuid);
+            mm.stopMusicPlayer(message.uuid);
+            mm.stopLoadMusicPlayer(message.uuid);
+        } else if (message.num == 2) {
+            int plFlg = 0;
+            if (mm.isPlaying(message.uuid)) {
+                mm.updateMusicPlaybackInfo(message.uuid, message.playbackInfo);
+                plFlg = 1;
+            } else if (mm.isLoad(message.uuid)) {
+                plFlg = 2;
+            }
+            NetworkManager.sendToServer(IMPPackets.MUSIC_RING_UPDATE_RESULT, new IMPPackets.MusicRingUpdateResultMessage(message.uuid, message.waitId, plFlg).toFBB());
         }
     }
 
@@ -37,10 +43,8 @@ public class ClientMessageHandler {
             }
         } else {
             var mm = MusicEngine.getInstance();
-            if (mm.isPlaying(uuid))
-                mm.stopMusicPlayer(uuid);
-            if (mm.isLoad(uuid))
-                mm.stopLoadMusicPlayer(uuid);
+            mm.stopMusicPlayer(uuid);
+            mm.stopLoadMusicPlayer(uuid);
             mm.loadAddMusicPlayer(uuid, playbackInfo, source, position, (result, time, player, retry) -> {
                 if (!result && retry) {
                     Thread th = new Thread(() -> {
