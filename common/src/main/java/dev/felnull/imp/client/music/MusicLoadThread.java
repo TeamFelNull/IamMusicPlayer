@@ -47,13 +47,15 @@ public class MusicLoadThread extends Thread {
             } catch (InterruptedException ex) {
                 if (!timeOut)
                     return;
-                LOGGER.error("Load check time out: " + source.getIdentifier());
+                if (IamMusicPlayer.CONFIG.errorLog)
+                    LOGGER.error("Load check time out: " + source.getIdentifier());
                 timeOut = false;
             } catch (Exception ignored) {
             }
         }
         if (loader == null) {
-            LOGGER.error("Non existent music loader: " + source.getLoaderType());
+            if (IamMusicPlayer.CONFIG.errorLog)
+                LOGGER.error("Non existent music loader: " + source.getLoaderType());
             listener.onResult(false, System.currentTimeMillis() - time, null, false);
             return;
         }
@@ -69,7 +71,8 @@ public class MusicLoadThread extends Thread {
                 throw new IllegalStateException("Load failed");
         } catch (InterruptedException ignored) {
             if (timeOut) {
-                LOGGER.error("Load time out: " + source.getIdentifier());
+                if (IamMusicPlayer.CONFIG.errorLog)
+                    LOGGER.error("Load time out: " + source.getIdentifier());
                 listener.onResult(false, System.currentTimeMillis() - time, null, false);
             }
             player.destroy();
@@ -77,7 +80,8 @@ public class MusicLoadThread extends Thread {
         } catch (Exception ex) {
             if (player != null)
                 player.destroy();
-            LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
+            if (IamMusicPlayer.CONFIG.errorLog)
+                LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
             listener.onResult(false, System.currentTimeMillis() - time, null, true);
             return;
         }

@@ -115,6 +115,14 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         }
     }
 
+    public boolean isMute() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.isMute();
+        }
+        return false;
+    }
+
     public boolean isPlaying() {
         if (isBlock()) {
             if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
@@ -149,6 +157,22 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         return false;
     }
 
+    public boolean isLoop() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.isLoop();
+        }
+        return false;
+    }
+
+    public boolean isMusicLoading() {
+        if (isBlock()) {
+            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
+                return boomboxBlockEntity.isLoadingMusic();
+        }
+        return false;
+    }
+
     public ItemStack getCassetteTape() {
         return getMenu().getItems().get(0);
     }
@@ -161,6 +185,29 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         var tag = new CompoundTag();
         tag.putInt("volume", volume);
         instruction("set_volume", 0, tag);
+    }
+
+    public void insPositionAndRestart(long position) {
+        var tag = new CompoundTag();
+        tag.putLong("position", position);
+        instruction("restat_and_set_position", 0, tag);
+    }
+
+
+    public void insLoop(boolean loop) {
+        var tag = new CompoundTag();
+        tag.putBoolean("loop", loop);
+        instruction("set_loop", 0, tag);
+    }
+
+    public void insPause() {
+        instruction("set_pause", 0, new CompoundTag());
+    }
+
+    public void insPlaying(boolean playing) {
+        var tag = new CompoundTag();
+        tag.putBoolean("playing", playing);
+        instruction("set_playing", 0, tag);
     }
 
     @Override

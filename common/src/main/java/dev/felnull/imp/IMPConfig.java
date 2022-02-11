@@ -11,6 +11,9 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("client")
+    public boolean errorLog = false;
+
+    @ConfigEntry.Category("client")
     public float volume = 1f;
 
     @ConfigEntry.Category("client")

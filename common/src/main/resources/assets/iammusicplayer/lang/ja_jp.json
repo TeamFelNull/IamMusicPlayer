@@ -14,6 +14,7 @@
   "_comment.co": "Config",
   "text.autoconfig.iammusicplayer.title": "Iam Music Player Config",
   "text.autoconfig.iammusicplayer.category.client": "クライアント",
+  "text.autoconfig.iammusicplayer.option.errorLog": "エラーログ",
   "text.autoconfig.iammusicplayer.option.volume": "音量",
   "text.autoconfig.iammusicplayer.option.maxPlayCont": "最大同時再生数",
   "text.autoconfig.iammusicplayer.option.spatial": "空間的",

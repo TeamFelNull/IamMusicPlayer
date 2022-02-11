@@ -51,7 +51,10 @@ public interface IMusicRinger {
     }
 
     default public void addRingerInRingManager(ServerLevel level) {
-        var rm = MusicRingManager.getInstance();
-        rm.addRinger(level, this);
+        MusicRingManager.getInstance().addRinger(level, this);
+    }
+
+    default public void ringerRestart(ServerLevel level) {
+        MusicRingManager.getInstance().restartRinger(level, getRingerUUID());
     }
 }

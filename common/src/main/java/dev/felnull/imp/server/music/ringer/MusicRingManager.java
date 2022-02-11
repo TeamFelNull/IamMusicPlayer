@@ -37,6 +37,12 @@ public class MusicRingManager {
         return MUSIC_RINGERS;
     }
 
+    public void restartRinger(ServerLevel level, UUID uuid) {
+        var ring = MUSIC_RINGERS.get(level);
+        if (ring != null)
+            ring.restart(level, uuid);
+    }
+
     public void addRinger(ServerLevel level, IMusicRinger ringer) {
         var ring = MUSIC_RINGERS.get(level);
         if (ring != null)

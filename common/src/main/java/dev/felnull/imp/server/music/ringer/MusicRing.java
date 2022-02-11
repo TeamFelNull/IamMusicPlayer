@@ -25,12 +25,7 @@ public class MusicRing {
 
         for (IMusicRinger value : ringers.values()) {
             if (!value.isRingerExist(level)) {
-                ringers.remove(value.getRingerUUID());
-                var pr = playerInfos.get(value.getRingerUUID());
-                if (pr != null)
-                    pr.depose(level);
-                playerInfos.remove(value.getRingerUUID());
-                waitRingers.remove(value.getRingerUUID());
+                stop(level, value.getRingerUUID());
                 break;
             }
             var ms = value.getRingerMusicSource(level);
@@ -112,6 +107,23 @@ public class MusicRing {
         ringers.clear();
         playerInfos.clear();
         waitRingers.clear();
+    }
+
+    protected void restart(ServerLevel level, UUID uuid) {
+        var ringer = ringers.get(uuid);
+        if (ringer != null) {
+            stop(level, uuid);
+            addRinger(ringer);
+        }
+    }
+
+    protected void stop(ServerLevel level, UUID uuid) {
+        ringers.remove(uuid);
+        var pr = playerInfos.get(uuid);
+        if (pr != null)
+            pr.depose(level);
+        playerInfos.remove(uuid);
+        waitRingers.remove(uuid);
     }
 
     private MusicPlaybackInfo getPlaybackInfo(IMusicRinger ringer, ServerLevel level) {
@@ -252,10 +264,10 @@ public class MusicRing {
                 middleLoadPlayers.clear();
                 middleLoadPlayers.addAll(nl.stream().filter(n -> !listenPlayers.contains(n)).toList());
 
-                if (getTime() - lastSendUpdate > 1000) {
-                    sendUpdate(level);
-                    lastSendUpdate = getTime();
-                }
+                //    if (getTime() - lastSendUpdate > 1000) {
+                sendUpdate(level);
+                //        lastSendUpdate = getTime();
+                //   }
                 return true;
             }
             if (canPlayPlayersCheck(level, currentTime)) {
