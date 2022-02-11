@@ -5,7 +5,7 @@ import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.player.YoutubeDownloaderMusicPlayer;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
-import dev.felnull.imp.client.util.YoutubeDownloaderUtil;
+import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.MusicSource;
 
 import java.util.Optional;
@@ -25,7 +25,7 @@ public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {
         if (!IMPMusicLoaderTypes.YOUTUBE.equals(source.getLoaderType()) || source.isLive())
             return false;
 
-        var url = YoutubeDownloaderUtil.getCashedYoutubeRawURL(source.getIdentifier(), false);
+        var url = YoutubeUtil.getCashedYoutubeRawURL(source.getIdentifier(), false);
         if (url == null)
             return false;
 

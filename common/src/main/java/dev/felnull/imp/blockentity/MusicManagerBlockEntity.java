@@ -2,9 +2,9 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
-import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -17,6 +17,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -349,7 +350,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     @Override
-    public NonNullList<ItemStack> getItems() {
+    public @NotNull NonNullList<ItemStack> getItems() {
         return items;
     }
 
@@ -358,6 +359,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         TEST("test"),
         PLAY_LIST("play_list"),
         ADD_PLAY_LIST("add_play_list"),
+        ADD_ONLINE_PLAY_LIST("add_online_play_list"),
         EDIT_PLAY_LIST("edit_play_list"),
         CREATE_PLAY_LIST("create_play_list"),
         DELETE_PLAY_LIST("delete_play_list"),
@@ -365,7 +367,8 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         SEARCH_MUSIC("search_music"),
         UPLOAD_MUSIC("upload_music"),
         EDIT_MUSIC("edit_music"),
-        DELETE_MUSIC("delete_music");
+        DELETE_MUSIC("delete_music"),
+        IMPORT_YOUTUBE_PLAY_LIST("import_youtube_play_list");
         private final String name;
 
         private MonitorType(String name) {

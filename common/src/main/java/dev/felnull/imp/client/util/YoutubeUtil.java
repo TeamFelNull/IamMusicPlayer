@@ -1,15 +1,17 @@
 package dev.felnull.imp.client.util;
 
 import com.github.kiulian.downloader.YoutubeDownloader;
+import com.github.kiulian.downloader.downloader.request.RequestPlaylistInfo;
 import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
+import com.github.kiulian.downloader.model.playlist.PlaylistVideoDetails;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class YoutubeDownloaderUtil {
-    private static YoutubeDownloader youtubeDownloader = new YoutubeDownloader();
+public class YoutubeUtil {
+    private static final YoutubeDownloader youtubeDownloader = new YoutubeDownloader();
     private static final Map<String, String> URL_CASH = new HashMap<>();
 
     public static String getCashedYoutubeRawURL(String videoID, boolean remove) {
@@ -33,6 +35,11 @@ public class YoutubeDownloaderUtil {
     public static List<SubtitlesInfo> getSubtitle(String videoID) {
         var video = youtubeDownloader.getVideoInfo(new RequestVideoInfo(videoID)).data();
         return video.subtitlesInfo();
+    }
+
+    public static List<PlaylistVideoDetails> getYoutubePlayList(String playListID) {
+        var playlist = youtubeDownloader.getPlaylistInfo(new RequestPlaylistInfo(playListID)).data();
+        return playlist.videos();
     }
 
 }

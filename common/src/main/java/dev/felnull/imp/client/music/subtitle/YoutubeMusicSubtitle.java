@@ -5,7 +5,7 @@ import com.github.kiulian.downloader.model.Extension;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.client.util.YoutubeDownloaderUtil;
+import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.util.HTMLUtil;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -36,7 +36,7 @@ public class YoutubeMusicSubtitle implements IMusicSubtitle {
     private final List<SubtitleEntry> currentSubs = new ArrayList<>();
 
     public YoutubeMusicSubtitle(MusicSource source) {
-        this.subtitlesInfos = source.isLive() ? List.of() : YoutubeDownloaderUtil.getSubtitle(source.getIdentifier());
+        this.subtitlesInfos = source.isLive() ? List.of() : YoutubeUtil.getSubtitle(source.getIdentifier());
     }
 
     @Override

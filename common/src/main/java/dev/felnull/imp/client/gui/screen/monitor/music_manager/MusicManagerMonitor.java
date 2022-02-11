@@ -6,9 +6,7 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.gui.screen.monitor.Monitor;
 import dev.felnull.imp.client.music.MusicEngine;
-import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -77,10 +75,12 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         registerMonitors(MusicManagerBlockEntity.MonitorType.TEST, TestMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.PLAY_LIST, PlayListMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST, AddPlayListMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.ADD_ONLINE_PLAY_LIST, AddOnlinePlayListMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.CREATE_PLAY_LIST, CreatePlayListMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.ADD_MUSIC, AddMusicMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.SEARCH_MUSIC, SearchMusicMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.UPLOAD_MUSIC, UploadMusicMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.IMPORT_YOUTUBE_PLAY_LIST, ImportYoutubePlayListMMMonitor::new);
     }
 
     public MusicManagerScreen getScreen() {

@@ -25,13 +25,15 @@ import java.util.List;
 
 public class AddPlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation ADD_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_play_list.png");
+    private static final Component CREATE_PLAYLIST_TEXT = new TranslatableComponent("imp.button.createPlaylist");
+    private static final Component ONLINE_PLAYLIST_TEXT = new TranslatableComponent("imp.button.addOnlinePlaylist");
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
     private final Component PUBLIC_TEXT = new TranslatableComponent("imp.text.public");
     private MusicSyncManager.PlayListInfo lastPlayListInfo;
     private Component INFO_TEXT;
     private List<MusicPlayList> musicPlayListsCash;
     private SmartButton createPlayListButton;
-    private SmartButton addUploadedPlayListButton;
+    private SmartButton addOnlinePlayListButton;
     private SortButton.SortTypeButton playlistSortButton;
     private SortButton.OrderTypeButton playlistOrderButton;
 
@@ -47,15 +49,11 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
             insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
         }));
 
-        this.createPlayListButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 90, 9, new TranslatableComponent("imp.button.createPlaylist"), n -> {
-            insMonitor(MusicManagerBlockEntity.MonitorType.CREATE_PLAY_LIST);
-        }));
+        this.createPlayListButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 90, 9, CREATE_PLAYLIST_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.CREATE_PLAY_LIST)));
         this.createPlayListButton.setIcon(WIDGETS_TEXTURE, 78, 14, 5, 5);
 
-        this.addUploadedPlayListButton = addRenderWidget(new SmartButton(getStartX() + 91, getStartY() + 189, 122, 9, new TranslatableComponent("imp.button.addUploadedPlaylist"), n -> {
-
-        }));
-        this.addUploadedPlayListButton.setIcon(WIDGETS_TEXTURE, 83, 14, 5, 5);
+        this.addOnlinePlayListButton = addRenderWidget(new SmartButton(getStartX() + 91, getStartY() + 189, 122, 9, ONLINE_PLAYLIST_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.ADD_ONLINE_PLAY_LIST)));
+        this.addOnlinePlayListButton.setIcon(WIDGETS_TEXTURE, 83, 14, 5, 5);
 
         this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 213, getStartY() + 189, n -> updateList(), false, getScreen()));
         this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 222, getStartY() + 189, n -> updateList(), false, getScreen()));
@@ -77,8 +75,8 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
         float onPxH = monitorHeight / (float) height;
         OERenderUtil.renderTextureSprite(ADD_PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 90, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.button.createPlaylist"), WIDGETS_TEXTURE, 78, 14, 5, 5, 256, 256);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 91, 189, OERenderUtil.MIN_BREADTH * 2, 122, 9, i, j, onPxW, onPxH, monitorHeight, new TranslatableComponent("imp.button.addUploadedPlaylist"), WIDGETS_TEXTURE, 83, 14, 5, 5, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 90, 9, i, j, onPxW, onPxH, monitorHeight, CREATE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 78, 14, 5, 5, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 91, 189, OERenderUtil.MIN_BREADTH * 2, 122, 9, i, j, onPxW, onPxH, monitorHeight, ONLINE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 83, 14, 5, 5, 256, 256);
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 213, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
         renderSmartButtonSprite(poseStack, multiBufferSource, 222, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);

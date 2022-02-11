@@ -50,7 +50,6 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private ServerConnectingCheckThread connectingCheckThread;
     private UploadThread uploadThread;
     private long maxFileSize;
-    // private static final Component CONNECTING_CHECK_TEXT = new TranslatableComponent("imp.text.");
 
     public UploadMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
