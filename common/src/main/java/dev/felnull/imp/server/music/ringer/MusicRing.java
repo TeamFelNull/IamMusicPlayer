@@ -1,6 +1,7 @@
 package dev.felnull.imp.server.music.ringer;
 
 import dev.architectury.networking.NetworkManager;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerLevel;
@@ -281,7 +282,7 @@ public class MusicRing {
         private boolean isFailureCoolDown(UUID uuid) {
             Long fr = failurePlayers.get(uuid);
             if (fr != null)
-                return (System.currentTimeMillis() - fr) <= getReTryTime();
+                return (System.currentTimeMillis() - fr) <= getRetryTime();
             return false;
         }
 
@@ -320,10 +321,10 @@ public class MusicRing {
 
 
     public static long getMaxWaitTime() {
-        return 1000 * 10;
+        return IamMusicPlayer.CONFIG.maxWaitTime;
     }
 
-    public static long getReTryTime() {
-        return 1000 * 3;
+    public static long getRetryTime() {
+        return IamMusicPlayer.CONFIG.retryTime;
     }
 }

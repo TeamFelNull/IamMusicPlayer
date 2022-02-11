@@ -30,7 +30,7 @@ public interface IMusicPlayer {
 
     Vec3 getCoordinatePosition();
 
-    void setVolume(float v);
+    void setVolume(double v);
 
     void setRange(float r);
 

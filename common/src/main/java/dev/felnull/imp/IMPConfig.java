@@ -14,7 +14,7 @@ public class IMPConfig implements ConfigData {
     public boolean errorLog = false;
 
     @ConfigEntry.Category("client")
-    public float volume = 1f;
+    public double volume = 1f;
 
     @ConfigEntry.Category("client")
     public int maxPlayCont = 8;
@@ -28,4 +28,9 @@ public class IMPConfig implements ConfigData {
     @ConfigEntry.Category("client")
     public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
 
+    @ConfigEntry.Category("server")
+    public long maxWaitTime = 1000 * 10;
+
+    @ConfigEntry.Category("server")
+    public long retryTime = 1000 * 3;
 }

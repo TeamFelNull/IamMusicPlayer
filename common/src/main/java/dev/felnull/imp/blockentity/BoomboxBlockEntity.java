@@ -48,7 +48,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     private ItemStack lastCassetteTape = ItemStack.EMPTY;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
     private boolean changeCassetteTape;
-    private int volume = 100;
+    private int volume = 150;
     private boolean loop;
     private boolean mute;
     private boolean radio;

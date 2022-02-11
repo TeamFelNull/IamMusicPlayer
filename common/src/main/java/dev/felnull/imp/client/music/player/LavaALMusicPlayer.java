@@ -53,7 +53,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     private long lastPausedTime;
     private long pausedTime;
     private boolean firstStart;
-    private float noSpatialVolume;
+    private double noSpatialVolume;
     private LavaLoadThread loadThread;
     private long lastLavaLoad;
     private IMusicSubtitle subtitle;
@@ -214,9 +214,9 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     }
 
     @Override
-    public void setVolume(float v) {
+    public void setVolume(double v) {
         if (spatial)
-            AL11.alSourcef(source, AL11.AL_GAIN, v);
+            AL11.alSourcef(source, AL11.AL_GAIN, (float) v);
         else
             this.noSpatialVolume = v;
     }
@@ -239,7 +239,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         }
 
         if (!spatial)
-            AL11.alSourcef(source, AL11.AL_GAIN, SoundMath.calculatePseudoAttenuation(pos, range, noSpatialVolume));
+            AL11.alSourcef(source, AL11.AL_GAIN, (float) SoundMath.calculatePseudoAttenuation(pos, range, noSpatialVolume));
 
 
         if (getPosition() - lastLavaLoad >= 20000 && loadThread == null) {
