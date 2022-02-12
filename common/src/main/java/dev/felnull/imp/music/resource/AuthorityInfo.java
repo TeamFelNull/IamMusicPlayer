@@ -3,6 +3,8 @@ package dev.felnull.imp.music.resource;
 import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -75,6 +77,7 @@ public class AuthorityInfo implements ITAGSerializable {
         return isPublic() ? AuthorityType.NONE : AuthorityType.BAN;
     }
 
+    @NotNull
     public Map<UUID, AuthorityType> getPlayersAuthority() {
         Map<UUID, AuthorityType> na = new HashMap<>(authority);
         na.put(owner, AuthorityType.OWNER);
@@ -124,10 +127,12 @@ public class AuthorityInfo implements ITAGSerializable {
         NONE("none", 0);
 
         private final String name;
+        private final Component text;
         private final int level;
 
         private AuthorityType(String name, int level) {
             this.name = name;
+            this.text = new TranslatableComponent("imp.text.authority." + name);
             this.level = level;
         }
 
@@ -137,6 +142,10 @@ public class AuthorityInfo implements ITAGSerializable {
 
         public String getName() {
             return name;
+        }
+
+        public Component getText() {
+            return text;
         }
 
         public boolean isMoreOwner() {

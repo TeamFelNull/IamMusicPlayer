@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IIMPSmartRender {
@@ -200,6 +201,23 @@ public interface IIMPSmartRender {
     }
 
     default void renderPlayerFaceSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, UUID uuid, float x, float y, float z, float size, int i, int j, float onePixW, float onePixH, float monitorHeight) {
-        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, uuid, onePixW * x, monitorHeight - onePixH * (y + size), z, 0, 0, 0, onePixW * size, i, j);
+        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, uuid, onePixW * x, monitorHeight - onePixH * (y + size), z, 0, 0, 0, onePixH * size, i, j);
+    }
+
+    default <E> void renderFixedListSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, List<E> list, int num, ListEntryRender<E> render) {
+        int plsc = 0;
+        if (list != null) {
+            plsc = list.size();
+            int on = (int) (h / num);
+            for (int k = 0; k < Math.min(num, list.size()); k++) {
+                var e = list.get(k);
+                render.renderListEntry(poseStack, multiBufferSource, x, y + k * on, z, w - 9, on, i, j, e);
+            }
+        }
+        renderScrollbarSprite(poseStack, multiBufferSource, x + w - 9, y, z, h, i, j, onePixW, onePixH, monitorHeight, plsc, num);
+    }
+
+    public static interface ListEntryRender<E> {
+        public void renderListEntry(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, E entry);
     }
 }
