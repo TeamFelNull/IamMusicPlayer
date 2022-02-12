@@ -3,6 +3,7 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
+import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
@@ -36,7 +37,7 @@ public class MyPlayListFixedButtonsList extends PlayListFixedButtonsList {
             PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         }
 
-        drawSmartFixedWidthText(poseStack, new TextComponent(item.getName()), x + sx, y + 2, getOneButtonWidth() - sx - 2);
+        drawSmartText(poseStack, new TextComponent(OERenderUtil.getWidthString(item.getName(), getOneButtonWidth() - sx - 2, "...")), x + sx, y + 2);
         drawSmartFixedWidthText(poseStack, new TextComponent(dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 12, getOneButtonWidth() - sx - 2);
     }
 

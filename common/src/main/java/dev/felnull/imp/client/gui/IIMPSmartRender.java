@@ -10,8 +10,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 public interface IIMPSmartRender {
+    @NotNull
     Minecraft mc = Minecraft.getInstance();
 
     default void drawFill(PoseStack poseStack, int x, int y, int w, int h, int col) {
@@ -190,9 +194,12 @@ public interface IIMPSmartRender {
         }
     }
 
-    default void renderSmartRadioButton(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component label, boolean selected) {
+    default void renderSmartRadioButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component label, boolean selected) {
         renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, w, h, 18, 65 + (selected ? 20 : 0), 20, 20, 256, 256, i, j, onePixW, onePixH, monitorHeight);
         renderSmartTextSprite(poseStack, multiBufferSource, label, x + 24, y + (h - 7f) / 2f, z, onePixW, onePixH, monitorHeight, i);
     }
 
+    default void renderPlayerFaceSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, UUID uuid, float x, float y, float z, float size, int i, int j, float onePixW, float onePixH, float monitorHeight) {
+        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, uuid, onePixW * x, monitorHeight - onePixH * (y + size), z, 0, 0, 0, onePixW * size, i, j);
+    }
 }

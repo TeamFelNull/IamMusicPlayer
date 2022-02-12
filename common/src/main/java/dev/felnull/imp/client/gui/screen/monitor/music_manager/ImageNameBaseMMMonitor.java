@@ -20,6 +20,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,6 +45,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     private static final Component NAME_TEXT = new TranslatableComponent("imp.text.name");
     private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
     private static final Component UPLOADING_IMAGE_TEXT = new TranslatableComponent("imp.text.imageLoad.uploadImage");
+    private boolean locked;
     private Component NOT_ENTERED_TEXT;
     private Component IMAGE_SET_ERROR_TEXT;
     private EditBox imageUrlEditBox;
@@ -60,50 +63,70 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
 
-        if (getScreen().musicFileImage != null) {
-            startImageUpload(getScreen().musicFileImage);
-            getScreen().musicFileImage = null;
-        }
+        if (!isLocked()) {
 
-        addRenderWidget(new ImageSetButton(getStartX() + 149, getStartY() + 22, ImageSetButton.ImageSetType.DELETE, n -> setImage(ImageInfo.EMPTY), getScreen()));
-
-        addRenderWidget(new ImageSetButton(getStartX() + 112, getStartY() + 22, ImageSetButton.ImageSetType.FILE_OPEN, n -> openImage(FileChooserUtil.openImageFileChooser(false)), getScreen()));
-
-        addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 22, ImageSetButton.ImageSetType.PLAYER_FACE, n -> setImage(new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, IIMPSmartRender.mc.player.getGameProfile().getName())), getScreen()));
-
-        this.imageUrlEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 112, getStartY() + 42, 69, 12, new TranslatableComponent("imp.editBox.imageUrl"));
-        this.imageUrlEditBox.setMaxLength(300);
-        this.imageUrlEditBox.setValue(getImageURL());
-        this.imageUrlEditBox.setResponder(this::setImageURL);
-        addRenderWidget(this.imageUrlEditBox);
-
-        addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 41, ImageSetButton.ImageSetType.URL, n -> {
-            if (this.imageUrlEditBox.getValue().isEmpty()) {
-                IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.empty");
-                return;
+            if (getScreen().musicFileImage != null) {
+                startImageUpload(getScreen().musicFileImage);
+                getScreen().musicFileImage = null;
             }
-            startImageUrlLoad(this.imageUrlEditBox.getValue());
-        }, getScreen()));
+
+            addRenderWidget(new ImageSetButton(getStartX() + 149, getStartY() + 22, ImageSetButton.ImageSetType.DELETE, n -> setImage(ImageInfo.EMPTY), getScreen()));
+
+            addRenderWidget(new ImageSetButton(getStartX() + 112, getStartY() + 22, ImageSetButton.ImageSetType.FILE_OPEN, n -> openImage(FileChooserUtil.openImageFileChooser(false)), getScreen()));
+
+            addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 22, ImageSetButton.ImageSetType.PLAYER_FACE, n -> setImage(new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, IIMPSmartRender.mc.player.getGameProfile().getName())), getScreen()));
+
+            this.imageUrlEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 112, getStartY() + 42, 69, 12, new TranslatableComponent("imp.editBox.imageUrl"));
+            this.imageUrlEditBox.setMaxLength(300);
+            this.imageUrlEditBox.setValue(getImageURL());
+            this.imageUrlEditBox.setResponder(this::setImageURL);
+            addRenderWidget(this.imageUrlEditBox);
+
+            addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 41, ImageSetButton.ImageSetType.URL, n -> {
+                if (this.imageUrlEditBox.getValue().isEmpty()) {
+                    IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.empty");
+                    return;
+                }
+                startImageUrlLoad(this.imageUrlEditBox.getValue());
+            }, getScreen()));
+        }
 
         this.nameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 5, getStartY() + 112, 177, 12, new TranslatableComponent("imp.editBox.name"));
         this.nameEditBox.setMaxLength(300);
         this.nameEditBox.setValue(getName());
         this.nameEditBox.setResponder(this::setName);
         addRenderWidget(this.nameEditBox);
+        this.nameEditBox.setEditable(!isLocked());
 
-        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> insMonitor(getParentType())));
-
-        this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, getDoneType().getText(), n -> {
-            if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
-                if (canCreate(musicManagerBlockEntity))
-                    create(getImage(), getName());
-                insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
+        addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> {
+            if (getDoneType() == null) {
+                if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
+                    if (canDone(musicManagerBlockEntity))
+                        done(getImage(), getName());
+                    var pt = getParentType();
+                    if (pt == null)
+                        pt = MusicManagerBlockEntity.MonitorType.PLAY_LIST;
+                    insMonitor(pt);
+                }
+            } else {
+                var pt = getParentType();
+                if (pt == null)
+                    pt = MusicManagerBlockEntity.MonitorType.PLAY_LIST;
+                insMonitor(pt);
             }
         }));
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
-            this.createButton.active = canCreate(musicManagerBlockEntity);
 
-
+        if (getDoneType() != null) {
+            this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, getDoneType().getText(), n -> {
+                if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
+                    if (canDone(musicManagerBlockEntity))
+                        done(getImage(), getName());
+                    insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
+                }
+            }));
+            if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+                this.createButton.active = canDone(musicManagerBlockEntity);
+        }
     }
 
     @Override
@@ -117,26 +140,26 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         } else {
             drawSmartCenterText(poseStack, NO_IMAGE_TEXT, getStartX() + 38, getStartY() + 51);
         }
+        if (!isLocked()) {
+            drawSmartText(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 90);
 
-        drawSmartText(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 90);
+            if (imageUploader != null && imageUploader.isAlive()) {
+                drawSmartFixedWidthText(poseStack, UPLOADING_IMAGE_TEXT, getStartX() + 75, getStartY() + 59, 107);
+            } else {
+                if (IMAGE_SET_ERROR_TEXT != null)
+                    drawSmartFixedWidthText(poseStack, IMAGE_SET_ERROR_TEXT, getStartX() + 75, getStartY() + 59, 107, 0xFFFF0000);
+            }
 
-        if (imageUploader != null && imageUploader.isAlive()) {
-            drawSmartFixedWidthText(poseStack, UPLOADING_IMAGE_TEXT, getStartX() + 75, getStartY() + 59, 107);
-        } else {
-            if (IMAGE_SET_ERROR_TEXT != null)
-                drawSmartFixedWidthText(poseStack, IMAGE_SET_ERROR_TEXT, getStartX() + 75, getStartY() + 59, 107, 0xFFFF0000);
+            if (NOT_ENTERED_TEXT != null)
+                drawSmartFixedWidthText(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
         }
-
         drawSmartText(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 102);
-
-        if (NOT_ENTERED_TEXT != null)
-            drawSmartFixedWidthText(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
 
     }
 
-    public abstract void create(ImageInfo imageInfo, String name);
+    public abstract void done(ImageInfo imageInfo, String name);
 
-    public boolean canCreate(MusicManagerBlockEntity blockEntity) {
+    public boolean canDone(MusicManagerBlockEntity blockEntity) {
         return !getName(blockEntity).isEmpty();
     }
 
@@ -150,7 +173,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
             List<Component> notEnteredTexts = getNotEntered(new ArrayList<>(), musicManagerBlockEntity);
             if (!notEnteredTexts.equals(lastNotEnteredTexts)) {
-                if (!canCreate(musicManagerBlockEntity)) {
+                if (!canDone(musicManagerBlockEntity)) {
                     StringBuilder sb = new StringBuilder();
                     for (Component notEnteredText : notEnteredTexts) {
                         sb.append(notEnteredText.getString()).append(", ");
@@ -158,16 +181,19 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                     sb.deleteCharAt(sb.length() - 1);
                     sb.deleteCharAt(sb.length() - 1);
                     NOT_ENTERED_TEXT = new TranslatableComponent("imp.text.notEntered", sb.toString());
-                    this.createButton.active = false;
+                    if (getDoneType() != null)
+                        this.createButton.active = false;
                 } else {
                     NOT_ENTERED_TEXT = null;
-                    this.createButton.active = true;
+                    if (getDoneType() != null)
+                        this.createButton.active = true;
                 }
                 lastNotEnteredTexts = notEnteredTexts;
             }
         } else {
             NOT_ENTERED_TEXT = null;
-            this.createButton.active = false;
+            if (getDoneType() != null)
+                this.createButton.active = false;
         }
     }
 
@@ -193,35 +219,47 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
             renderSmartTextSprite(poseStack, multiBufferSource, NO_IMAGE_TEXT, 6 + ((38f * sc) - (float) strl / 2f), 51, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
         }
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 149, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 11, 19, 11, 11, 256, 256);
+        if (!isLocked()) {
+            renderSmartButtonSprite(poseStack, multiBufferSource, 149, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 11, 19, 11, 11, 256, 256);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 112, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73, 19, 11, 11, 256, 256);
+            renderSmartButtonSprite(poseStack, multiBufferSource, 112, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73, 19, 11, 11, 256, 256);
 
-        renderSmartButtonBoxSprite(poseStack, multiBufferSource, 75, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight);
-        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, IIMPSmartRender.mc.player.getGameProfile().getId(), onPxW * (75f + (33f - 11f) / 2f), monitorHeight - (onPxH * (22f + ((15f - 11f) / 2f) * sch)) - 11 * onPxW, OERenderUtil.MIN_BREADTH * 6, 0, 0, 0, 11 * onPxW, i, j);
+            renderSmartButtonBoxSprite(poseStack, multiBufferSource, 75, 22, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight);
+            OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, IIMPSmartRender.mc.player.getGameProfile().getId(), onPxW * (75f + (33f - 11f) / 2f), monitorHeight - (onPxH * (22f + ((15f - 11f) / 2f) * sch)) - 11 * onPxW, OERenderUtil.MIN_BREADTH * 6, 0, 0, 0, 11 * onPxW, i, j);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 75, 41, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 22, 19, 11, 11, 256, 256);
+            renderSmartButtonSprite(poseStack, multiBufferSource, 75, 41, OERenderUtil.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 22, 19, 11, 11, 256, 256);
 
-        renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 42, OERenderUtil.MIN_BREADTH * 4, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
+            renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 42, OERenderUtil.MIN_BREADTH * 4, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
 
-        renderSmartTextSprite(poseStack, multiBufferSource, DROP_INFO_TEXT, 5, 90, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, DROP_INFO_TEXT, 5, 90, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
 
+
+            if (!canDone(blockEntity)) {
+                StringBuilder sb = new StringBuilder();
+                for (Component notEnteredText : getNotEntered(new ArrayList<>(), blockEntity)) {
+                    sb.append(notEnteredText.getString()).append(", ");
+                }
+                sb.deleteCharAt(sb.length() - 1);
+                sb.deleteCharAt(sb.length() - 1);
+                renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
+            }
+        }
         renderSmartTextSprite(poseStack, multiBufferSource, NAME_TEXT, 5, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
         renderSmartEditBoxSprite(poseStack, multiBufferSource, 5, 112, OERenderUtil.MIN_BREADTH * 4, 177, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
 
-        if (!canCreate(blockEntity)) {
-            StringBuilder sb = new StringBuilder();
-            for (Component notEnteredText : getNotEntered(new ArrayList<>(), blockEntity)) {
-                sb.append(notEnteredText.getString()).append(", ");
-            }
-            sb.deleteCharAt(sb.length() - 1);
-            sb.deleteCharAt(sb.length() - 1);
-            renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
-        }
-
         renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, getDoneType().getText(), true, !canCreate(blockEntity));
+
+        if (getDoneType() != null)
+            renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, getDoneType().getText(), true, !canDone(blockEntity));
+    }
+
+    protected void locked() {
+        this.locked = true;
+    }
+
+    private boolean isLocked() {
+        return locked;
     }
 
     @Override
@@ -233,6 +271,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     @Override
     public void onFilesDrop(List<Path> list) {
+        if (isLocked()) return;
         File[] files = new File[list.size()];
         for (int i = 0; i < list.size(); i++) {
             files[i] = list.get(i).toFile();
@@ -240,27 +279,31 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         openImage(files);
     }
 
-    public String getName() {
+    @NotNull
+    protected String getName() {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
             return getName(musicManagerBlockEntity);
         return "";
     }
 
-    public String getName(MusicManagerBlockEntity musicManagerBlockEntity) {
+    @NotNull
+    protected String getName(@NotNull MusicManagerBlockEntity musicManagerBlockEntity) {
         return musicManagerBlockEntity.getMyCreateName();
     }
 
-    protected void setName(String name) {
+    protected void setName(@NotNull String name) {
         getScreen().insCreateName(name);
     }
 
-    public ImageInfo getImage() {
+    @NotNull
+    protected ImageInfo getImage() {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
             return getImage(musicManagerBlockEntity);
         return ImageInfo.EMPTY;
     }
 
-    private ImageInfo getImage(MusicManagerBlockEntity musicManagerBlockEntity) {
+    @NotNull
+    protected ImageInfo getImage(MusicManagerBlockEntity musicManagerBlockEntity) {
         return musicManagerBlockEntity.getMyImage();
     }
 
@@ -314,6 +357,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     }
 
     private void openImage(File[] files) {
+        if (isLocked()) return;
         if (files == null || files.length == 0) return;
         if (files.length != 1) {
             IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.tooManyImages");
@@ -426,6 +470,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         return upData.getAsJsonObject("data").get("link").getAsString();
     }
 
+    @Nullable
     abstract protected DoneType getDoneType();
 
     public static enum DoneType {

@@ -11,12 +11,14 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
+public abstract class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
     private static final Map<MusicManagerBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
     protected static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/background.png");
     public static final ResourceLocation WIDGETS_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/widgets.png");
@@ -81,6 +83,9 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         registerMonitors(MusicManagerBlockEntity.MonitorType.SEARCH_MUSIC, SearchMusicMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.UPLOAD_MUSIC, UploadMusicMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.IMPORT_YOUTUBE_PLAY_LIST, ImportYoutubePlayListMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.EDIT_PLAY_LIST, EditPlayListMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.EDIT_MUSIC, EditMusicMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST, DetailPlayListMMMonitor::new);
     }
 
     public MusicManagerScreen getScreen() {
@@ -107,10 +112,11 @@ public class MusicManagerMonitor extends Monitor<MusicManagerBlockEntity> {
         return type;
     }
 
-    protected void insMonitor(MusicManagerBlockEntity.MonitorType type) {
+    protected void insMonitor(@NotNull MusicManagerBlockEntity.MonitorType type) {
         screen.insMonitor(type);
     }
 
+    @Nullable
     protected MusicManagerBlockEntity.MonitorType getParentType() {
         return null;
     }

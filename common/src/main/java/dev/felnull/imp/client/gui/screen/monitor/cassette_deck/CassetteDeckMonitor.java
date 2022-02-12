@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntity> {
+public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntity> {
     protected static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/cassette_deck/monitor/background.png");
     private static final Map<CassetteDeckBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
     private final CassetteDeckBlockEntity.MonitorType monitorType;

@@ -3,6 +3,7 @@ package dev.felnull.imp.music.resource;
 import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -63,7 +64,8 @@ public class AuthorityInfo implements ITAGSerializable {
         return authority;
     }
 
-    public AuthorityType getAuthorityType(UUID playerId) {
+    @NotNull
+    public AuthorityType getAuthorityType(@NotNull UUID playerId) {
         if (owner.equals(playerId)) return AuthorityType.OWNER;
         var au = authority.get(playerId);
         return au == null ? getDefaultAuthority() : au;
@@ -168,6 +170,14 @@ public class AuthorityInfo implements ITAGSerializable {
                 }
             }
             return NONE;
+        }
+
+        public boolean canEdit() {
+            return isMoreAdmin();
+        }
+
+        public boolean canDelete() {
+            return this == OWNER;
         }
     }
 }

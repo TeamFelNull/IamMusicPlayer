@@ -361,6 +361,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         ADD_PLAY_LIST("add_play_list"),
         ADD_ONLINE_PLAY_LIST("add_online_play_list"),
         EDIT_PLAY_LIST("edit_play_list"),
+        DETAIL_PLAY_LIST("detail_play_list"),
         CREATE_PLAY_LIST("create_play_list"),
         DELETE_PLAY_LIST("delete_play_list"),
         ADD_MUSIC("add_music"),

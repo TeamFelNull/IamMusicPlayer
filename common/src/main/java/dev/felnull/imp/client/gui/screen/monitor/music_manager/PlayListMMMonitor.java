@@ -21,10 +21,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/play_list.png");
@@ -32,6 +29,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     private static final Component ADD_MUSIC_TEXT = new TranslatableComponent("imp.button.addMusic");
     private static final Component SORT_TYPE_NAME_TEXT = new TranslatableComponent("imp.sortType." + SortButton.SortType.NAME.getName());
     private static final Component ORDER_TYPE_DESCENDING_TEXT = new TranslatableComponent("imp.orderType." + SortButton.OrderType.DESCENDING.getName());
+    private static final Component DETAIL_TEXT = new TranslatableComponent("imp.button.detailPlaylist");
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
     private final List<Music> musics = new ArrayList<>();
     private List<MusicPlayList> musicPlayListsCash;
@@ -44,6 +42,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     private SortButton.OrderTypeButton musicOrderButton;
     private SmartButton addPlaylistButton;
     private SmartButton addMusic;
+    private SmartButton detailButton;
 
     public PlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -67,15 +66,18 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         this.addMusic.setIcon(WIDGETS_TEXTURE, 73, 14, 5, 5);
         this.addMusic.active = getSelectedMusicPlayList() != null && getSelectedMusicPlayList().getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isMoreMember();
 
-        this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 73, getStartY() + 189, n -> updateList(), false, getScreen()));
-        this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 82, getStartY() + 189, n -> updateList(), false, getScreen()));
-
         this.musicSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 174, getStartY() + 189, n -> updateMusics(), true, getScreen()));
         this.musicOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 271, getStartY() + 189, n -> updateMusics(), true, getScreen()));
 
         this.addRenderWidget(new MusicsFixedButtonsList(getStartX() + 102, getStartY() + 40, 267, 148, 4, new TranslatableComponent("imp.fixedList.musics"), musics, (fixedButtonsList, music, i, i1) -> {
 
         }));
+
+        this.detailButton = this.addRenderWidget(new SmartButton(getStartX() + 336, getStartY() + 20, 33, 9, DETAIL_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST)));
+        this.detailButton.visible = getSelectedMusicPlayList() != null;
+
+        this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 82, getStartY() + 189, n -> updateList(), false, getScreen()));
+        this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 73, getStartY() + 189, n -> updateList(), false, getScreen()));
     }
 
     @Override
@@ -84,6 +86,28 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         OERenderUtil.drawTexture(PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (INFO_TEXT != null)
             drawSmartText(poseStack, INFO_TEXT, getStartX() + width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, getStartY() + 11);
+
+        var pl = getSelectedMusicPlayList();
+        if (pl != null) {
+            int plsty;
+            var au = pl.getAuthority().getPlayersAuthority().entrySet().stream().sorted(Comparator.comparingInt(o -> o.getValue().getLevel())).map(Map.Entry::getKey).filter(n -> !n.equals(pl.getAuthority().getOwner())).toList();
+            if (au.size() == 0) {
+                OERenderUtil.drawPlayerFace(poseStack, pl.getAuthority().getOwner(), getStartX() + 328, getStartY() + 21, 7);
+                plsty = 14;
+            } else if (au.size() == 1) {
+                OERenderUtil.drawPlayerFace(poseStack, au.get(0), getStartX() + 328, getStartY() + 21, 7);
+                OERenderUtil.drawPlayerFace(poseStack, pl.getAuthority().getOwner(), getStartX() + 319, getStartY() + 21, 7);
+                plsty = 20;
+            } else {
+                var tx = new TextComponent("+" + au.size());
+                int txw = mc.font.width(tx);
+                drawSmartText(poseStack, tx, getStartX() + 336 - txw - 2, getStartY() + 21);
+                OERenderUtil.drawPlayerFace(poseStack, pl.getAuthority().getOwner(), getStartX() + 336 - txw - 2 - 8, getStartY() + 21, 7);
+                plsty = 18 + txw;
+            }
+
+            drawSmartText(poseStack, new TextComponent(OERenderUtil.getWidthString(pl.getName(), 240 - plsty, "...")), getStartX() + 103, getStartY() + 21);
+        }
     }
 
     @Override
@@ -114,7 +138,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
                     PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 21) + 2 + 17) * onPxH, OERenderUtil.MIN_BREADTH * 4, 17 * onPxH, i, j);
                 }
 
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 21) + 3, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(playList.getName(), 80 - sx, "...")), sx + 3, 20 + (k * 21) + 3, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
                 renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 21) + 12, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0.7f, i);
             }
         }
@@ -149,6 +173,28 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, 360, 40, OERenderUtil.MIN_BREADTH * 2, 148, i, j, onPxW, onPxH, monitorHeight, msc, 4);
+
+        var pl = getSelectedMusicPlayList(blockEntity);
+        if (pl != null) {
+            renderSmartButtonSprite(poseStack, multiBufferSource, 336, 20, OERenderUtil.MIN_BREADTH * 2, 33, 9, i, j, onPxW, onPxH, monitorHeight, DETAIL_TEXT, true);
+            int plsty;
+            var au = pl.getAuthority().getPlayersAuthority().entrySet().stream().sorted(Comparator.comparingInt(o -> o.getValue().getLevel())).map(Map.Entry::getKey).filter(n -> !n.equals(pl.getAuthority().getOwner())).toList();
+            if (au.size() == 0) {
+                renderPlayerFaceSprite(poseStack, multiBufferSource, pl.getAuthority().getOwner(), 328, 20.5f, OERenderUtil.MIN_BREADTH * 2, 7, i, j, onPxW, onPxH, monitorHeight);
+                plsty = 14;
+            } else if (au.size() == 1) {
+                renderPlayerFaceSprite(poseStack, multiBufferSource, au.get(0), 328, 20.5f, OERenderUtil.MIN_BREADTH * 2, 7, i, j, onPxW, onPxH, monitorHeight);
+                renderPlayerFaceSprite(poseStack, multiBufferSource, pl.getAuthority().getOwner(), 319, 20.5f, OERenderUtil.MIN_BREADTH * 2, 7, i, j, onPxW, onPxH, monitorHeight);
+                plsty = 20;
+            } else {
+                var tx = new TextComponent("+" + au.size());
+                int txw = mc.font.width(tx);
+                renderPlayerFaceSprite(poseStack, multiBufferSource, au.get(0), 336 - txw - 2 - 8, 20.5f, OERenderUtil.MIN_BREADTH * 2, 7, i, j, onPxW, onPxH, monitorHeight);
+                renderSmartTextSprite(poseStack, multiBufferSource, tx, 336 - txw - 2, 22, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+                plsty = 18 + txw;
+            }
+            renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(pl.getName(), 235 - plsty, "...")), 103, 22, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        }
     }
 
     @Override
@@ -167,6 +213,8 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         updateInfoText();
 
         addMusic.active = getSelectedMusicPlayList() != null && getSelectedMusicPlayList().getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isMoreMember();
+
+        detailButton.visible = getSelectedMusicPlayList() != null;
     }
 
     private void updateList() {
@@ -194,6 +242,13 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
                 INFO_TEXT = null;
             }
         }
+    }
+
+    public MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
+        var pls = getSyncManager().getMyPlayList();
+        if (pls == null)
+            return null;
+        return getSyncManager().getMyPlayList().stream().filter(n -> n.getUuid().equals(getSelectedPlayList(musicManagerBlockEntity))).findFirst().orElse(null);
     }
 
     public MusicPlayList getSelectedMusicPlayList() {

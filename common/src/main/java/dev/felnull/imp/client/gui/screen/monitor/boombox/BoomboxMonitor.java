@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
+public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
     private static final Map<BoomboxBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
     protected static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/background.png");
     private final BoomboxBlockEntity.MonitorType monitorType;
