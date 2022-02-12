@@ -2,6 +2,7 @@ package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.MusicManagerMenu;
+import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.MusicManager;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -50,11 +52,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
                         m.putString("Monitor", MonitorType.getDefault(blockEntity, n).getName());
                     if (type == MonitorType.OFF)
                         m.remove("SelectedPlayList");
-                    if ((type == MonitorType.ADD_MUSIC || type == MonitorType.EDIT_MUSIC || type == MonitorType.EDIT_PLAY_LIST || type == MonitorType.SEARCH_MUSIC) && !m.contains("SelectedPlayList")) {
+                    if (type != null && type.isNeedSelectPlayList() && !m.contains("SelectedPlayList")) {
                         m.putString("Monitor", MonitorType.PLAY_LIST.getName());
                     }
                 }
             });
+            blockEntity.setChanged();
             blockEntity.sync();
         }
     }
@@ -80,6 +83,20 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         }
 
         tag.remove("MusicSearchName");
+
+        var pl = getSelectedPlayList(player);
+        if (oldM == MonitorType.DETAIL_PLAY_LIST && newM == MonitorType.EDIT_PLAY_LIST && pl != null) {
+            var mm = MusicManager.getInstance();
+            var pls = mm.getSaveData().getPlayLists().get(pl);
+            if (pls != null) {
+                setImage(player, pls.getImage());
+                setCreateName(player, pls.getName());
+                setInitialAuthority(player, pls.getAuthority().getInitialAuthority() == AuthorityInfo.AuthorityType.MEMBER ? "member" : "read_only");
+                setPublishing(player, pls.getAuthority().isPublic() ? "public" : "private");
+                setInvitePlayers(player, pls.getAuthority().getRawAuthority().entrySet().stream().filter(n -> n.getValue().isInvitation()).map(Map.Entry::getKey).toList());
+            }
+        }
+        setChanged();
     }
 
     @Override
@@ -108,6 +125,13 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         this.myData = tag.getCompound("Data");
     }
 
+    @Nullable
+    public UUID getSelectedPlayList(@NotNull ServerPlayer player) {
+        var tag = getPlayerData(player);
+        if (tag.contains("SelectedPlayList"))
+            return tag.getUUID("SelectedPlayList");
+        return null;
+    }
 
     public CompoundTag getPlayerData(ServerPlayer player) {
         var id = player.getGameProfile().getId();
@@ -172,7 +196,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setSelectedPlayList(ServerPlayer player, UUID selectedPlayList) {
         var type = getMonitor(player);
-        if (type == MonitorType.ADD_MUSIC || type == MonitorType.EDIT_MUSIC || type == MonitorType.EDIT_PLAY_LIST) {
+        if (type != null && type.isNeedSelectPlayList()) {
             if (getPlayerData(player).contains("SelectedPlayList")) {
                 var old = getPlayerData(player).getUUID("SelectedPlayList");
                 if (selectedPlayList == null || !selectedPlayList.equals(old))
@@ -355,25 +379,27 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     public static enum MonitorType {
-        OFF("off"),
-        TEST("test"),
-        PLAY_LIST("play_list"),
-        ADD_PLAY_LIST("add_play_list"),
-        ADD_ONLINE_PLAY_LIST("add_online_play_list"),
-        EDIT_PLAY_LIST("edit_play_list"),
-        DETAIL_PLAY_LIST("detail_play_list"),
-        CREATE_PLAY_LIST("create_play_list"),
-        DELETE_PLAY_LIST("delete_play_list"),
-        ADD_MUSIC("add_music"),
-        SEARCH_MUSIC("search_music"),
-        UPLOAD_MUSIC("upload_music"),
-        EDIT_MUSIC("edit_music"),
-        DELETE_MUSIC("delete_music"),
-        IMPORT_YOUTUBE_PLAY_LIST("import_youtube_play_list");
+        OFF("off", false),
+        TEST("test", false),
+        PLAY_LIST("play_list", false),
+        ADD_PLAY_LIST("add_play_list", false),
+        ADD_ONLINE_PLAY_LIST("add_online_play_list", false),
+        EDIT_PLAY_LIST("edit_play_list", true),
+        DETAIL_PLAY_LIST("detail_play_list", true),
+        CREATE_PLAY_LIST("create_play_list", false),
+        DELETE_PLAY_LIST("delete_play_list", true),
+        ADD_MUSIC("add_music", true),
+        SEARCH_MUSIC("search_music", true),
+        UPLOAD_MUSIC("upload_music", true),
+        EDIT_MUSIC("edit_music", true),
+        DELETE_MUSIC("delete_music", true),
+        IMPORT_YOUTUBE_PLAY_LIST("import_youtube_play_list", false);
         private final String name;
+        private final boolean needSelectPlayList;
 
-        private MonitorType(String name) {
+        private MonitorType(String name, boolean needSelectPlayList) {
             this.name = name;
+            this.needSelectPlayList = needSelectPlayList;
         }
 
         public String getName() {
@@ -394,6 +420,10 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
                     return value;
             }
             return MonitorType.OFF;
+        }
+
+        public boolean isNeedSelectPlayList() {
+            return needSelectPlayList;
         }
 
         public static MonitorType getDefault(MusicManagerBlockEntity blockEntity, UUID player) {

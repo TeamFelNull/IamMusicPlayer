@@ -32,7 +32,6 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     private static final Component EDIT_TEXT = new TranslatableComponent("imp.button.edit");
     private static final Component DELETE_TEXT = new TranslatableComponent("imp.button.delete").withStyle(ChatFormatting.DARK_RED);
     private final List<UUID> memberPlayers = new ArrayList<>();
-    private List<UUID> cashMemberPlayers = new ArrayList<>();
     private SmartButton editButton;
     private SmartButton deleteButton;
     private RadioButton publishingRadio;

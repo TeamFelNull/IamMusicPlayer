@@ -121,12 +121,17 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
                     if (canDone(musicManagerBlockEntity))
                         done(getImage(), getName());
-                    insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
+                    insMonitor(getDoneBackMonitor());
                 }
             }));
             if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
                 this.createButton.active = canDone(musicManagerBlockEntity);
         }
+    }
+
+    @NotNull
+    protected MusicManagerBlockEntity.MonitorType getDoneBackMonitor() {
+        return MusicManagerBlockEntity.MonitorType.PLAY_LIST;
     }
 
     @Override

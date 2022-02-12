@@ -11,8 +11,14 @@ public class EditMusicMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     @Override
-    public void done(ImageInfo imageInfo, String name) {
+    public void init(int leftPos, int topPos) {
+        super.init(leftPos, topPos);
 
+    }
+
+    @Override
+    public void done(ImageInfo imageInfo, String name) {
+        System.out.println("test");
     }
 
     @Override
@@ -22,6 +28,6 @@ public class EditMusicMMMonitor extends ImageNameBaseMMMonitor {
 
     @Override
     protected @Nullable MusicManagerBlockEntity.MonitorType getParentType() {
-        return MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST;
+        return MusicManagerBlockEntity.MonitorType.PLAY_LIST;
     }
 }

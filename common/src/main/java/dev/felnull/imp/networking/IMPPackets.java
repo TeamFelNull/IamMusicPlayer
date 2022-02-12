@@ -25,6 +25,7 @@ import java.util.UUID;
 public class IMPPackets {
     public static final ResourceLocation MUSIC_SYNC = new ResourceLocation(IamMusicPlayer.MODID, "music_sync");
     public static final ResourceLocation MUSIC_PLAYLIST_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_playlist_add");
+    public static final ResourceLocation MUSIC_PLAYLIST_EDIT = new ResourceLocation(IamMusicPlayer.MODID, "music_playlist_edit");
     public static final ResourceLocation MUSIC_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_add");
     public static final ResourceLocation MUSIC_RING_READY = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready");
     public static final ResourceLocation MUSIC_RING_READY_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready_result");
@@ -33,7 +34,8 @@ public class IMPPackets {
 
     public static void init() {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
-        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListAddMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_EDIT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListEditMessage(new MusicPlayListMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicAddMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicRingReadyResultMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_UPDATE_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicUpdateResultMessage(new MusicRingUpdateResultMessage(friendlyByteBuf), packetContext));
@@ -217,7 +219,8 @@ public class IMPPackets {
         }
     }
 
-    public static class MusicPlayListAddMessage implements PacketMessage {
+    public static class MusicPlayListMessage implements PacketMessage {
+        public final UUID uuid;
         public final String name;
         public final ImageInfo image;
         public final boolean publiced;
@@ -225,7 +228,8 @@ public class IMPPackets {
         public final List<UUID> invitePlayers;
         public final BlockEntityExistence blockEntityExistence;
 
-        public MusicPlayListAddMessage(FriendlyByteBuf bf) {
+        public MusicPlayListMessage(FriendlyByteBuf bf) {
+            this.uuid = bf.readUUID();
             this.name = bf.readUtf();
             this.image = OENbtUtil.readSerializable(bf.readNbt(), "Image", new ImageInfo());
             this.publiced = bf.readBoolean();
@@ -235,7 +239,12 @@ public class IMPPackets {
             this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
         }
 
-        public MusicPlayListAddMessage(String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence) {
+        public MusicPlayListMessage(String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence) {
+            this(UUID.randomUUID(), name, image, publiced, initMember, invitePlayers, blockEntityExistence);
+        }
+
+        public MusicPlayListMessage(UUID uuid, String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence) {
+            this.uuid = uuid;
             this.name = name;
             this.image = image;
             this.publiced = publiced;
@@ -247,6 +256,7 @@ public class IMPPackets {
         @Override
         public FriendlyByteBuf toFBB() {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(this.uuid);
             buf.writeUtf(this.name);
             buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Image", image));
             buf.writeBoolean(publiced);

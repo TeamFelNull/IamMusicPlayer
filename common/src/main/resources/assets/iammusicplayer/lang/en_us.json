@@ -19,6 +19,7 @@
   "imp.monitor.music_manager.add_online_play_list": "Add play list by online",
   "imp.monitor.music_manager.import_youtube_play_list": "Import youtube play list",
   "imp.monitor.music_manager.detail_play_list": "Play list details",
+  "imp.monitor.music_manager.edit_play_list": "Edit play list",
   "imp.monitor.boombox.off": "Off",
   "imp.monitor.boombox.playing": "Playing",
   "imp.monitor.boombox.radio": "Radio",

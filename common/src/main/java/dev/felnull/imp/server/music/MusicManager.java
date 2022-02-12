@@ -1,16 +1,14 @@
 package dev.felnull.imp.server.music;
 
-import dev.felnull.imp.server.data.MusicSaveData;
 import dev.felnull.imp.music.resource.AuthorityInfo;
+import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
+import dev.felnull.imp.server.data.MusicSaveData;
 import dev.felnull.otyacraftengine.server.data.WorldDataManager;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 
 public class MusicManager {
@@ -78,6 +76,20 @@ public class MusicManager {
             pl.getAuthority().getRawAuthority().put(uuid, pl.getAuthority().getInitialAuthority());
             getSaveData().setDirty();
         }
+    }
+
+    public void editPlayList(UUID playListId, String name, ImageInfo image, List<UUID> invitePlayers, boolean publiced, boolean initMember, ServerPlayer player) {
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null) return;
+        if (!pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).canEdit()) return;
+        var oldAuth = pl.getAuthority();
+        Map<UUID, AuthorityInfo.AuthorityType> naus = new HashMap<>(oldAuth.getRawAuthority());
+        List<UUID> rms = naus.entrySet().stream().filter(n -> n.getValue() == AuthorityInfo.AuthorityType.INVITATION).map(Map.Entry::getKey).toList();
+        rms.forEach(naus::remove);
+        invitePlayers.forEach(n -> naus.put(n, AuthorityInfo.AuthorityType.INVITATION));
+        var auth = new AuthorityInfo(publiced, oldAuth.getOwner(), oldAuth.getOwnerName(), naus, initMember ? AuthorityInfo.AuthorityType.MEMBER : AuthorityInfo.AuthorityType.READ_ONLY);
+        getSaveData().getPlayLists().put(playListId, new MusicPlayList(playListId, name, image, auth, pl.getMusicList(), pl.getCreateDate()));
+        getSaveData().setDirty();
     }
 
     public static enum PlayListGetType {

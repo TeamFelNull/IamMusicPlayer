@@ -18,7 +18,7 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
         var pubType = getPublishingType();
         var initAuthType = getInitialAuthorityType();
         var invitePlayers = getInvitePlayers();
-        NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_ADD, new IMPPackets.MusicPlayListAddMessage(name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
+        NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_ADD, new IMPPackets.MusicPlayListMessage(name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
     }
 
     @Override
