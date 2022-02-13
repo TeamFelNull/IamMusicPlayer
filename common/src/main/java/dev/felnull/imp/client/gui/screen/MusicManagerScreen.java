@@ -96,6 +96,24 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         return MusicManagerBlockEntity.MonitorType.OFF;
     }
 
+    public void insImportPlayListMusicCount(int count) {
+        var tag = new CompoundTag();
+        tag.putInt("count", count);
+        instruction("set_import_playlist_music_count", 0, tag);
+    }
+
+    public void insImportPlayListAuthor(String author) {
+        var tag = new CompoundTag();
+        tag.putString("author", author);
+        instruction("set_import_playlist_author", 0, tag);
+    }
+
+    public void insImportPlayListName(String name) {
+        var tag = new CompoundTag();
+        tag.putString("name", name);
+        instruction("set_import_playlist_name", 0, tag);
+    }
+
     public void insImportIdentifier(String identifier) {
         var tag = new CompoundTag();
         tag.putString("id", identifier);

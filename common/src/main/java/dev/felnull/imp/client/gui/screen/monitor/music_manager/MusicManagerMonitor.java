@@ -41,6 +41,7 @@ public abstract class MusicManagerMonitor extends Monitor<MusicManagerBlockEntit
                 insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
             }, new TranslatableComponent("imp.button.close")));
             addRenderWidget(new ImageButton(getStartX() + 342, getStartY(), 14, 10, 14, 0, 10, WIDGETS_TEXTURE, 256, 256, n -> {
+                onBackParent();
                 insMonitor(getParentType());
             }, new TranslatableComponent("imp.button.backScreen")));
         }
@@ -123,6 +124,10 @@ public abstract class MusicManagerMonitor extends Monitor<MusicManagerBlockEntit
     }
 
     public void onUpdateSelectedPlayList(UUID playListId) {
+
+    }
+
+    protected void onBackParent() {
 
     }
 }

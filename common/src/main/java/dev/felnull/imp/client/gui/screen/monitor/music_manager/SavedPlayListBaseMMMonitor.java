@@ -120,7 +120,7 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
 
         renderSmartTextSprite(poseStack, multiBufferSource, INVITE_PLAYER_BY_MCID_OR_UUID_TEXT, 189, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-        renderSmartEditBoxSprite(poseStack, multiBufferSource, 189, 112, OERenderUtil.MIN_BREADTH * 4, 141, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 189, 112, OERenderUtil.MIN_BREADTH * 4, 141, 12, i, j, onPxW, onPxH, monitorHeight, getInvitePlayerName(blockEntity));
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 333, 111, OERenderUtil.MIN_BREADTH * 4, 33, 14, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 106, 19, 11, 11, 256, 256);
 

@@ -82,6 +82,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             tag.remove("MusicSource");
             tag.remove("MusicAuthor");
             tag.remove("ImportIdentifier");
+            tag.remove("ImportPlayListName");
+            tag.remove("ImportPlayListAuthor");
+            tag.remove("ImportPlayListMusicCount");
         }
 
         tag.remove("MusicSearchName");
@@ -160,12 +163,41 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
+    public int getMyImportPlayListMusicCount() {
+        return myData.getInt("ImportPlayListMusicCount");
+    }
+
+    public void setImportPlayListMusicCount(@NotNull ServerPlayer player, int num) {
+        getPlayerData(player).putInt("ImportPlayListMusicCount", num);
+        setChanged();
+    }
+
+    @NotNull
+    public String getMyImportPlayListAuthor() {
+        return myData.getString("ImportPlayListAuthor");
+    }
+
+    public void setImportPlayListAuthor(@NotNull ServerPlayer player, @NotNull String name) {
+        getPlayerData(player).putString("ImportPlayListAuthor", name);
+        setChanged();
+    }
+
+    @NotNull
+    public String getMyImportPlayListName() {
+        return myData.getString("ImportPlayListName");
+    }
+
+    public void setImportPlayListName(@NotNull ServerPlayer player, @NotNull String name) {
+        getPlayerData(player).putString("ImportPlayListName", name);
+        setChanged();
+    }
+
     @NotNull
     public String getMyImportIdentifier() {
         return myData.getString("ImportIdentifier");
     }
 
-    public void setImportIdentifier(ServerPlayer player, @NotNull String identifier) {
+    public void setImportIdentifier(@NotNull ServerPlayer player, @NotNull String identifier) {
         getPlayerData(player).putString("ImportIdentifier", identifier);
         setChanged();
     }
@@ -383,6 +415,15 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             return null;
         } else if ("set_import_identifier".equals(name)) {
             setImportIdentifier(player, data.getString("id"));
+            return null;
+        } else if ("set_import_playlist_name".equals(name)) {
+            setImportPlayListName(player, data.getString("name"));
+            return null;
+        } else if ("set_import_playlist_author".equals(name)) {
+            setImportPlayListAuthor(player, data.getString("author"));
+            return null;
+        } else if ("set_import_playlist_music_count".equals(name)) {
+            setImportPlayListMusicCount(player, data.getInt("count"));
             return null;
         }
         return super.onInstruction(player, name, num, data);

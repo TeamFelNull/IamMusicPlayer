@@ -11,6 +11,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 
 public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
@@ -18,6 +19,13 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
 
     public CreatePlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
+    }
+
+    @Override
+    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
+        super.render(poseStack, f, mouseX, mouseY);
+        if (getImportMusicCount() > 0)
+            drawSmartText(poseStack, new TextComponent(getImportMusicCount() + " Musics"), getStartX() + width - 95 + 7, getStartY() + 184);
     }
 
     @Override
@@ -50,5 +58,15 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     @Override
     protected MusicManagerBlockEntity.MonitorType getParentType() {
         return MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST;
+    }
+
+    private int getImportMusicCount() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            return getImportMusicsCount(musicManagerBlockEntity);
+        return 0;
+    }
+
+    private int getImportMusicsCount(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMyImportPlayListMusicCount();
     }
 }

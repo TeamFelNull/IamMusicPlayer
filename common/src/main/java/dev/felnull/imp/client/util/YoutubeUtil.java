@@ -5,6 +5,8 @@ import com.github.kiulian.downloader.downloader.request.RequestPlaylistInfo;
 import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
 import com.github.kiulian.downloader.model.playlist.PlaylistInfo;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,4 +43,17 @@ public class YoutubeUtil {
         return youtubeDownloader.getPlaylistInfo(new RequestPlaylistInfo(playListID)).data();
     }
 
+    @Nullable
+    public static String getPlayListID(@NotNull String value) {
+        if (value.matches("[a-zA-Z0-9-_]+")) {
+            return value;
+        }
+        if (!value.contains("list="))
+            return null;
+        String[] split = value.split("list=");
+        String v = split[1];
+        if (!v.contains("&"))
+            return v;
+        return v.split("&")[0];
+    }
 }
