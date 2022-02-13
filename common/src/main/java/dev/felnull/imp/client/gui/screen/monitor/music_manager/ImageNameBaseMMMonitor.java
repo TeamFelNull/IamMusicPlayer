@@ -50,7 +50,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     private Component IMAGE_SET_ERROR_TEXT;
     private EditBox imageUrlEditBox;
     protected EditBox nameEditBox;
-    private SmartButton createButton;
+    private SmartButton doneButton;
     private ImageUrlLoader imageUrlLoader;
     private ImageUploader imageUploader;
     private List<Component> lastNotEnteredTexts;
@@ -117,7 +117,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         }));
 
         if (getDoneType() != null) {
-            this.createButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, getDoneType().getText(), n -> {
+            this.doneButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, getDoneType().getText(), n -> {
                 if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
                     if (canDone(musicManagerBlockEntity))
                         done(getImage(), getName());
@@ -125,7 +125,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 }
             }));
             if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
-                this.createButton.active = canDone(musicManagerBlockEntity);
+                this.doneButton.active = canDone(musicManagerBlockEntity);
         }
     }
 
@@ -187,18 +187,18 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                     sb.deleteCharAt(sb.length() - 1);
                     NOT_ENTERED_TEXT = new TranslatableComponent("imp.text.notEntered", sb.toString());
                     if (getDoneType() != null)
-                        this.createButton.active = false;
+                        this.doneButton.active = false;
                 } else {
                     NOT_ENTERED_TEXT = null;
                     if (getDoneType() != null)
-                        this.createButton.active = true;
+                        this.doneButton.active = true;
                 }
                 lastNotEnteredTexts = notEnteredTexts;
             }
         } else {
             NOT_ENTERED_TEXT = null;
             if (getDoneType() != null)
-                this.createButton.active = false;
+                this.doneButton.active = false;
         }
     }
 
@@ -481,7 +481,8 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     public static enum DoneType {
         CREATE(new TranslatableComponent("imp.button.create")),
         ADD(new TranslatableComponent("imp.button.add")),
-        SAVE(new TranslatableComponent("imp.button.save"));
+        SAVE(new TranslatableComponent("imp.button.save")),
+        IMPORT(new TranslatableComponent("imp.button.import"));
         private final Component text;
 
         private DoneType(Component text) {

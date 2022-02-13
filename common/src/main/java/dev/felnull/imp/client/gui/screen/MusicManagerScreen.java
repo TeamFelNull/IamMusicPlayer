@@ -96,6 +96,12 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         return MusicManagerBlockEntity.MonitorType.OFF;
     }
 
+    public void insImportIdentifier(String identifier) {
+        var tag = new CompoundTag();
+        tag.putString("id", identifier);
+        instruction("set_import_identifier", 0, tag);
+    }
+
     public void insImageURL(String url) {
         var tag = new CompoundTag();
         tag.putString("url", url);

@@ -7,6 +7,8 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -77,18 +79,23 @@ public class LavaPlayerUtil {
     }
 
     public static List<AudioTrack> searchYoutube(AudioPlayerManager audioPlayerManager, String name) throws ExecutionException, InterruptedException {
+        return loadTracks(audioPlayerManager, "ytsearch:" + name).getRight();
+    }
+
+    public static Pair<AudioPlaylist, List<AudioTrack>> loadTracks(@NotNull AudioPlayerManager audioPlayerManager, String name) throws ExecutionException, InterruptedException {
         List<AudioTrack> tracks = new ArrayList<>();
-        AtomicReference<AudioTrack> audioTrack = new AtomicReference<>();
         AtomicReference<FriendlyException> fe = new AtomicReference<>();
-        audioPlayerManager.loadItem("ytsearch:" + name, new AudioLoadResultHandler() {
+        AtomicReference<AudioPlaylist> playlist = new AtomicReference<>();
+        audioPlayerManager.loadItem(name, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 tracks.add(track);
             }
 
             @Override
-            public void playlistLoaded(AudioPlaylist playlist) {
-                tracks.addAll(playlist.getTracks());
+            public void playlistLoaded(AudioPlaylist pl) {
+                tracks.addAll(pl.getTracks());
+                playlist.set(pl);
             }
 
             @Override
@@ -102,6 +109,6 @@ public class LavaPlayerUtil {
         }).get();
         if (fe.get() != null)
             throw fe.get();
-        return tracks;
+        return Pair.of(playlist.get(), tracks);
     }
 }

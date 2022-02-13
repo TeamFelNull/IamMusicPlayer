@@ -36,6 +36,7 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     private SmartButton deleteButton;
     private RadioButton publishingRadio;
     private RadioButton initAuthRadio;
+    private String cashName;
 
     public DetailPlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -64,6 +65,8 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
 
         addRenderWidget(new MemberPlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 100, 5, new TranslatableComponent("imp.fixedList.memberPlayers"), memberPlayers, (fixedButtonsList, uuid, i, i1) -> {
         }, this::getSelectedMusicPlayList));
+
+        this.cashName = getName();
     }
 
     @Override
@@ -117,6 +120,11 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         if (pl != null) {
             memberPlayers.addAll(pl.getAuthority().getPlayersAuthority().keySet());
             memberPlayers.sort(Comparator.comparingInt(o -> pl.getAuthority().getAuthorityType((UUID) o).getLevel()).reversed());
+        }
+
+        if (!this.cashName.equals(getName())) {
+            this.cashName = getName();
+            this.nameEditBox.setValue(this.cashName);
         }
     }
 

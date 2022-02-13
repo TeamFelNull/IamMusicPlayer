@@ -67,8 +67,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
         boolean keepFlg = (oldM == MonitorType.ADD_MUSIC && newM == MonitorType.SEARCH_MUSIC) || (oldM == MonitorType.SEARCH_MUSIC && newM == MonitorType.ADD_MUSIC);
         boolean keepFlg2 = (oldM == MonitorType.ADD_MUSIC && newM == MonitorType.UPLOAD_MUSIC) || (oldM == MonitorType.UPLOAD_MUSIC && newM == MonitorType.ADD_MUSIC);
+        boolean keepFlg3 = oldM != null && newM != null && oldM.isKeepPlayListData() && newM.isKeepPlayListData();
 
-        if (!keepFlg && !keepFlg2) {
+        if (!keepFlg && !keepFlg2 && !keepFlg3) {
             tag.remove("Image");
             tag.remove("ImageURL");
             tag.remove("CreateName");
@@ -80,6 +81,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             tag.remove("MusicSourceName");
             tag.remove("MusicSource");
             tag.remove("MusicAuthor");
+            tag.remove("ImportIdentifier");
         }
 
         tag.remove("MusicSearchName");
@@ -155,6 +157,16 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     public void setMusicSource(ServerPlayer player, MusicSource source) {
         OENbtUtil.writeSerializable(getPlayerData(player), "MusicSource", source);
+        setChanged();
+    }
+
+    @NotNull
+    public String getMyImportIdentifier() {
+        return myData.getString("ImportIdentifier");
+    }
+
+    public void setImportIdentifier(ServerPlayer player, @NotNull String identifier) {
+        getPlayerData(player).putString("ImportIdentifier", identifier);
         setChanged();
     }
 
@@ -369,6 +381,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             var author = data.getString("author");
             setMusicAuthor(player, author);
             return null;
+        } else if ("set_import_identifier".equals(name)) {
+            setImportIdentifier(player, data.getString("id"));
+            return null;
         }
         return super.onInstruction(player, name, num, data);
     }
@@ -386,6 +401,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         ADD_ONLINE_PLAY_LIST("add_online_play_list", false),
         EDIT_PLAY_LIST("edit_play_list", true),
         DETAIL_PLAY_LIST("detail_play_list", true),
+        IMPORT_PLAY_LIST_SELECT("import_play_list_select", false),
         CREATE_PLAY_LIST("create_play_list", false),
         DELETE_PLAY_LIST("delete_play_list", true),
         ADD_MUSIC("add_music", true),
@@ -414,6 +430,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
             return getDefault(blockEntity, player);
         }
 
+
         public static MonitorType getByName(String name) {
             for (MonitorType value : values()) {
                 if (value.getName().equals(name))
@@ -424,6 +441,10 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
         public boolean isNeedSelectPlayList() {
             return needSelectPlayList;
+        }
+
+        public boolean isKeepPlayListData() {
+            return this == CREATE_PLAY_LIST || this == IMPORT_PLAY_LIST_SELECT || this == IMPORT_YOUTUBE_PLAY_LIST;
         }
 
         public static MonitorType getDefault(MusicManagerBlockEntity blockEntity, UUID player) {

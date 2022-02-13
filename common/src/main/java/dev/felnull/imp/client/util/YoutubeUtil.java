@@ -3,7 +3,7 @@ package dev.felnull.imp.client.util;
 import com.github.kiulian.downloader.YoutubeDownloader;
 import com.github.kiulian.downloader.downloader.request.RequestPlaylistInfo;
 import com.github.kiulian.downloader.downloader.request.RequestVideoInfo;
-import com.github.kiulian.downloader.model.playlist.PlaylistVideoDetails;
+import com.github.kiulian.downloader.model.playlist.PlaylistInfo;
 import com.github.kiulian.downloader.model.subtitles.SubtitlesInfo;
 
 import java.util.HashMap;
@@ -37,9 +37,8 @@ public class YoutubeUtil {
         return video.subtitlesInfo();
     }
 
-    public static List<PlaylistVideoDetails> getYoutubePlayList(String playListID) {
-        var playlist = youtubeDownloader.getPlaylistInfo(new RequestPlaylistInfo(playListID)).data();
-        return playlist.videos();
+    public static PlaylistInfo getYoutubePlayList(String playListID) {
+        return youtubeDownloader.getPlaylistInfo(new RequestPlaylistInfo(playListID)).data();
     }
 
 }

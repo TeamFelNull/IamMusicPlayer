@@ -54,6 +54,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
 
         this.addOnlinePlayListButton = addRenderWidget(new SmartButton(getStartX() + 91, getStartY() + 189, 122, 9, ONLINE_PLAYLIST_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.ADD_ONLINE_PLAY_LIST)));
         this.addOnlinePlayListButton.setIcon(WIDGETS_TEXTURE, 83, 14, 5, 5);
+        this.addOnlinePlayListButton.active = false;
 
         this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 213, getStartY() + 189, n -> updateList(), false, getScreen()));
         this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 222, getStartY() + 189, n -> updateList(), false, getScreen()));
@@ -76,7 +77,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
         OERenderUtil.renderTextureSprite(ADD_PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 90, 9, i, j, onPxW, onPxH, monitorHeight, CREATE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 78, 14, 5, 5, 256, 256);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 91, 189, OERenderUtil.MIN_BREADTH * 2, 122, 9, i, j, onPxW, onPxH, monitorHeight, ONLINE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 83, 14, 5, 5, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 91, 189, OERenderUtil.MIN_BREADTH * 2, 122, 9, i, j, onPxW, onPxH, monitorHeight, ONLINE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 83, 14, 5, 5, 256, 256, true);
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 213, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
         renderSmartButtonSprite(poseStack, multiBufferSource, 222, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
