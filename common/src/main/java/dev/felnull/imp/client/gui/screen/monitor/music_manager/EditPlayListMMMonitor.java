@@ -9,6 +9,8 @@ import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+
 public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     public EditPlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -20,12 +22,13 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     }
 
     @Override
-    public void done(ImageInfo imageInfo, String name) {
+    public boolean done(ImageInfo imageInfo, String name) {
         var pubType = getPublishingType();
         var initAuthType = getInitialAuthorityType();
         var invitePlayers = getInvitePlayers();
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_EDIT, new IMPPackets.MusicPlayListMessage(musicManagerBlock.getMySelectedPlayList(), name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
+            NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_EDIT, new IMPPackets.MusicPlayListMessage(musicManagerBlock.getMySelectedPlayList(), name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity()), new ArrayList<>()).toFBB());
+        return true;
     }
 
     @Override

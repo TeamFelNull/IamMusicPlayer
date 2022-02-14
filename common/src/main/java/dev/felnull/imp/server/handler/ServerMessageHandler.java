@@ -45,7 +45,8 @@ public class ServerMessageHandler {
 
     public static void onMusicPlayListAddMessage(IMPPackets.MusicPlayListMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
-            if (message.blockEntityExistence.check(((ServerPlayer) packetContext.getPlayer()).getLevel())) {
+            var player = (ServerPlayer) packetContext.getPlayer();
+            if (message.blockEntityExistence.check(player.getLevel())) {
                 Map<UUID, AuthorityInfo.AuthorityType> authTypes = new HashMap<>();
                 message.invitePlayers.forEach(n -> authTypes.put(n, AuthorityInfo.AuthorityType.INVITATION));
                 var auth = new AuthorityInfo(message.publiced, packetContext.getPlayer().getGameProfile().getId(), packetContext.getPlayer().getGameProfile().getName(), authTypes, message.initMember ? AuthorityInfo.AuthorityType.MEMBER : AuthorityInfo.AuthorityType.READ_ONLY);
@@ -53,6 +54,12 @@ public class ServerMessageHandler {
                 var mm = MusicManager.getInstance();
                 mm.addPlayList(pl);
                 mm.addPlayListToPlayer(pl.getUuid(), (ServerPlayer) packetContext.getPlayer());
+
+                for (Music importMusic : message.importMusics) {
+                    Music music = new Music(UUID.randomUUID(), importMusic.getName(), importMusic.getAuthor(), importMusic.getSource(), importMusic.getImage(), player.getGameProfile().getId(), System.currentTimeMillis());
+                    mm.addMusicToPlayList(pl.getUuid(), music);
+                }
+
                 var be = (MusicManagerBlockEntity) ((ServerPlayer) packetContext.getPlayer()).getLevel().getBlockEntity(message.blockEntityExistence.blockPos());
                 if (be != null)
                     be.setSelectedPlayList((ServerPlayer) packetContext.getPlayer(), pl.getUuid());

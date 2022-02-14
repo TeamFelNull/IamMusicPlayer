@@ -227,6 +227,7 @@ public class IMPPackets {
         public final boolean initMember;
         public final List<UUID> invitePlayers;
         public final BlockEntityExistence blockEntityExistence;
+        public final List<Music> importMusics;
 
         public MusicPlayListMessage(FriendlyByteBuf bf) {
             this.uuid = bf.readUUID();
@@ -237,13 +238,15 @@ public class IMPPackets {
             this.invitePlayers = new ArrayList<>();
             OENbtUtil.readUUIDList(bf.readNbt(), "InvitePlayers", invitePlayers);
             this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+            this.importMusics = new ArrayList<>();
+            IMPNbtUtil.readMusics(bf.readNbt(), "ImportMusics", importMusics);
         }
 
-        public MusicPlayListMessage(String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence) {
-            this(UUID.randomUUID(), name, image, publiced, initMember, invitePlayers, blockEntityExistence);
+        public MusicPlayListMessage(String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence, List<Music> importMusics) {
+            this(UUID.randomUUID(), name, image, publiced, initMember, invitePlayers, blockEntityExistence, importMusics);
         }
 
-        public MusicPlayListMessage(UUID uuid, String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence) {
+        public MusicPlayListMessage(UUID uuid, String name, ImageInfo image, boolean publiced, boolean initMember, List<UUID> invitePlayers, BlockEntityExistence blockEntityExistence, List<Music> importMusics) {
             this.uuid = uuid;
             this.name = name;
             this.image = image;
@@ -251,6 +254,7 @@ public class IMPPackets {
             this.initMember = initMember;
             this.invitePlayers = invitePlayers;
             this.blockEntityExistence = blockEntityExistence;
+            this.importMusics = importMusics;
         }
 
         @Override
@@ -263,6 +267,7 @@ public class IMPPackets {
             buf.writeBoolean(initMember);
             buf.writeNbt(OENbtUtil.writeUUIDList(new CompoundTag(), "InvitePlayers", invitePlayers));
             blockEntityExistence.writeFBB(buf);
+            buf.writeNbt(IMPNbtUtil.writeMusics(new CompoundTag(), "ImportMusics", importMusics));
             return buf;
         }
     }

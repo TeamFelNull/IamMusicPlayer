@@ -228,10 +228,11 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     @Override
-    public void done(ImageInfo imageInfo, String name) {
+    public boolean done(ImageInfo imageInfo, String name) {
         var ms = getMusicSource();
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
             NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicAddMessage(musicManagerBlock.getMySelectedPlayList(), name, getMusicAuthor(), imageInfo, ms).toFBB());
+        return true;
     }
 
     @Override

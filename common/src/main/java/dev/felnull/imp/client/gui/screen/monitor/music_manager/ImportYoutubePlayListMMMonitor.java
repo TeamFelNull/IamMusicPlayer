@@ -91,6 +91,11 @@ public class ImportYoutubePlayListMMMonitor extends MusicManagerMonitor {
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
         renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, CreatePlayListMMMonitor.IMPORT_TEXT, true, !canImport(blockEntity));
+
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 6, 164, OERenderUtil.MIN_BREADTH * 4, 175, 12, i, j, onPxW, onPxH, monitorHeight, getImportPlayList(blockEntity));
+
+        renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(getImportPlayListName(blockEntity)), 200, 167, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(getImportPlayListAuthor(blockEntity)), 200, 183, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
     }
 
     @Override
@@ -105,11 +110,17 @@ public class ImportYoutubePlayListMMMonitor extends MusicManagerMonitor {
     }
 
     private boolean canImport(MusicManagerBlockEntity blockEntity) {
-        return !getImportPlayList(blockEntity).isEmpty();
+        return !getImportPlayList(blockEntity).isEmpty() && getImportPlayListMusicCount(blockEntity) > 0;
+    }
+
+    private int getImportPlayListMusicCount(MusicManagerBlockEntity blockEntity) {
+        return blockEntity.getMyImportPlayListMusicCount();
     }
 
     private boolean canImport() {
-        return !getImportPlayList().isEmpty();
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            return canImport(musicManagerBlockEntity);
+        return false;
     }
 
     private void setImportPlayListAuthor(String author) {

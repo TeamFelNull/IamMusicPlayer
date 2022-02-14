@@ -17,8 +17,9 @@ public class EditMusicMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     @Override
-    public void done(ImageInfo imageInfo, String name) {
+    public boolean done(ImageInfo imageInfo, String name) {
         System.out.println("test");
+        return true;
     }
 
     @Override

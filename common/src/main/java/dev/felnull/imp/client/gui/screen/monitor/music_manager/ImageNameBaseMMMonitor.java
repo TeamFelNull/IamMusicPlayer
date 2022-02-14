@@ -101,12 +101,15 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> {
             if (getDoneType() == null) {
                 if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
+                    boolean bf = true;
                     if (canDone(musicManagerBlockEntity))
-                        done(getImage(), getName());
-                    var pt = getParentType();
-                    if (pt == null)
-                        pt = MusicManagerBlockEntity.MonitorType.PLAY_LIST;
-                    insMonitor(pt);
+                        bf = done(getImage(), getName());
+                    if (bf) {
+                        var pt = getParentType();
+                        if (pt == null)
+                            pt = MusicManagerBlockEntity.MonitorType.PLAY_LIST;
+                        insMonitor(pt);
+                    }
                 }
             } else {
                 var pt = getParentType();
@@ -120,8 +123,8 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
             this.doneButton = addRenderWidget(new SmartButton(getStartX() + 95, getStartY() + 180, 87, 15, getDoneType().getText(), n -> {
                 if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity) {
                     if (canDone(musicManagerBlockEntity))
-                        done(getImage(), getName());
-                    insMonitor(getDoneBackMonitor());
+                        if (done(getImage(), getName()))
+                            insMonitor(getDoneBackMonitor());
                 }
             }));
             if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
@@ -162,7 +165,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     }
 
-    public abstract void done(ImageInfo imageInfo, String name);
+    public abstract boolean done(ImageInfo imageInfo, String name);
 
     public boolean canDone(MusicManagerBlockEntity blockEntity) {
         return !getName(blockEntity).isEmpty();

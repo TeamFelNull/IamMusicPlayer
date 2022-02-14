@@ -134,8 +134,8 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     }
 
     @Override
-    public void done(ImageInfo imageInfo, String name) {
-
+    public boolean done(ImageInfo imageInfo, String name) {
+        return true;
     }
 
     @Override
