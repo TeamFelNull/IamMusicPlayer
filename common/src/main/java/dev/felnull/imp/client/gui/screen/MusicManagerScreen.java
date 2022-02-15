@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -167,6 +168,13 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         if (selectedPlayList != null)
             tag.putUUID("playlist", selectedPlayList);
         instruction("set_selected_playlist", 0, tag);
+    }
+
+    public void insSelectedMusic(@Nullable UUID selectedMusic) {
+        var tag = new CompoundTag();
+        if (selectedMusic != null)
+            tag.putUUID("music", selectedMusic);
+        instruction("set_selected_music", 0, tag);
     }
 
     public void insMusicLoaderType(String name) {

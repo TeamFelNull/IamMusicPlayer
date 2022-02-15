@@ -36,8 +36,8 @@ dependencies {
     modApi "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
 
-//    shadowIn "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
-    shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT')
+    //  shadowIn "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
+     shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT')
 
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
@@ -73,8 +73,8 @@ shadowJar {
     relocate 'com.alibaba', 'dev.felnull.imp.libs.com.alibaba'
     relocate 'dev.felnull.fnjl', 'dev.felnull.imp.libs.dev.felnull.fnjl'
     relocate 'com.mpatric', 'dev.felnull.imp.libs.com.mpatric'
-    relocate ('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.libs.com.sedmelluq.discord.lavaplayer'){
-        exclude  'com.sedmelluq.discord.lavaplayer.natives.**'
+    relocate('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.libs.com.sedmelluq.discord.lavaplayer') {
+        exclude 'com.sedmelluq.discord.lavaplayer.natives.**'
     }
 }
 

@@ -78,6 +78,18 @@ public class MusicManager {
         }
     }
 
+    public void editMusic(UUID musicId, UUID playListId, String name, ImageInfo image, ServerPlayer player) {
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null || !pl.getMusicList().contains(musicId)) return;
+        var pid = player.getGameProfile().getId();
+        if (pl.getAuthority().getAuthorityType(pid).isBan()) return;
+        var m = getSaveData().getMusics().get(musicId);
+        if (m == null || !m.getOwner().equals(pid)) return;
+        var nm = new Music(musicId, name, m.getAuthor(), m.getSource(), image, m.getOwner(), m.getCreateDate());
+        getSaveData().getMusics().put(musicId, nm);
+        getSaveData().setDirty();
+    }
+
     public void editPlayList(UUID playListId, String name, ImageInfo image, List<UUID> invitePlayers, boolean publiced, boolean initMember, ServerPlayer player) {
         var pl = getSaveData().getPlayLists().get(playListId);
         if (pl == null) return;

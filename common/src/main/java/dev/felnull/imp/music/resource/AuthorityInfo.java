@@ -186,6 +186,10 @@ public class AuthorityInfo implements ITAGSerializable {
             return isMoreAdmin();
         }
 
+        public boolean canMusicDelete() {
+            return isMoreAdmin();
+        }
+
         public boolean canDelete() {
             return this == OWNER;
         }

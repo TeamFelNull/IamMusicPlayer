@@ -1,11 +1,18 @@
 package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
+import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EditMusicMMMonitor extends ImageNameBaseMMMonitor {
+import java.util.UUID;
+
+public class EditMusicMMMonitor extends SavedMusicBaseMMMonitor {
     public EditMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
     }
@@ -18,8 +25,15 @@ public class EditMusicMMMonitor extends ImageNameBaseMMMonitor {
 
     @Override
     public boolean done(ImageInfo imageInfo, String name) {
-        System.out.println("test");
+        var mid = getSelectedMusicRaw();
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock && mid != null && musicManagerBlock.getMySelectedPlayList() != null)
+            NetworkManager.sendToServer(IMPPackets.MUSIC_EDIT, new IMPPackets.MusicMessage(mid, musicManagerBlock.getMySelectedPlayList(), name, "", imageInfo, MusicSource.EMPTY, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
         return true;
+    }
+
+    @Override
+    protected MusicManagerBlockEntity.@NotNull MonitorType getDoneBackMonitor() {
+        return MusicManagerBlockEntity.MonitorType.DETAIL_MUSIC;
     }
 
     @Override
@@ -29,6 +43,18 @@ public class EditMusicMMMonitor extends ImageNameBaseMMMonitor {
 
     @Override
     protected @Nullable MusicManagerBlockEntity.MonitorType getParentType() {
-        return MusicManagerBlockEntity.MonitorType.PLAY_LIST;
+        return MusicManagerBlockEntity.MonitorType.DETAIL_MUSIC;
+    }
+
+    @Nullable
+    private UUID getSelectedMusicRaw() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            return getSelectedMusicRaw(musicManagerBlockEntity);
+        return null;
+    }
+
+    @Nullable
+    private UUID getSelectedMusicRaw(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMySelectedMusic();
     }
 }

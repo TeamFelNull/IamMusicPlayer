@@ -27,6 +27,7 @@ public class IMPPackets {
     public static final ResourceLocation MUSIC_PLAYLIST_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_playlist_add");
     public static final ResourceLocation MUSIC_PLAYLIST_EDIT = new ResourceLocation(IamMusicPlayer.MODID, "music_playlist_edit");
     public static final ResourceLocation MUSIC_ADD = new ResourceLocation(IamMusicPlayer.MODID, "music_add");
+    public static final ResourceLocation MUSIC_EDIT = new ResourceLocation(IamMusicPlayer.MODID, "music_edit");
     public static final ResourceLocation MUSIC_RING_READY = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready");
     public static final ResourceLocation MUSIC_RING_READY_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready_result");
     public static final ResourceLocation MUSIC_RING_STATE = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_state");
@@ -36,7 +37,8 @@ public class IMPPackets {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_EDIT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListEditMessage(new MusicPlayListMessage(friendlyByteBuf), packetContext));
-        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicAddMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_EDIT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicEditMessage(new MusicMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicRingReadyResultMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_UPDATE_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicUpdateResultMessage(new MusicRingUpdateResultMessage(friendlyByteBuf), packetContext));
     }
@@ -184,37 +186,49 @@ public class IMPPackets {
         }
     }
 
-    public static class MusicAddMessage implements PacketMessage {
+    public static class MusicMessage implements PacketMessage {
+        public final UUID uuid;
         public final UUID playlist;
         public final String name;
         public final String author;
         public final ImageInfo image;
         public final MusicSource source;
+        public final BlockEntityExistence blockEntityExistence;
 
-        public MusicAddMessage(FriendlyByteBuf bf) {
+        public MusicMessage(FriendlyByteBuf bf) {
+            this.uuid = bf.readUUID();
             this.playlist = bf.readUUID();
             this.name = bf.readUtf();
             this.author = bf.readUtf();
             this.image = OENbtUtil.readSerializable(bf.readNbt(), "Image", new ImageInfo());
             this.source = OENbtUtil.readSerializable(bf.readNbt(), "Source", new MusicSource());
+            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
         }
 
-        public MusicAddMessage(UUID playlist, String name, String author, ImageInfo image, MusicSource source) {
+        public MusicMessage(UUID playlist, String name, String author, ImageInfo image, MusicSource source, BlockEntityExistence blockEntityExistence) {
+            this(UUID.randomUUID(), playlist, name, author, image, source, blockEntityExistence);
+        }
+
+        public MusicMessage(UUID uuid, UUID playlist, String name, String author, ImageInfo image, MusicSource source, BlockEntityExistence blockEntityExistence) {
+            this.uuid = uuid;
             this.playlist = playlist;
             this.name = name;
             this.author = author;
             this.image = image;
             this.source = source;
+            this.blockEntityExistence = blockEntityExistence;
         }
 
         @Override
         public FriendlyByteBuf toFBB() {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeUUID(playlist);
+            buf.writeUUID(this.uuid);
+            buf.writeUUID(this.playlist);
             buf.writeUtf(this.name);
             buf.writeUtf(this.author);
             buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Image", image));
             buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Source", source));
+            blockEntityExistence.writeFBB(buf);
             return buf;
         }
     }

@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -70,7 +71,8 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         this.musicOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 271, getStartY() + 189, n -> updateMusics(), true, getScreen()));
 
         this.addRenderWidget(new MusicsFixedButtonsList(getStartX() + 102, getStartY() + 40, 267, 148, 4, new TranslatableComponent("imp.fixedList.musics"), musics, (fixedButtonsList, music, i, i1) -> {
-
+            setSelectedMusic(music.getUuid());
+            insMonitor(MusicManagerBlockEntity.MonitorType.DETAIL_MUSIC);
         }));
 
         this.detailButton = this.addRenderWidget(new SmartButton(getStartX() + 336, getStartY() + 20, 33, 9, DETAIL_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST)));
@@ -242,6 +244,22 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
                 INFO_TEXT = null;
             }
         }
+    }
+
+    public void setSelectedMusic(@Nullable UUID uuid) {
+        getScreen().insSelectedMusic(uuid);
+    }
+
+    @Nullable
+    public UUID getSelectedMusicRaw() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            return getSelectedMusicRaw(musicManagerBlockEntity);
+        return null;
+    }
+
+    @Nullable
+    public UUID getSelectedMusicRaw(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMySelectedMusic();
     }
 
     public MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {

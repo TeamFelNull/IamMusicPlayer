@@ -21,6 +21,8 @@
   "imp.monitor.music_manager.detail_play_list": "Play list details",
   "imp.monitor.music_manager.edit_play_list": "Edit play list",
   "imp.monitor.music_manager.import_play_list_select": "Import play list select",
+  "imp.monitor.music_manager.detail_music": "Music details",
+  "imp.monitor.music_manager.edit_music": "Edit music",
   "imp.monitor.boombox.off": "Off",
   "imp.monitor.boombox.playing": "Playing",
   "imp.monitor.boombox.radio": "Radio",

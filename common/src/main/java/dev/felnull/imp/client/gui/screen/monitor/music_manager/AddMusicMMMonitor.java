@@ -2,37 +2,27 @@ package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.networking.NetworkManager;
-import dev.felnull.fnjl.util.FNStringUtil;
-import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.MusicLoaderTypesFixedButtonsList;
-import dev.felnull.imp.client.gui.components.PlaybackProgressBar;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
 import dev.felnull.imp.client.music.loadertypes.MusicLoadResult;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
-    private static final ResourceLocation ADD_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_music.png");
-    private static final Component PLAYBACK_CONTROL_TEXT = new TranslatableComponent("imp.button.playbackControl");
-    private static final Component PLAYBACK_NON_PROGRESS_TEXT = new TextComponent("--:--/--:--");
-    private static final Component PLAYBACK_LOADING_PROGRESS_TEXT = new TranslatableComponent("imp.text.playbackLoading");
-    private static final Component MUSIC_SOURCE_TEXT = new TranslatableComponent("imp.text.musicSource");
+public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     private static final Component MUSIC_CHECKING_TEXT = new TranslatableComponent("imp.text.musicChecking");
     private static final Component MUSIC_GUESSING_TEXT = new TranslatableComponent("imp.text.musicGuessing");
     private static final Component MUSIC_LOAD_FAILURE_TEXT = new TranslatableComponent("imp.text.loadFailure");
@@ -41,16 +31,17 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     private static final Component AUTO_FAILURE_TEXT = new TranslatableComponent("imp.text.loadFailure.auto");
     private static final Component UPLOAD_MUSIC_TEXT = new TranslatableComponent("imp.button.uploadMusic");
     private final List<String> musicLoaderTypes = new ArrayList<>();
-    private SmartButton playControlButton;
     private EditBox musicSourceNameEditBox;
     private SmartButton searchButton;
     private SmartButton uploadButton;
     private MusicLoadThread musicLoadThread;
     private boolean loadFailure;
-    private Component AUTHOR_TEXT;
 
     public AddMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
+        this.playBackX = 189;
+        this.playBackY = 140;
+        this.isLoaderSelect = true;
     }
 
     @Override
@@ -60,30 +51,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         this.musicLoaderTypes.add("auto");
         this.musicLoaderTypes.add("upload");
         this.musicLoaderTypes.addAll(IMPMusicLoaderTypes.getMusicLoaderTypes().keySet());
-
-        this.playControlButton = this.addRenderWidget(new SmartButton(getStartX() + 189, getStartY() + 140, 20, 20, PLAYBACK_CONTROL_TEXT, n -> {
-            if (getScreen().isMusicPlaying()) {
-                getScreen().stopMusic();
-            } else {
-                if (!getMusicSource().isEmpty()) {
-                    getScreen().playMusic(getMusicSource(), 0);
-                }
-            }
-        }));
-        this.playControlButton.setHideText(true);
-        this.playControlButton.setIcon(WIDGETS_TEXTURE, 0, 123, 11, 11);
-        this.playControlButton.active = !getMusicSource().isEmpty();
-
-        this.addRenderWidget(new PlaybackProgressBar(getStartX() + 211, getStartY() + 154, new TranslatableComponent("imp.progressBar.playbackControl"), () -> {
-            if (getScreen().isMusicPlaying())
-                return getScreen().getMusicPlayer().getPositionProgress();
-            return 0f;
-        }, n -> {
-            if (getScreen().isMusicPlaying()) {
-                var ms = getScreen().getMusicPlayer().getMusicSource();
-                getScreen().playMusic(ms, (long) ((float) ms.getDuration() * n));
-            }
-        }));
 
         this.addRenderWidget(new MusicLoaderTypesFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 65, 5, new TranslatableComponent("imp.fixedList.musicLoaderTypes"), musicLoaderTypes, (fixedButtonsList, s, i, i1) -> {
             setMusicLoaderType(s);
@@ -112,37 +79,17 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         }));
         this.uploadButton.setIcon(WIDGETS_TEXTURE, 36, 107, 12, 12);
         this.uploadButton.visible = "upload".equals(getMusicLoaderType());
-
-        if (!getMusicAuthor().isEmpty())
-            AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", getMusicAuthor());
     }
 
     @Override
     public void depose() {
         super.depose();
         stopMusicLoad();
-        AUTHOR_TEXT = null;
     }
 
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(ADD_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-
-        Component pt;
-        if (getScreen().isMusicPlaying()) {
-            var mp = getScreen().getMusicPlayer();
-            pt = new TextComponent(FNStringUtil.getTimeProgress(mp.getPosition(), mp.getMusicSource().getDuration()));
-        } else if (getScreen().isMusicLoading()) {
-            pt = PLAYBACK_LOADING_PROGRESS_TEXT;
-        } else if (!getMusicSource().isEmpty()) {
-            pt = new TextComponent(FNStringUtil.getTimeProgress(0, getMusicSource().getDuration()));
-        } else {
-            pt = PLAYBACK_NON_PROGRESS_TEXT;
-        }
-        drawSmartText(poseStack, pt, getStartX() + 211, getStartY() + 144);
-
-        drawSmartText(poseStack, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
 
         if (musicLoadThread != null && !getMusicSourceName().isEmpty())
             drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? MUSIC_GUESSING_TEXT : MUSIC_CHECKING_TEXT, getStartX() + 189, getStartY() + 128);
@@ -156,10 +103,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
 
         if (loadFailure && !getMusicSourceName().isEmpty())
             drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? AUTO_FAILURE_TEXT : MUSIC_LOAD_FAILURE_TEXT, getStartX() + 189, getStartY() + 128);
-
-        if (AUTHOR_TEXT != null)
-            drawSmartText(poseStack, AUTHOR_TEXT, getStartX() + 189, getStartY() + 165);
-
     }
 
     @Override
@@ -173,9 +116,7 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
 
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        OERenderUtil.renderTextureSprite(ADD_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
-        renderSmartTextSprite(poseStack, multiBufferSource, MUSIC_SOURCE_TEXT, 189, 13, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
         var ml = getRawMusicLoaderType(blockEntity);
 
@@ -186,11 +127,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
             renderSmartTextSprite(poseStack, multiBufferSource, AUTO_INFO_TEXT, 189, 91, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
         }
 
-        if (!getMusicAuthor(blockEntity).isEmpty()) {
-            var aut = OERenderUtil.getWidthString(getMusicAuthor(blockEntity), 140, "...");
-            renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicAuthor", aut), 189, 165, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-        }
-
         if (!"upload".equals(getMusicLoaderType(blockEntity))) {
             var rtp = getRawMusicLoaderType(blockEntity);
             renderSmartEditBoxSprite(poseStack, multiBufferSource, 189, 112, OERenderUtil.MIN_BREADTH * 4, (rtp != null && rtp.isSearchable()) ? 141 : 177, 12, i, j, onPxW, onPxH, monitorHeight, getName(blockEntity));
@@ -199,17 +135,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         } else {
             renderSmartButtonSprite(poseStack, multiBufferSource, 189, 111, OERenderUtil.MIN_BREADTH * 4, 177, 14, i, j, onPxW, onPxH, monitorHeight, UPLOAD_MUSIC_TEXT, WIDGETS_TEXTURE, 36, 107, 12, 12, 256, 256);
         }
-        renderSmartButtonSprite(poseStack, multiBufferSource, 189, 140, OERenderUtil.MIN_BREADTH * 3, 20, 20, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 0, 123, 11, 11, 256, 256, getMusicSource(blockEntity).isEmpty());
-
-        Component pt;
-        if (!getMusicSource(blockEntity).isEmpty()) {
-            pt = new TextComponent(FNStringUtil.getTimeProgress(0, getMusicSource(blockEntity).getDuration()));
-        } else {
-            pt = PLAYBACK_NON_PROGRESS_TEXT;
-        }
-        renderSmartTextSprite(poseStack, multiBufferSource, pt, 211, 144, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-
-        OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * 211, monitorHeight - onPxH * (154 + 3), OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, onPxW * 153f, onPxH * 3f, 52, 54, 153, 3, 256, 256, i, j);
 
         renderScrollbarSprite(poseStack, multiBufferSource, 355, 23, OERenderUtil.MIN_BREADTH * 3, 65, i, j, onPxW, onPxH, monitorHeight, musicLoaderTypes.size(), 5);
 
@@ -230,8 +155,8 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     @Override
     public boolean done(ImageInfo imageInfo, String name) {
         var ms = getMusicSource();
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicAddMessage(musicManagerBlock.getMySelectedPlayList(), name, getMusicAuthor(), imageInfo, ms).toFBB());
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock && musicManagerBlock.getMySelectedPlayList() != null)
+            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicMessage(musicManagerBlock.getMySelectedPlayList(), name, getMusicAuthor(), imageInfo, ms, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
         return true;
     }
 
@@ -255,14 +180,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
     @Override
     public void tick() {
         super.tick();
-        this.playControlButton.active = !getMusicSource().isEmpty();
-
-        if (getScreen().isMusicPlaying() || getScreen().isMusicLoading()) {
-            this.playControlButton.setIcon(WIDGETS_TEXTURE, 0, 134, 11, 11);
-        } else {
-            this.playControlButton.setIcon(WIDGETS_TEXTURE, 0, 123, 11, 11);
-        }
-
         this.musicSourceNameEditBox.visible = isMSNVisible();
         this.musicSourceNameEditBox.setWidth(isMSNShortWidth() ? 141 : 177);
 
@@ -287,63 +204,10 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         return rtp != null && rtp.isSearchable();
     }
 
-    public String getMusicAuthor() {
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
-            return getMusicAuthor(musicManagerBlock);
-        return "";
-    }
-
-    public String getMusicAuthor(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyMusicAuthor();
-    }
-
-    private void setMusicAuthor(String author) {
-        if (author.isEmpty()) {
-            AUTHOR_TEXT = null;
-        } else {
-            var aut = OERenderUtil.getWidthString(author, 140, "...");
-            AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", aut);
-        }
-        getScreen().insMusicAuthor(author);
-    }
-
-    public MusicSource getMusicSource() {
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity blockEntity)
-            return getMusicSource(blockEntity);
-        return MusicSource.EMPTY;
-    }
-
-    public IMusicLoaderType getRawMusicLoaderType(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return IMPMusicLoaderTypes.getMusicLoaderTypes().get(getMusicLoaderType(musicManagerBlockEntity));
-    }
-
-    public IMusicLoaderType getRawMusicLoaderType() {
-        return IMPMusicLoaderTypes.getMusicLoaderTypes().get(getMusicLoaderType());
-    }
-
-    public String getMusicLoaderType() {
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity blockEntity)
-            return getMusicLoaderType(blockEntity);
-        return "auto";
-    }
-
-    public String getMusicLoaderType(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicLoaderType().isEmpty() ? "auto" : blockEntity.getMyMusicLoaderType();
-    }
 
     private void setMusicLoaderType(String name) {
         musicSourceNameEditBox.setValue("");
         getScreen().insMusicLoaderType(name);
-    }
-
-    public String getMusicSourceName() {
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity blockEntity)
-            return getMusicSourceName(blockEntity);
-        return "";
-    }
-
-    public String getMusicSourceName(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicSourceName();
     }
 
     private void setMusicSourceName(String name) {
@@ -352,14 +216,6 @@ public class AddMusicMMMonitor extends ImageNameBaseMMMonitor {
         getScreen().insMusicSourceName(name);
     }
 
-    public MusicSource getMusicSource(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicSource();
-    }
-
-    private void setMusicSource(MusicSource source, String author) {
-        getScreen().insMusicSource(source);
-        setMusicAuthor(author);
-    }
 
     private void setLoadResult(MusicLoadResult result, boolean autoIn) {
         if (result != null) {

@@ -216,6 +216,7 @@ public class ImportYoutubePlayListMMMonitor extends MusicManagerMonitor {
             int sct = 0;
             try {
                 var pl = LavaPlayerUtil.loadTracks(getManager(), id);
+                if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
                         var ret = getYoutubeLoaderType().createResult(track);

@@ -23,7 +23,7 @@ public class ServerMessageHandler {
         packetContext.queue(() -> MusicRingManager.getInstance().addReadyPlayer((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitID, message.result, message.retry, message.elapsed));
     }
 
-    public static void onMusicAddMessage(IMPPackets.MusicAddMessage message, NetworkManager.PacketContext packetContext) {
+    public static void onMusicAddMessage(IMPPackets.MusicMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             var mm = MusicManager.getInstance();
             var pl = mm.getSaveData().getPlayLists().get(message.playlist);
@@ -34,12 +34,19 @@ public class ServerMessageHandler {
         });
     }
 
+    public static void onMusicEditMessage(IMPPackets.MusicMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
+            if (message.blockEntityExistence.check(player.getLevel()))
+                MusicManager.getInstance().editMusic(message.uuid, message.playlist, message.name, message.image, player);
+        });
+    }
+
     public static void onMusicPlayListEditMessage(IMPPackets.MusicPlayListMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
-            var mm = MusicManager.getInstance();
-            if (message.blockEntityExistence.check(((ServerPlayer) packetContext.getPlayer()).getLevel()))
-                mm.editPlayList(message.uuid, message.name, message.image, message.invitePlayers, message.publiced, message.initMember, player);
+            if (message.blockEntityExistence.check(player.getLevel()))
+                MusicManager.getInstance().editPlayList(message.uuid, message.name, message.image, message.invitePlayers, message.publiced, message.initMember, player);
         });
     }
 

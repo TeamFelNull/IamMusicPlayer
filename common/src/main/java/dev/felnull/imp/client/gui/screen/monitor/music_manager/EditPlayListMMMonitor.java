@@ -17,11 +17,6 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     }
 
     @Override
-    public void init(int leftPos, int topPos) {
-        super.init(leftPos, topPos);
-    }
-
-    @Override
     public boolean done(ImageInfo imageInfo, String name) {
         var pubType = getPublishingType();
         var initAuthType = getInitialAuthorityType();
@@ -45,5 +40,4 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     protected MusicManagerBlockEntity.MonitorType getParentType() {
         return MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST;
     }
-
 }

@@ -144,6 +144,7 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
             try {
                 List<Music> musics = new ArrayList<>();
                 var pl = LavaPlayerUtil.loadTracks(getYoutubeLoaderType().getAudioPlayerManager(), id);
+                if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
                         var ret = getYoutubeLoaderType().createResult(track);

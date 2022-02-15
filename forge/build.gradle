@@ -37,7 +37,9 @@ dependencies {
 
     modApi "me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}"
 
-    //shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}") { transitive = false }
+    /*shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}") {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }*/
     shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }
@@ -74,8 +76,8 @@ shadowJar {
     relocate 'com.alibaba', 'dev.felnull.imp.libs.com.alibaba'
     relocate 'dev.felnull.fnjl', 'dev.felnull.imp.libs.dev.felnull.fnjl'
     relocate 'com.mpatric', 'dev.felnull.imp.libs.com.mpatric'
-    relocate ('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.libs.com.sedmelluq.discord.lavaplayer'){
-        exclude  'com.sedmelluq.discord.lavaplayer.natives.**'
+    relocate('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.libs.com.sedmelluq.discord.lavaplayer') {
+        exclude 'com.sedmelluq.discord.lavaplayer.natives.**'
     }
 }
 shadowJar {
