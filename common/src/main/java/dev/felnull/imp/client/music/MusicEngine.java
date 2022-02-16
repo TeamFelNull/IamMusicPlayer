@@ -170,7 +170,8 @@ public class MusicEngine {
     }
 
     public boolean isPlaying(UUID uuid) {
-        return (MUSIC_PLAYERS.containsKey(uuid) && MUSIC_PLAYERS.get(uuid).player().isPlaying()) || (pause && UNPAUSES_STARTS.stream().anyMatch(m -> m.id().equals(uuid))) || (pause && MUSIC_PLAYERS.get(uuid).player().isPaused());
+        var rp = MUSIC_PLAYERS.get(uuid);
+        return (rp != null && rp.player() != null && rp.player().isPlaying()) || (pause && UNPAUSES_STARTS.stream().anyMatch(m -> m.id().equals(uuid))) || (pause && MUSIC_PLAYERS.get(uuid).player().isPaused());
     }
 
     public void stop() {

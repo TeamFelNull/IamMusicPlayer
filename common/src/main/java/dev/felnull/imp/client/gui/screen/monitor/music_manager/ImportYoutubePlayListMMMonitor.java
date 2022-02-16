@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ImportYoutubePlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation IMPORT_YOUTUBE_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/import_youtube_play_list.png");
-    private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
+    private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
     private static final Component LOADING_TEXT = new TranslatableComponent("imp.text.playlistLoading");
     private final List<YoutubePlayListEntry> youtubePlayListEntries = new ArrayList<>();
     private SmartButton importButton;

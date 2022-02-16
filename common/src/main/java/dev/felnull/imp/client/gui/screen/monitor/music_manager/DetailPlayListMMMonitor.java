@@ -50,9 +50,7 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         this.editButton = this.addRenderWidget(new SmartButton(getStartX() + width - 95 - 87, getStartY() + 180, 87, 15, EDIT_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.EDIT_PLAY_LIST)));
         this.editButton.visible = canEdit();
 
-        this.deleteButton = this.addRenderWidget(new SmartButton(getStartX() + width - 5 - 87, getStartY() + 180, 87, 15, DELETE_TEXT, n -> {
-
-        }));
+        this.deleteButton = this.addRenderWidget(new SmartButton(getStartX() + width - 5 - 87, getStartY() + 180, 87, 15, DELETE_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.DELETE_PLAY_LIST)));
         this.deleteButton.visible = canDelete();
 
         this.publishingRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 5, getStartY() + 140, 20, 20, getPublishingText(), true, true, () -> new RadioButton[]{}, n -> {

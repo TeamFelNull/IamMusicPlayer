@@ -50,8 +50,18 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
                     var type = MonitorType.getByName(monst);
                     if ((blockEntity.isPower() && type == MonitorType.OFF) || (!blockEntity.isPower() && type != MonitorType.OFF))
                         m.putString("Monitor", MonitorType.getDefault(blockEntity, n).getName());
-                    if (type == MonitorType.OFF)
+                    if (type == MonitorType.OFF) {
                         m.remove("SelectedPlayList");
+                        m.remove("SelectedMusic");
+                    }
+                    var mm = MusicManager.getInstance();
+                    if (m.contains("SelectedPlayList") && !mm.getSaveData().getPlayLists().containsKey(m.getUUID("SelectedPlayList"))) {
+                        m.remove("SelectedPlayList");
+                        m.remove("SelectedMusic");
+                    } else if (m.contains("SelectedMusic") && !mm.getSaveData().getMusics().containsKey(m.getUUID("SelectedMusic"))) {
+                        m.remove("SelectedMusic");
+                    }
+
                     if (type != null && type.isNeedSelectPlayList() && !m.contains("SelectedPlayList")) {
                         m.putString("Monitor", MonitorType.PLAY_LIST.getName());
                     }

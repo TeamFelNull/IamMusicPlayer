@@ -43,7 +43,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     private static final Component NO_IMAGE_TEXT = new TranslatableComponent("imp.text.noImage");
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.dropInfo");
     private static final Component NAME_TEXT = new TranslatableComponent("imp.text.name");
-    private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
+    private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
     private static final Component UPLOADING_IMAGE_TEXT = new TranslatableComponent("imp.text.imageLoad.uploadImage");
     private boolean locked;
     private Component NOT_ENTERED_TEXT;

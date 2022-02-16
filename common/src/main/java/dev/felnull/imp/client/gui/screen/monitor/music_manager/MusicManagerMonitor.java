@@ -89,6 +89,8 @@ public abstract class MusicManagerMonitor extends Monitor<MusicManagerBlockEntit
         registerMonitors(MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST, DetailPlayListMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.IMPORT_PLAY_LIST_SELECT, ImportPlayListSelectMMMonitor::new);
         registerMonitors(MusicManagerBlockEntity.MonitorType.DETAIL_MUSIC, DetailMusicMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.DELETE_PLAY_LIST, DeletePlayListMMMonitor::new);
+        registerMonitors(MusicManagerBlockEntity.MonitorType.DELETE_MUSIC, DeleteMusicMMMonitor::new);
     }
 
     public MusicManagerScreen getScreen() {

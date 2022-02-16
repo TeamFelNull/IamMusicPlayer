@@ -66,7 +66,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         }));
 
         if (!getMusicAuthor().isEmpty())
-            AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", getMusicAuthor());
+            setMusicAuthor(getMusicAuthor());
     }
 
     @Override
@@ -151,7 +151,8 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * (this.playBackX + 22), monitorHeight - onPxH * (this.playBackY + 14 + 3), OERenderUtil.MIN_BREADTH * 4, 0, 0, 0, onPxW * 153f, onPxH * 3f, 52, 54, 153, 3, 256, 256, i, j);
 
         if (!getMusicAuthor(blockEntity).isEmpty()) {
-            var aut = OERenderUtil.getWidthString(getMusicAuthor(blockEntity), 140, "...");
+            int le = 176 - mc.font.width(new TranslatableComponent("imp.text.musicAuthor", ""));
+            var aut = OERenderUtil.getWidthString(getMusicAuthor(blockEntity), le, "...");
             renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicAuthor", aut), this.playBackX, this.playBackY + 25, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
         }
 
@@ -175,10 +176,10 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         if (author.isEmpty()) {
             AUTHOR_TEXT = null;
         } else {
-            var aut = OERenderUtil.getWidthString(author, 140, "...");
+            int le = 176 - mc.font.width(new TranslatableComponent("imp.text.musicAuthor", ""));
+            var aut = OERenderUtil.getWidthString(author, le, "...");
             AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", aut);
         }
-        getScreen().insMusicAuthor(author);
     }
 
     @NotNull

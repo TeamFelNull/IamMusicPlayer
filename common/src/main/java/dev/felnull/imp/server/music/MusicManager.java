@@ -78,6 +78,31 @@ public class MusicManager {
         }
     }
 
+    public void deletePlayList(UUID playListId, ServerPlayer player) {
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null) return;
+        if (!pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).canDelete()) return;
+        for (UUID uuid : pl.getMusicList()) {
+            getSaveData().getMusics().remove(uuid);
+        }
+        getSaveData().getPlayLists().remove(playListId);
+        getSaveData().setDirty();
+    }
+
+    public void deleteMusic(UUID playListId, UUID musicId, ServerPlayer player) {
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null || !pl.getMusicList().contains(musicId)) return;
+        var pid = player.getGameProfile().getId();
+        var m = getSaveData().getMusics().get(musicId);
+        if (m == null) return;
+        boolean flg1 = pl.getAuthority().getAuthorityType(pid).canMusicDelete();
+        boolean flg2 = m.getOwner().equals(pid);
+        if (!flg1 && !flg2) return;
+        getSaveData().getPlayLists().get(playListId).getMusicList().remove(musicId);
+        getSaveData().getMusics().remove(musicId);
+        getSaveData().setDirty();
+    }
+
     public void editMusic(UUID musicId, UUID playListId, String name, ImageInfo image, ServerPlayer player) {
         var pl = getSaveData().getPlayLists().get(playListId);
         if (pl == null || !pl.getMusicList().contains(musicId)) return;

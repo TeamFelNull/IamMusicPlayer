@@ -14,6 +14,18 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 
 public class ServerMessageHandler {
+    public static void onMusicOrPlayListDeleteMessage(IMPPackets.MusicOrPlayListDeleteMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
+            if (message.blockEntityExistence.check(player.getLevel())) {
+                if (message.music) {
+                    MusicManager.getInstance().deleteMusic(message.playListID, message.musicID, player);
+                } else {
+                    MusicManager.getInstance().deletePlayList(message.playListID, player);
+                }
+            }
+        });
+    }
 
     public static void onMusicUpdateResultMessage(IMPPackets.MusicRingUpdateResultMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> MusicRingManager.getInstance().onUpdate((ServerPlayer) packetContext.getPlayer(), message.uuid, message.waitId, message.state));

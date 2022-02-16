@@ -14,4 +14,10 @@ public abstract class SavedMusicBaseMMMonitor extends MusicBaseMMMonitor {
         getScreen().insMusicSource(source);
         setMusicAuthor(author);
     }
+
+    @Override
+    protected void setMusicAuthor(String author) {
+        super.setMusicAuthor(author);
+        getScreen().insMusicAuthor(author);
+    }
 }

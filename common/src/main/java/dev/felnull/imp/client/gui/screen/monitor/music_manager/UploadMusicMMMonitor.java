@@ -32,7 +32,7 @@ import java.util.List;
 public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
     private static final String RELAY_SERVER_URL = "https://www.morimori0317.net/imp-relay-server";
-    private static final Component BACK_TEXT = new TranslatableComponent("imp.button.back");
+    private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
     private static final Component RELAY_SERVER_TEXT = new TranslatableComponent("imp.text.relayServer");
     private static final Component CONNECTING_CHECKING = new TranslatableComponent("imp.text.relayServer.connectingChecking");
     private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.uploadDropInfo");
