@@ -14,6 +14,14 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 
 public class ServerMessageHandler {
+    public static void onMultipleMusicAdd(IMPPackets.MultipleMusicAddMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
+            if (message.blockEntityExistence.check(player.getLevel()))
+                MusicManager.getInstance().addMultipleMusic(message.playlist, message.musics, player);
+        });
+    }
+
     public static void onMusicOrPlayListDeleteMessage(IMPPackets.MusicOrPlayListDeleteMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();

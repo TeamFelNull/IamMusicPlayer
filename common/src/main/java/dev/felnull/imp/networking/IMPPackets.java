@@ -33,6 +33,7 @@ public class IMPPackets {
     public static final ResourceLocation MUSIC_RING_READY_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_ready_result");
     public static final ResourceLocation MUSIC_RING_STATE = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_state");
     public static final ResourceLocation MUSIC_RING_UPDATE_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_update_result");
+    public static final ResourceLocation MULTIPLE_MUSIC_ADD = new ResourceLocation(IamMusicPlayer.MODID, "multiple_music_add");
 
     public static void init() {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
@@ -43,12 +44,41 @@ public class IMPPackets {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicRingReadyResultMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_UPDATE_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicUpdateResultMessage(new MusicRingUpdateResultMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_OR_PLAYLIST_DELETE, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicOrPlayListDeleteMessage(new MusicOrPlayListDeleteMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MULTIPLE_MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMultipleMusicAdd(new MultipleMusicAddMessage(friendlyByteBuf), packetContext));
     }
 
     public static void clientInit() {
         NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicSyncResponseMessage(new MusicSyncResponseMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_RING_READY, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicRingReadyResponseMessage(new MusicReadyMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_RING_STATE, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicRingStateResponseMessage(new MusicRingStateMessage(friendlyByteBuf), packetContext));
+    }
+
+    public static class MultipleMusicAddMessage implements PacketMessage {
+        public final UUID playlist;
+        public final List<Music> musics;
+        public final BlockEntityExistence blockEntityExistence;
+
+        public MultipleMusicAddMessage(FriendlyByteBuf bf) {
+            this.playlist = bf.readUUID();
+            this.musics = new ArrayList<>();
+            IMPNbtUtil.readMusics(bf.readNbt(), "Musics", musics);
+            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+        }
+
+        public MultipleMusicAddMessage(UUID playlist, List<Music> musics, BlockEntityExistence blockEntityExistence) {
+            this.playlist = playlist;
+            this.musics = musics;
+            this.blockEntityExistence = blockEntityExistence;
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB() {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(this.playlist);
+            buf.writeNbt(IMPNbtUtil.writeMusics(new CompoundTag(), "Musics", musics));
+            this.blockEntityExistence.writeFBB(buf);
+            return buf;
+        }
     }
 
     public static class MusicOrPlayListDeleteMessage implements PacketMessage {

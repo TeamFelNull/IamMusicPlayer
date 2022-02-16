@@ -30,6 +30,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     private static final Component AUTO_INFO_TEXT = new TranslatableComponent("imp.text.loaderTypeInfo.auto");
     private static final Component AUTO_FAILURE_TEXT = new TranslatableComponent("imp.text.loadFailure.auto");
     private static final Component UPLOAD_MUSIC_TEXT = new TranslatableComponent("imp.button.uploadMusic");
+    protected static final Component IMPORT_TEXT = new TranslatableComponent("imp.button.import");
     private final List<String> musicLoaderTypes = new ArrayList<>();
     private EditBox musicSourceNameEditBox;
     private SmartButton searchButton;
@@ -79,6 +80,8 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         }));
         this.uploadButton.setIcon(WIDGETS_TEXTURE, 36, 107, 12, 12);
         this.uploadButton.visible = "upload".equals(getMusicLoaderType());
+
+        addRenderWidget(new SmartButton(getStartX() + width - 95 - 87, getStartY() + 180, 87, 15, IMPORT_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.IMPORT_MUSICS_SELECT)));
     }
 
     @Override
@@ -150,6 +153,8 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
             }
             renderSmartTextSprite(poseStack, multiBufferSource, type == null ? new TranslatableComponent("imp.loaderType." + lt) : type.getName(), tx, 23 + (k * 13) + (13f - 6.5f) / 2f + 1f, OERenderUtil.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
         }
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, IMPORT_TEXT, true);
     }
 
     @Override

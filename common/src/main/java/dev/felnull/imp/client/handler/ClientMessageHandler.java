@@ -41,12 +41,12 @@ public class ClientMessageHandler {
 
     private static void loadMusic(UUID waitID, UUID uuid, MusicPlaybackInfo playbackInfo, MusicSource source, long position, int tryCont, boolean autoPlay) {
         if (mc.getConnection() == null) return;
-        if (tryCont >= 3) {
+        var mm = MusicEngine.getInstance();
+        if (tryCont >= 3 || mm.getCurrentMusicPlayed() >= mm.getMaxMusicPlayed()) {
             if (!autoPlay) {
                 NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, false, false, 0).toFBB());
             }
         } else {
-            var mm = MusicEngine.getInstance();
             mm.stopMusicPlayer(uuid);
             mm.stopLoadMusicPlayer(uuid);
             mm.loadAddMusicPlayer(uuid, playbackInfo, source, position, (result, time, player, retry) -> {

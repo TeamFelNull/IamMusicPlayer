@@ -103,6 +103,18 @@ public class MusicManager {
         getSaveData().setDirty();
     }
 
+
+    public void addMultipleMusic(UUID playListId, List<Music> musics, ServerPlayer player) {
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null) return;
+        if (!pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).canAddMusic()) return;
+        for (Music music : musics) {
+            var am = new Music(UUID.randomUUID(), music.getName(), music.getAuthor(), music.getSource(), music.getImage(), player.getGameProfile().getId(), System.currentTimeMillis());
+            addMusicToPlayList(pl.getUuid(), am);
+        }
+    }
+
+
     public void editMusic(UUID musicId, UUID playListId, String name, ImageInfo image, ServerPlayer player) {
         var pl = getSaveData().getPlayLists().get(playListId);
         if (pl == null || !pl.getMusicList().contains(musicId)) return;

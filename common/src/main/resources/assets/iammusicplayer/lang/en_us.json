@@ -25,6 +25,8 @@
   "imp.monitor.music_manager.edit_music": "Edit music",
   "imp.monitor.music_manager.delete_play_list": "Delete play list",
   "imp.monitor.music_manager.delete_music": "Delete music",
+  "imp.monitor.music_manager.import_musics_select": "Import music select",
+  "imp.monitor.music_manager.import_youtube_play_list_musics": "Import youtube play list musics",
   "imp.monitor.boombox.off": "Off",
   "imp.monitor.boombox.playing": "Playing",
   "imp.monitor.boombox.radio": "Radio",
