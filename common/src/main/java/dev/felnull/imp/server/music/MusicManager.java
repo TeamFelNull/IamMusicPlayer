@@ -81,11 +81,21 @@ public class MusicManager {
     public void deletePlayList(UUID playListId, ServerPlayer player) {
         var pl = getSaveData().getPlayLists().get(playListId);
         if (pl == null) return;
-        if (!pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).canDelete()) return;
+        if (!pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).canDelete()) {
+            exitPlayList(playListId, player);
+            return;
+        }
         for (UUID uuid : pl.getMusicList()) {
             getSaveData().getMusics().remove(uuid);
         }
         getSaveData().getPlayLists().remove(playListId);
+        getSaveData().setDirty();
+    }
+
+    public void exitPlayList(UUID playListId, ServerPlayer player) {
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null) return;
+        getSaveData().getPlayLists().get(playListId).getAuthority().getRawAuthority().remove(player.getGameProfile().getId());
         getSaveData().setDirty();
     }
 
@@ -103,6 +113,22 @@ public class MusicManager {
         getSaveData().setDirty();
     }
 
+    public void changeAuthority(UUID playListId, UUID targetPlayerId, AuthorityInfo.AuthorityType authorityType, ServerPlayer player) {
+        if (authorityType == AuthorityInfo.AuthorityType.INVITATION) return;
+        var pl = getSaveData().getPlayLists().get(playListId);
+        if (pl == null) return;
+        if (!pl.getAuthority().getPlayersAuthority().containsKey(targetPlayerId)) return;
+        var ma = pl.getAuthority().getAuthorityType(player.getGameProfile().getId());
+        var ta = pl.getAuthority().getAuthorityType(targetPlayerId);
+        if (!ma.canChangeAuth(ta)) return;
+        if (authorityType.isMoreAdmin() && !ma.isMoreOwner()) return;
+        if (authorityType == AuthorityInfo.AuthorityType.NONE) {
+            getSaveData().getPlayLists().get(playListId).getAuthority().getRawAuthority().remove(targetPlayerId);
+        } else {
+            getSaveData().getPlayLists().get(playListId).getAuthority().getRawAuthority().put(targetPlayerId, authorityType);
+        }
+        getSaveData().setDirty();
+    }
 
     public void addMultipleMusic(UUID playListId, List<Music> musics, ServerPlayer player) {
         var pl = getSaveData().getPlayLists().get(playListId);
@@ -135,7 +161,10 @@ public class MusicManager {
         Map<UUID, AuthorityInfo.AuthorityType> naus = new HashMap<>(oldAuth.getRawAuthority());
         List<UUID> rms = naus.entrySet().stream().filter(n -> n.getValue() == AuthorityInfo.AuthorityType.INVITATION).map(Map.Entry::getKey).toList();
         rms.forEach(naus::remove);
-        invitePlayers.forEach(n -> naus.put(n, AuthorityInfo.AuthorityType.INVITATION));
+        invitePlayers.forEach(n -> {
+            if (!naus.containsKey(n))
+                naus.put(n, AuthorityInfo.AuthorityType.INVITATION);
+        });
         var auth = new AuthorityInfo(publiced, oldAuth.getOwner(), oldAuth.getOwnerName(), naus, initMember ? AuthorityInfo.AuthorityType.MEMBER : AuthorityInfo.AuthorityType.READ_ONLY);
         getSaveData().getPlayLists().put(playListId, new MusicPlayList(playListId, name, image, auth, pl.getMusicList(), pl.getCreateDate()));
         getSaveData().setDirty();

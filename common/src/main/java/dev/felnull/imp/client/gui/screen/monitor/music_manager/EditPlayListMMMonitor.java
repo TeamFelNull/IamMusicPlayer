@@ -4,12 +4,15 @@ import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 
 public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     public EditPlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
@@ -27,6 +30,14 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     }
 
     @Override
+    protected Collection<UUID> excludeInvitePlayers(MusicManagerBlockEntity musicManagerBlockEntity) {
+        var pl = getSelectedMusicPlayList(musicManagerBlockEntity);
+        if (pl != null)
+            return pl.getAuthority().getPlayersAuthority().keySet();
+        return null;
+    }
+
+    @Override
     protected MusicManagerBlockEntity.@NotNull MonitorType getDoneBackMonitor() {
         return MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST;
     }
@@ -40,4 +51,22 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     protected MusicManagerBlockEntity.MonitorType getParentType() {
         return MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST;
     }
+
+    protected MusicPlayList getSelectedMusicPlayList() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
+            return getSelectedMusicPlayList(musicManagerBlockEntity);
+        return null;
+    }
+
+    protected MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
+        var pls = getSyncManager().getMyPlayList();
+        if (pls == null)
+            return null;
+        return pls.stream().filter(n -> n.getUuid().equals(getSelectedPlayList(musicManagerBlockEntity))).findFirst().orElse(null);
+    }
+
+    protected UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return musicManagerBlockEntity.getMySelectedPlayList();
+    }
+
 }

@@ -14,6 +14,14 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 
 public class ServerMessageHandler {
+    public static void onMusicPlayListChangeAuthority(IMPPackets.MusicPlayListChangeAuthority message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
+            if (message.blockEntityExistence.check(player.getLevel()))
+                MusicManager.getInstance().changeAuthority(message.playlist, message.player, message.authorityType, player);
+        });
+    }
+
     public static void onMultipleMusicAdd(IMPPackets.MultipleMusicAddMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
@@ -26,10 +34,11 @@ public class ServerMessageHandler {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
             if (message.blockEntityExistence.check(player.getLevel())) {
+                var mm = MusicManager.getInstance();
                 if (message.music) {
-                    MusicManager.getInstance().deleteMusic(message.playListID, message.musicID, player);
+                    mm.deleteMusic(message.playListID, message.musicID, player);
                 } else {
-                    MusicManager.getInstance().deletePlayList(message.playListID, player);
+                    mm.deletePlayList(message.playListID, player);
                 }
             }
         });

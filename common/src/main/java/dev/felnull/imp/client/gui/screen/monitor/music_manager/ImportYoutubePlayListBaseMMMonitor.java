@@ -97,6 +97,8 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
 
         renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(getImportPlayListName(blockEntity)), 200, 167, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
         renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(getImportPlayListAuthor(blockEntity)), 200, 183, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+
+        renderScrollbarSprite(poseStack, multiBufferSource, 360, 10, OERenderUtil.MIN_BREADTH * 2, 148, i, j, onPxW, onPxH, monitorHeight, 1, 1);
     }
 
     @Override

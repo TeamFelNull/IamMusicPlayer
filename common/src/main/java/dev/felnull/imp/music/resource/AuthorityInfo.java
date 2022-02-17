@@ -160,7 +160,6 @@ public class AuthorityInfo implements ITAGSerializable {
             return this.level >= 2;
         }
 
-
         public boolean isMoreReadOnly() {
             return this.level >= 1;
         }
@@ -196,6 +195,10 @@ public class AuthorityInfo implements ITAGSerializable {
 
         public boolean canAddMusic() {
             return isMoreMember();
+        }
+
+        public boolean canChangeAuth(AuthorityType targetAuth) {
+            return isMoreAdmin() && getLevel() > targetAuth.getLevel();
         }
     }
 }

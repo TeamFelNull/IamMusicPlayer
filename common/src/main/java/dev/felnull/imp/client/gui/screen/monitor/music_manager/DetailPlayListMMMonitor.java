@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.MemberPlayersFixedButtonsList;
@@ -10,9 +11,11 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
+import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -30,10 +33,13 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     private static final ResourceLocation DETAIL_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/detail_play_list.png");
     private static final Component MEMBER_TEXT = new TranslatableComponent("imp.text.member");
     private static final Component EDIT_TEXT = new TranslatableComponent("imp.button.edit");
+    private static final Component AUTHORITY_TEXT = new TranslatableComponent("imp.button.authority");
     private static final Component DELETE_TEXT = new TranslatableComponent("imp.button.delete").withStyle(ChatFormatting.DARK_RED);
+    private static final Component EXIT_TEXT = new TranslatableComponent("imp.button.exit").withStyle(ChatFormatting.RED);
     private final List<UUID> memberPlayers = new ArrayList<>();
     private SmartButton editButton;
     private SmartButton deleteButton;
+    private SmartButton exitButton;
     private RadioButton publishingRadio;
     private RadioButton initAuthRadio;
     private String cashName;
@@ -53,6 +59,12 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         this.deleteButton = this.addRenderWidget(new SmartButton(getStartX() + width - 5 - 87, getStartY() + 180, 87, 15, DELETE_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.DELETE_PLAY_LIST)));
         this.deleteButton.visible = canDelete();
 
+        this.exitButton = this.addRenderWidget(new SmartButton(getStartX() + width - 5 - 87, getStartY() + 180, 87, 15, EXIT_TEXT, n -> {
+            if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
+                NetworkManager.sendToServer(IMPPackets.MUSIC_OR_PLAYLIST_DELETE, new IMPPackets.MusicOrPlayListDeleteMessage(getSelectedPlayList(musicManagerBlock), UUID.randomUUID(), BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity()), false).toFBB());
+        }));
+        this.exitButton.visible = !canDelete();
+
         this.publishingRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 5, getStartY() + 140, 20, 20, getPublishingText(), true, true, () -> new RadioButton[]{}, n -> {
         }));
         this.publishingRadio.active = false;
@@ -63,6 +75,10 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
 
         addRenderWidget(new MemberPlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 100, 5, new TranslatableComponent("imp.fixedList.memberPlayers"), memberPlayers, (fixedButtonsList, uuid, i, i1) -> {
         }, this::getSelectedMusicPlayList));
+
+        addRenderWidget(new SmartButton(getStartX() + width - 95 - 87 * 2 - 3, getStartY() + 180, 87, 15, AUTHORITY_TEXT, n -> {
+            insMonitor(MusicManagerBlockEntity.MonitorType.AUTHORITY);
+        }));
 
         this.cashName = getName();
     }
@@ -102,6 +118,10 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
 
         if (canDelete(blockEntity))
             renderSmartButtonSprite(poseStack, multiBufferSource, width - 5 - 87, 180, OERenderUtil.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, DELETE_TEXT, true);
+        else
+            renderSmartButtonSprite(poseStack, multiBufferSource, width - 5 - 87, 180, OERenderUtil.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, EXIT_TEXT, true);
+
+        renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87 * 2 - 3, 180, OERenderUtil.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, AUTHORITY_TEXT, true);
     }
 
     @Override
@@ -109,6 +129,7 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         super.tick();
         this.editButton.visible = canEdit();
         this.deleteButton.visible = canDelete();
+        this.exitButton.visible = !canDelete();
 
         this.publishingRadio.setMessage(getPublishingText());
         this.initAuthRadio.setMessage(getInitAuthText());

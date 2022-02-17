@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,6 +128,9 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
         var opl = new ArrayList<>(IIMPSmartRender.mc.player.connection.getOnlinePlayerIds());
         opl.remove(IIMPSmartRender.mc.player.getGameProfile().getId());
         opl.removeAll(getInvitePlayers(blockEntity));
+        var ep = excludeInvitePlayers(blockEntity);
+        if (ep != null)
+            opl.removeAll(excludeInvitePlayers(blockEntity));
 
         for (int k = 0; k < Math.min(5, opl.size()); k++) {
             renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 23 + (k * 13), OERenderUtil.MIN_BREADTH * 4, 87 - 10, 13, i, j, onPxW, onPxH, monitorHeight);
@@ -171,11 +175,24 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
         onlinePlayers.addAll(IIMPSmartRender.mc.player.connection.getOnlinePlayerIds());
         onlinePlayers.remove(IIMPSmartRender.mc.player.getGameProfile().getId());
         onlinePlayers.removeAll(getInvitePlayers());
+        var ex = excludeInvitePlayers();
+        if (ex != null)
+            onlinePlayers.removeAll(ex);
     }
 
     private void updateInvitePlayers() {
         invitePlayers.clear();
         invitePlayers.addAll(getInvitePlayers());
+    }
+
+    protected Collection<UUID> excludeInvitePlayers(MusicManagerBlockEntity musicManagerBlockEntity) {
+        return null;
+    }
+
+    protected Collection<UUID> excludeInvitePlayers() {
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
+            return excludeInvitePlayers(musicManagerBlock);
+        return null;
     }
 
     protected void setPublishingType(@Nullable PublishingType publishingType) {

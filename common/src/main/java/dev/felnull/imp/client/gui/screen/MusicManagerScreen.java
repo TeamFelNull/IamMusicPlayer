@@ -177,6 +177,13 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         instruction("set_selected_music", 0, tag);
     }
 
+    public void insSelectedPlayer(@Nullable UUID selectedPlayer) {
+        var tag = new CompoundTag();
+        if (selectedPlayer != null)
+            tag.putUUID("player", selectedPlayer);
+        instruction("set_selected_player", 0, tag);
+    }
+
     public void insMusicLoaderType(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);

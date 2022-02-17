@@ -18,4 +18,5 @@ public class SmartRadioButton extends RadioButton implements IIMPSmartRender {
     public void drawRdoString(PoseStack poseStack, Component component, int i, int j, int k) {
         drawSmartText(poseStack, component, i, j);
     }
+
 }
