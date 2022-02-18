@@ -136,7 +136,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
             pls.addAll(pl.getAuthority().getPlayersAuthority().entrySet().stream().filter(n -> n.getValue() != AuthorityInfo.AuthorityType.NONE && n.getValue() != AuthorityInfo.AuthorityType.INVITATION).map(Map.Entry::getKey).toList());
 
         renderFixedListSprite(poseStack, multiBufferSource, 6, 23, OERenderUtil.MIN_BREADTH * 4, 175, 135, i, j, onPxW, onPxH, monitorHeight, pls, 9, (poseStack1, multiBufferSource1, x, y, z, w, h, i1, j1, entry) -> {
-            renderSmartButtonBoxSprite(poseStack1, multiBufferSource1, x, y, z + OERenderUtil.MIN_BREADTH, w, h, i1, j1, onPxW, onPxH, monitorHeight, false);
+            renderSmartButtonBoxSprite(poseStack1, multiBufferSource1, x, y, z + OERenderUtil.MIN_BREADTH, w, h, i1, j1, onPxW, onPxH, monitorHeight, entry.equals(getSelectedPlayer(blockEntity)));
             renderPlayerFaceSprite(poseStack1, multiBufferSource1, entry, x + 1, y + 1, z + OERenderUtil.MIN_BREADTH * 3, h - 2, i1, j1, onPxW, onPxH, monitorHeight);
             renderSmartTextSprite(poseStack1, multiBufferSource1, new TextComponent(OERenderUtil.getWidthString(OEClientUtil.getPlayerNameByUUID(entry).orElseGet(entry::toString), w - (h + 7), "...")), x + h + 3f, y + (h - 6.5f) / 2f, z + OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i1);
             //   renderSmartTextSprite(poseStack1, multiBufferSource1, getAuthorityType(blockEntity, entry).getText(), x + h + 3f, y + 11f, z + OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i1);

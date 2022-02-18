@@ -14,6 +14,7 @@ import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -43,7 +44,7 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
         this.backButton.setHideText(true);
         this.backButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8);
 
-        this.volumeWidget = this.addRenderWidget(new VolumeWidget(getStartX() + 168, getStartY() + 14, new IntValue() {
+        this.volumeWidget = this.addRenderWidget(new VolumeWidget(getStartX() + 168, getStartY() + 16, new IntValue() {
             @Override
             public void accept(int value) {
                 getScreen().insVolume(value);
@@ -56,20 +57,17 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
         }, () -> getScreen().isMute(), n -> getScreen().insMute(n)));
         this.volumeWidget.visible = isPlayBack();
 
-        this.playBackControlWidget = this.addRenderWidget(new PlayBackControlWidget(getStartX() + (isShortProgressBar() ? 45 : 2), getStartY() + 32, () -> {
-            if (getScreen().isPlaying())
-                return PlayBackControlWidget.StateType.PLAYING;
-            return getScreen().getPosition() == 0 ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PAUSE;
-        }, n -> {
+        this.playBackControlWidget = this.addRenderWidget(new PlayBackControlWidget(getStartX() + (isShortProgressBar() ? 45 : 2), getStartY() + 30, () -> getScreen().isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING, n -> {
             switch (n) {
-                case PLAYING -> getScreen().insPlaying(false);
-                case STOP, PAUSE -> getScreen().insPlaying(true);
+                case PLAYING -> getScreen().insPlaying(true);
+                case STOP -> getScreen().insPlaying(false);
+                case PAUSE -> getScreen().insPause();
             }
         }));
 
         this.playBackControlWidget.visible = isPlayBack();
 
-        this.loopControlWidget = this.addRenderWidget(new LoopControlWidget(getStartX() + 189, getStartY() + 33, new BooleanValue() {
+        this.loopControlWidget = this.addRenderWidget(new LoopControlWidget(getStartX() + 189, getStartY() + 31, new BooleanValue() {
             @Override
             public void accept(boolean t) {
                 getScreen().insLoop(t);
@@ -83,7 +81,7 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
 
         this.loopControlWidget.visible = isPlayBack();
 
-        this.playProgressWidget = this.addRenderWidget(new PlayProgressWidget(getStartX() + (isShortProgressBar() ? 55 : 12), getStartY() + 35, isShortProgressBar() ? 133 : 176, new FloatValue() {
+        this.playProgressWidget = this.addRenderWidget(new PlayProgressWidget(getStartX() + (isShortProgressBar() ? 55 : 12), getStartY() + 33, isShortProgressBar() ? 133 : 176, new FloatValue() {
             @Override
             public float getAsFloat() {
                 if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
@@ -110,6 +108,47 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
     }
 
     @Override
+    public void renderAppearance(CassetteDeckBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight) {
+        super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
+        float onPxW = monitorWidth / (float) width;
+        float onPxH = monitorHeight / (float) height;
+        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 44, OERenderUtil.MIN_BREADTH * 2f, 14, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8, 256, 256);
+
+        if (!getCassetteTape(blockEntity).isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape(blockEntity))) {
+            Music music = CassetteTapeItem.getMusic(getCassetteTape(blockEntity));
+            if (music != null) {
+                OERenderUtil.renderTextureSprite(PLAYBACK_BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+                if (!music.getImage().isEmpty())
+                    OERenderUtil.renderTextureSprite(PLAYBACK_IMAGE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+
+                int sx = 2;
+                if (!music.getImage().isEmpty()) {
+                    renderPlayListImage(poseStack, multiBufferSource, music.getImage(), 1, 1, OERenderUtil.MIN_BREADTH * 4, height - 3 - 13, i, j, onPxW, onPxH, monitorHeight);
+                    sx += height - 2 - 13;
+                }
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+
+                var ptx = LOADING_MUSIC_TEXT;
+                if (!blockEntity.isLoadingMusic())
+                    ptx = new TextComponent(FNStringUtil.getTimeProgress(blockEntity.getPosition(), music.getSource().getDuration()));
+
+                renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 45f - (isShortProgressBar(blockEntity) ? 0 : 43f), 17f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
+
+                renderVolumeSprite(poseStack, multiBufferSource, 168, 16, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, getVolume(blockEntity), isMute(blockEntity));
+                renderPlayBackControl(poseStack, multiBufferSource, isShortProgressBar(blockEntity) ? 45 : 2, 30, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, blockEntity.isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING);
+                renderLoopControl(poseStack, multiBufferSource, 189, 31, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, blockEntity.isLoop());
+
+                renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(blockEntity) ? 55 : 12, 33, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, isShortProgressBar(blockEntity) ? 133 : 176, (float) blockEntity.getPosition() / (float) music.getSource().getDuration());
+            } else {
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+            }
+        } else {
+            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        }
+
+    }
+
+    @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
 
@@ -128,7 +167,7 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
                 var ptx = LOADING_MUSIC_TEXT;
                 if (!getScreen().isLoading())
                     ptx = new TextComponent(FNStringUtil.getTimeProgress(getScreen().getPosition(), music.getSource().getDuration()));
-                drawSmartText(poseStack, ptx, getStartX() + 45 - (isShortProgressBar() ? 0 : 43), getStartY() + 15, 0XFF115D0E);
+                drawSmartText(poseStack, ptx, getStartX() + 45 - (isShortProgressBar() ? 0 : 43), getStartY() + 17, 0XFF115D0E);
             } else {
                 drawSmartCenterText(poseStack, NO_MUSIC_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
             }
@@ -147,6 +186,15 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
         this.playProgressWidget.visible = isPlayBack();
         this.playProgressWidget.setWidth(isShortProgressBar() ? 133 : 176);
         this.playProgressWidget.x = getStartX() + (isShortProgressBar() ? 55 : 12);
+    }
+
+    private boolean isShortProgressBar(CassetteDeckBlockEntity blockEntity) {
+        if (!getCassetteTape(blockEntity).isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape(blockEntity))) {
+            var m = CassetteTapeItem.getMusic(getCassetteTape(blockEntity));
+            if (m != null)
+                return !m.getImage().isEmpty();
+        }
+        return false;
     }
 
     private boolean isShortProgressBar() {

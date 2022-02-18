@@ -192,7 +192,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         tag.putBoolean("Playing", this.playing);
         tag.putLong("Position", this.position);
         tag.putBoolean("Loop", this.loop);
-        this.loadingMusic = tag.getBoolean("LoadingMusic");
+        tag.putBoolean("LoadingMusic", this.loadingMusic);
         return super.getSyncData(player, tag);
     }
 
@@ -219,6 +219,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         this.playing = tag.getBoolean("Playing");
         this.position = tag.getLong("Position");
         this.loop = tag.getBoolean("Loop");
+        this.loadingMusic = tag.getBoolean("LoadingMusic");
     }
 
     public boolean isLoop() {

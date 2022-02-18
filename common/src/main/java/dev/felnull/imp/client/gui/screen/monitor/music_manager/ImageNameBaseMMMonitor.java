@@ -249,7 +249,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 }
                 sb.deleteCharAt(sb.length() - 1);
                 sb.deleteCharAt(sb.length() - 1);
-                renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
+                renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.notEntered", sb.toString()), 5, 171, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0XFFFF6347, i);
             }
         }
         renderSmartTextSprite(poseStack, multiBufferSource, NAME_TEXT, 5, 102, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);

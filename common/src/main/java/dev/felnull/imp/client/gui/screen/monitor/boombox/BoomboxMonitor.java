@@ -58,6 +58,10 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
         OERenderUtil.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
     }
 
+    @Override
+    public float getDefaultRenderTextScale() {
+        return 2.f;
+    }
 
     public ItemStack getCassetteTape() {
         return getScreen().getCassetteTape();

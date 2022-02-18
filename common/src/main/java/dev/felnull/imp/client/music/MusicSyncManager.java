@@ -5,6 +5,7 @@ import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,9 @@ public class MusicSyncManager {
         return INSTANCE;
     }
 
-    public List<Music> getMusics(UUID playList) {
+    @Nullable
+    public List<Music> getMusics(@Nullable UUID playList) {
+        if (playList == null) return null;
         long time = 0;
         if (musicUpdateTimes.containsKey(playList)) {
             time = musicUpdateTimes.get(playList);

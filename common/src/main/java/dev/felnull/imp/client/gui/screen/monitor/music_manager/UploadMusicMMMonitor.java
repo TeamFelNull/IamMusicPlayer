@@ -161,7 +161,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
 
         float st = ((float) width - 270f) / 2f;
         renderSmartTextSprite(poseStack, multiBufferSource, RELAY_SERVER_TEXT, st, 13, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
-        renderSmartTextSpriteColor(poseStack, multiBufferSource, new TextComponent(getRelayServerURL()), st, 23, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0xFF008000, i);
+        renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TextComponent(getRelayServerURL()), st, 23, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0xFF008000, i);
 
     }
 

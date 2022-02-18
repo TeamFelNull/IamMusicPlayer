@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntity> {
-    protected static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/cassette_deck/monitor/background.png");
+    private static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/cassette_deck/monitor/background.png");
     private static final Map<CassetteDeckBlockEntity.MonitorType, MonitorFactory> monitorFactory = new HashMap<>();
     private final CassetteDeckBlockEntity.MonitorType monitorType;
     private final CassetteDeckScreen screen;
@@ -27,12 +27,16 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
         this.screen = screen;
     }
 
+    public ItemStack getCassetteTape(CassetteDeckBlockEntity blockEntity) {
+        return blockEntity.getCassetteTape();
+    }
+
     public ItemStack getCassetteTape() {
         return getScreen().getCassetteTape();
     }
 
     public int getVolume(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
-        return getScreen().getVolume(cassetteDeckBlockEntity);
+        return cassetteDeckBlockEntity.getVolume();
     }
 
     public int getVolume() {
@@ -44,7 +48,7 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
     }
 
     public boolean isMute(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
-        return getScreen().isMute(cassetteDeckBlockEntity);
+        return cassetteDeckBlockEntity.isMute();
     }
 
     public CassetteDeckBlockEntity.MonitorType getType() {
@@ -94,5 +98,10 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
     public void renderAppearance(CassetteDeckBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight) {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         OERenderUtil.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+    }
+
+    @Override
+    public float getDefaultRenderTextScale() {
+        return 1.2f;
     }
 }

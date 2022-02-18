@@ -58,14 +58,11 @@ public class PlayingBMonitor extends BoomboxMonitor {
 
         this.volumeWidget.visible = isPlayBack();
 
-        this.playBackControlWidget = this.addRenderWidget(new PlayBackControlWidget(getStartX() + (isShortProgressBar() ? 38 : 2), getStartY() + 25, () -> {
-            if (getScreen().isPlaying())
-                return PlayBackControlWidget.StateType.PLAYING;
-            return getScreen().getMusicPosition() == 0 ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PAUSE;
-        }, n -> {
+        this.playBackControlWidget = this.addRenderWidget(new PlayBackControlWidget(getStartX() + (isShortProgressBar() ? 38 : 2), getStartY() + 25, () -> getScreen().isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING, n -> {
             switch (n) {
-                case PLAYING -> setPause();
-                case STOP, PAUSE -> setPlaying(true);
+                case PLAYING -> getScreen().insPlaying(true);
+                case STOP -> getScreen().insPlaying(false);
+                case PAUSE -> getScreen().insPause();
             }
         }));
 
@@ -166,12 +163,12 @@ public class PlayingBMonitor extends BoomboxMonitor {
                     getPlayImageRenderer().renderSprite(music.getImage(), poseStack, multiBufferSource, 1 * onPxW, monitorHeight - (1 + height - 2) * onPxH, OERenderUtil.MIN_BREADTH * 4, (height - 3) * onPxH, i, j);
                     sx += height - 2;
                 }
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 2, i);
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
             } else {
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 2, i);
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
             }
         } else {
-            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 2, i);
+            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
         }
     }
 

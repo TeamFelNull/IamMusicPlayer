@@ -1,7 +1,10 @@
 package dev.felnull.imp.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.felnull.imp.client.gui.components.PlayBackControlWidget;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
+import dev.felnull.imp.client.renderer.PlayImageRenderer;
+import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -88,16 +91,20 @@ public interface IIMPSmartRender {
         OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0, combinedLightIn);
     }
 
-    default void renderSmartTextSpriteColor(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color, int combinedLightIn) {
+    default void renderSmartTextSpriteColorSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color, int combinedLightIn) {
         OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0, color, combinedLightIn);
     }
 
     default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
-        renderSmartCenterTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f, combinedLightIn);
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, getDefaultRenderTextScale(), combinedLightIn);
     }
 
     default void renderSmartTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
-        renderSmartTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, 1.0f, combinedLightIn);
+        renderSmartTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, getDefaultRenderTextScale(), combinedLightIn);
+    }
+
+    default float getDefaultRenderTextScale() {
+        return 1.f;
     }
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, Component text, boolean center, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH) {
@@ -191,7 +198,7 @@ public interface IIMPSmartRender {
             } else {
                 str = text;
             }
-            renderSmartTextSpriteColor(poseStack, multiBufferSource, new TextComponent(str), x + 3, y + 5, z + OERenderUtil.MIN_BREADTH * 3, onePixW, onePixH, monitorHeight, 0xFFFFFFFF, i);
+            renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TextComponent(str), x + 3, y + 5, z + OERenderUtil.MIN_BREADTH * 3, onePixW, onePixH, monitorHeight, 0xFFFFFFFF, i);
         }
     }
 
@@ -202,6 +209,10 @@ public interface IIMPSmartRender {
 
     default void renderPlayerFaceSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, UUID uuid, float x, float y, float z, float size, int i, int j, float onePixW, float onePixH, float monitorHeight) {
         OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, uuid, onePixW * x, monitorHeight - onePixH * (y + size), z, 0, 0, 0, onePixH * size, i, j);
+    }
+
+    default void renderPlayListImage(PoseStack poseStack, MultiBufferSource multiBufferSource, ImageInfo imageInfo, float x, float y, float z, float size, int i, int j, float onePixW, float onePixH, float monitorHeight) {
+        PlayImageRenderer.getInstance().renderSprite(imageInfo, poseStack, multiBufferSource, x * onePixW, monitorHeight - (y + size) * onePixH, z, size * onePixH, i, j);
     }
 
     default <E> void renderFixedListSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, List<E> list, int num, ListEntryRender<E> render) {
@@ -215,6 +226,28 @@ public interface IIMPSmartRender {
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, x + w - 9, y, z, h, i, j, onePixW, onePixH, monitorHeight, plsc, num);
+    }
+
+    default void renderVolumeSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, int i, int j, float onePixW, float onePixH, float monitorHeight, int volume, boolean mute) {
+        int nv = mute ? 3 : volume / 100;
+        int lfs = (nv * 2) + (volume <= 0 ? 0 : 2);
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, mute ? 4 : 4 + lfs, 8, 0, 156, mute ? 4 : 4 + lfs, 8, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TextComponent(String.valueOf(volume)), x + 5 + lfs, y + 0.5f, z, onePixW, onePixH, monitorHeight, 0XFF115D0E, i);
+        if (mute)
+            renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x + 3, y, z, 8, 8, 12, 156, 8, 8, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+    }
+
+    default void renderPlayBackControl(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, int i, int j, float onePixW, float onePixH, float monitorHeight, PlayBackControlWidget.StateType stateType) {
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, 10, 10, stateType.ordinal() * 10 + z, 145, 10, 10, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+    }
+
+    default void renderLoopControl(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, int i, int j, float onePixW, float onePixH, float monitorHeight, boolean loop) {
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, 8, 7, loop ? 8 : 0, 164, 8, 7, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+    }
+
+    default void renderPlayProgress(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, int i, int j, float onePixW, float onePixH, float monitorHeight, float w, float progress) {
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, w, 3, 58, 81, w, 3, 256, 256, i, j, onePixW, onePixH, monitorHeight);
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z + OERenderUtil.MIN_BREADTH, w * progress, 3, 58, 78, w * progress, 3, 256, 256, i, j, onePixW, onePixH, monitorHeight);
     }
 
     public static interface ListEntryRender<E> {

@@ -104,7 +104,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
                 renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
                 if (playList.getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isInvitation()) {
-                    renderSmartTextSpriteColor(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF, i);
+                    renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF, i);
                 }
             }
         }
