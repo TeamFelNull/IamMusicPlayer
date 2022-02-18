@@ -54,7 +54,7 @@ public class PlayingBMonitor extends BoomboxMonitor {
             public int getAsInt() {
                 return getScreen().getVolume();
             }
-        }, () -> getScreen().isMute()));
+        }, () -> getScreen().isMute(), null));
 
         this.volumeWidget.visible = isPlayBack();
 

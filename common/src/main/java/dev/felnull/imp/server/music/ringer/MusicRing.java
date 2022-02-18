@@ -302,7 +302,7 @@ public class MusicRing {
         }
 
         private boolean canListen(Player player, ServerLevel level) {
-            return player.level == level && Math.sqrt(player.distanceToSqr(getRinger().getRingerVec3Position(level))) <= getRinger().getRingerRange(level) + 30;
+            return player.level == level && Math.sqrt(player.distanceToSqr(getRinger().getRingerSpatialPosition(level))) <= getRinger().getRingerRange(level) + 30;
         }
 
         private IMusicRinger getRinger() {

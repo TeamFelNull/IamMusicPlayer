@@ -63,6 +63,49 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
         }
     }
 
+    public long getPosition() {
+        if (getBlockEntity() instanceof CassetteDeckBlockEntity cassetteDeckBlockEntity)
+            return getPosition(cassetteDeckBlockEntity);
+        return 0;
+    }
+
+    public long getPosition(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return cassetteDeckBlockEntity.getPosition();
+    }
+
+    public boolean isPlaying() {
+        if (getBlockEntity() instanceof CassetteDeckBlockEntity cassetteDeckBlockEntity)
+            return isPlaying(cassetteDeckBlockEntity);
+        return false;
+    }
+
+    public boolean isPlaying(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return cassetteDeckBlockEntity.isPlaying();
+    }
+
+    public void insPositionAndRestart(long position) {
+        var tag = new CompoundTag();
+        tag.putLong("position", position);
+        instruction("restat_and_set_position", 0, tag);
+    }
+
+
+    public void insLoop(boolean loop) {
+        var tag = new CompoundTag();
+        tag.putBoolean("loop", loop);
+        instruction("set_loop", 0, tag);
+    }
+
+    public boolean isLoop() {
+        if (getBlockEntity() instanceof CassetteDeckBlockEntity cassetteDeckBlockEntity)
+            return isLoop(cassetteDeckBlockEntity);
+        return false;
+    }
+
+    public boolean isLoop(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return cassetteDeckBlockEntity.isLoop();
+    }
+
     private void changeScreenMonitor(CassetteDeckBlockEntity.MonitorType type) {
         if (monitor != null) {
             monitor.renderables.forEach(n -> {
@@ -81,6 +124,28 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
             if (n instanceof AbstractWidget widget)
                 addRenderableWidget(widget);
         });
+    }
+
+    public void insPause() {
+        instruction("set_pause", 0, new CompoundTag());
+    }
+
+    public void insPlaying(boolean playing) {
+        var tag = new CompoundTag();
+        tag.putBoolean("playing", playing);
+        instruction("set_playing", 0, tag);
+    }
+
+    public void insVolume(int volume) {
+        var tag = new CompoundTag();
+        tag.putInt("volume", volume);
+        instruction("set_volume", 0, tag);
+    }
+
+    public void insMute(boolean mute) {
+        var tag = new CompoundTag();
+        tag.putBoolean("mute", mute);
+        instruction("set_mute", 0, tag);
     }
 
     public void insMonitor(CassetteDeckBlockEntity.MonitorType monitorType) {
@@ -109,6 +174,36 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
 
     public ItemStack getCassetteTape() {
         return getMenu().getItems().get(0);
+    }
+
+    public boolean isLoading() {
+        if (getBlockEntity() instanceof CassetteDeckBlockEntity cassetteDeckBlockEntity)
+            return isLoading(cassetteDeckBlockEntity);
+        return false;
+    }
+
+    public boolean isLoading(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return cassetteDeckBlockEntity.isLoadingMusic();
+    }
+
+    public int getVolume() {
+        if (getBlockEntity() instanceof CassetteDeckBlockEntity cassetteDeckBlockEntity)
+            return getVolume(cassetteDeckBlockEntity);
+        return 0;
+    }
+
+    public int getVolume(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return cassetteDeckBlockEntity.getVolume();
+    }
+
+    public boolean isMute() {
+        if (getBlockEntity() instanceof CassetteDeckBlockEntity cassetteDeckBlockEntity)
+            return isMute(cassetteDeckBlockEntity);
+        return false;
+    }
+
+    public boolean isMute(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return cassetteDeckBlockEntity.isMute();
     }
 
     @Override

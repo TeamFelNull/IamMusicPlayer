@@ -44,7 +44,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     private int parabolicAntennaProgress;
     private int antennaProgressOld;
     private int antennaProgress;
-    private NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
     private ItemStack lastCassetteTape = ItemStack.EMPTY;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
     private boolean changeCassetteTape;
@@ -140,7 +140,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                     blockEntity.setRadio(false);
             }
 
-            if (monitor != MonitorType.PLAYING || blockEntity.getCassetteTape().isEmpty() || !IMPItemUtil.isCassetteTape(blockEntity.getCassetteTape())) {
+            if (monitor != MonitorType.PLAYING || !blockEntity.isMusicCassetteTapeExist()) {
                 blockEntity.setRingerPosition((ServerLevel) level, 0);
                 if (blockEntity.isPlaying())
                     blockEntity.setPlaying(false);
@@ -568,11 +568,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level) {
-        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerVec3Position(level)));
+        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerSpatialPosition(level)));
     }
 
     @Override
-    public @NotNull Vec3 getRingerVec3Position(ServerLevel level) {
+    public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level) {
         return new Vec3(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
     }
 
@@ -583,7 +583,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public float getRingerRange(ServerLevel level) {
-        return 30f;
+        return 90f * getRawVolume();
     }
 
     public static record Buttons(boolean radio, boolean start, boolean pause, boolean loop,

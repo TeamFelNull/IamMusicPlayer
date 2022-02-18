@@ -9,6 +9,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
@@ -24,6 +25,26 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
         super(new TranslatableComponent("imp.monitor.cassette_deck." + monitorType.getName()), 7, 18, 200, 56);
         this.monitorType = monitorType;
         this.screen = screen;
+    }
+
+    public ItemStack getCassetteTape() {
+        return getScreen().getCassetteTape();
+    }
+
+    public int getVolume(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return getScreen().getVolume(cassetteDeckBlockEntity);
+    }
+
+    public int getVolume() {
+        return getScreen().getVolume();
+    }
+
+    public boolean isMute() {
+        return getScreen().isMute();
+    }
+
+    public boolean isMute(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
+        return getScreen().isMute(cassetteDeckBlockEntity);
     }
 
     public CassetteDeckBlockEntity.MonitorType getType() {
@@ -57,6 +78,7 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
     private static interface MonitorFactory {
         CassetteDeckMonitor create(CassetteDeckBlockEntity.MonitorType type, CassetteDeckScreen screen);
     }
+
 
     public void insMonitor(CassetteDeckBlockEntity.MonitorType monitorType) {
         getScreen().insMonitor(monitorType);

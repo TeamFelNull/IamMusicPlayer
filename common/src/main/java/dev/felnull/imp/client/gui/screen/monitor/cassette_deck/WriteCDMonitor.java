@@ -37,7 +37,7 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.backButton = this.addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 44, 14, 11, new TranslatableComponent("imp.button.back"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.MENU)));
+        this.backButton = this.addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 44, 14, 11, new TranslatableComponent("gui.back"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.MENU)));
         this.backButton.setHideText(true);
         this.backButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8);
 

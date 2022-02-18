@@ -35,7 +35,7 @@ public interface IMusicRinger {
 
     public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level);
 
-    public @NotNull Vec3 getRingerVec3Position(ServerLevel level);
+    public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level);
 
     public float getRingerVolume(ServerLevel level);
 

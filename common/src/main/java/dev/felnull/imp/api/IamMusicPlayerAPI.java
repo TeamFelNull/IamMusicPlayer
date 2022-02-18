@@ -1,6 +1,6 @@
 package dev.felnull.imp.api;
 
-import dev.felnull.imp.server.music.ringer.IMusicRinger;
+import dev.felnull.imp.api.music.MusicRingerAccess;
 import dev.felnull.imp.server.music.ringer.MusicRing;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.server.level.ServerLevel;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * IamMusicPlayerのAPI
- * このクラスは過去バージョンとの互換性を維持します
+ * このAPIは過去バージョンとの互換性を維持します
  *
  * @author MORIMORI0317
  * @since 2.0
@@ -74,9 +74,9 @@ public class IamMusicPlayerAPI {
      * @return 音源
      */
     @NotNull
-    public static List<IMusicRinger> getRingers() {
-        List<IMusicRinger> pls = new ArrayList<>();
-        MusicRingManager.getInstance().getMusicRingers().values().stream().map(MusicRing::getRingers).map(Map::values).forEach(pls::addAll);
+    public static List<MusicRingerAccess> getRingers() {
+        List<MusicRingerAccess> pls = new ArrayList<>();
+        MusicRingManager.getInstance().getMusicRingers().values().stream().map(MusicRing::getRingers).map(Map::values).forEach(n -> n.forEach(m -> pls.add(new MusicRingerAccess(m))));
         return Collections.unmodifiableList(pls);
     }
 
@@ -87,11 +87,13 @@ public class IamMusicPlayerAPI {
      * @return 音源
      */
     @NotNull
-    public static List<IMusicRinger> getRingers(ServerLevel level) {
-        List<IMusicRinger> pls = new ArrayList<>();
+    public static List<MusicRingerAccess> getRingers(ServerLevel level) {
+
+        List<MusicRingerAccess> pls = new ArrayList<>();
         var mr = MusicRingManager.getInstance().getMusicRingers().get(level);
-        if (mr != null)
-            pls.addAll(mr.getRingers().values());
+        if (mr != null) {
+            mr.getRingers().values().forEach(n -> pls.add(new MusicRingerAccess(n)));
+        }
         return Collections.unmodifiableList(pls);
     }
 }

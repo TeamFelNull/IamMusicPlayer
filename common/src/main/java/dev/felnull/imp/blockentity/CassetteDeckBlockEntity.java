@@ -3,8 +3,11 @@ package dev.felnull.imp.blockentity;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.CassetteDeckMenu;
 import dev.felnull.imp.item.CassetteTapeItem;
-import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.music.resource.Music;
+import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.server.music.MusicManager;
+import dev.felnull.imp.server.music.ringer.IMusicRinger;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
@@ -12,6 +15,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -21,12 +26,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
+public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements IMusicRinger {
     private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private final Map<UUID, UUID> playerSelectPlaylists = new HashMap<>();
     private UUID myPlayerSelectPlaylist;
@@ -34,6 +43,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
     private MonitorType monitor = MonitorType.OFF;
     private ItemStack lastCassetteTape = ItemStack.EMPTY;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
+    private final UUID ringerUUID = UUID.randomUUID();
     private boolean changeCassetteTape;
     private boolean lidOpen;
     private int lidOpenProgressOld;
@@ -41,6 +51,12 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
     private boolean noChangeCassetteTape;
     private boolean noChangeMusicCassetteTape;
     private int cassetteWriteProgress;
+    private int volume = 150;
+    private boolean mute;
+    private boolean playing;
+    private long position;
+    private boolean loop;
+    private boolean loadingMusic;
 
     public CassetteDeckBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntitys.CASSETTE_DECK, blockPos, blockState);
@@ -84,6 +100,12 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
                     blockEntity.setCassetteWriteProgress(0);
             }
 
+            if (blockEntity.monitor != MonitorType.PLAYBACK || !blockEntity.isMusicCassetteTapeExist()) {
+                blockEntity.setRingerPosition((ServerLevel) level, 0);
+                if (blockEntity.isPlaying())
+                    blockEntity.setPlaying(false);
+            }
+
             if (!ItemStack.matches(blockEntity.lastCassetteTape, blockEntity.getCassetteTape()))
                 blockEntity.changeCassetteTape(blockEntity.lastCassetteTape);
 
@@ -99,7 +121,8 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
                     blockEntity.startLidOpen(false);
                 }
             }
-
+            blockEntity.loadingMusic = blockEntity.isRingerWait((ServerLevel) level);
+            blockEntity.ringerTick((ServerLevel) level);
             blockEntity.sync();
         }
     }
@@ -128,6 +151,11 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
             this.music = OENbtUtil.readSerializable(tag, "Music", new Music());
         noChangeCassetteTape = true;
         this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
+        this.volume = tag.getInt("Volume");
+        this.mute = tag.getBoolean("Mute");
+        this.playing = tag.getBoolean("Playing");
+        this.position = tag.getLong("Position");
+        this.loop = tag.getBoolean("Loop");
     }
 
     @Override
@@ -139,6 +167,12 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         if (this.music != null)
             OENbtUtil.writeSerializable(tag, "Music", music);
         tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
+        tag.putInt("Volume", this.volume);
+        tag.putBoolean("Mute", this.mute);
+        tag.putBoolean("Playing", this.playing);
+        tag.putLong("Position", this.position);
+        tag.putBoolean("Loop", this.loop);
+        tag.putBoolean("LoadingMusic", this.loadingMusic);
         return tag;
     }
 
@@ -153,7 +187,17 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         if (this.music != null)
             OENbtUtil.writeSerializable(tag, "Music", music);
         tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
+        tag.putInt("Volume", this.volume);
+        tag.putBoolean("Mute", this.mute);
+        tag.putBoolean("Playing", this.playing);
+        tag.putLong("Position", this.position);
+        tag.putBoolean("Loop", this.loop);
+        this.loadingMusic = tag.getBoolean("LoadingMusic");
         return super.getSyncData(player, tag);
+    }
+
+    public boolean isLoadingMusic() {
+        return loadingMusic;
     }
 
     @Override
@@ -170,6 +214,58 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
         else
             this.music = null;
         this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
+        this.volume = tag.getInt("Volume");
+        this.mute = tag.getBoolean("Mute");
+        this.playing = tag.getBoolean("Playing");
+        this.position = tag.getLong("Position");
+        this.loop = tag.getBoolean("Loop");
+    }
+
+    public boolean isLoop() {
+        return loop;
+    }
+
+    public void setLoop(boolean loop) {
+        this.loop = loop;
+        setChanged();
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
+        setChanged();
+    }
+
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
+        setChanged();
+    }
+
+    public boolean isMute() {
+        return mute;
+    }
+
+    public void setMute(boolean mute) {
+        this.mute = mute;
+        setChanged();
+    }
+
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
+        if (this.volume != volume)
+            setMute(false);
+        this.volume = Mth.clamp(volume, 0, 300);
+        setChanged();
     }
 
     public UUID getMyPlayerSelectPlaylist() {
@@ -277,6 +373,9 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
             return;
         }
 
+        setRingerPosition(getRingerLevel(), 0);
+        setPlaying(false);
+
         this.oldCassetteTape = old;
         this.changeCassetteTape = true;
     }
@@ -315,8 +414,134 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity {
                 }
             }
             return null;
+        } else if ("set_volume".equals(name)) {
+            if (isPower())
+                setVolume(data.getInt("volume"));
+        } else if ("set_mute".equals(name)) {
+            if (isPower())
+                setMute(data.getBoolean("mute"));
+        } else if ("set_playing".equals(name)) {
+            if (isPower()) {
+                boolean pl = data.getBoolean("playing");
+                setPlaying(pl);
+                if (!pl)
+                    setRingerPosition(getRingerLevel(), 0);
+            }
+        } else if ("set_pause".equals(name)) {
+            if (isPower())
+                setPlaying(false);
+        } else if ("restat_and_set_position".equals(name)) {
+            if (isPower())
+                setMusicPositionAndRestart(data.getLong("position"));
+            return null;
+        } else if ("set_loop".equals(name)) {
+            if (isPower())
+                setLoop(data.getBoolean("loop"));
         }
         return super.onInstruction(player, name, num, data);
+    }
+
+    public void setMusicPositionAndRestart(long position) {
+        setRingerPosition(getRingerLevel(), position);
+        ringerRestart(getRingerLevel());
+    }
+
+    @Override
+    public Component getRingerName(ServerLevel level) {
+        return getDefaultName();
+    }
+
+    @Override
+    public ServerLevel getRingerLevel() {
+        return (ServerLevel) level;
+    }
+
+    @Override
+    public UUID getRingerUUID() {
+        return ringerUUID;
+    }
+
+    @Override
+    public boolean isRingerExist(ServerLevel level) {
+        if (getLevel() == null || level != getLevel()) return false;
+        return getBlockPos() != null && level.getBlockEntity(getBlockPos()) == this;
+    }
+
+    @Override
+    public boolean isRingerPlaying(ServerLevel level) {
+        return isPlaying();
+    }
+
+    @Override
+    public void setRingerPlaying(ServerLevel level, boolean playing) {
+        setPlaying(playing);
+    }
+
+    private boolean isCassetteTapeExist() {
+        return !getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape());
+    }
+
+    private boolean isMusicCassetteTapeExist() {
+        return isCassetteTapeExist() && CassetteTapeItem.getMusic(getCassetteTape()) != null;
+    }
+
+    @Override
+    public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
+        if (isMusicCassetteTapeExist()) {
+            var m = CassetteTapeItem.getMusic(getCassetteTape());
+            if (m != null)
+                return m.getSource();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isRingerLoop(ServerLevel level) {
+        return isLoop();
+    }
+
+    @Override
+    public long getRingerPosition(ServerLevel level) {
+        return getPosition();
+    }
+
+    @Override
+    public void setRingerPosition(ServerLevel level, long position) {
+        setPosition(position);
+        if (isMusicCassetteTapeExist()) {
+            var m = getRingerMusicSource(level);
+            if (m != null) {
+                var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
+                if (!ItemStack.matches(nc, getCassetteTape()))
+                    noChangeCassetteTape = true;
+                setItem(0, nc);
+            }
+        }
+        setChanged();
+    }
+
+    @Override
+    public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level) {
+        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerSpatialPosition(level)));
+    }
+
+    @Override
+    public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level) {
+        return new Vec3(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
+    }
+
+    public float getRawVolume() {
+        return (float) getVolume() / 300f;
+    }
+
+    @Override
+    public float getRingerVolume(ServerLevel level) {
+        return getRawVolume();
+    }
+
+    @Override
+    public float getRingerRange(ServerLevel level) {
+        return 90f * getRawVolume();
     }
 
     public static enum MonitorType {
