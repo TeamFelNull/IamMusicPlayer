@@ -6,10 +6,12 @@ import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.client.gui.components.MusicVolumeSlider;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
+import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.api.event.client.ClientEvent;
 import dev.felnull.otyacraftengine.api.event.client.FabricOBJLoaderEvent;
@@ -19,11 +21,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.SoundOptionsScreen;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class ClientHandler {
@@ -35,6 +40,7 @@ public class ClientHandler {
         ClientEvent.CHANGE_HAND_HEIGHT.register(ClientHandler::changeHandHeight);
         ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
+        ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
     }
 
     private static InteractionResult onConfigSave(ConfigHolder<IMPConfig> configHolder, IMPConfig impConfig) {
@@ -66,5 +72,14 @@ public class ClientHandler {
             screenAccess.addRenderableWidget(new MusicVolumeSlider(x, y, 150));
             screenAccess.addRenderableWidget(new ImageButton(x + 150 + 4, y, 20, 20, 48, 105, 20, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get()), new TranslatableComponent("imp.button.config")));
         }
+    }
+
+    private static EventResult onPoseHumanoidArm(HumanoidArm arm, InteractionHand hand, HumanoidModel<? extends LivingEntity> model, LivingEntity livingEntity) {
+        var item = livingEntity.getItemInHand(hand);
+        if (item.is(IMPBlocks.BOOMBOX.asItem()) && BoomboxItem.getTransferProgress(item) >= 1f) {
+            BoomboxHandRenderer.pose(arm, model, item);
+            return EventResult.interruptFalse();
+        }
+        return EventResult.pass();
     }
 }

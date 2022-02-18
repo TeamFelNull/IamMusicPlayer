@@ -30,11 +30,10 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
 
         float handleRaised = 1;
 
-        if (transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+        if (transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND || transformType == ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
             handleRaised = 1f - BoomboxItem.getTransferProgress(itemStack, f);
         }
 
         BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, 0, handleRaised, 0, BoomboxItem.getButtons(itemStack), BoomboxItem.getCassetteTape(itemStack), BoomboxItem.getAntenna(itemStack), 0, 0, false, ItemStack.EMPTY, power, radio);
     }
-
 }

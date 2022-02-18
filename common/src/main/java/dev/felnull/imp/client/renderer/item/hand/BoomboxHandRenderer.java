@@ -4,10 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class BoomboxHandRenderer {
@@ -19,7 +24,6 @@ public class BoomboxHandRenderer {
         HumanoidArm arm = off ? mc.player.getMainArm() : mc.player.getMainArm().getOpposite();
         float uns = arm == HumanoidArm.RIGHT ? 1f : -1f;
         float transPr = BoomboxItem.getTransferProgress(stack, partialTicks);
-
 
         poseStack.pushPose();
         OERenderUtil.posePlayerArm(poseStack, arm, swingProgress, equipProgress);
@@ -65,7 +69,30 @@ public class BoomboxHandRenderer {
         poseStack.popPose();
     }
 
+
     private static float lerpTriple(float par, float v1, float v2, float v3) {
         return par > 0.5f ? Mth.lerp(par, v2, v3) : Mth.lerp(par, v1, v2);
+    }
+
+    public static void pose(HumanoidArm arm, HumanoidModel<? extends LivingEntity> model, ItemStack stack) {
+        var marm = arm == HumanoidArm.RIGHT ? model.rightArm : model.leftArm;
+        float rv = arm == HumanoidArm.RIGHT ? 1f : -1f;
+        marm.xRot = -(float) Math.PI / 2f - 0.1f;
+        marm.yRot = 0.5f * rv;
+    }
+
+    public static void renderArmWithItem(ItemInHandLayer<? extends LivingEntity, ? extends EntityModel<?>> layer, LivingEntity livingEntity, ItemStack itemStack, ItemTransforms.TransformType transformType, HumanoidArm arm, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
+        if (!itemStack.isEmpty()) {
+            boolean bl = arm == HumanoidArm.LEFT;
+            float rv = arm == HumanoidArm.RIGHT ? 1f : -1f;
+            poseStack.pushPose();
+            layer.getParentModel().translateToHand(arm, poseStack);
+            OERenderUtil.poseRotateZ(poseStack, -15f * rv);
+            OERenderUtil.poseRotateY(poseStack, 180f);
+            poseStack.translate(0, 0.2f, 1.2f);
+            poseStack.translate(rv / 16.0f, 0.125f, -0.625f);
+            Minecraft.getInstance().getItemInHandRenderer().renderItem(livingEntity, itemStack, transformType, bl, poseStack, multiBufferSource, i);
+            poseStack.popPose();
+        }
     }
 }
