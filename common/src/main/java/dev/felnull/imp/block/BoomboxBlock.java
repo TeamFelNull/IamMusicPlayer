@@ -42,12 +42,12 @@ public class BoomboxBlock extends IMPBaseEntityBlock {
             var be = level.getBlockEntity(blockPos);
             if (be instanceof BoomboxBlockEntity boombox) {
                 if (blockHitResult.getDirection() == Direction.UP) {
-                    if (boombox.cycleRaisedHandle()) {
-                        level.playSound(null, blockPos, boombox.isLidOpen() ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+                    if (boombox.getBoomboxData().cycleRaisedHandle()) {
+                        level.playSound(null, blockPos, boombox.getBoomboxData().isLidOpen() ? SoundEvents.IRON_DOOR_OPEN : SoundEvents.IRON_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
                         return InteractionResult.sidedSuccess(level.isClientSide());
                     }
                 } else if (blockHitResult.getDirection() == blockState.getValue(FACING)) {
-                    if (boombox.cycleLidOpen())
+                    if (boombox.getBoomboxData().cycleLidOpen(level))
                         return InteractionResult.sidedSuccess(level.isClientSide());
                 }
             }

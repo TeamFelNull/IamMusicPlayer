@@ -5,6 +5,7 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.components.BoomboxButton;
 import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
+import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.util.IMPItemUtil;
@@ -27,7 +28,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     public static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/boombox_base.png");
     public static final ResourceLocation EMPTY_CASSETTE_TAPE_SLOT = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/slot/cassette_tape_slot.png");
     public static final ResourceLocation EMPTY_ANTENNA_SLOT = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/slot/antenna_slot.png");
-    private final Map<BoomboxBlockEntity.MonitorType, BoomboxMonitor> monitors = new HashMap<>();
+    private final Map<BoomboxData.MonitorType, BoomboxMonitor> monitors = new HashMap<>();
     protected BoomboxMonitor monitor;
     public long lastNoAntenna;
 
@@ -41,48 +42,48 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5, topPos + 17, BoomboxBlockEntity.ButtonType.POWER, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.POWER);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5, topPos + 17, BoomboxData.ButtonType.POWER, n -> {
+            insPressButton(BoomboxData.ButtonType.POWER);
         }, this::getButtons, this::isPower));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19, topPos + 17, BoomboxBlockEntity.ButtonType.RADIO, n -> {
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19, topPos + 17, BoomboxData.ButtonType.RADIO, n -> {
             if (!getAntenna().isEmpty() && IMPItemUtil.isAntenna(getAntenna())) {
-                insPressButton(BoomboxBlockEntity.ButtonType.RADIO);
+                insPressButton(BoomboxData.ButtonType.RADIO);
             } else {
                 lastNoAntenna = System.currentTimeMillis();
             }
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 2, topPos + 17, BoomboxBlockEntity.ButtonType.START, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.START);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 2, topPos + 17, BoomboxData.ButtonType.START, n -> {
+            insPressButton(BoomboxData.ButtonType.START);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 3, topPos + 17, BoomboxBlockEntity.ButtonType.PAUSE, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.PAUSE);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 3, topPos + 17, BoomboxData.ButtonType.PAUSE, n -> {
+            insPressButton(BoomboxData.ButtonType.PAUSE);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 4, topPos + 17, BoomboxBlockEntity.ButtonType.STOP, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.STOP);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 4, topPos + 17, BoomboxData.ButtonType.STOP, n -> {
+            insPressButton(BoomboxData.ButtonType.STOP);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 5, topPos + 17, BoomboxBlockEntity.ButtonType.LOOP, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.LOOP);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 5, topPos + 17, BoomboxData.ButtonType.LOOP, n -> {
+            insPressButton(BoomboxData.ButtonType.LOOP);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 6 + 14, topPos + 17, BoomboxBlockEntity.ButtonType.VOL_DOWN, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.VOL_DOWN);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 6 + 14, topPos + 17, BoomboxData.ButtonType.VOL_DOWN, n -> {
+            insPressButton(BoomboxData.ButtonType.VOL_DOWN);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 7 + 14, topPos + 17, BoomboxBlockEntity.ButtonType.VOL_UP, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.VOL_UP);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 7 + 14, topPos + 17, BoomboxData.ButtonType.VOL_UP, n -> {
+            insPressButton(BoomboxData.ButtonType.VOL_UP);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 8 + 14, topPos + 17, BoomboxBlockEntity.ButtonType.VOL_MUTE, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.VOL_MUTE);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 8 + 14, topPos + 17, BoomboxData.ButtonType.VOL_MUTE, n -> {
+            insPressButton(BoomboxData.ButtonType.VOL_MUTE);
         }, this::getButtons));
 
-        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 9 + 14, topPos + 17, BoomboxBlockEntity.ButtonType.VOL_MAX, n -> {
-            insPressButton(BoomboxBlockEntity.ButtonType.VOL_MAX);
+        this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19 * 9 + 14, topPos + 17, BoomboxData.ButtonType.VOL_MAX, n -> {
+            insPressButton(BoomboxData.ButtonType.VOL_MAX);
         }, this::getButtons));
 
         changeScreenMonitor(getRawMonitorType());
@@ -116,61 +117,39 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     }
 
     public boolean isMute() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.isMute();
-        }
-        return false;
+        return getBoomBoxData().isMute();
     }
 
     public boolean isPlaying() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.isPlaying();
-        }
-        return false;
+        return getBoomBoxData().isPlaying();
     }
 
     public int getVolume() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.getVolume();
-        }
-        return 0;
+        return getBoomBoxData().getVolume();
     }
 
     public long getMusicPosition() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.getMusicPosition();
-        }
-        return 0;
+        return getBoomBoxData().getMusicPosition();
     }
 
     private boolean isPower() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.isPower();
-        } else {
-            return BoomboxItem.isPowerOn(getItem());
-        }
-        return false;
+        return getBoomBoxData().isPower();
     }
 
     public boolean isLoop() {
+        return getBoomBoxData().isLoop();
+    }
+
+    public BoomboxData getBoomBoxData() {
         if (isBlock()) {
             if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.isLoop();
+                return boomboxBlockEntity.getBoomboxData();
         }
-        return false;
+        return BoomboxItem.getData(getItem(), mc.player);
     }
 
     public boolean isMusicLoading() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.isLoadingMusic();
-        }
-        return false;
+        return getBoomBoxData().isLoadingMusic();
     }
 
     public ItemStack getCassetteTape() {
@@ -215,21 +194,17 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         return BG_TEXTURE;
     }
 
-    private BoomboxBlockEntity.Buttons getButtons() {
-        if (isBlock()) {
-            if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-                return boomboxBlockEntity.getButtons();
-        }
-        return BoomboxItem.getButtons(getItem());
+    private BoomboxData.Buttons getButtons() {
+        return getBoomBoxData().getButtons();
     }
 
-    private void insPressButton(BoomboxBlockEntity.ButtonType type) {
+    private void insPressButton(BoomboxData.ButtonType type) {
         var tag = new CompoundTag();
         tag.putString("Type", type.getName());
         instruction("buttons_press", 0, tag);
     }
 
-    private void changeScreenMonitor(BoomboxBlockEntity.MonitorType type) {
+    private void changeScreenMonitor(BoomboxData.MonitorType type) {
         if (monitor != null) {
             monitor.renderables.forEach(n -> {
                 if (n instanceof GuiEventListener guiEventListener)
@@ -249,10 +224,8 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         });
     }
 
-    private BoomboxBlockEntity.MonitorType getRawMonitorType() {
-        if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
-            return boomboxBlockEntity.getMonitorType();
-        return BoomboxBlockEntity.MonitorType.OFF;
+    private BoomboxData.MonitorType getRawMonitorType() {
+        return getBoomBoxData().getMonitorType();
     }
 
     @Override

@@ -6,12 +6,12 @@ import dev.architectury.utils.value.FloatValue;
 import dev.architectury.utils.value.IntValue;
 import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.components.LoopControlWidget;
 import dev.felnull.imp.client.gui.components.PlayBackControlWidget;
 import dev.felnull.imp.client.gui.components.PlayProgressWidget;
 import dev.felnull.imp.client.gui.components.VolumeWidget;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
+import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
@@ -23,7 +23,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public class PlayingBMonitor extends BoomboxMonitor {
+public class PlayBackBMonitor extends BoomboxMonitor {
     protected static final ResourceLocation PLAYING_BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing.png");
     protected static final ResourceLocation PLAYING_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing_image.png");
     private static final Component NO_ANTENNA_TEXT = new TranslatableComponent("imp.text.noAntenna");
@@ -35,7 +35,7 @@ public class PlayingBMonitor extends BoomboxMonitor {
     private LoopControlWidget loopControlWidget;
     private PlayProgressWidget playProgressWidget;
 
-    public PlayingBMonitor(BoomboxBlockEntity.MonitorType monitorType, BoomboxScreen screen) {
+    public PlayBackBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
         super(monitorType, screen);
     }
 

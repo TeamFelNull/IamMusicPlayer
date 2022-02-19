@@ -6,6 +6,7 @@ import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.client.renderer.item.AntennaItemRenderer;
+import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
@@ -23,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<BoomboxBlockEntity> {
-    private static final Map<BoomboxBlockEntity.MonitorType, BoomboxMonitor> monitors = new HashMap<>();
+    private static final Map<BoomboxData.MonitorType, BoomboxMonitor> monitors = new HashMap<>();
     private static final Minecraft mc = Minecraft.getInstance();
 
     protected BoomboxBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -32,13 +33,21 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
 
     @Override
     public void render(BoomboxBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        float handleRaised = blockEntity.getHandleRaisedProgress(f) / (float) blockEntity.getHandleRaisedAll();
-        float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
         var state = blockEntity.getBlockState();
-        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, handleRaised, lidOpen, blockEntity.getButtons(), blockEntity.getCassetteTape(), blockEntity.getAntenna(), blockEntity.getParabolicAntennaProgress(f), blockEntity.getAntennaProgress(f) / 30f, blockEntity.isChangeCassetteTape(), blockEntity.getOldCassetteTape(), blockEntity.isPower(), blockEntity.isRadio());
+        var data = blockEntity.getBoomboxData();
+        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, data, data.getHandleRaisedProgress(f) / (float) data.getHandleRaisedMax());
     }
 
-    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, float handleRaised, float lidOpen, BoomboxBlockEntity.Buttons buttons, ItemStack cassetteTape, ItemStack antenna, float parabolicAntennaRoted, float antennaPar, boolean changeCassetteTape, ItemStack oldCassetteTape, boolean power, boolean radio) {
+    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, BoomboxData data, float handleRaised) {
+        float lidOpen = data.getLidOpenProgress(f) / (float) data.getLidOpenProgressMax();
+        var buttons = data.getButtons();
+        var cassetteTape = data.getCassetteTape();
+        var antenna = data.getAntenna();
+        float parabolicAntennaRoted = data.getParabolicAntennaProgress(f);
+        float antennaPar = data.getAntennaProgress(f) / 30f;
+        boolean changeCassetteTape = data.isChangeCassetteTape();
+        var oldCassetteTape = data.getOldCassetteTape();
+
         var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
@@ -122,7 +131,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         poseStack.translate(1, 0, 0);
         OERenderUtil.poseRotateY(poseStack, 180);
         OERenderUtil.poseTrans16(poseStack, 0.6, 5.6, -4.9);
-        var monitor = getMonitor(BoomboxBlockEntity.MonitorType.getTypeByData(power, radio));
+        var monitor = getMonitor(data.getMonitorType());
         float px16 = 1f / 16f;
         monitor.renderAppearance(poseStack, multiBufferSource, i, j, f, px16 * 14.8f, px16 * 2.8f, cassetteTape);
         poseStack.popPose();
@@ -157,7 +166,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         }
     }
 
-    private static BoomboxMonitor getMonitor(BoomboxBlockEntity.MonitorType type) {
+    private static BoomboxMonitor getMonitor(BoomboxData.MonitorType type) {
         if (monitors.containsKey(type))
             return monitors.get(type);
 

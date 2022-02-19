@@ -1,13 +1,16 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.imp.blockentity.BoomboxBlockEntity;
+import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.imp.server.music.ringer.DummyRinger;
+import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.otyacraftengine.item.IInstructionItem;
 import dev.felnull.otyacraftengine.item.ItemContainer;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -19,6 +22,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.UUID;
 
@@ -60,7 +64,12 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             if (getUUID(stack) == null)
                 setUUID(stack, UUID.randomUUID());
         }
+
         if (entity instanceof LivingEntity livingEntity) {
+            var data = getData(stack, livingEntity);
+            data.tick(level);
+            setData(stack, data);
+
             if (livingEntity.getMainHandItem() == stack || livingEntity.getOffhandItem() == stack) {
                 boolean power = isPowerOn(stack);
                 setTransferProgressOld(stack, getTransferProgress(stack));
@@ -87,6 +96,58 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         if (!tag.contains("BoomboxTag"))
             tag.put("BoomboxTag", new CompoundTag());
         return tag.getCompound("BoomboxTag");
+    }
+
+    public static BoomboxData getData(ItemStack stack, LivingEntity livingEntity) {
+        var data = new BoomboxData(new BoomboxData.DataAccess() {
+            @Override
+            public ItemStack getCassetteTape() {
+                return BoomboxItem.getCassetteTape(stack);
+            }
+
+            @Override
+            public ItemStack getAntenna() {
+                return BoomboxItem.getAntenna(stack);
+            }
+
+            @Override
+            public boolean isPower() {
+                return isPowerOn(stack);
+            }
+
+            @Override
+            public void setPower(boolean power) {
+                BoomboxItem.setPowerOn(stack, power);
+            }
+
+            @Override
+            public IMusicRinger getRinger() {
+                return new DummyRinger((ServerLevel) livingEntity.level);
+            }
+
+            @Override
+            public Vec3 getPosition() {
+                return livingEntity.position();
+            }
+
+            @Override
+            public void setCassetteTape(ItemStack cassette) {
+                BoomboxItem.setCassetteTape(stack, cassette);
+            }
+
+            @Override
+            public void dataUpdate(BoomboxData data) {
+                setData(stack, data);
+            }
+        });
+        var tag = getBoomboxTag(stack);
+        if (tag != null)
+            data.load(tag.getCompound("BoomBoxData"), true, true);
+        return data;
+    }
+
+    public static void setData(ItemStack stack, BoomboxData data) {
+        getOrCreateBoomboxTag(stack).put("BoomBoxData", data.save(new CompoundTag(), true, true));
     }
 
     public static boolean isPowerOn(ItemStack itemStack) {
@@ -133,24 +194,20 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         getOrCreateBoomboxTag(stack).putUUID("Identification", id);
     }
 
-    public static boolean isLoop(ItemStack itemStack) {
-        if (getBoomboxTag(itemStack) != null)
-            return getBoomboxTag(itemStack).getBoolean("Loop");
-        return false;
-    }
-
-    public static void setLoop(ItemStack itemStack, boolean loop) {
-        getOrCreateBoomboxTag(itemStack).putBoolean("Loop", loop);
-    }
-
-    public static BoomboxBlockEntity.Buttons getButtons(ItemStack stack) {
-        return new BoomboxBlockEntity.Buttons(false,  false, false, isLoop(stack), false, false);
-    }
-
     public static NonNullList<ItemStack> getContainItem(ItemStack stack) {
         NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
         ItemContainer.loadItemList(stack, stacks, "BoomboxItems");
         return stacks;
+    }
+
+    public static void setContainItem(ItemStack stack, NonNullList<ItemStack> stacks) {
+        ItemContainer.saveItemList(stack, stacks, "BoomboxItems");
+    }
+
+    public static void setCassetteTape(ItemStack stack, ItemStack cassette) {
+        var itms = getContainItem(stack);
+        itms.set(0, cassette);
+        setContainItem(stack, itms);
     }
 
     public static ItemStack getCassetteTape(ItemStack stack) {
@@ -163,29 +220,6 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     @Override
     public CompoundTag onInstruction(ItemStack itemStack, ServerPlayer player, String name, int num, CompoundTag data) {
-        if ("ButtonsPress".equals(name)) {
-            BoomboxBlockEntity.ButtonType type = BoomboxBlockEntity.ButtonType.getByName(data.getString("Type"));
-            switch (type) {
-                case POWER -> setPowerOn(itemStack, !isPowerOn(itemStack));
-                case LOOP -> setLoop(itemStack, !isLoop(itemStack));
-              /*   case VOL_DOWN -> {
-                    if (isPower())
-                        setVolume(Math.max(volume - 10, 0));
-                }
-                case VOL_UP -> {
-                    if (isPower())
-                        setVolume(Math.min(volume + 10, 200));
-                    setMute(false);
-                }
-                case VOL_MUTE -> setMute(!isMute());
-                case VOL_MAX -> {
-                    if (isPower())
-                        setVolume(200);
-                    setMute(false);
-                }*/
-            }
-            return null;
-        }
-        return null;
+        return BoomboxItem.getData(itemStack, player).onInstruction(player, name, num, data);
     }
 }

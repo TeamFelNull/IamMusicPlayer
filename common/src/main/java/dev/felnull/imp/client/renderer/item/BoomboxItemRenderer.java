@@ -8,6 +8,7 @@ import dev.felnull.imp.client.renderer.blockentity.BoomboxBlockEntityRenderer;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -34,6 +35,6 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
             handleRaised = 1f - BoomboxItem.getTransferProgress(itemStack, f);
         }
 
-        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, 0, handleRaised, 0, BoomboxItem.getButtons(itemStack), BoomboxItem.getCassetteTape(itemStack), BoomboxItem.getAntenna(itemStack), 0, 0, false, ItemStack.EMPTY, power, radio);
+        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, f, BoomboxItem.getData(itemStack, Minecraft.getInstance().player), handleRaised);
     }
 }
