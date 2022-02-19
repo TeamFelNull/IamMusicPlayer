@@ -9,6 +9,7 @@ import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -55,7 +56,7 @@ public class CassetteDeckBlockEntityRenderer extends AbstractBlockEntityRenderer
         OERenderUtil.poseTrans16(poseStack, 0.6f, 2.35f, -1.9f);
         var monitor = getMonitor(blockEntity.getMonitor());
         float px16 = 1f / 16f;
-        monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, px16 * 7.8f, px16 * 2.275f);
+        monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 7.8f, px16 * 2.275f);
         poseStack.popPose();
 
         poseStack.pushPose();

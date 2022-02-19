@@ -145,7 +145,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
             if (getBlockEntity() instanceof BoomboxBlockEntity boomboxBlockEntity)
                 return boomboxBlockEntity.getBoomboxData();
         }
-        return BoomboxItem.getData(getItem(), mc.player);
+        return BoomboxItem.getData(getItem());
     }
 
     public boolean isMusicLoading() {

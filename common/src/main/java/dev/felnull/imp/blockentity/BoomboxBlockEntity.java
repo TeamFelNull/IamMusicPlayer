@@ -207,7 +207,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     @Override
     public void setRingerPosition(ServerLevel level, long position) {
         this.boomboxData.setMusicPosition(position);
-        setChanged();
     }
 
     @Override

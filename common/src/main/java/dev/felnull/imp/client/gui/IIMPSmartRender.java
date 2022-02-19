@@ -92,7 +92,7 @@ public interface IIMPSmartRender {
     }
 
     default void renderSmartTextSpriteColorSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color, int combinedLightIn) {
-        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f, 0, 0, color, combinedLightIn);
+        OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * getDefaultRenderTextScale(), 0, 0, color, combinedLightIn);
     }
 
     default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
@@ -232,7 +232,7 @@ public interface IIMPSmartRender {
         int nv = mute ? 3 : volume / 100;
         int lfs = (nv * 2) + (volume <= 0 ? 0 : 2);
         renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x, y, z, mute ? 4 : 4 + lfs, 8, 0, 156, mute ? 4 : 4 + lfs, 8, 256, 256, i, j, onePixW, onePixH, monitorHeight);
-        renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TextComponent(String.valueOf(volume)), x + 5 + lfs, y + 0.5f, z, onePixW, onePixH, monitorHeight, 0XFF115D0E, i);
+        renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TextComponent(String.valueOf(volume)), x + 5 + lfs, y + 2.f, z, onePixW, onePixH, monitorHeight, 0XFF115D0E, i);
         if (mute)
             renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, x + 3, y, z, 8, 8, 12, 156, 8, 8, 256, 256, i, j, onePixW, onePixH, monitorHeight);
     }

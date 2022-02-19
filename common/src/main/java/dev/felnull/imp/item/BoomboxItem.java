@@ -2,8 +2,8 @@ package dev.felnull.imp.item;
 
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
-import dev.felnull.imp.server.music.ringer.DummyRinger;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.item.IInstructionItem;
 import dev.felnull.otyacraftengine.item.ItemContainer;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
@@ -60,13 +60,19 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     public static void tick(Level level, Entity entity, ItemStack stack) {
-        if (!level.isClientSide()) {
-            if (getUUID(stack) == null)
-                setUUID(stack, UUID.randomUUID());
-        }
-
         if (entity instanceof LivingEntity livingEntity) {
-            var data = getData(stack, livingEntity);
+            if (!level.isClientSide()) {
+                if (getUUID(stack) == null)
+                    setUUID(stack, UUID.randomUUID());
+
+                var mr = MusicRingManager.getInstance();
+                var uuid = getUUID(stack);
+                if (uuid != null && !mr.isExistRinger((ServerLevel) level, uuid)) {
+                    mr.addRinger((ServerLevel) level, new BoomboxItemRinger(livingEntity, uuid));
+                }
+            }
+
+            var data = getData(stack);
             data.tick(level);
             setData(stack, data);
 
@@ -98,7 +104,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         return tag.getCompound("BoomboxTag");
     }
 
-    public static BoomboxData getData(ItemStack stack, LivingEntity livingEntity) {
+    public static BoomboxData getData(ItemStack stack) {
         var data = new BoomboxData(new BoomboxData.DataAccess() {
             @Override
             public ItemStack getCassetteTape() {
@@ -122,12 +128,18 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
             @Override
             public IMusicRinger getRinger() {
-                return new DummyRinger((ServerLevel) livingEntity.level);
+                var uuid = getUUID(stack);
+                var mr = MusicRingManager.getInstance();
+                if (uuid != null)
+                    return mr.getRinger(uuid);
+                return null;
             }
 
             @Override
             public Vec3 getPosition() {
-                return livingEntity.position();
+                if (getRinger() == null)
+                    return Vec3.ZERO;
+                return getRinger().getRingerSpatialPosition(getRinger().getRingerLevel());
             }
 
             @Override
@@ -220,6 +232,6 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     @Override
     public CompoundTag onInstruction(ItemStack itemStack, ServerPlayer player, String name, int num, CompoundTag data) {
-        return BoomboxItem.getData(itemStack, player).onInstruction(player, name, num, data);
+        return BoomboxItem.getData(itemStack).onInstruction(player, name, num, data);
     }
 }

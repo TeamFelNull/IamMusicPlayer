@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Function;
 
@@ -43,6 +44,7 @@ public class BoomboxData {
     private boolean loop;
     private boolean mute;
     private long musicPosition;
+    private long tapeMusicPosition = -1;
     private boolean loadingMusic;
 
     public BoomboxData(@NotNull BoomboxData.DataAccess access) {
@@ -56,7 +58,9 @@ public class BoomboxData {
         this.antennaProgressOld = this.antennaProgress;
 
         if (isUseAntenna() && monitorType == MonitorType.RADIO)
-            this.antennaProgress = Mth.clamp(this.antennaProgress + (isUseAntenna() ? 1 : -1), 0, 30);
+            this.antennaProgress = Mth.clamp(this.antennaProgress + 1, 0, 30);
+        else
+            this.antennaProgress = Mth.clamp(this.antennaProgress - 1, 0, 30);
 
         if (this.handleRaising) {
             if (this.handleRaisedProgress < getHandleRaisedMax())
@@ -78,7 +82,8 @@ public class BoomboxData {
             this.parabolicAntennaProgress += 2;
 
         if (!level.isClientSide()) {
-            loadingMusic = getRinger().isRingerWait((ServerLevel) level);
+            if (getRinger() != null)
+                loadingMusic = getRinger().isRingerWait((ServerLevel) level);
 
             if (isPower() && monitorType == MonitorType.OFF)
                 monitorType = MonitorType.PLAYBACK;
@@ -87,13 +92,28 @@ public class BoomboxData {
                 monitorType = MonitorType.OFF;
 
             if (monitorType != MonitorType.PLAYBACK || !isMusicCassetteTapeExist()) {
-                getRinger().setRingerPosition((ServerLevel) level, 0);
+                if (getRinger() != null)
+                    getRinger().setRingerPosition((ServerLevel) level, 0);
                 if (isPlaying())
                     setPlaying(false);
             }
 
             if ((isRadio() && !isAntennaExist()) || (monitorType == MonitorType.REMOTE_PLAYBACK && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
                 monitorType = MonitorType.PLAYBACK;
+            }
+
+            if (tapeMusicPosition >= 0) {
+                if (isMusicCassetteTapeExist()) {
+                    var m = getMusicSource();
+                    if (m != null) {
+                        var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) tapeMusicPosition / (float) m.getDuration());
+                        if (!ItemStack.matches(nc, getCassetteTape())) {
+                            setNoChangeCassetteTape(true);
+                            setCassetteTape(nc);
+                        }
+                    }
+                }
+                tapeMusicPosition = -1;
             }
 
             if (!ItemStack.matches(this.lastCassetteTape, this.getCassetteTape()))
@@ -149,7 +169,8 @@ public class BoomboxData {
                 case STOP -> {
                     if (isPower()) {
                         setPlaying(false);
-                        getRinger().setRingerPosition(player.getLevel(), 0);
+                        if (getRinger() != null)
+                            getRinger().setRingerPosition(player.getLevel(), 0);
                     }
                 }
                 case PAUSE -> {
@@ -167,7 +188,7 @@ public class BoomboxData {
             if (isPower()) {
                 boolean pl = data.getBoolean("playing");
                 setPlaying(pl);
-                if (!pl)
+                if (!pl && getRinger() != null)
                     getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
             }
             return null;
@@ -209,6 +230,7 @@ public class BoomboxData {
             tag.put("LastCassetteTape", this.lastCassetteTape.save(new CompoundTag()));
             tag.putBoolean("NoForceChangeCassetteTape", this.noForceChangeCassetteTape);
             tag.putBoolean("NoChangeCassetteTape", this.noChangeCassetteTape);
+            tag.putLong("NewRingerPosition", this.tapeMusicPosition);
         }
 
         if (absolutely || sync) {
@@ -243,6 +265,7 @@ public class BoomboxData {
             this.lastCassetteTape = ItemStack.of(tag.getCompound("LastCassetteTape"));
             this.noForceChangeCassetteTape = tag.getBoolean("NoForceChangeCassetteTape");
             this.noChangeCassetteTape = tag.getBoolean("NoChangeCassetteTape");
+            this.tapeMusicPosition = tag.getLong("NewRingerPosition");
         }
 
         if (absolutely || sync) {
@@ -273,16 +296,7 @@ public class BoomboxData {
 
     public void setMusicPosition(long position) {
         this.musicPosition = position;
-        if (isMusicCassetteTapeExist()) {
-            var m = getMusicSource();
-            if (m != null) {
-                var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
-                if (!ItemStack.matches(nc, getCassetteTape())) {
-                    setNoChangeCassetteTape(true);
-                    setCassetteTape(nc);
-                }
-            }
-        }
+        this.tapeMusicPosition = position;
         update();
     }
 
@@ -300,9 +314,11 @@ public class BoomboxData {
     }
 
     public void setMusicPositionAndRestart(long position) {
-        getRinger().setRingerPosition(getRinger().getRingerLevel(), position);
-        getRinger().ringerRestart(getRinger().getRingerLevel());
-        update();
+        if (getRinger() != null) {
+            getRinger().setRingerPosition(getRinger().getRingerLevel(), position);
+            getRinger().ringerRestart(getRinger().getRingerLevel());
+            update();
+        }
     }
 
     public float getRawVolume() {
@@ -336,8 +352,8 @@ public class BoomboxData {
         }
 
         this.oldCassetteTape = old;
-
-        getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
+        if (getRinger() != null)
+            getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
         setPlaying(false);
 
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
@@ -407,6 +423,7 @@ public class BoomboxData {
         return IMPItemUtil.isAntenna(getAntenna());
     }
 
+    @Nullable
     public IMusicRinger getRinger() {
         return access.getRinger();
     }

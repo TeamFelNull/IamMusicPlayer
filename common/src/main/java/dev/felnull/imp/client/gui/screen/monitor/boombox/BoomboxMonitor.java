@@ -29,7 +29,7 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
 
     public static void firstInit() {
         registerMonitors(BoomboxData.MonitorType.OFF, OffBMonitor::new);
-        registerMonitors(BoomboxData.MonitorType.PLAYBACK, PlayBackBMonitor::new);
+        registerMonitors(BoomboxData.MonitorType.PLAYBACK, PlaybackBMonitor::new);
         registerMonitors(BoomboxData.MonitorType.RADIO, RadioBMonitor::new);
         registerMonitors(BoomboxData.MonitorType.REMOTE_PLAYBACK, RemotePlayBackBMonitor::new);
     }
@@ -41,6 +41,8 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
     private static void registerMonitors(BoomboxData.MonitorType type, MonitorFactory factory) {
         monitorFactory.put(type, factory);
     }
+
+
 
     public BoomboxScreen getScreen() {
         return screen;
@@ -56,13 +58,13 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
         OERenderUtil.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
     }
 
-    public void renderAppearance(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight, ItemStack cassetteTape) {
+    public void renderAppearance(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight, BoomboxData data) {
         OERenderUtil.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
     }
 
     @Override
     public float getDefaultRenderTextScale() {
-        return 2.f;
+        return 2.5f;
     }
 
     public ItemStack getCassetteTape() {

@@ -68,11 +68,31 @@ public class MusicRingManager {
             ring.addReadyPlayer(player, uuid, waitUUID, result, retry, elapsed);
     }
 
+    public boolean isExistRinger(UUID uuid) {
+        for (ServerLevel serverLevel : MUSIC_RINGERS.keySet()) {
+            if (isExistRinger(serverLevel, uuid))
+                return true;
+        }
+        return false;
+    }
+
     public boolean isExistRinger(ServerLevel level, UUID uuid) {
         var ring = MUSIC_RINGERS.get(level);
         if (ring != null)
             return ring.getRingers().containsKey(uuid);
         return false;
+    }
+
+    public IMusicRinger getRinger(UUID uuid) {
+        for (ServerLevel serverLevel : MUSIC_RINGERS.keySet()) {
+            var mr = MUSIC_RINGERS.get(serverLevel);
+            if (mr != null) {
+                var r = mr.getRingers().get(uuid);
+                if (r != null)
+                    return r;
+            }
+        }
+        return null;
     }
 
     public void pause() {

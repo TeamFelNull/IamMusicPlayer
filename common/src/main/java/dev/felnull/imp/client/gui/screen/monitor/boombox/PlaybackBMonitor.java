@@ -21,9 +21,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 
-public class PlayBackBMonitor extends BoomboxMonitor {
+public class PlaybackBMonitor extends BoomboxMonitor {
     protected static final ResourceLocation PLAYING_BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing.png");
     protected static final ResourceLocation PLAYING_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing_image.png");
     private static final Component NO_ANTENNA_TEXT = new TranslatableComponent("imp.text.noAntenna");
@@ -35,7 +34,7 @@ public class PlayBackBMonitor extends BoomboxMonitor {
     private LoopControlWidget loopControlWidget;
     private PlayProgressWidget playProgressWidget;
 
-    public PlayBackBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
+    public PlaybackBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
         super(monitorType, screen);
     }
 
@@ -147,8 +146,10 @@ public class PlayBackBMonitor extends BoomboxMonitor {
     }
 
     @Override
-    public void renderAppearance(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight, ItemStack cassetteTape) {
-        super.renderAppearance(poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight, cassetteTape);
+    public void renderAppearance(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight, BoomboxData data) {
+        super.renderAppearance(poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight, data);
+        var cassetteTape = data.getCassetteTape();
+
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
         if (!cassetteTape.isEmpty() && IMPItemUtil.isCassetteTape(cassetteTape)) {
@@ -163,13 +164,33 @@ public class PlayBackBMonitor extends BoomboxMonitor {
                     getPlayImageRenderer().renderSprite(music.getImage(), poseStack, multiBufferSource, 1 * onPxW, monitorHeight - (1 + height - 2) * onPxH, OERenderUtil.MIN_BREADTH * 4, (height - 3) * onPxH, i, j);
                     sx += height - 2;
                 }
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 4, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+
+                var ptx = LOADING_MUSIC_TEXT;
+                if (!data.isLoadingMusic())
+                    ptx = new TextComponent(FNStringUtil.getTimeProgress(data.getMusicPosition(), music.getSource().getDuration()));
+
+                renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 38f - (isShortProgressBar(data) ? 0 : 36f), 17f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
+
+                renderVolumeSprite(poseStack, multiBufferSource, 168, 14, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.getVolume(), data.isMute());
+                renderPlayBackControl(poseStack, multiBufferSource, isShortProgressBar(data) ? 38 : 2, 25, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING);
+                renderLoopControl(poseStack, multiBufferSource, 189, 26, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
+
+                renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(data) ? 48 : 12, 28, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, isShortProgressBar(data) ? 133 : 176, (float) data.getMusicPosition() / (float) music.getSource().getDuration());
             } else {
                 renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
             }
         } else {
             renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
         }
+    }
+
+    private boolean isShortProgressBar(BoomboxData data) {
+        if (!data.getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(data.getCassetteTape())) {
+            var music = CassetteTapeItem.getMusic(data.getCassetteTape());
+            return music != null && !music.getImage().isEmpty();
+        }
+        return false;
     }
 
     private boolean isShortProgressBar() {

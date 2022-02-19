@@ -35,6 +35,6 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
             handleRaised = 1f - BoomboxItem.getTransferProgress(itemStack, f);
         }
 
-        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, f, BoomboxItem.getData(itemStack, Minecraft.getInstance().player), handleRaised);
+        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, f, BoomboxItem.getData(itemStack), handleRaised);
     }
 }

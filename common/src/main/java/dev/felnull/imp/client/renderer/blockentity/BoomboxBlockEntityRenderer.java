@@ -13,6 +13,7 @@ import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -133,7 +134,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         OERenderUtil.poseTrans16(poseStack, 0.6, 5.6, -4.9);
         var monitor = getMonitor(data.getMonitorType());
         float px16 = 1f / 16f;
-        monitor.renderAppearance(poseStack, multiBufferSource, i, j, f, px16 * 14.8f, px16 * 2.8f, cassetteTape);
+        monitor.renderAppearance(poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 14.8f, px16 * 2.8f, data);
         poseStack.popPose();
 
         poseStack.popPose();

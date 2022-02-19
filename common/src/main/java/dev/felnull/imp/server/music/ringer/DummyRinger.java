@@ -1,8 +1,6 @@
 package dev.felnull.imp.server.music.ringer;
 
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.imp.server.music.ringer.IMusicRinger;
-import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;

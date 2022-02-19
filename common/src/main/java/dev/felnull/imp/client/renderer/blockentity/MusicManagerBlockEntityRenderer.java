@@ -9,6 +9,7 @@ import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -53,7 +54,7 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
         OERenderUtil.poseTrans16(poseStack, 0.25f, 1.75f, -12.375f);
         var monitor = getMonitor(blockEntity.getMyMonitor(mc.player));
         float px16 = 1f / 16f;
-        monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, px16 * 10.5f, px16 * 6.5f);
+        monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 10.5f, px16 * 6.5f);
         poseStack.popPose();
 
         poseStack.popPose();
