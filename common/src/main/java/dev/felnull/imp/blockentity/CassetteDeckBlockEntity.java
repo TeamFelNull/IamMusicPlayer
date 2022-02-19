@@ -545,6 +545,11 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         return 90f * getRawVolume();
     }
 
+    @Override
+    public boolean isRingerStream() {
+        return false;
+    }
+
     public static enum MonitorType {
         OFF("off"),
         MENU("menu"),

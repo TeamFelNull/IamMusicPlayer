@@ -35,12 +35,13 @@ public interface IMusicRinger {
 
     public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level);
 
-
     public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level);
 
     public float getRingerVolume(ServerLevel level);
 
     public float getRingerRange(ServerLevel level);
+
+    public boolean isRingerStream();
 
     default public boolean isRingerWait(ServerLevel level) {
         return MusicRingManager.getInstance().isWaitRinger(getRingerUUID(), level);

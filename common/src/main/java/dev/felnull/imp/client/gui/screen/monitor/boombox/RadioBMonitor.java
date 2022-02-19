@@ -1,6 +1,5 @@
 package dev.felnull.imp.client.gui.screen.monitor.boombox;
 
-import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.data.BoomboxData;
 

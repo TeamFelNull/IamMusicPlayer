@@ -103,6 +103,11 @@ public class BoomboxItemRinger implements IMusicRinger {
         return 90f * getData().getRawVolume();
     }
 
+    @Override
+    public boolean isRingerStream() {
+        return false;
+    }
+
     @NotNull
     private BoomboxData getData() {
         return BoomboxItem.getData(getBoombox());

@@ -228,4 +228,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     public float getRingerRange(ServerLevel level) {
         return 90f * boomboxData.getRawVolume();
     }
+
+    @Override
+    public boolean isRingerStream() {
+        return false;
+    }
 }
