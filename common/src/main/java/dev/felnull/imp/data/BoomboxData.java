@@ -44,7 +44,7 @@ public class BoomboxData {
     private boolean loop;
     private boolean mute;
     private long musicPosition;
-    private long tapeMusicPosition = -1;
+    private long newMusicPosition = -1;
     private boolean loadingMusic;
 
     public BoomboxData(@NotNull BoomboxData.DataAccess access) {
@@ -93,7 +93,8 @@ public class BoomboxData {
 
             if (monitorType != MonitorType.PLAYBACK || !isMusicCassetteTapeExist()) {
                 if (getRinger() != null)
-                    getRinger().setRingerPosition((ServerLevel) level, 0);
+                    newMusicPosition = 0;
+                // getRinger().setRingerPosition((ServerLevel) level, 0);
                 if (isPlaying())
                     setPlaying(false);
             }
@@ -102,18 +103,9 @@ public class BoomboxData {
                 monitorType = MonitorType.PLAYBACK;
             }
 
-            if (tapeMusicPosition >= 0) {
-                if (isMusicCassetteTapeExist()) {
-                    var m = getMusicSource();
-                    if (m != null) {
-                        var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) tapeMusicPosition / (float) m.getDuration());
-                        if (!ItemStack.matches(nc, getCassetteTape())) {
-                            setNoChangeCassetteTape(true);
-                            setCassetteTape(nc);
-                        }
-                    }
-                }
-                tapeMusicPosition = -1;
+            if (newMusicPosition >= 0) {
+                setMusicPosition(newMusicPosition);
+                newMusicPosition = -1;
             }
 
             if (!ItemStack.matches(this.lastCassetteTape, this.getCassetteTape()))
@@ -189,7 +181,8 @@ public class BoomboxData {
                 boolean pl = data.getBoolean("playing");
                 setPlaying(pl);
                 if (!pl && getRinger() != null)
-                    getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
+                    newMusicPosition = 0;
+                // getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
             }
             return null;
         } else if ("set_pause".equals(name)) {
@@ -230,7 +223,7 @@ public class BoomboxData {
             tag.put("LastCassetteTape", this.lastCassetteTape.save(new CompoundTag()));
             tag.putBoolean("NoForceChangeCassetteTape", this.noForceChangeCassetteTape);
             tag.putBoolean("NoChangeCassetteTape", this.noChangeCassetteTape);
-            tag.putLong("NewRingerPosition", this.tapeMusicPosition);
+            tag.putLong("NewRingerPosition", this.newMusicPosition);
         }
 
         if (absolutely || sync) {
@@ -265,7 +258,7 @@ public class BoomboxData {
             this.lastCassetteTape = ItemStack.of(tag.getCompound("LastCassetteTape"));
             this.noForceChangeCassetteTape = tag.getBoolean("NoForceChangeCassetteTape");
             this.noChangeCassetteTape = tag.getBoolean("NoChangeCassetteTape");
-            this.tapeMusicPosition = tag.getLong("NewRingerPosition");
+            this.newMusicPosition = tag.getLong("NewRingerPosition");
         }
 
         if (absolutely || sync) {
@@ -291,12 +284,23 @@ public class BoomboxData {
     }
 
     public long getMusicPosition() {
+        if (newMusicPosition >= 0)
+            return newMusicPosition;
         return musicPosition;
     }
 
     public void setMusicPosition(long position) {
         this.musicPosition = position;
-        this.tapeMusicPosition = position;
+        if (isMusicCassetteTapeExist()) {
+            var m = getMusicSource();
+            if (m != null) {
+                var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
+                if (!ItemStack.matches(nc, getCassetteTape())) {
+                    setNoChangeCassetteTape(true);
+                    setCassetteTape(nc);
+                }
+            }
+        }
         update();
     }
 
@@ -315,7 +319,8 @@ public class BoomboxData {
 
     public void setMusicPositionAndRestart(long position) {
         if (getRinger() != null) {
-            getRinger().setRingerPosition(getRinger().getRingerLevel(), position);
+            this.newMusicPosition = position;
+            //  getRinger().setRingerPosition(getRinger().getRingerLevel(), position);
             getRinger().ringerRestart(getRinger().getRingerLevel());
             update();
         }
@@ -353,7 +358,8 @@ public class BoomboxData {
 
         this.oldCassetteTape = old;
         if (getRinger() != null)
-            getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
+            newMusicPosition = 0;
+        //   getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
         setPlaying(false);
 
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
