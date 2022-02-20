@@ -3,6 +3,7 @@ package dev.felnull.imp.block;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.blockentity.IMPBlockEntitys;
+import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +13,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -79,5 +81,13 @@ public class BoomboxBlock extends IMPBaseEntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, IMPBlockEntitys.BOOMBOX, BoomboxBlockEntity::tick);
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter blockGetter, BlockPos blockPos, BlockState blockState) {
+        var be = blockGetter.getBlockEntity(blockPos);
+        if (be instanceof BoomboxBlockEntity boomboxBlockEntity)
+            return BoomboxItem.createByBE(boomboxBlockEntity, true);
+        return super.getCloneItemStack(blockGetter, blockPos, blockState);
     }
 }

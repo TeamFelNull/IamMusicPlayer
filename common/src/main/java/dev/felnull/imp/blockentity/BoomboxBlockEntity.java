@@ -4,6 +4,7 @@ import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
+import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
@@ -75,6 +76,10 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
                 setChanged();
             }
         });
+    }
+
+    public void setBoomboxData(BoomboxData data) {
+        boomboxData.load(data.save(new CompoundTag(), false, false), false, false);
     }
 
     @Override
@@ -232,5 +237,18 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     @Override
     public boolean isRingerStream() {
         return false;
+    }
+
+    public void setByItem(ItemStack stack) {
+        setPower(BoomboxItem.isPowerOn(stack));
+        setItem(0, BoomboxItem.getCassetteTape(stack));
+        setItem(1, BoomboxItem.getAntenna(stack));
+        setBoomboxData(BoomboxItem.getData(stack));
+        setPower(BoomboxItem.isPowerOn(stack));
+        if (BoomboxItem.getTransferProgress(stack) == 0) {
+            boomboxData.setHandleRaising(true);
+            boomboxData.setHandleRaisedProgress(boomboxData.getHandleRaisedMax());
+            boomboxData.setHandleRaisedProgressOld(boomboxData.getHandleRaisedMax());
+        }
     }
 }

@@ -220,6 +220,9 @@
   "commands.imp.ringer.list.entry": "%s, exists at %s",
   "commands.imp.ringer.list.all.entry.playing": "%s, exists at %s (%s), and is playing",
   "commands.imp.ringer.list.all.entry": "%s, exists at %s (%s)",
+  "_comment.e": "Entity",
+  "entity.minecraft.villager.dj": "DJ",
+  "entity.minecraft.villager.iammusicplayer.dj": "DJ",
   "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
 }

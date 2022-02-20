@@ -561,6 +561,22 @@ public class BoomboxData {
         update();
     }
 
+    public void setHandleRaisedProgressOld(int handleRaisedProgressOld) {
+        this.handleRaisedProgressOld = handleRaisedProgressOld;
+    }
+
+    public int getHandleRaisedProgressOld() {
+        return handleRaisedProgressOld;
+    }
+
+    public void setHandleRaisedProgress(int handleRaisedProgress) {
+        this.handleRaisedProgress = handleRaisedProgress;
+    }
+
+    public void setAntennaProgressOld(int antennaProgressOld) {
+        this.antennaProgressOld = antennaProgressOld;
+    }
+
     public boolean isPower() {
         return access.isPower();
     }

@@ -90,4 +90,9 @@ public class DummyRinger implements IMusicRinger {
     public float getRingerRange(ServerLevel level) {
         return 0;
     }
+
+    @Override
+    public boolean isRingerStream() {
+        return false;
+    }
 }

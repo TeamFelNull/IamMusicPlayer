@@ -1,5 +1,8 @@
 package dev.felnull.imp.item;
 
+import dev.felnull.imp.block.BoomboxBlock;
+import dev.felnull.imp.block.IMPBlocks;
+import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
@@ -8,21 +11,28 @@ import dev.felnull.otyacraftengine.item.IInstructionItem;
 import dev.felnull.otyacraftengine.item.ItemContainer;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUtils;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -40,7 +50,6 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
-
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
             if (!level.isClientSide()) {
@@ -53,10 +62,49 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
                     }
                 }
             }
-            return InteractionResultHolder.pass(itemStack);
+            return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
         }
 
         return super.use(level, player, interactionHand);
+    }
+
+    @Override
+    public InteractionResult place(BlockPlaceContext blockPlaceContext) {
+        var itemStack = blockPlaceContext.getItemInHand();
+        var player = blockPlaceContext.getPlayer();
+        if (player != null && !(!player.isCrouching() && !isPowerOn(itemStack))) {
+            if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
+                if (!blockPlaceContext.getLevel().isClientSide()) {
+                    if (player.isCrouching()) {
+                        if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
+                            setPowerOn(itemStack, !isPowerOn(itemStack));
+                        }
+                    } else {
+                        if (isPowerOn(itemStack)) {
+                            var loc = new HandItemLocation(blockPlaceContext.getHand());
+                            OEMenuUtil.openItemMenu((ServerPlayer) player, ItemContainer.createMenuProvider(itemStack, loc, 2, "BoomboxItems", BoomboxMenu::new), loc, itemStack, 2);
+                        }
+                    }
+                }
+                return InteractionResult.sidedSuccess(blockPlaceContext.getLevel().isClientSide);
+            } else {
+                return InteractionResult.FAIL;
+            }
+        }
+        return super.place(blockPlaceContext);
+    }
+
+    @Override
+    protected boolean canPlace(BlockPlaceContext blockPlaceContext, BlockState blockState) {
+        return !isPowerOn(blockPlaceContext.getItemInHand()) && super.canPlace(blockPlaceContext, blockState);
+    }
+
+    @Override
+    public void onDestroyed(ItemEntity itemEntity) {
+        if (this.getBlock() instanceof BoomboxBlock) {
+            ItemUtils.onContainerDestroyed(itemEntity, getContainItem(itemEntity.getItem()).stream());
+        }
+        super.onDestroyed(itemEntity);
     }
 
     public static void tick(Level level, Entity entity, ItemStack stack) {
@@ -82,6 +130,21 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
                 setTransferProgress(stack, getTransferProgress(stack) + (power ? 1 : -1));
             }
         }
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(BlockPos blockPos, Level level, @Nullable Player player, ItemStack itemStack, BlockState blockState) {
+        var server = level.getServer();
+        if (server != null) {
+            var be = level.getBlockEntity(blockPos);
+            if (be instanceof BoomboxBlockEntity boomboxBlockEntity) {
+                boomboxBlockEntity.setByItem(itemStack);
+                boomboxBlockEntity.setChanged();
+                super.updateCustomBlockEntityTag(blockPos, level, player, itemStack, blockState);
+                return true;
+            }
+        }
+        return super.updateCustomBlockEntityTag(blockPos, level, player, itemStack, blockState);
     }
 
     public static boolean matches(ItemStack src, ItemStack target) {
@@ -233,5 +296,25 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     @Override
     public CompoundTag onInstruction(ItemStack itemStack, ServerPlayer player, String name, int num, CompoundTag data) {
         return BoomboxItem.getData(itemStack).onInstruction(player, name, num, data);
+    }
+
+    public static ItemStack createByBE(BoomboxBlockEntity blockEntity, boolean stopMusic) {
+        var itemStack = new ItemStack(IMPBlocks.BOOMBOX);
+        setData(itemStack, blockEntity.getBoomboxData());
+        var d = getData(itemStack);
+        d.setNoChangeCassetteTape(true);
+        if (stopMusic) {
+            d.setPlaying(false);
+            d.setMusicPosition(0);
+        }
+        setData(itemStack, d);
+        setContainItem(itemStack, blockEntity.getItems());
+        setPowerOn(itemStack, blockEntity.isPower());
+        if (blockEntity.isPower()) {
+            setTransferProgress(itemStack, 10);
+            setTransferProgressOld(itemStack, 10);
+        }
+        setUUID(itemStack, UUID.randomUUID());
+        return itemStack;
     }
 }
