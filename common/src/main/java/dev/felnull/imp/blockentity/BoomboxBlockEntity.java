@@ -83,6 +83,21 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     }
 
     @Override
+    public ItemStack createRetainDropItem() {
+        return BoomboxItem.createByBE(this, false);
+    }
+
+    @Override
+    public boolean isRetainDrop() {
+        return true;
+    }
+
+    @Override
+    public boolean isRetainEmpty() {
+        return false;
+    }
+
+    @Override
     protected Component getDefaultName() {
         return IMPBlocks.BOOMBOX.getName();
     }

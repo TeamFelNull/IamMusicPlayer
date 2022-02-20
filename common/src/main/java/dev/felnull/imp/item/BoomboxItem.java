@@ -300,20 +300,22 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     public static ItemStack createByBE(BoomboxBlockEntity blockEntity, boolean stopMusic) {
         var itemStack = new ItemStack(IMPBlocks.BOOMBOX);
+        setContainItem(itemStack, blockEntity.getItems());
         setData(itemStack, blockEntity.getBoomboxData());
         var d = getData(itemStack);
-        d.setNoChangeCassetteTape(true);
         if (stopMusic) {
             d.setPlaying(false);
             d.setMusicPosition(0);
         }
+        d.setNoChangeCassetteTape(true);
         setData(itemStack, d);
-        setContainItem(itemStack, blockEntity.getItems());
         setPowerOn(itemStack, blockEntity.isPower());
         if (blockEntity.isPower()) {
             setTransferProgress(itemStack, 10);
             setTransferProgressOld(itemStack, 10);
         }
+        if (blockEntity.hasCustomName())
+            itemStack.setHoverName(blockEntity.getCustomName());
         setUUID(itemStack, UUID.randomUUID());
         return itemStack;
     }
