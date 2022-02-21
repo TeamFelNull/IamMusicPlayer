@@ -62,7 +62,7 @@ public class BoomboxItemRinger implements IMusicRinger {
     @Override
     public @Nullable
     MusicSource getRingerMusicSource(ServerLevel level) {
-        return getData().getMusicSource();
+        return isRingerStream() ? getData().getRadioSource() : getData().getMusicSource();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class BoomboxItemRinger implements IMusicRinger {
 
     @Override
     public boolean isRingerStream() {
-        return false;
+        return getData().isRadioStream();
     }
 
     @NotNull

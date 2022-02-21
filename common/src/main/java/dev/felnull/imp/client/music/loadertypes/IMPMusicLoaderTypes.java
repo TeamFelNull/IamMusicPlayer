@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 
 public class IMPMusicLoaderTypes {
     private static final Map<String, IMusicLoaderType> LOADER_TYPES = new LinkedHashMap<>();
-    private static AudioPlayerManager allAudioPlayerManager;
+    public static AudioPlayerManager allAudioPlayerManager;
     public static final String YOUTUBE = "youtube";
     public static final String SOUNDCLOUD = "soundcloud";
     public static final String HTTP = "http";

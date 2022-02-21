@@ -206,7 +206,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
-        return boomboxData.getMusicSource();
+        return isRingerStream() ? boomboxData.getRadioSource() : boomboxData.getMusicSource();
     }
 
     @Override
@@ -251,7 +251,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
 
     @Override
     public boolean isRingerStream() {
-        return false;
+        return boomboxData.isRadioStream();
     }
 
     public void setByItem(ItemStack stack) {

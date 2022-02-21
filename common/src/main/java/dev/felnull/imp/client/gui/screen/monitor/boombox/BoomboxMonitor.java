@@ -6,6 +6,8 @@ import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.client.gui.screen.monitor.Monitor;
 import dev.felnull.imp.data.BoomboxData;
+import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -32,6 +34,11 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
         registerMonitors(BoomboxData.MonitorType.PLAYBACK, PlaybackBMonitor::new);
         registerMonitors(BoomboxData.MonitorType.RADIO, RadioBMonitor::new);
         registerMonitors(BoomboxData.MonitorType.REMOTE_PLAYBACK, RemotePlayBackBMonitor::new);
+        registerMonitors(BoomboxData.MonitorType.RADIO_SELECT, RadioSelectBMonitor::new);
+    }
+
+    protected ImageInfo getRadioImage() {
+        return getScreen().getBoomBoxData().getRadioImage();
     }
 
     public static BoomboxMonitor createdBoomBoxMonitor(BoomboxData.MonitorType type, BoomboxScreen screen) {
@@ -42,7 +49,17 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
         monitorFactory.put(type, factory);
     }
 
+    public void setMonitor(BoomboxData.MonitorType monitorType) {
+        getScreen().insMonitor(monitorType);
+    }
 
+    public String getRadioUrl() {
+        return getScreen().getBoomBoxData().getRadioUrl();
+    }
+
+    public String getRadioUrl(BoomboxData data) {
+        return data.getRadioUrl();
+    }
 
     public BoomboxScreen getScreen() {
         return screen;
@@ -69,6 +86,14 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
 
     public ItemStack getCassetteTape() {
         return getScreen().getCassetteTape();
+    }
+
+    public MusicSource getRadioSource(BoomboxData data) {
+        return data.getRadioSource();
+    }
+
+    public MusicSource getRadioSource() {
+        return getScreen().getBoomBoxData().getRadioSource();
     }
 
     private static interface MonitorFactory {

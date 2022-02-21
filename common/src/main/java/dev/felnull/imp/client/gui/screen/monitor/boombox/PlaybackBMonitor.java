@@ -4,8 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.utils.value.BooleanValue;
 import dev.architectury.utils.value.FloatValue;
 import dev.architectury.utils.value.IntValue;
-import dev.felnull.fnjl.util.FNStringUtil;
-import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.gui.components.LoopControlWidget;
 import dev.felnull.imp.client.gui.components.PlayBackControlWidget;
 import dev.felnull.imp.client.gui.components.PlayProgressWidget;
@@ -13,24 +11,21 @@ import dev.felnull.imp.client.gui.components.VolumeWidget;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.item.CassetteTapeItem;
+import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
+import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class PlaybackBMonitor extends BoomboxMonitor {
-    protected static final ResourceLocation PLAYING_BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing.png");
-    protected static final ResourceLocation PLAYING_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playing_image.png");
+public class PlaybackBMonitor extends PlayBackFiniteBaseBMMonitor {
     private static final Component NO_ANTENNA_TEXT = new TranslatableComponent("imp.text.noAntenna");
     private static final Component NO_CASSETTE_TAPE_TEXT = new TranslatableComponent("imp.text.noCassetteTape");
     private static final Component NO_MUSIC_CASSETTE_TAPE_TEXT = new TranslatableComponent("imp.text.noMusicCassetteTape");
-    private static final Component LOADING_MUSIC_TEXT = new TranslatableComponent("imp.text.musicLoading");
-    private VolumeWidget volumeWidget;
-    private PlayBackControlWidget playBackControlWidget;
     private LoopControlWidget loopControlWidget;
     private PlayProgressWidget playProgressWidget;
 
@@ -39,33 +34,54 @@ public class PlaybackBMonitor extends BoomboxMonitor {
     }
 
     @Override
+    protected @NotNull ImageInfo getPlayBackImage(BoomboxData data) {
+        var m = getMusic(data);
+        if (m != null)
+            return m.getImage();
+        return ImageInfo.EMPTY;
+    }
+
+    @Override
+    protected @NotNull String getPlayBackName(BoomboxData data) {
+        var m = getMusic(data);
+        if (m != null)
+            return m.getName();
+        return "";
+    }
+
+    @Override
+    protected @NotNull String getPlayBackAuthor(BoomboxData data) {
+        var m = getMusic(data);
+        if (m != null)
+            return m.getAuthor();
+        return "";
+    }
+
+    @Nullable
+    protected Music getMusic(BoomboxData data) {
+        var tape = data.getCassetteTape();
+        if (IMPItemUtil.isCassetteTape(tape))
+            return CassetteTapeItem.getMusic(tape);
+        return null;
+    }
+
+    @Override
+    protected boolean canPlay(BoomboxData data) {
+        return IMPItemUtil.isCassetteTape(data.getCassetteTape()) && getMusic(data) != null;
+    }
+
+    @Override
+    protected @NotNull MusicSource getPlayBackSource(BoomboxData data) {
+        var m = getMusic(data);
+        if (m != null)
+            return m.getSource();
+        return MusicSource.EMPTY;
+    }
+
+    @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
         getScreen().lastNoAntenna = 0;
-
-        this.volumeWidget = this.addRenderWidget(new VolumeWidget(getStartX() + 168, getStartY() + 14, new IntValue() {
-            @Override
-            public void accept(int value) {
-                setVolume(value);
-            }
-
-            @Override
-            public int getAsInt() {
-                return getScreen().getVolume();
-            }
-        }, () -> getScreen().isMute(), null));
-
-        this.volumeWidget.visible = isPlayBack();
-
-        this.playBackControlWidget = this.addRenderWidget(new PlayBackControlWidget(getStartX() + (isShortProgressBar() ? 38 : 2), getStartY() + 25, () -> getScreen().isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING, n -> {
-            switch (n) {
-                case PLAYING -> getScreen().insPlaying(true);
-                case STOP -> getScreen().insPlaying(false);
-                case PAUSE -> getScreen().insPause();
-            }
-        }));
-
-        this.playBackControlWidget.visible = isPlayBack();
 
         this.loopControlWidget = this.addRenderWidget(new LoopControlWidget(getStartX() + 189, getStartY() + 26, new BooleanValue() {
             @Override
@@ -79,7 +95,7 @@ public class PlaybackBMonitor extends BoomboxMonitor {
             }
         }));
 
-        this.loopControlWidget.visible = isPlayBack();
+        this.loopControlWidget.visible = canPlay();
 
         this.playProgressWidget = this.addRenderWidget(new PlayProgressWidget(getStartX() + (isShortProgressBar() ? 48 : 12), getStartY() + 28, isShortProgressBar() ? 140 : 176, new FloatValue() {
             @Override
@@ -104,7 +120,7 @@ public class PlaybackBMonitor extends BoomboxMonitor {
             }
         }));
 
-        this.playProgressWidget.visible = isPlayBack();
+        this.playProgressWidget.visible = canPlay();
     }
 
     @Override
@@ -112,23 +128,8 @@ public class PlaybackBMonitor extends BoomboxMonitor {
         super.render(poseStack, f, mouseX, mouseY);
         if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
             Music music = CassetteTapeItem.getMusic(getCassetteTape());
-            if (music != null) {
-                OERenderUtil.drawTexture(PLAYING_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-                if (!music.getImage().isEmpty())
-                    OERenderUtil.drawTexture(PLAYING_IMAGE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-                int sx = 2;
-                if (!music.getImage().isEmpty()) {
-                    getPlayImageRenderer().draw(music.getImage(), poseStack, getStartX() + 1, getStartY() + 1, height - 2);
-                    sx += height - 2;
-                }
-                drawSmartCenterText(poseStack, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
-                var ptx = LOADING_MUSIC_TEXT;
-                if (!getScreen().isMusicLoading())
-                    ptx = new TextComponent(FNStringUtil.getTimeProgress(getScreen().getMusicPosition(), music.getSource().getDuration()));
-                drawSmartText(poseStack, ptx, getStartX() + 38 - (isShortProgressBar() ? 0 : 36), getStartY() + 15, 0XFF115D0E);
-            } else {
+            if (music == null)
                 drawSmartCenterText(poseStack, NO_MUSIC_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
-            }
         } else {
             drawSmartCenterText(poseStack, NO_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
         }
@@ -155,26 +156,7 @@ public class PlaybackBMonitor extends BoomboxMonitor {
         if (!cassetteTape.isEmpty() && IMPItemUtil.isCassetteTape(cassetteTape)) {
             Music music = CassetteTapeItem.getMusic(cassetteTape);
             if (music != null) {
-                OERenderUtil.renderTextureSprite(PLAYING_BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
-                if (!music.getImage().isEmpty())
-                    OERenderUtil.renderTextureSprite(PLAYING_IMAGE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
-
-                int sx = 2;
-                if (!music.getImage().isEmpty()) {
-                    getPlayImageRenderer().renderSprite(music.getImage(), poseStack, multiBufferSource, 1 * onPxW, monitorHeight - (1 + height - 2) * onPxH, OERenderUtil.MIN_BREADTH * 4, (height - 3) * onPxH, i, j);
-                    sx += height - 2;
-                }
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 4, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
-
-                var ptx = LOADING_MUSIC_TEXT;
-                if (!data.isLoadingMusic())
-                    ptx = new TextComponent(FNStringUtil.getTimeProgress(data.getMusicPosition(), music.getSource().getDuration()));
-
-                renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 38f - (isShortProgressBar(data) ? 0 : 36f), 17f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
-
-                renderVolumeSprite(poseStack, multiBufferSource, 168, 14, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.getVolume(), data.isMute());
-                renderPlayBackControl(poseStack, multiBufferSource, isShortProgressBar(data) ? 38 : 2, 25, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING);
-                renderLoopControl(poseStack, multiBufferSource, 189, 26, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
+                 renderLoopControl(poseStack, multiBufferSource, 189, 26, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
 
                 renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(data) ? 48 : 12, 28, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, isShortProgressBar(data) ? 133 : 176, (float) data.getMusicPosition() / (float) music.getSource().getDuration());
             } else {
@@ -185,30 +167,11 @@ public class PlaybackBMonitor extends BoomboxMonitor {
         }
     }
 
-    private boolean isShortProgressBar(BoomboxData data) {
-        if (!data.getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(data.getCassetteTape())) {
-            var music = CassetteTapeItem.getMusic(data.getCassetteTape());
-            return music != null && !music.getImage().isEmpty();
-        }
-        return false;
-    }
-
-    private boolean isShortProgressBar() {
-        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
-            var music = CassetteTapeItem.getMusic(getCassetteTape());
-            return music != null && !music.getImage().isEmpty();
-        }
-        return false;
-    }
-
     @Override
     public void tick() {
         super.tick();
-        this.volumeWidget.visible = isPlayBack();
-        this.playBackControlWidget.visible = isPlayBack();
-        this.playBackControlWidget.x = getStartX() + (isShortProgressBar() ? 38 : 2);
-        this.loopControlWidget.visible = isPlayBack();
-        this.playProgressWidget.visible = isPlayBack();
+        this.loopControlWidget.visible = canPlay();
+        this.playProgressWidget.visible = canPlay();
         this.playProgressWidget.setWidth(isShortProgressBar() ? 140 : 176);
         this.playProgressWidget.x = getStartX() + (isShortProgressBar() ? 48 : 12);
     }
@@ -225,15 +188,7 @@ public class PlaybackBMonitor extends BoomboxMonitor {
         getScreen().insPlaying(playing);
     }
 
-    private boolean isPlayBack() {
-        if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape()))
-            return CassetteTapeItem.getMusic(getCassetteTape()) != null;
-        return false;
-    }
 
-    private void setVolume(int volume) {
-        getScreen().insVolume(volume);
-    }
 
     private void setLoop(boolean loop) {
         getScreen().insLoop(loop);

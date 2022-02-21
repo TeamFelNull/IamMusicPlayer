@@ -2,9 +2,11 @@ package dev.felnull.imp.data;
 
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.item.IMPItems;
+import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.util.IMPItemUtil;
+import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -46,6 +48,11 @@ public class BoomboxData {
     private long musicPosition;
     private long newMusicPosition = -1;
     private boolean loadingMusic;
+    private String radioUrl = "";
+    private MusicSource radioSource = MusicSource.EMPTY;
+    private ImageInfo radioImage = ImageInfo.EMPTY;
+    private String radioName = "";
+    private String radioAuthor = "";
 
     public BoomboxData(@NotNull BoomboxData.DataAccess access) {
         this.access = access;
@@ -57,7 +64,7 @@ public class BoomboxData {
         this.parabolicAntennaProgressOld = this.parabolicAntennaProgress;
         this.antennaProgressOld = this.antennaProgress;
 
-        if (isUseAntenna() && monitorType == MonitorType.RADIO)
+        if (isUseAntenna() && isRadioStream())
             this.antennaProgress = Mth.clamp(this.antennaProgress + 1, 0, 30);
         else
             this.antennaProgress = Mth.clamp(this.antennaProgress - 1, 0, 30);
@@ -91,7 +98,8 @@ public class BoomboxData {
             if (!isPower() && monitorType != MonitorType.OFF)
                 monitorType = MonitorType.OFF;
 
-            if (monitorType != MonitorType.PLAYBACK || !isMusicCassetteTapeExist()) {
+
+            if (!canPlay()) {
                 if (getRinger() != null)
                     newMusicPosition = 0;
                 // getRinger().setRingerPosition((ServerLevel) level, 0);
@@ -99,9 +107,20 @@ public class BoomboxData {
                     setPlaying(false);
             }
 
-            if ((isRadio() && !isAntennaExist()) || (monitorType == MonitorType.REMOTE_PLAYBACK && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
+            if ((isRadio() && !isAntennaExist()) || (isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
                 monitorType = MonitorType.PLAYBACK;
             }
+
+            if (!isRadioStream()) {
+                setRadioImage(ImageInfo.EMPTY);
+                setRadioSource(MusicSource.EMPTY);
+                setRadioAuthor("");
+                setRadioName("");
+                setRadioUrl("");
+            }
+
+            if (monitorType != MonitorType.RADIO_SELECT)
+                setRadioUrl("");
 
             if (newMusicPosition >= 0) {
                 setMusicPosition(newMusicPosition);
@@ -122,6 +141,13 @@ public class BoomboxData {
                 }
             }
         }
+    }
+
+    public boolean canPlay() {
+        boolean canPlayFlg = monitorType == MonitorType.PLAYBACK && isMusicCassetteTapeExist();
+        boolean canPlayFlg2 = monitorType == MonitorType.RADIO && !getRadioSource().isEmpty();
+        boolean canPlayFlg3 = monitorType == MonitorType.REMOTE_PLAYBACK;
+        return canPlayFlg || canPlayFlg2 || canPlayFlg3;
     }
 
     public CompoundTag onInstruction(ServerPlayer player, String name, int num, CompoundTag data) {
@@ -197,6 +223,26 @@ public class BoomboxData {
             if (isPower())
                 setMusicPositionAndRestart(data.getLong("position"));
             return null;
+        } else if ("set_radio_url".equals(name)) {
+            if (isPower())
+                setRadioUrl(data.getString("url"));
+            return null;
+        } else if ("set_monitor".equals(name)) {
+            if (isPower())
+                setMonitorType(MonitorType.getByName(data.getString("name")));
+            return null;
+        } else if ("set_radio_source".equals(name)) {
+            if (isPower())
+                setRadioSource(OENbtUtil.readSerializable(data, "source", new MusicSource()));
+        } else if ("set_radio_image".equals(name)) {
+            if (isPower())
+                setRadioImage(OENbtUtil.readSerializable(data, "image", new ImageInfo()));
+        } else if ("set_radio_name".equals(name)) {
+            if (isPower())
+                setRadioName(data.getString("name"));
+        } else if ("set_radio_author".equals(name)) {
+            if (isPower())
+                setRadioAuthor(data.getString("author"));
         }
         return null;
     }
@@ -210,6 +256,11 @@ public class BoomboxData {
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("Mute", this.mute);
         tag.putLong("RingerPosition", this.musicPosition);
+        tag.putString("RadioUrl", this.radioUrl);
+        OENbtUtil.writeSerializable(tag, "RadioSource", this.radioSource);
+        OENbtUtil.writeSerializable(tag, "RadioImage", this.radioImage);
+        tag.putString("RadioName", this.radioName);
+        tag.putString("RadioAuthor", this.radioAuthor);
 
         if (absolutely) {
             tag.putInt("HandleRaisedProgressOld", this.handleRaisedProgressOld);
@@ -245,6 +296,11 @@ public class BoomboxData {
         this.loop = tag.getBoolean("Loop");
         this.mute = tag.getBoolean("Mute");
         this.musicPosition = tag.getLong("RingerPosition");
+        this.radioUrl = tag.getString("RadioUrl");
+        this.radioSource = OENbtUtil.readSerializable(tag, "RadioSource", new MusicSource());
+        this.radioImage = OENbtUtil.readSerializable(tag, "RadioImage", new ImageInfo());
+        this.radioName = tag.getString("RadioName");
+        this.radioAuthor = tag.getString("RadioAuthor");
 
         if (absolutely) {
             this.handleRaisedProgressOld = tag.getInt("HandleRaisedProgressOld");
@@ -277,6 +333,51 @@ public class BoomboxData {
         if (!absolutely && !sync) {
             this.noForceChangeCassetteTape = true;
         }
+    }
+
+    public void setRadioSource(MusicSource radioSource) {
+        this.radioSource = radioSource;
+        update();
+    }
+
+    public void setRadioImage(ImageInfo radioImage) {
+        this.radioImage = radioImage;
+        update();
+    }
+
+    public MusicSource getRadioSource() {
+        return radioSource;
+    }
+
+    public ImageInfo getRadioImage() {
+        return radioImage;
+    }
+
+    public void setRadioUrl(String radioUrl) {
+        this.radioUrl = radioUrl;
+        update();
+    }
+
+    public void setRadioName(String radioName) {
+        this.radioName = radioName;
+        update();
+    }
+
+    public void setRadioAuthor(String radioAuthor) {
+        this.radioAuthor = radioAuthor;
+        update();
+    }
+
+    public String getRadioName() {
+        return radioName;
+    }
+
+    public String getRadioAuthor() {
+        return radioAuthor;
+    }
+
+    public String getRadioUrl() {
+        return radioUrl;
     }
 
     public boolean isLoadingMusic() {
@@ -335,14 +436,22 @@ public class BoomboxData {
             if (IMPItemUtil.isRemotePlayBackAntenna(getAntenna())) {
                 setMonitorType(MonitorType.REMOTE_PLAYBACK);
             } else {
-                setMonitorType(MonitorType.RADIO);
+                setMonitorType(MonitorType.RADIO_SELECT);
             }
         }
         update();
     }
 
     public boolean isRadio() {
-        return monitorType == MonitorType.RADIO || monitorType == MonitorType.REMOTE_PLAYBACK;
+        return isRadioStream() || isRadioRemote();
+    }
+
+    public boolean isRadioStream() {
+        return monitorType == MonitorType.RADIO_SELECT || monitorType == MonitorType.RADIO;
+    }
+
+    public boolean isRadioRemote() {
+        return monitorType == MonitorType.REMOTE_PLAYBACK;
     }
 
     public void changeCassetteTape(ItemStack old) {
@@ -392,8 +501,10 @@ public class BoomboxData {
     }
 
     public void setPlaying(boolean playing) {
-        this.playing = playing;
-        update();
+        if (canPlay() || !playing) {
+            this.playing = playing;
+            update();
+        }
     }
 
     public boolean isNoChangeCassetteTape() {
@@ -593,7 +704,8 @@ public class BoomboxData {
         OFF("off"),
         PLAYBACK("playback"),
         REMOTE_PLAYBACK("remote_playback"),
-        RADIO("radio");
+        RADIO("radio"),
+        RADIO_SELECT("radio_select");
         private final String name;
 
         private MonitorType(String name) {
