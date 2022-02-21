@@ -60,11 +60,18 @@ public class BoomboxItemRinger implements IMusicRinger {
     }
 
     @Override
-    public @Nullable
-    MusicSource getRingerMusicSource(ServerLevel level) {
-        return isRingerStream() ? getData().getRadioSource() : getData().getMusicSource();
+    public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
+        if (isRingerStream())
+            return getData().getRadioSource();
+        if (getData().isRadioRemote()) {
+            var m = getData().getSelectedMusic();
+            if (m != null)
+                return m.getSource();
+        } else {
+            return getData().getMusicSource();
+        }
+        return null;
     }
-
     @Override
     public boolean isRingerLoop(ServerLevel level) {
         return getData().isLoop();

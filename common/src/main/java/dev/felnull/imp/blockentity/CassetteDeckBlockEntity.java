@@ -274,7 +274,11 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     }
 
     public void setPlayerSelectPlayList(ServerPlayer player, UUID uuid) {
-        this.playerSelectPlaylists.put(player.getGameProfile().getId(), uuid);
+        if (uuid != null)
+            this.playerSelectPlaylists.put(player.getGameProfile().getId(), uuid);
+        else
+            this.playerSelectPlaylists.remove(player.getGameProfile().getId());
+        setChanged();
     }
 
     public int getCassetteWriteProgress() {
@@ -401,8 +405,14 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
             this.monitor = MonitorType.getByName(data.getString("name"));
             return null;
         } else if ("select_playlist".equals(name)) {
-            if (data.contains("uuid"))
-                setPlayerSelectPlayList(player, data.getUUID("uuid"));
+            if (data.contains("uuid")) {
+                var uuid = data.getUUID("uuid");
+                var pl = MusicManager.getInstance().getSaveData().getPlayLists().get(uuid);
+                if (pl != null && pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).isMoreReadOnly())
+                    setPlayerSelectPlayList(player, uuid);
+            } else {
+                setPlayerSelectPlayList(player, null);
+            }
             return null;
         } else if ("set_music".equals(name)) {
             if (data.contains("music")) {

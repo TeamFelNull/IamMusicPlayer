@@ -21,11 +21,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     public static final ResourceLocation BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/boombox_base.png");
@@ -119,10 +121,24 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         }
     }
 
+    public void insSelectedPlayList(@Nullable UUID uuid) {
+        var tag = new CompoundTag();
+        if (uuid != null)
+            tag.putUUID("pl", uuid);
+        instruction("set_selected_play_list", 0, tag);
+    }
+
     public void insRadioUrl(String url) {
         var tag = new CompoundTag();
         tag.putString("url", url);
         instruction("set_radio_url", 0, tag);
+    }
+
+    public void insSelectedMusic(@Nullable UUID musicId) {
+        var tag = new CompoundTag();
+        if (musicId != null)
+            tag.putUUID("m", musicId);
+        instruction("set_selected_music", 0, tag);
     }
 
     public boolean isMute() {

@@ -59,7 +59,7 @@ public class MusicRing {
                     if (pr.tick(level, getTime())) {
                         waitRingers.remove(value.getRingerUUID());
                         long eq = getTime() - lastTime;
-                        if (ms.getDuration() >= value.getRingerPosition(level) + eq) {
+                        if (ms.getDuration() >= value.getRingerPosition(level) + eq || value.isRingerStream()) {
                             value.setRingerPosition(level, value.getRingerPosition(level) + eq);
                         } else {
                             value.setRingerPosition(level, 0);
@@ -153,7 +153,6 @@ public class MusicRing {
         private final List<UUID> middleLoadPlayers = new ArrayList<>();
         private final Map<UUID, Long> failurePlayers = new HashMap<>();
         private final long startTime;
-        private long lastSendUpdate;
         private boolean notWait;
 
         public RingedPlayerInfos(UUID uuid, ServerLevel level, long startTime) {
@@ -165,7 +164,7 @@ public class MusicRing {
         private void sendFirstPackets(ServerLevel level) {
             for (UUID firstWaitPlayer : firstWaitPlayers) {
                 if (level.getPlayerByUUID(firstWaitPlayer) instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRinger().getRingerPosition(level)).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRingerPosition(level)).toFBB());
             }
         }
 
@@ -176,7 +175,12 @@ public class MusicRing {
 
         private void sendMiddleStartPacket(UUID player, ServerLevel level) {
             if (level.getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
-                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRinger().getRingerPosition(level)).toFBB());
+                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(level), getPlaybackInfo(getRinger(), level), getRingerPosition(level)).toFBB());
+        }
+
+        private long getRingerPosition(ServerLevel level) {
+            if (getRinger().isRingerStream()) return 0;
+            return getRinger().getRingerPosition(level);
         }
 
         private void addReadyPlayer(ServerPlayer player, boolean result, boolean retry, long elapsed) {
@@ -265,10 +269,7 @@ public class MusicRing {
                 middleLoadPlayers.clear();
                 middleLoadPlayers.addAll(nl.stream().filter(n -> !listenPlayers.contains(n)).toList());
 
-                //    if (getTime() - lastSendUpdate > 1000) {
                 sendUpdate(level);
-                //        lastSendUpdate = getTime();
-                //   }
                 return true;
             }
             if (canPlayPlayersCheck(level, currentTime)) {

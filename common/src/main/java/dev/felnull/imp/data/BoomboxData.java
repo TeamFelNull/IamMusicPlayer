@@ -3,9 +3,12 @@ package dev.felnull.imp.data;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.util.IMPItemUtil;
+import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,17 +18,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class BoomboxData {
+    private final Map<UUID, UUID> playerSelectPlaylists = new HashMap<>();
     private final DataAccess access;
     private MonitorType monitorType = MonitorType.OFF;
+    private MonitorType lastMonitorType = MonitorType.OFF;
     private boolean handleRaising = true;
     private boolean lidOpen;
     private int handleRaisedProgressOld = getHandleRaisedMax();
@@ -46,13 +55,13 @@ public class BoomboxData {
     private boolean loop;
     private boolean mute;
     private long musicPosition;
-    private long newMusicPosition = -1;
     private boolean loadingMusic;
     private String radioUrl = "";
     private MusicSource radioSource = MusicSource.EMPTY;
     private ImageInfo radioImage = ImageInfo.EMPTY;
     private String radioName = "";
     private String radioAuthor = "";
+    private Music selectedMusic;
 
     public BoomboxData(@NotNull BoomboxData.DataAccess access) {
         this.access = access;
@@ -98,14 +107,27 @@ public class BoomboxData {
             if (!isPower() && monitorType != MonitorType.OFF)
                 monitorType = MonitorType.OFF;
 
+            if (monitorType != lastMonitorType) {
+                lastMonitorType = monitorType;
+                setMusicPosition(0);
+                setPlaying(false);
+            }
 
             if (!canPlay()) {
-                if (getRinger() != null)
-                    newMusicPosition = 0;
-                // getRinger().setRingerPosition((ServerLevel) level, 0);
-                if (isPlaying())
-                    setPlaying(false);
+                setMusicPosition(0);
+                setPlaying(false);
             }
+
+            if (!isRadioRemote()) {
+                playerSelectPlaylists.clear();
+                setSelectedMusic(null);
+            }
+
+            if (monitorType == MonitorType.REMOTE_PLAYBACK && getSelectedMusic() == null)
+                monitorType = MonitorType.REMOTE_PLAYBACK_SELECT;
+
+            if (monitorType == MonitorType.RADIO && getRadioSource().isEmpty())
+                monitorType = MonitorType.RADIO_SELECT;
 
             if ((isRadio() && !isAntennaExist()) || (isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
                 monitorType = MonitorType.PLAYBACK;
@@ -119,13 +141,8 @@ public class BoomboxData {
                 setRadioUrl("");
             }
 
-            if (monitorType != MonitorType.RADIO_SELECT)
+            if (isRadioStream())
                 setRadioUrl("");
-
-            if (newMusicPosition >= 0) {
-                setMusicPosition(newMusicPosition);
-                newMusicPosition = -1;
-            }
 
             if (!ItemStack.matches(this.lastCassetteTape, this.getCassetteTape()))
                 changeCassetteTape(this.lastCassetteTape);
@@ -179,7 +196,7 @@ public class BoomboxData {
                     }
                 }
                 case START -> {
-                    if (isMusicCassetteTapeExist()) {
+                    if (isMusicCassetteTapeExist() || isRadio()) {
                         setPower(true);
                         setPlaying(true);
                     }
@@ -187,13 +204,14 @@ public class BoomboxData {
                 case STOP -> {
                     if (isPower()) {
                         setPlaying(false);
-                        if (getRinger() != null)
-                            getRinger().setRingerPosition(player.getLevel(), 0);
+                        setMusicPosition(0);
                     }
                 }
                 case PAUSE -> {
-                    if (isPower() && isPlaying()) {
+                    if (isPower()) {
                         setPlaying(false);
+                        if (isRadio())
+                            setMusicPosition(0);
                     }
                 }
             }
@@ -206,9 +224,8 @@ public class BoomboxData {
             if (isPower()) {
                 boolean pl = data.getBoolean("playing");
                 setPlaying(pl);
-                if (!pl && getRinger() != null)
-                    newMusicPosition = 0;
-                // getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
+                if (!pl)
+                    setMusicPosition(0);
             }
             return null;
         } else if ("set_pause".equals(name)) {
@@ -234,15 +251,47 @@ public class BoomboxData {
         } else if ("set_radio_source".equals(name)) {
             if (isPower())
                 setRadioSource(OENbtUtil.readSerializable(data, "source", new MusicSource()));
+            return null;
         } else if ("set_radio_image".equals(name)) {
             if (isPower())
                 setRadioImage(OENbtUtil.readSerializable(data, "image", new ImageInfo()));
+            return null;
         } else if ("set_radio_name".equals(name)) {
             if (isPower())
                 setRadioName(data.getString("name"));
+            return null;
         } else if ("set_radio_author".equals(name)) {
             if (isPower())
                 setRadioAuthor(data.getString("author"));
+            return null;
+        } else if ("set_selected_play_list".equals(name)) {
+            if (isPower() && isRadioRemote()) {
+                if (data.contains("pl")) {
+                    var uuid = data.getUUID("pl");
+                    var pl = MusicManager.getInstance().getSaveData().getPlayLists().get(uuid);
+                    if (pl != null && pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).isMoreReadOnly())
+                        setSelectedPlayList(player, uuid);
+                } else {
+                    setSelectedPlayList(player, null);
+                }
+            }
+            return null;
+        } else if ("set_selected_music".equals(name)) {
+            if (isPower() && isRadioRemote()) {
+                if (data.contains("m")) {
+                    var uuid = data.getUUID("m");
+                    var m = MusicManager.getInstance().getSaveData().getMusics().get(uuid);
+                    if (m != null) {
+                        var pl = MusicManager.getInstance().getPlaylistByMusic(m.getUuid());
+                        if (pl != null && pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).isMoreReadOnly()) {
+                            setSelectedMusic(m);
+                        }
+                    }
+                } else {
+                    setSelectedMusic(null);
+                }
+            }
+            return null;
         }
         return null;
     }
@@ -261,6 +310,9 @@ public class BoomboxData {
         OENbtUtil.writeSerializable(tag, "RadioImage", this.radioImage);
         tag.putString("RadioName", this.radioName);
         tag.putString("RadioAuthor", this.radioAuthor);
+        IMPNbtUtil.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        if (this.selectedMusic != null)
+            OENbtUtil.writeSerializable(tag, "SelectedMusic", this.selectedMusic);
 
         if (absolutely) {
             tag.putInt("HandleRaisedProgressOld", this.handleRaisedProgressOld);
@@ -274,7 +326,7 @@ public class BoomboxData {
             tag.put("LastCassetteTape", this.lastCassetteTape.save(new CompoundTag()));
             tag.putBoolean("NoForceChangeCassetteTape", this.noForceChangeCassetteTape);
             tag.putBoolean("NoChangeCassetteTape", this.noChangeCassetteTape);
-            tag.putLong("NewRingerPosition", this.newMusicPosition);
+            tag.putString("LastMonitorType", this.lastMonitorType.getName());
         }
 
         if (absolutely || sync) {
@@ -301,6 +353,10 @@ public class BoomboxData {
         this.radioImage = OENbtUtil.readSerializable(tag, "RadioImage", new ImageInfo());
         this.radioName = tag.getString("RadioName");
         this.radioAuthor = tag.getString("RadioAuthor");
+        IMPNbtUtil.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+
+        if (tag.contains("SelectedMusic"))
+            this.selectedMusic = OENbtUtil.readSerializable(tag, "SelectedMusic", new Music());
 
         if (absolutely) {
             this.handleRaisedProgressOld = tag.getInt("HandleRaisedProgressOld");
@@ -314,7 +370,7 @@ public class BoomboxData {
             this.lastCassetteTape = ItemStack.of(tag.getCompound("LastCassetteTape"));
             this.noForceChangeCassetteTape = tag.getBoolean("NoForceChangeCassetteTape");
             this.noChangeCassetteTape = tag.getBoolean("NoChangeCassetteTape");
-            this.newMusicPosition = tag.getLong("NewRingerPosition");
+            this.lastMonitorType = MonitorType.getByName(tag.getString("LastMonitorType"));
         }
 
         if (absolutely || sync) {
@@ -385,8 +441,6 @@ public class BoomboxData {
     }
 
     public long getMusicPosition() {
-        if (newMusicPosition >= 0)
-            return newMusicPosition;
         return musicPosition;
     }
 
@@ -419,9 +473,9 @@ public class BoomboxData {
     }
 
     public void setMusicPositionAndRestart(long position) {
+
+        setMusicPosition(position);
         if (getRinger() != null) {
-            this.newMusicPosition = position;
-            //  getRinger().setRingerPosition(getRinger().getRingerLevel(), position);
             getRinger().ringerRestart(getRinger().getRingerLevel());
             update();
         }
@@ -434,7 +488,7 @@ public class BoomboxData {
     public void setRadioMode() {
         if (isAntennaExist()) {
             if (IMPItemUtil.isRemotePlayBackAntenna(getAntenna())) {
-                setMonitorType(MonitorType.REMOTE_PLAYBACK);
+                setMonitorType(MonitorType.REMOTE_PLAYBACK_SELECT);
             } else {
                 setMonitorType(MonitorType.RADIO_SELECT);
             }
@@ -451,7 +505,7 @@ public class BoomboxData {
     }
 
     public boolean isRadioRemote() {
-        return monitorType == MonitorType.REMOTE_PLAYBACK;
+        return monitorType == MonitorType.REMOTE_PLAYBACK || monitorType == MonitorType.REMOTE_PLAYBACK_SELECT;
     }
 
     public void changeCassetteTape(ItemStack old) {
@@ -466,11 +520,10 @@ public class BoomboxData {
         }
 
         this.oldCassetteTape = old;
-        if (getRinger() != null)
-            newMusicPosition = 0;
-        //   getRinger().setRingerPosition(getRinger().getRingerLevel(), 0);
-        setPlaying(false);
-
+        if (!isRadio()) {
+            setMusicPosition(0);
+            setPlaying(false);
+        }
         if (!(getCassetteTape().isEmpty() && isLidOpen()))
             this.changeCassetteTape = true;
     }
@@ -559,6 +612,15 @@ public class BoomboxData {
         return true;
     }
 
+    public void setSelectedMusic(Music selectedMusic) {
+        this.selectedMusic = selectedMusic;
+        update();
+    }
+
+    public Music getSelectedMusic() {
+        return selectedMusic;
+    }
+
     public void startLidOpen(boolean open, Level level) {
         setLidOpen(open);
         var pos = getPosition();
@@ -572,6 +634,20 @@ public class BoomboxData {
     public void setLidOpen(boolean lidOpen) {
         this.lidOpen = lidOpen;
         update();
+    }
+
+    public void setSelectedPlayList(@NotNull ServerPlayer player, UUID selectedPlayList) {
+        if (selectedPlayList != null) {
+            playerSelectPlaylists.put(player.getGameProfile().getId(), selectedPlayList);
+        } else {
+            playerSelectPlaylists.remove(player.getGameProfile().getId());
+        }
+        update();
+    }
+
+    @Nullable
+    public UUID getSelectedPlayList(@NotNull Player player) {
+        return playerSelectPlaylists.get(player.getGameProfile().getId());
     }
 
     public ItemStack getCassetteTape() {
@@ -704,6 +780,7 @@ public class BoomboxData {
         OFF("off"),
         PLAYBACK("playback"),
         REMOTE_PLAYBACK("remote_playback"),
+        REMOTE_PLAYBACK_SELECT("remote_playback_select"),
         RADIO("radio"),
         RADIO_SELECT("radio_select");
         private final String name;
@@ -744,7 +821,7 @@ public class BoomboxData {
     }
 
     public Buttons getButtons() {
-        return new Buttons(isRadio(), isPlaying(), false, isLoop(), isMute(), !isMute() && volume >= 300);
+        return new Buttons(isRadio(), isPlaying(), !isPlaying() && getMusicPosition() > 0, isLoop(), isMute(), !isMute() && volume >= 300);
     }
 
     public static record Buttons(boolean radio, boolean start, boolean pause, boolean loop,

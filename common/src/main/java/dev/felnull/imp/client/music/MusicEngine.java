@@ -171,7 +171,7 @@ public class MusicEngine {
 
     public boolean isPlaying(UUID uuid) {
         var rp = MUSIC_PLAYERS.get(uuid);
-        return (rp != null && rp.player() != null && rp.player().isPlaying()) || (pause && UNPAUSES_STARTS.stream().anyMatch(m -> m.id().equals(uuid))) || (pause && MUSIC_PLAYERS.get(uuid).player().isPaused());
+        return (rp != null && rp.player() != null && rp.player().isPlaying()) || (pause && UNPAUSES_STARTS.stream().anyMatch(m -> m.id().equals(uuid))) || (pause && rp != null && rp.player().isPaused());
     }
 
     public void stop() {

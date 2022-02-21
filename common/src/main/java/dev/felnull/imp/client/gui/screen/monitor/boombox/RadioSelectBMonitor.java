@@ -43,7 +43,6 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
         this.radioUrlEditBox.setResponder(this::setRadioUrl);
 
         this.radioStreamStartButton = this.addRenderWidget(new SmartButton(getStartX() + width - 34 - 1, getStartY() + height - 1 - 14, 34, 14, new TranslatableComponent("imp.button.radioStreamStart"), n -> {
-            //insMonitor(CassetteDeckBlockEntity.MonitorType.WRITE_EXECUTION)
             setMonitor(BoomboxData.MonitorType.RADIO);
         }));
         this.radioStreamStartButton.setHideText(true);
@@ -58,7 +57,7 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
         super.render(poseStack, f, mouseX, mouseY);
         OERenderUtil.drawTexture(RADIO_SELECT_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (isRadioChecking()) {
-            drawSmartText(poseStack, RADIO_CHECKING_TEXT, getStartX() + 2, getStartY() + 2);
+            drawSmartText(poseStack, RADIO_CHECKING_TEXT, getStartX() + 2, getStartY() + (height - 1f - 14f - 6.5f) / 2f);
         } else if (!getRadioSource().isEmpty()) {
             float st = 2;
             if (!getRadioImage().isEmpty()) {
@@ -73,7 +72,7 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
                 drawSmartText(poseStack, new TranslatableComponent("imp.text.musicAuthor", OERenderUtil.getWidthString(getScreen().getBoomBoxData().getRadioAuthor(), width - 3 - st - mc.font.width(tx), "...")), getStartX() + st, getStartY() + 12);
             }
         } else {
-            drawSmartText(poseStack, ENTER_STREAM_TEXT, getStartX() + 2, getStartY() + 2);
+            drawSmartText(poseStack, ENTER_STREAM_TEXT, getStartX() + 2, getStartY() + (height - 1f - 14f - 6.5f) / 2f);
         }
     }
 
