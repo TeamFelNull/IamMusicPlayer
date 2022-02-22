@@ -56,7 +56,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
             setSelectedPlayList(playList.getUuid());
         }, n -> n.getUuid().equals(getSelectedPlayList())));
 
-        this.addPlaylistButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 72, 9, ADD_PLAYLIST_TEXT, n -> {
+        this.addPlaylistButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 72 + 9, 9, ADD_PLAYLIST_TEXT, n -> {
             insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST);
         }));
         this.addPlaylistButton.setIcon(WIDGETS_TEXTURE, 73, 14, 5, 5);
@@ -78,8 +78,8 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         this.detailButton = this.addRenderWidget(new SmartButton(getStartX() + 336, getStartY() + 20, 33, 9, DETAIL_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST)));
         this.detailButton.visible = getSelectedMusicPlayList() != null;
 
-        this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 82, getStartY() + 189, n -> updateList(), false, getScreen()));
-        this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 73, getStartY() + 189, n -> updateList(), false, getScreen()));
+        this.playlistOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 82 + 9, getStartY() + 189, n -> updateList(), false, getScreen()));
+        this.playlistSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 73 + 9, getStartY() + 189, n -> updateList(), false, getScreen()));
     }
 
     @Override
