@@ -202,7 +202,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             public Vec3 getPosition() {
                 if (getRinger() == null)
                     return Vec3.ZERO;
-                return getRinger().getRingerSpatialPosition(getRinger().getRingerLevel());
+                return getRinger().getRingerSpatialPosition();
             }
 
             @Override

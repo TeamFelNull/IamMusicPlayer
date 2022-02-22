@@ -1,6 +1,7 @@
 package dev.felnull.imp.api;
 
 import dev.felnull.imp.api.music.MusicRingerAccess;
+import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRing;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.server.level.ServerLevel;
@@ -51,7 +52,7 @@ public class IamMusicPlayerAPI {
      */
     public static int getPlayingRingerCount() {
         AtomicInteger ct = new AtomicInteger();
-        MusicRingManager.getInstance().getMusicRingers().entrySet().stream().map(n -> (int) n.getValue().getRingers().values().stream().filter(m -> m.isRingerPlaying(n.getKey())).count()).forEach(ct::addAndGet);
+        MusicRingManager.getInstance().getMusicRingers().entrySet().stream().map(n -> (int) n.getValue().getRingers().values().stream().filter(IMusicRinger::isRingerPlaying).count()).forEach(ct::addAndGet);
         return ct.get();
     }
 
@@ -64,7 +65,7 @@ public class IamMusicPlayerAPI {
     public static int getPlayingRingerCount(ServerLevel level) {
         var rs = MusicRingManager.getInstance().getMusicRingers().get(level);
         if (rs != null)
-            return (int) rs.getRingers().values().stream().filter(n -> n.isRingerPlaying(level)).count();
+            return (int) rs.getRingers().values().stream().filter(IMusicRinger::isRingerPlaying).count();
         return 0;
     }
 

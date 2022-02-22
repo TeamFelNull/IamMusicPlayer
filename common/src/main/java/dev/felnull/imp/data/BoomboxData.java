@@ -101,7 +101,7 @@ public class BoomboxData {
 
         if (!level.isClientSide()) {
             if (getRinger() != null)
-                loadingMusic = getRinger().isRingerWait((ServerLevel) level);
+                loadingMusic = getRinger().isRingerWait();
 
             if (isPower() && monitorType == MonitorType.OFF)
                 monitorType = MonitorType.PLAYBACK;
@@ -498,7 +498,7 @@ public class BoomboxData {
     public void setMusicPositionAndRestart(long position) {
         setMusicPosition(position);
         if (getRinger() != null) {
-            getRinger().ringerRestart(getRinger().getRingerLevel());
+            getRinger().ringerRestart();
             update();
         }
     }

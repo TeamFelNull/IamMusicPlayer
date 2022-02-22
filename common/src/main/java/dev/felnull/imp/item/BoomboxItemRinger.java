@@ -28,7 +28,7 @@ public class BoomboxItemRinger implements IBoomboxRinger {
     }
 
     @Override
-    public Component getRingerName(ServerLevel level) {
+    public Component getRingerName() {
         return livingEntity.getDisplayName();
     }
 
@@ -43,12 +43,12 @@ public class BoomboxItemRinger implements IBoomboxRinger {
     }
 
     @Override
-    public boolean isRingerExist(ServerLevel level) {
+    public boolean isRingerExist() {
         return livingEntity.isAlive() && !getBoombox().isEmpty();
     }
 
     @Override
-    public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level) {
+    public Pair<ResourceLocation, CompoundTag> getRingerTracker() {
         if (livingEntity instanceof Player player)
             return Pair.of(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(player));
         return Pair.of(MusicRingManager.ENTITY_TRACKER, MusicRingManager.createEntityTracker(livingEntity));
@@ -56,7 +56,7 @@ public class BoomboxItemRinger implements IBoomboxRinger {
 
     @Override
     public @NotNull
-    Vec3 getRingerSpatialPosition(ServerLevel level) {
+    Vec3 getRingerSpatialPosition() {
         return livingEntity.position();
     }
 

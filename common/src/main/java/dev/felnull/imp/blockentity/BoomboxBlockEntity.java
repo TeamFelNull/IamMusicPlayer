@@ -123,7 +123,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
         blockEntity.boomboxData.tick(level);
 
         if (!level.isClientSide()) {
-            blockEntity.ringerTick((ServerLevel) level);
+            blockEntity.ringerTick();
             blockEntity.setRaisedHandleState(blockEntity.boomboxData.getHandleRaisedProgress() >= blockEntity.boomboxData.getHandleRaisedMax());
             blockEntity.sync();
             blockEntity.setChanged();
@@ -178,7 +178,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public Component getRingerName(ServerLevel level) {
+    public Component getRingerName() {
         return getDefaultName();
     }
 
@@ -188,7 +188,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public boolean isRingerExist(ServerLevel level) {
+    public boolean isRingerExist() {
         if (getLevel() == null || level != getLevel()) return false;
         return getBlockPos() != null && level.getBlockEntity(getBlockPos()) == this;
     }
@@ -204,12 +204,12 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level) {
-        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerSpatialPosition(level)));
+    public Pair<ResourceLocation, CompoundTag> getRingerTracker() {
+        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerSpatialPosition()));
     }
 
     @Override
-    public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level) {
+    public @NotNull Vec3 getRingerSpatialPosition() {
         return new Vec3(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
     }
 

@@ -12,7 +12,7 @@ public record MusicRingerAccess(IMusicRinger ringer) {
      * @return 音源名
      */
     public Component getName() {
-        return ringer.getRingerName(ringer.getRingerLevel());
+        return ringer.getRingerName();
     }
 
     /**
@@ -21,7 +21,7 @@ public record MusicRingerAccess(IMusicRinger ringer) {
      * @return 座標
      */
     public Vec3 getSpatialPosition() {
-        return ringer.getRingerSpatialPosition(ringer.getRingerLevel());
+        return ringer.getRingerSpatialPosition();
     }
 
     /**
@@ -30,7 +30,7 @@ public record MusicRingerAccess(IMusicRinger ringer) {
      * @return 再生中かどうか
      */
     public boolean isPlaying() {
-        return ringer.isRingerPlaying(ringer.getRingerLevel());
+        return ringer.isRingerPlaying();
     }
 
     /**

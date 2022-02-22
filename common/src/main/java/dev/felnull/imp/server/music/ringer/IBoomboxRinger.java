@@ -4,7 +4,6 @@ import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.MusicManager;
-import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,17 +17,17 @@ public interface IBoomboxRinger extends IMusicRinger {
     public BoomboxData getRingerBoomboxData();
 
     @Override
-    default public boolean isRingerPlaying(ServerLevel level) {
+    default public boolean isRingerPlaying() {
         return getRingerBoomboxData().isPlaying();
     }
 
     @Override
-    default public void setRingerPlaying(ServerLevel level, boolean playing) {
+    default public void setRingerPlaying(boolean playing) {
         getRingerBoomboxData().setPlaying(playing);
     }
 
     @Override
-    default public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
+    default public @Nullable MusicSource getRingerMusicSource() {
         if (isRingerStream())
             return getRingerBoomboxData().getRadioSource();
         if (getRingerBoomboxData().isRadioRemote()) {
@@ -42,27 +41,27 @@ public interface IBoomboxRinger extends IMusicRinger {
     }
 
     @Override
-    default public boolean isRingerLoop(ServerLevel level) {
+    default public boolean isRingerLoop() {
         return getRingerBoomboxData().isLoop();
     }
 
     @Override
-    default public long getRingerPosition(ServerLevel level) {
+    default public long getRingerPosition() {
         return getRingerBoomboxData().getMusicPosition();
     }
 
     @Override
-    default public void setRingerPosition(ServerLevel level, long position) {
+    default public void setRingerPosition(long position) {
         getRingerBoomboxData().setMusicPosition(position);
     }
 
     @Override
-    default public float getRingerVolume(ServerLevel level) {
+    default public float getRingerVolume() {
         return getRingerBoomboxData().getRawVolume();
     }
 
     @Override
-    default public float getRingerRange(ServerLevel level) {
+    default public float getRingerRange() {
         return 90f * getRingerBoomboxData().getRawVolume();
     }
 
@@ -97,4 +96,10 @@ public interface IBoomboxRinger extends IMusicRinger {
             }
         }
     }
+
+    @Override
+    default boolean isRingerMute() {
+        return getRingerBoomboxData().isMute();
+    }
+
 }

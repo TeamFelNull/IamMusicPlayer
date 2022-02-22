@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class MusicRingManager {
     public void tick(ServerLevel level) {
         var ringer = MUSIC_RINGERS.get(level);
         if (ringer == null) {
-            ringer = new MusicRing();
+            ringer = new MusicRing(level);
             MUSIC_RINGERS.put(level, ringer);
         }
         ringer.tick(level);
@@ -40,7 +41,7 @@ public class MusicRingManager {
     public void restartRinger(ServerLevel level, UUID uuid) {
         var ring = MUSIC_RINGERS.get(level);
         if (ring != null)
-            ring.restart(level, uuid);
+            ring.restart(uuid);
     }
 
     public void addRinger(ServerLevel level, IMusicRinger ringer) {
@@ -91,6 +92,15 @@ public class MusicRingManager {
                 if (r != null)
                     return r;
             }
+        }
+        return null;
+    }
+
+    @Nullable
+    public ServerLevel getLevel(MusicRing ring) {
+        for (Map.Entry<ServerLevel, MusicRing> entry : MUSIC_RINGERS.entrySet()) {
+            if (entry.getValue() == ring)
+                return entry.getKey();
         }
         return null;
     }

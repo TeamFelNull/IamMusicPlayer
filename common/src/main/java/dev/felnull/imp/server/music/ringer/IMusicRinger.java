@@ -13,54 +13,56 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public interface IMusicRinger {
-    public Component getRingerName(ServerLevel level);
+    public Component getRingerName();
 
     public ServerLevel getRingerLevel();
 
     public UUID getRingerUUID();
 
-    public boolean isRingerExist(ServerLevel level);
+    public boolean isRingerExist();
 
-    public boolean isRingerPlaying(ServerLevel level);
+    public boolean isRingerPlaying();
 
-    public void setRingerPlaying(ServerLevel level, boolean playing);
+    public void setRingerPlaying(boolean playing);
 
-    public @Nullable MusicSource getRingerMusicSource(ServerLevel level);
+    public @Nullable MusicSource getRingerMusicSource();
 
-    public boolean isRingerLoop(ServerLevel level);
+    public boolean isRingerLoop();
 
-    public long getRingerPosition(ServerLevel level);
+    public long getRingerPosition();
 
-    public void setRingerPosition(ServerLevel level, long position);
+    public void setRingerPosition(long position);
 
-    public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level);
+    public Pair<ResourceLocation, CompoundTag> getRingerTracker();
 
-    public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level);
+    public @NotNull Vec3 getRingerSpatialPosition();
 
-    public float getRingerVolume(ServerLevel level);
+    public float getRingerVolume();
 
-    public float getRingerRange(ServerLevel level);
+    public float getRingerRange();
 
     public boolean isRingerStream();
 
-    default public boolean isRingerWait(ServerLevel level) {
-        return MusicRingManager.getInstance().isWaitRinger(getRingerUUID(), level);
+    default public boolean isRingerWait() {
+        return MusicRingManager.getInstance().isWaitRinger(getRingerUUID(), getRingerLevel());
     }
 
-    default public void ringerTick(ServerLevel level) {
-        if (!MusicRingManager.getInstance().isExistRinger(level, getRingerUUID()))
-            addRingerInRingManager(level);
+    default public void ringerTick() {
+        if (!MusicRingManager.getInstance().isExistRinger(getRingerLevel(), getRingerUUID()))
+            addRingerInRingManager();
     }
 
-    default public void addRingerInRingManager(ServerLevel level) {
-        MusicRingManager.getInstance().addRinger(level, this);
+    default public void addRingerInRingManager() {
+        MusicRingManager.getInstance().addRinger(getRingerLevel(), this);
     }
 
-    default public void ringerRestart(ServerLevel level) {
-        MusicRingManager.getInstance().restartRinger(level, getRingerUUID());
+    default public void ringerRestart() {
+        MusicRingManager.getInstance().restartRinger(getRingerLevel(), getRingerUUID());
     }
 
     default public void ringerEnd() {
 
     }
+
+    public boolean isRingerMute();
 }
