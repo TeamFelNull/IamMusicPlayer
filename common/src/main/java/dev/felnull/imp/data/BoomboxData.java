@@ -62,6 +62,8 @@ public class BoomboxData {
     private String radioName = "";
     private String radioAuthor = "";
     private Music selectedMusic;
+    private ContinuousType continuousType = ContinuousType.NONE;
+    private boolean radioStartFlg;
 
     public BoomboxData(@NotNull BoomboxData.DataAccess access) {
         this.access = access;
@@ -121,6 +123,12 @@ public class BoomboxData {
             if (!isRadioRemote()) {
                 playerSelectPlaylists.clear();
                 setSelectedMusic(null);
+                setContinuousType(ContinuousType.NONE);
+            }
+
+            if (radioStartFlg) {
+                setRadioStartFlg(false);
+                setPlaying(true);
             }
 
             if (monitorType == MonitorType.REMOTE_PLAYBACK && getSelectedMusic() == null)
@@ -129,7 +137,7 @@ public class BoomboxData {
             if (monitorType == MonitorType.RADIO && getRadioSource().isEmpty())
                 monitorType = MonitorType.RADIO_SELECT;
 
-            if ((isRadio() && !isAntennaExist()) || (isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
+            if ((isRadio() && !isAntennaExist()) || (isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna())) || (isRadioStream() && IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
                 monitorType = MonitorType.PLAYBACK;
             }
 
@@ -141,7 +149,7 @@ public class BoomboxData {
                 setRadioUrl("");
             }
 
-            if (isRadioStream())
+            if (monitorType != MonitorType.RADIO_SELECT)
                 setRadioUrl("");
 
             if (!ItemStack.matches(this.lastCassetteTape, this.getCassetteTape()))
@@ -192,6 +200,7 @@ public class BoomboxData {
                     if (isRadio()) {
                         setMonitorType(MonitorType.PLAYBACK);
                     } else {
+                        setPower(true);
                         setRadioMode();
                     }
                 }
@@ -210,7 +219,7 @@ public class BoomboxData {
                 case PAUSE -> {
                     if (isPower()) {
                         setPlaying(false);
-                        if (isRadio())
+                        if (isRadioStream())
                             setMusicPosition(0);
                     }
                 }
@@ -245,8 +254,12 @@ public class BoomboxData {
                 setRadioUrl(data.getString("url"));
             return null;
         } else if ("set_monitor".equals(name)) {
-            if (isPower())
-                setMonitorType(MonitorType.getByName(data.getString("name")));
+            if (isPower()) {
+                var m = MonitorType.getByName(data.getString("name"));
+                setMonitorType(m);
+                if ((m == MonitorType.RADIO && getRadioSource() != null && !getRadioSource().isEmpty()) || (m == MonitorType.REMOTE_PLAYBACK && getSelectedMusic() != null && !getSelectedMusic().getSource().isEmpty()))
+                    setRadioStartFlg(true);
+            }
             return null;
         } else if ("set_radio_source".equals(name)) {
             if (isPower())
@@ -292,6 +305,11 @@ public class BoomboxData {
                 }
             }
             return null;
+        } else if ("set_continuous_type".equals(name)) {
+            if (isPower() && isRadioRemote()) {
+                setContinuousType(ContinuousType.getByName(data.getString("type")));
+            }
+            return null;
         }
         return null;
     }
@@ -313,6 +331,8 @@ public class BoomboxData {
         IMPNbtUtil.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         if (this.selectedMusic != null)
             OENbtUtil.writeSerializable(tag, "SelectedMusic", this.selectedMusic);
+        tag.putString("ContinuousType", this.continuousType.getName());
+
 
         if (absolutely) {
             tag.putInt("HandleRaisedProgressOld", this.handleRaisedProgressOld);
@@ -333,6 +353,7 @@ public class BoomboxData {
             tag.putBoolean("ChangeCassetteTape", this.changeCassetteTape);
             tag.put("OldCassetteTape", this.oldCassetteTape.save(new CompoundTag()));
             tag.putBoolean("LoadingMusic", this.loadingMusic);
+            tag.putBoolean("RadioStartFlg", this.radioStartFlg);
         }
 
         return tag;
@@ -354,6 +375,7 @@ public class BoomboxData {
         this.radioName = tag.getString("RadioName");
         this.radioAuthor = tag.getString("RadioAuthor");
         IMPNbtUtil.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        this.continuousType = ContinuousType.getByName(tag.getString("ContinuousType"));
 
         if (tag.contains("SelectedMusic"))
             this.selectedMusic = OENbtUtil.readSerializable(tag, "SelectedMusic", new Music());
@@ -377,6 +399,7 @@ public class BoomboxData {
             this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
             this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
             this.loadingMusic = tag.getBoolean("LoadingMusic");
+            this.radioStartFlg = tag.getBoolean("RadioStartFlg");
         }
 
         if (!sync) {
@@ -446,7 +469,7 @@ public class BoomboxData {
 
     public void setMusicPosition(long position) {
         this.musicPosition = position;
-        if (isMusicCassetteTapeExist()) {
+        if (isMusicCassetteTapeExist() && !isRadioRemote()) {
             var m = getMusicSource();
             if (m != null) {
                 var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
@@ -473,7 +496,6 @@ public class BoomboxData {
     }
 
     public void setMusicPositionAndRestart(long position) {
-
         setMusicPosition(position);
         if (getRinger() != null) {
             getRinger().ringerRestart(getRinger().getRingerLevel());
@@ -610,6 +632,15 @@ public class BoomboxData {
             startLidOpen(true, level);
         }
         return true;
+    }
+
+    public void setContinuousType(ContinuousType continuousType) {
+        this.continuousType = continuousType;
+        update();
+    }
+
+    public ContinuousType getContinuousType() {
+        return continuousType;
     }
 
     public void setSelectedMusic(Music selectedMusic) {
@@ -802,6 +833,11 @@ public class BoomboxData {
         }
     }
 
+    public void setRadioStartFlg(boolean radioStartFlg) {
+        this.radioStartFlg = radioStartFlg;
+        update();
+    }
+
     public static interface DataAccess {
         ItemStack getCassetteTape();
 
@@ -819,6 +855,7 @@ public class BoomboxData {
 
         void dataUpdate(BoomboxData data);
     }
+
 
     public Buttons getButtons() {
         return new Buttons(isRadio(), isPlaying(), !isPlaying() && getMusicPosition() > 0, isLoop(), isMute(), !isMute() && volume >= 300);
@@ -865,6 +902,35 @@ public class BoomboxData {
 
         public static ButtonType getByName(String name) {
             for (ButtonType value : values()) {
+                if (value.getName().equals(name))
+                    return value;
+            }
+            return NONE;
+        }
+    }
+
+    public static enum ContinuousType {
+        NONE("none"),
+        ORDER("order"),
+        RANDOM("random");
+        private final String name;
+        private final Component component;
+
+        private ContinuousType(String name) {
+            this.name = name;
+            this.component = new TranslatableComponent("imp.text.continuous." + name);
+        }
+
+        public Component getComponent() {
+            return component;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static ContinuousType getByName(String name) {
+            for (ContinuousType value : values()) {
                 if (value.getName().equals(name))
                     return value;
             }

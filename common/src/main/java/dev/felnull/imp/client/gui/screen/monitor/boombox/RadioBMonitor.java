@@ -85,4 +85,9 @@ public class RadioBMonitor extends PlayBackBaseBMonitor {
     protected @NotNull MusicSource getPlayBackSource(BoomboxData data) {
         return data.getRadioSource();
     }
+
+    @Override
+    protected boolean isShortTipProgressBar() {
+        return true;
+    }
 }

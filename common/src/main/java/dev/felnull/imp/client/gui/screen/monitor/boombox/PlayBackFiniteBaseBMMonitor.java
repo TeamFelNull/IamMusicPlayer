@@ -8,9 +8,6 @@ import dev.felnull.imp.client.gui.components.LoopControlWidget;
 import dev.felnull.imp.client.gui.components.PlayProgressWidget;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.data.BoomboxData;
-import dev.felnull.imp.item.CassetteTapeItem;
-import dev.felnull.imp.music.resource.Music;
-import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -29,7 +26,7 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.loopControlWidget = this.addRenderWidget(new LoopControlWidget(getStartX() + 189, getStartY() + 26, new BooleanValue() {
+        this.loopControlWidget = this.addRenderWidget(new LoopControlWidget(getStartX() + (isShortTipProgressBar() ? 156 : 189), getStartY() + (isShortTipProgressBar() ? 15 : 26), new BooleanValue() {
             @Override
             public void accept(boolean t) {
                 setLoop(t);
@@ -43,39 +40,43 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
 
         this.loopControlWidget.visible = canPlay();
 
-        this.playProgressWidget = this.addRenderWidget(new PlayProgressWidget(getStartX() + (isShortProgressBar() ? 48 : 12), getStartY() + 28, isShortProgressBar() ? 140 : 176, new FloatValue() {
+        this.playProgressWidget = this.addRenderWidget(new PlayProgressWidget(getStartX() + (isShortProgressBar() ? 48 : 12), getStartY() + 28, getProgressBarWidth(getScreen().getBoomBoxData()), new FloatValue() {
             @Override
             public float getAsFloat() {
-                if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
-                    Music music = CassetteTapeItem.getMusic(getCassetteTape());
-                    if (music != null)
-                        return (float) getScreen().getMusicPosition() / (float) music.getSource().getDuration();
-                }
+                var s = getPlayBackSource();
+                if (!s.isEmpty())
+                    return (float) getScreen().getMusicPosition() / (float) s.getDuration();
                 return 0;
             }
 
             @Override
             public void accept(float t) {
-                if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
-                    Music music = CassetteTapeItem.getMusic(getCassetteTape());
-                    if (music != null) {
-                        long vl = (long) ((float) music.getSource().getDuration() * t);
-                        getScreen().insPositionAndRestart(vl);
-                    }
+                var s = getPlayBackSource();
+                if (!s.isEmpty()) {
+                    long vl = (long) ((float) s.getDuration() * t);
+                    getScreen().insPositionAndRestart(vl);
                 }
             }
         }));
 
         this.playProgressWidget.visible = canPlay();
+
+
     }
 
     @Override
     public void tick() {
         super.tick();
         this.loopControlWidget.visible = canPlay();
+        this.loopControlWidget.x = getStartX() + (isShortTipProgressBar() ? 156 : 189);
+        this.loopControlWidget.y = getStartY() + (isShortTipProgressBar() ? 15 : 26);
         this.playProgressWidget.visible = canPlay();
-        this.playProgressWidget.setWidth(isShortProgressBar() ? 140 : 176);
+        this.playProgressWidget.setWidth(getProgressBarWidth(getScreen().getBoomBoxData()));
         this.playProgressWidget.x = getStartX() + (isShortProgressBar() ? 48 : 12);
+    }
+
+    private int getProgressBarWidth(BoomboxData data) {
+        return (isShortProgressBar(data) ? 133 : 176) - (isShortTipProgressBar() ? (isShortProgressBar(data) ? 2 : 10) : 0);
     }
 
     private void setLoop(boolean loop) {
@@ -116,7 +117,7 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
         float onPxH = monitorHeight / (float) height;
 
         renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 38f - (isShortProgressBar(data) ? 0 : 36f), 17f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
-        renderLoopControl(poseStack, multiBufferSource, 189, 26, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
-        renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(data) ? 48 : 12, 28, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, isShortProgressBar(data) ? 133 : 176, (float) data.getMusicPosition() / (float) getPlayBackSource(data).getDuration());
+        renderLoopControl(poseStack, multiBufferSource, isShortTipProgressBar() ? 156 : 189, isShortTipProgressBar() ? 15 : 26, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
+        renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(data) ? 48 : 12, 28, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, getProgressBarWidth(data), (float) data.getMusicPosition() / (float) getPlayBackSource(data).getDuration());
     }
 }

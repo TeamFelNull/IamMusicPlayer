@@ -152,4 +152,8 @@ public abstract class PlayBackBaseBMonitor extends BoomboxMonitor {
     protected boolean isShortProgressBar() {
         return isShortProgressBar(getScreen().getBoomBoxData());
     }
+
+    protected boolean isShortTipProgressBar() {
+        return false;
+    }
 }

@@ -1,7 +1,9 @@
 package dev.felnull.imp.client.gui.screen.monitor.boombox;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.architectury.utils.value.Value;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.gui.components.ContinuousWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public class RemotePlayBackBMonitor extends PlayBackFiniteBaseBMMonitor {
     private static final ResourceLocation BACK_BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/boombox/monitor/playback_back.png");
     private SmartButton backButton;
+    private ContinuousWidget continuousWidget;
 
     public RemotePlayBackBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
         super(monitorType, screen);
@@ -29,6 +32,27 @@ public class RemotePlayBackBMonitor extends PlayBackFiniteBaseBMMonitor {
         this.backButton = this.addRenderWidget(new SmartButton(getStartX() + width - 15, getStartY() + height - 12, 14, 11, new TranslatableComponent("gui.back"), n -> setMonitor(BoomboxData.MonitorType.REMOTE_PLAYBACK_SELECT)));
         this.backButton.setHideText(true);
         this.backButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8);
+
+        this.continuousWidget = this.addRenderWidget(new ContinuousWidget(getStartX() + 112, getStartY() + 13, new Value<>() {
+            @Override
+            public void accept(BoomboxData.ContinuousType continuousType) {
+                getScreen().insContinuousType(continuousType);
+            }
+
+            @Override
+            public BoomboxData.ContinuousType get() {
+                return getScreen().getBoomBoxData().getContinuousType();
+            }
+        }));
+
+        this.continuousWidget.visible = canPlay();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        this.continuousWidget.active = canPlay();
     }
 
     @Override
@@ -46,6 +70,8 @@ public class RemotePlayBackBMonitor extends PlayBackFiniteBaseBMMonitor {
 
 
         renderSmartButtonSprite(poseStack, multiBufferSource, width - 15, height - 12, OERenderUtil.MIN_BREADTH * 2f, 14, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8, 256, 256);
+
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, data.getContinuousType().getComponent(), 132, 16, OERenderUtil.MIN_BREADTH * 2f, onPxW, onPxH, monitorHeight, i, 0XFF115D0E);
     }
 
     @Override
@@ -88,4 +114,8 @@ public class RemotePlayBackBMonitor extends PlayBackFiniteBaseBMMonitor {
         return data.getSelectedMusic();
     }
 
+    @Override
+    protected boolean isShortTipProgressBar() {
+        return true;
+    }
 }

@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -203,6 +204,11 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         instruction("restat_and_set_position", 0, tag);
     }
 
+    public void insContinuousType(@NotNull BoomboxData.ContinuousType continuousType) {
+        var tag = new CompoundTag();
+        tag.putString("type", continuousType.getName());
+        instruction("set_continuous_type", 0, tag);
+    }
 
     public void insLoop(boolean loop) {
         var tag = new CompoundTag();

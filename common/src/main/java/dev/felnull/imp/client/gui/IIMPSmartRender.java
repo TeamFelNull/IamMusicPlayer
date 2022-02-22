@@ -38,8 +38,12 @@ public interface IIMPSmartRender {
         drawFill(poseStack, x + 1, y + 1, w - 2, h - 2, c2);
     }
 
+    default void drawSmartCenterText(PoseStack poseStack, Component component, float x, float y, int color) {
+        OERenderUtil.drawCenterText(poseStack, component, x, y, color);
+    }
+
     default void drawSmartCenterText(PoseStack poseStack, Component component, float x, float y) {
-        OERenderUtil.drawCenterText(poseStack, component, x, y, 0xFF000000);
+        drawSmartCenterText(poseStack, component, x, y, 0xFF000000);
     }
 
     default void drawSmartFixedWidthText(PoseStack poseStack, Component component, float x, float y, float w) {
@@ -93,6 +97,14 @@ public interface IIMPSmartRender {
 
     default void renderSmartTextSpriteColorSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int color, int combinedLightIn) {
         OERenderUtil.renderTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * getDefaultRenderTextScale(), 0, 0, color, combinedLightIn);
+    }
+
+    default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn, int color) {
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, text, x, y, z, onePixW, onePixH, monitorHeight, getDefaultRenderTextScale(), combinedLightIn, color);
+    }
+
+    default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, float scale, int combinedLightIn, int color) {
+        OERenderUtil.renderCenterTextSprite(poseStack, multiBufferSource, text, onePixW * x, monitorHeight - onePixH * (y + 7), z, 0.175f * scale, 0, 0, color, combinedLightIn);
     }
 
     default void renderSmartCenterTextSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, Component text, float x, float y, float z, float onePixW, float onePixH, float monitorHeight, int combinedLightIn) {
