@@ -2,17 +2,21 @@ package dev.felnull.imp.item;
 
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
+import java.util.List;
 
 public class CassetteTapeItem extends Item implements DyeableLeatherItem {
     private final BaseType type;
@@ -38,8 +42,10 @@ public class CassetteTapeItem extends Item implements DyeableLeatherItem {
     }
 
     @Override
-    public Optional<TooltipComponent> getTooltipImage(ItemStack itemStack) {
-        return super.getTooltipImage(itemStack);
+    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+        var m = getMusic(itemStack);
+        if (m != null)
+            list.add(new TextComponent(m.getName()).withStyle(ChatFormatting.GRAY));
     }
 
     @Nullable
@@ -47,6 +53,13 @@ public class CassetteTapeItem extends Item implements DyeableLeatherItem {
         if (stack.getTag() != null && stack.getTag().contains("Music"))
             return OENbtUtil.readSerializable(stack.getTag(), "Music", new Music());
         return null;
+    }
+
+    @Override
+    public Component getName(ItemStack stack) {
+        if (getMusic(stack) != null)
+            return new TranslatableComponent(this.getDescriptionId(stack) + ".written");
+        return super.getName(stack);
     }
 
     public static ItemStack setMusic(ItemStack stack, Music music) {

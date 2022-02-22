@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "cassette_tape",
+  "ingredients": [
+    {
+      "tag": "c:iron_nuggets"
+    },
+    {
+      "tag": "c:natural_stones"
+    },
+    {
+      "tag": "c:redstone_dusts"
+    },
+    {
+      "item": "minecraft:dried_kelp"
+    }
+  ],
+  "result": {
+    "item": "iammusicplayer:cassette_tape"
+  }
+}

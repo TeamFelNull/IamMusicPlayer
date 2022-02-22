@@ -21,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -34,6 +35,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class BoomboxItem extends BlockItem implements IInstructionItem {
@@ -53,6 +56,9 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
             if (!level.isClientSide()) {
+                if (checkDuplication(itemStack, player))
+                    setUUID(itemStack, UUID.randomUUID());
+
                 if (player.isCrouching()) {
                     setPowerOn(itemStack, !isPowerOn(itemStack));
                 } else {
@@ -318,5 +324,34 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             itemStack.setHoverName(blockEntity.getCustomName());
         setUUID(itemStack, UUID.randomUUID());
         return itemStack;
+    }
+
+    /*
+        @Override
+        public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
+            var id = getUUID(itemStack);
+            if (id != null)
+                list.add(new TextComponent(id.toString()));
+        }
+    */
+
+    public static boolean checkDuplication(ItemStack stack, Entity entity) {
+        var stackId = getUUID(stack);
+        if (stackId == null) return false;
+        List<ItemStack> allItem = new ArrayList<>();
+
+        if (entity instanceof LivingEntity livingEntity) {
+            for (EquipmentSlot value : EquipmentSlot.values()) {
+                allItem.add(livingEntity.getItemBySlot(value));
+            }
+        }
+        if (entity instanceof Player player) {
+            allItem.addAll(player.getInventory().items);
+        }
+        for (ItemStack item : allItem) {
+            if (item != stack && !item.isEmpty() && stackId.equals(getUUID(item)))
+                return true;
+        }
+        return false;
     }
 }

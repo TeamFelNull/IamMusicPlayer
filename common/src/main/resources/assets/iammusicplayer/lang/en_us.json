@@ -4,6 +4,8 @@
   "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
   "item.iammusicplayer.cassette_tape": "Cassette Tape",
   "item.iammusicplayer.cassette_tape_glass": "Glass Cassette Tape",
+  "item.iammusicplayer.cassette_tape.written": "Written Cassette Tape",
+  "item.iammusicplayer.cassette_tape_glass.written": "Written Glass Cassette Tape",
   "_comment.b": "Block",
   "block.iammusicplayer.music_manager": "Music Manager",
   "block.iammusicplayer.cassette_deck": "Cassette Deck",
