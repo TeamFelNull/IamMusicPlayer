@@ -59,4 +59,8 @@ public interface IMusicRinger {
     default public void ringerRestart(ServerLevel level) {
         MusicRingManager.getInstance().restartRinger(level, getRingerUUID());
     }
+
+    default public void ringerEnd() {
+
+    }
 }

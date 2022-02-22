@@ -63,6 +63,7 @@ public class MusicRing {
                             value.setRingerPosition(level, value.getRingerPosition(level) + eq);
                         } else {
                             value.setRingerPosition(level, 0);
+                            value.ringerEnd();
                             if (value.isRingerLoop(level)) {
                                 pr.depose(level);
                                 playerInfos.remove(value.getRingerUUID());

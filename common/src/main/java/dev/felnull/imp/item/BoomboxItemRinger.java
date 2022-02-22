@@ -1,8 +1,7 @@
 package dev.felnull.imp.item;
 
 import dev.felnull.imp.data.BoomboxData;
-import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.imp.server.music.ringer.IMusicRinger;
+import dev.felnull.imp.server.music.ringer.IBoomboxRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,11 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class BoomboxItemRinger implements IMusicRinger {
+public class BoomboxItemRinger implements IBoomboxRinger {
     private final LivingEntity livingEntity;
     private final UUID uuid;
     private int lastInventory;
@@ -50,44 +48,6 @@ public class BoomboxItemRinger implements IMusicRinger {
     }
 
     @Override
-    public boolean isRingerPlaying(ServerLevel level) {
-        return getData().isPlaying();
-    }
-
-    @Override
-    public void setRingerPlaying(ServerLevel level, boolean playing) {
-        getData().setPlaying(playing);
-    }
-
-    @Override
-    public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
-        if (isRingerStream())
-            return getData().getRadioSource();
-        if (getData().isRadioRemote()) {
-            var m = getData().getSelectedMusic();
-            if (m != null)
-                return m.getSource();
-        } else {
-            return getData().getMusicSource();
-        }
-        return null;
-    }
-    @Override
-    public boolean isRingerLoop(ServerLevel level) {
-        return getData().isLoop();
-    }
-
-    @Override
-    public long getRingerPosition(ServerLevel level) {
-        return getData().getMusicPosition();
-    }
-
-    @Override
-    public void setRingerPosition(ServerLevel level, long position) {
-        getData().setMusicPosition(position);
-    }
-
-    @Override
     public Pair<ResourceLocation, CompoundTag> getRingerTracker(ServerLevel level) {
         if (livingEntity instanceof Player player)
             return Pair.of(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(player));
@@ -98,26 +58,6 @@ public class BoomboxItemRinger implements IMusicRinger {
     public @NotNull
     Vec3 getRingerSpatialPosition(ServerLevel level) {
         return livingEntity.position();
-    }
-
-    @Override
-    public float getRingerVolume(ServerLevel level) {
-        return getData().getRawVolume();
-    }
-
-    @Override
-    public float getRingerRange(ServerLevel level) {
-        return 90f * getData().getRawVolume();
-    }
-
-    @Override
-    public boolean isRingerStream() {
-        return getData().isRadioStream();
-    }
-
-    @NotNull
-    private BoomboxData getData() {
-        return BoomboxItem.getData(getBoombox());
     }
 
     @NotNull
@@ -141,5 +81,10 @@ public class BoomboxItemRinger implements IMusicRinger {
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public @NotNull BoomboxData getRingerBoomboxData() {
+        return BoomboxItem.getData(getBoombox());
     }
 }

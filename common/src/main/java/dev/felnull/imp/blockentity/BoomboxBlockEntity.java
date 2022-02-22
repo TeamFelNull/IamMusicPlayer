@@ -5,7 +5,7 @@ import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.BoomboxItem;
-import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.server.music.ringer.IBoomboxRinger;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
@@ -24,11 +24,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMusicRinger {
+public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoomboxRinger {
     private final BoomboxData boomboxData;
     private final NonNullList<ItemStack> items = NonNullList.withSize(2, ItemStack.EMPTY);
     private final UUID ringerUUID = UUID.randomUUID();
@@ -195,47 +194,13 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     }
 
     @Override
-    public boolean isRingerPlaying(ServerLevel level) {
-        return boomboxData.isPlaying();
-    }
-
-    @Override
-    public void setRingerPlaying(ServerLevel level, boolean playing) {
-        boomboxData.setPlaying(playing);
-    }
-
-    @Override
-    public @Nullable MusicSource getRingerMusicSource(ServerLevel level) {
-        if (isRingerStream())
-            return boomboxData.getRadioSource();
-        if (boomboxData.isRadioRemote()) {
-            var m = boomboxData.getSelectedMusic();
-            if (m != null)
-                return m.getSource();
-        } else {
-            return boomboxData.getMusicSource();
-        }
-        return null;
-    }
-
-    @Override
-    public boolean isRingerLoop(ServerLevel level) {
-        return boomboxData.isLoop();
-    }
-
-    @Override
-    public long getRingerPosition(ServerLevel level) {
-        return boomboxData.getMusicPosition();
+    public @NotNull BoomboxData getRingerBoomboxData() {
+        return boomboxData;
     }
 
     @Override
     public ServerLevel getRingerLevel() {
         return (ServerLevel) this.level;
-    }
-
-    @Override
-    public void setRingerPosition(ServerLevel level, long position) {
-        this.boomboxData.setMusicPosition(position);
     }
 
     @Override
@@ -246,21 +211,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IMus
     @Override
     public @NotNull Vec3 getRingerSpatialPosition(ServerLevel level) {
         return new Vec3(getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.5, getBlockPos().getZ() + 0.5);
-    }
-
-    @Override
-    public float getRingerVolume(ServerLevel level) {
-        return boomboxData.getRawVolume();
-    }
-
-    @Override
-    public float getRingerRange(ServerLevel level) {
-        return 90f * boomboxData.getRawVolume();
-    }
-
-    @Override
-    public boolean isRingerStream() {
-        return boomboxData.isRadioStream();
     }
 
     public void setByItem(ItemStack stack) {
