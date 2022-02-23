@@ -14,7 +14,6 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -59,12 +58,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
         this.playlistIdentifierEditBox.setResponder(this::startPlayListLoad);
         this.playlistIdentifierEditBox.setValue(getImportPlayList());
 
-        addRenderWidget(new YoutubePlayListMusicsFixedButtonsList(getStartX() + 1, getStartY() + 10, 368, 148, 4, new TranslatableComponent("imp.fixedList.youtubePlayListMusics"), youtubePlayListEntries, new FixedButtonsList.PressEntry<YoutubePlayListEntry>() {
-            @Override
-            public void onPressEntry(FixedButtonsList<YoutubePlayListEntry> fixedButtonsList, YoutubePlayListEntry youtubePlayListEntry, int i, int i1) {
-
-            }
-        }));
+        addRenderWidget(new YoutubePlayListMusicsFixedButtonsList(getStartX() + 1, getStartY() + 10, 368, 148, 4, new TranslatableComponent("imp.fixedList.youtubePlayListMusics"), youtubePlayListEntries));
 
         startPlayListLoad(getImportPlayList());
     }

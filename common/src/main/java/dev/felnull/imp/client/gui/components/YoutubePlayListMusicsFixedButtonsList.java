@@ -2,6 +2,7 @@ package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
+import dev.felnull.imp.client.gui.screen.monitor.music_manager.ImportYoutubePlayListBaseMMMonitor;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.ImportYoutubePlayListMMMonitor;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
@@ -12,8 +13,10 @@ import net.minecraft.network.chat.TextComponent;
 import java.util.List;
 
 public class YoutubePlayListMusicsFixedButtonsList extends FixedButtonsList<ImportYoutubePlayListMMMonitor.YoutubePlayListEntry> implements IIMPSmartRender {
-    public YoutubePlayListMusicsFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<ImportYoutubePlayListMMMonitor.YoutubePlayListEntry> list, PressEntry<ImportYoutubePlayListMMMonitor.YoutubePlayListEntry> onPressEntry) {
-        super(x, y, w, h, MusicManagerMonitor.WIDGETS_TEXTURE, 0, 20, 256, 256, num, name, list, n -> new TextComponent(n.name()), onPressEntry);
+    public YoutubePlayListMusicsFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<ImportYoutubePlayListMMMonitor.YoutubePlayListEntry> list) {
+        super(x, y, w, h, MusicManagerMonitor.WIDGETS_TEXTURE, 0, 20, 256, 256, num, name, list, n -> new TextComponent(n.name()), (fixedButtonsList, youtubePlayListEntry, i, i1) -> {
+
+        });
     }
 
     @Override

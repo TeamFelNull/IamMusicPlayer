@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mpatric.mp3agic.Mp3File;
+import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
@@ -12,6 +13,7 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.util.FileChooserUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.util.OEURLUtil;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -47,7 +49,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private Component UPLOAD_ERROR_TEXT;
     private boolean connected;
     private Component SERVER_STATUS_TEXT;
-    private ServerConnectingCheckThread connectingCheckThread;
+    private ServerConnectingCheckThreadOld connectingCheckThread;
     private UploadThread uploadThread;
     private long maxFileSize;
 
@@ -180,7 +182,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private void startConnectingCheck() {
         stopConnectingCheckThread();
         connected = false;
-        connectingCheckThread = new ServerConnectingCheckThread();
+        connectingCheckThread = new ServerConnectingCheckThreadOld();
         connectingCheckThread.start();
     }
 
@@ -210,7 +212,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         openFileButton.visible = canUpload() && !isUploading();
     }
 
-   /* private class ServerConnectingCheckThreadOld extends Thread {
+    private class ServerConnectingCheckThreadOld extends Thread {
         @Override
         public void run() {
             try {
@@ -227,7 +229,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 ex.printStackTrace();
             }
         }
-    }*/
+    }
 
     private class ServerConnectingCheckThread extends Thread {
 
