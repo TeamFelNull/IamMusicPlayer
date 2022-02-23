@@ -1,10 +1,25 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+loom {
+    forge {
+        mixinConfig "iammusicplayer-common.mixins.json"
+        mixinConfig "iammusicplayer.mixins.json"
+    }
 }
 
 architectury {
     platformSetupLoomIde()
     forge()
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+    }
 }
 
 configurations {
@@ -14,24 +29,21 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
-
     forgeDependencies.extendsFrom shadowIn
     shadowCommon.extendsFrom shadowIn
+
+
 }
-loom {
-    forge {
-        mixinConfig "iammusicplayer.mixins.json"
-    }
-}
+
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modImplementation("pre.dev.felnull:otyacraftengine-forge:${rootProject.oe_version}") {
+    modApi("pre.dev.felnull:otyacraftengine-forge:${rootProject.oe_version}") {
         transitive = false
     }
 
@@ -57,6 +69,7 @@ processResources {
         expand "version": project.version
     }
 }
+
 shadowJar {
     configurations = [project.configurations.shadowIn]
     relocate 'certificates', 'dev.felnull.imp.libs.certificates'
@@ -82,6 +95,7 @@ shadowJar {
 }
 shadowJar {
     exclude "fabric.mod.json"
+    exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
@@ -90,7 +104,6 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveBaseName = "${rootProject.archives_base_name}-${project.name}"
     classifier null
 }
 
@@ -120,6 +133,5 @@ publishing {
 
 
     repositories {
-
     }
 }
