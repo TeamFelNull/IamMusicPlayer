@@ -109,8 +109,8 @@ public class MusicRingManager {
         MUSIC_RINGERS.forEach((n, m) -> m.pause());
     }
 
-    public void unPause() {
-        MUSIC_RINGERS.forEach((n, m) -> m.unPause());
+    public void resume() {
+        MUSIC_RINGERS.forEach((n, m) -> m.resume());
     }
 
     public void clear() {

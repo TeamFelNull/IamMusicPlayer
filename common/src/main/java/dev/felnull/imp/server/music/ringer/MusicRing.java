@@ -103,7 +103,7 @@ public class MusicRing {
         this.pauseTime = System.currentTimeMillis();
     }
 
-    protected void unPause() {
+    protected void resume() {
         this.baseTime += System.currentTimeMillis() - this.pauseTime;
         this.pauseTime = 0;
     }

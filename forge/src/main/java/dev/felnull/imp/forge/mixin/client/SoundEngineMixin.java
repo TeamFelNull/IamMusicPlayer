@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SoundEngineMixin {
     @Inject(method = "tick", at = @At("HEAD"))
     private void tick(boolean bl, CallbackInfo ci) {
-        MusicEngine.getInstance().tick(bl);
+        MusicEngine.getInstance().tick();
     }
 
-    @Inject(method = "pause", at = @At("HEAD"))
+   /* @Inject(method = "pause", at = @At("HEAD"))
     private void pause(CallbackInfo ci) {
         MusicEngine.getInstance().pause();
     }
@@ -23,7 +23,7 @@ public class SoundEngineMixin {
     private void resume(CallbackInfo ci) {
         MusicEngine.getInstance().resume();
     }
-
+*/
     @Inject(method = "reload", at = @At("HEAD"))
     private void reload(CallbackInfo ci) {
         MusicEngine.getInstance().reload();

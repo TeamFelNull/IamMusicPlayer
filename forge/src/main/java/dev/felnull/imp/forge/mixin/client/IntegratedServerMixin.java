@@ -1,7 +1,7 @@
 package dev.felnull.imp.forge.mixin.client;
 
 
-import dev.felnull.imp.server.music.ringer.MusicRingManager;
+import dev.felnull.imp.client.handler.ClientHandler;
 import net.minecraft.client.server.IntegratedServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,12 +24,7 @@ public class IntegratedServerMixin {
 
     @Inject(method = "tickServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/server/IntegratedServer;getProfiler()Lnet/minecraft/util/profiling/ProfilerFiller;"))
     private void tickServerPaused(BooleanSupplier booleanSupplier, CallbackInfo ci) {
-        if (lastPaused != paused) {
-            var rm = MusicRingManager.getInstance();
-            if (paused)
-                rm.pause();
-            else
-                rm.unPause();
-        }
+        if (lastPaused != paused)
+            ClientHandler.onWorldPause(paused);
     }
 }

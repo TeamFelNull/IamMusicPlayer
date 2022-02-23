@@ -46,7 +46,7 @@ public class ServerHandler {
             var djKitPoolB = LootPool.lootPool().setRolls(UniformGenerator.between(1, 3))
                     .when(LootItemRandomChanceCondition.randomChance(0.114514f))
                     .add(LootItem.lootTableItem(IMPBlocks.BOOMBOX).setWeight(1))
-                    .add(LootItem.lootTableItem(IMPItems.CASSETTE_TAPE).setWeight(rare ? 2 : 6));
+                    .add(LootItem.lootTableItem(IMPItems.CASSETTE_TAPE).setWeight(rare ? 3 : 6));
             access.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "dj_kit"), djKitPoolB);
         }
     }

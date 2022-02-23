@@ -217,7 +217,7 @@ public class MusicEngine {
         reloading = false;
     }
 
-    public void tick(boolean paused) {
+    public void tick() {
         lastTime = System.currentTimeMillis();
         synchronized (MUSIC_PLAYERS) {
             REMOVES_PLAYERS.forEach(this::stopMusicPlayer);

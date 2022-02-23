@@ -13,6 +13,7 @@ import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.item.BoomboxItem;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.FabricOBJLoaderEvent;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -81,5 +82,17 @@ public class ClientHandler {
             return EventResult.interruptFalse();
         }
         return EventResult.pass();
+    }
+
+    public static void onWorldPause(boolean pause) {
+        var rm = MusicRingManager.getInstance();
+        var mm = MusicEngine.getInstance();
+        if (pause) {
+            rm.pause();
+            mm.pause();
+        } else {
+            rm.resume();
+            mm.resume();
+        }
     }
 }
