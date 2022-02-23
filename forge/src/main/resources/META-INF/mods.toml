@@ -31,6 +31,20 @@ side = "BOTH"
 [[dependencies.iammusicplayer]]
 modId = "architectury"
 mandatory = true
-versionRange = "[2.10.6,)"
+versionRange = "[2.3.23,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "cloth_config"
+mandatory = true
+versionRange = "[5.0.38,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.iammusicplayer]]
+modId = "otyacraftengine"
+mandatory = true
+versionRange = "[2.0-build3,)"
 ordering = "AFTER"
 side = "BOTH"

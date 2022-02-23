@@ -3,6 +3,7 @@ package dev.felnull.imp.forge;
 import dev.architectury.platform.forge.EventBuses;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.IamMusicPlayerClient;
+import dev.felnull.imp.client.util.LavaPlayerUtil;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -17,5 +18,6 @@ public class IamMusicPlayerForge {
 
     private void doClientStuff(FMLClientSetupEvent event) {
         IamMusicPlayerClient.init();
+        LavaPlayerUtil.test();
     }
 }

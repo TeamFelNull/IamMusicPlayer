@@ -1,9 +1,8 @@
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-    modApi("pre.dev.felnull:otyacraftengine:${rootProject.oe_version}") {
+    modImplementation("pre.dev.felnull:otyacraftengine:${rootProject.oe_version}") {
         transitive = false
     }
 
@@ -11,7 +10,7 @@ dependencies {
 
     implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
 
-    implementation "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
+      implementation "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
 //    implementation 'com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT'
 
     implementation 'com.github.sealedtx:java-youtube-downloader:3.0.2'
@@ -21,10 +20,6 @@ dependencies {
 
 architectury {
     common()
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/iammusicplayer.accesswidener")
 }
 
 publishing {
