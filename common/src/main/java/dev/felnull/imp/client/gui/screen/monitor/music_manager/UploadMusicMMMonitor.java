@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mpatric.mp3agic.Mp3File;
 import dev.felnull.fnjl.util.FNStringUtil;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.SmartButton;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
-    private static final String RELAY_SERVER_URL = "https://www.morimori0317.net/imp-relay-server";
+    private static final int relayServerVersion = 1;
     private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
     private static final Component RELAY_SERVER_TEXT = new TranslatableComponent("imp.text.relayServer");
     private static final Component CONNECTING_CHECKING = new TranslatableComponent("imp.text.relayServer.connectingChecking");
@@ -47,7 +48,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private boolean connectingChecking;
     private boolean connected;
     private Component SERVER_STATUS_TEXT;
-    private ServerConnectingCheckThread connectingCheckThread;
+    private ServerConnectingCheckThreadOld connectingCheckThread;
     private UploadThread uploadThread;
     private long maxFileSize;
 
@@ -171,14 +172,14 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     }
 
     private String getRelayServerURL() {
-        return RELAY_SERVER_URL;
+        return IamMusicPlayer.CONFIG.relayServerURL;
     }
 
     private void startConnectingCheck() {
         stopConnectingCheckThread();
         connected = false;
         connectingChecking = true;
-        connectingCheckThread = new ServerConnectingCheckThread();
+        connectingCheckThread = new ServerConnectingCheckThreadOld();
         connectingCheckThread.start();
     }
 
@@ -209,7 +210,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         openFileButton.visible = canUpload() && !isUploading();
     }
 
-    private class ServerConnectingCheckThread extends Thread {
+    private class ServerConnectingCheckThreadOld extends Thread {
         @Override
         public void run() {
             try {
@@ -227,6 +228,50 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             }
 
             connectingChecking = false;
+        }
+
+
+    }
+
+    private class ServerConnectingCheckThread extends Thread {
+
+        @Override
+        public void run() {
+            var url = IamMusicPlayer.CONFIG.relayServerURL;
+            String status = null;
+            while (status == null) {
+                var jo = getResponse(url);
+                if (jo == null || !jo.has("status")) {
+                    status = "Offline";
+                } else {
+                    var st = jo.get("status").getAsString();
+                    if ("transfer".equals(st)) {
+                        var v = String.valueOf(relayServerVersion);
+                        if (jo.has(v)) {
+                            var vjo = jo.get(v).getAsJsonObject();
+                            if (vjo.has("url")) {
+                                url = vjo.get("url").getAsString();
+                            } else {
+                                status = "Transfer Failure";
+                            }
+                        } else {
+                            status = "Transfer Failure";
+                        }
+                    } else {
+                        status = st;
+                    }
+                }
+            }
+
+            System.out.println(status);
+        }
+
+        public static JsonObject getResponse(String url) {
+            try {
+                return OEURLUtil.getJson(new URL(url));
+            } catch (IOException ignored) {
+            }
+            return null;
         }
     }
 

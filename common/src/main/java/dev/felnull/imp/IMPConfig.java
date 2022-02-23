@@ -28,6 +28,9 @@ public class IMPConfig implements ConfigData {
     @ConfigEntry.Category("client")
     public YoutubeSubtitleEnum youtubeSubtitleLanguage = YoutubeSubtitleEnum.AUTO;
 
+    @ConfigEntry.Category("client")
+    public String relayServerURL = "https://www.morimori0317.net/imp-relay-server";
+
     @ConfigEntry.Category("server")
     public long maxWaitTime = 1000 * 10;
 
