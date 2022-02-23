@@ -13,7 +13,6 @@ import dev.felnull.otyacraftengine.util.OENbtUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -650,6 +649,13 @@ public class BoomboxData {
 
     public Music getSelectedMusic() {
         return selectedMusic;
+    }
+
+    @Nullable
+    public Music getCassetteTapeMusic() {
+        if (IMPItemUtil.isCassetteTape(getCassetteTape()))
+            return CassetteTapeItem.getMusic(getCassetteTape());
+        return null;
     }
 
     public void startLidOpen(boolean open, Level level) {

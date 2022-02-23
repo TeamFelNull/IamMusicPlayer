@@ -2,6 +2,7 @@ package dev.felnull.imp.server.music.ringer;
 
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerLevel;
@@ -182,8 +183,10 @@ public class MusicRing {
         }
 
         private void sendMiddleStartPacket(UUID player) {
-            if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
+            if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer) {
                 NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(waitUUID, uuid, getRinger().getRingerMusicSource(), getPlaybackInfo(getRinger()), getRingerPosition()).toFBB());
+                advancement(serverPlayer);
+            }
         }
 
         private long getRingerPosition() {
@@ -216,8 +219,10 @@ public class MusicRing {
 
         private void startReadyWaitPlayers() {
             for (UUID pl : firstReadyPlayers) {
-                if (getLevel().getPlayerByUUID(pl) instanceof ServerPlayer serverPlayer)
+                if (getLevel().getPlayerByUUID(pl) instanceof ServerPlayer serverPlayer) {
                     NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(uuid, waitUUID, 0).toFBB());
+                    advancement(serverPlayer);
+                }
             }
         }
 
@@ -308,6 +313,15 @@ public class MusicRing {
             }
             firstWaitPlayers.removeAll(removes);
             return firstWaitPlayers.isEmpty();
+        }
+
+        private void advancement(ServerPlayer player) {
+            IMPCriteriaTriggers.LISTEN_TO_MUSIC.trigger(player, getRinger().isRingerStream(), getRinger().isRingerRemote(), isKamesuta());
+        }
+
+        private boolean isKamesuta() {
+            var ath = getRinger().getRingerMusicAuthor();
+            return getRinger().getRingerAntenna().getHoverName().getString().equalsIgnoreCase("kamesuta") && ath != null && (ath.equalsIgnoreCase("kamesuta") || ath.equalsIgnoreCase("かめすた") || ath.equalsIgnoreCase("カメスタ"));
         }
 
         private boolean canListen(Player player) {

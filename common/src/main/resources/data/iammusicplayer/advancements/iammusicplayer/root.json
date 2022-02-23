@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "item": "iammusicplayer:boombox"
+    },
+    "title": {
+      "translate": "advancements.iammusicplayer.root.title"
+    },
+    "description": {
+      "translate": "advancements.iammusicplayer.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false,
+    "background": "iammusicplayer:textures/gui/advancements/backgrounds/imp.png"
+  },
+  "criteria": {
+    "iammusicplayer_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "iammusicplayer:boombox",
+              "iammusicplayer:cassette_deck",
+              "iammusicplayer:music_manager"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "iammusicplayer_item"
+    ]
+  ]
+}

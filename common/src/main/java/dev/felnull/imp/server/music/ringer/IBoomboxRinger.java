@@ -4,6 +4,7 @@ import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.MusicManager;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,4 +103,24 @@ public interface IBoomboxRinger extends IMusicRinger {
         return getRingerBoomboxData().isMute();
     }
 
+    @Override
+    default boolean isRingerRemote() {
+        return getRingerBoomboxData().isRadioRemote();
+    }
+
+    @Override
+    @Nullable
+    default String getRingerMusicAuthor() {
+        var data = getRingerBoomboxData();
+        if (data.isRadioRemote() && data.getSelectedMusic() != null)
+            return data.getSelectedMusic().getAuthor();
+        if (data.getCassetteTapeMusic() != null)
+            return data.getCassetteTapeMusic().getAuthor();
+        return null;
+    }
+
+    @Override
+    default @NotNull ItemStack getRingerAntenna() {
+        return getRingerBoomboxData().getAntenna();
+    }
 }

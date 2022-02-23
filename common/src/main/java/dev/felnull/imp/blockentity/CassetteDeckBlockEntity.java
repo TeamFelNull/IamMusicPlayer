@@ -1,5 +1,6 @@
 package dev.felnull.imp.blockentity;
 
+import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.inventory.CassetteDeckMenu;
 import dev.felnull.imp.item.CassetteTapeItem;
@@ -127,8 +128,12 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         }
     }
 
+    private boolean canWriteCassetteTape() {
+        return getMusic() != null && !getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape());
+    }
+
     private void writeCassetteTape() {
-        if (getMusic() != null && !getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
+        if (canWriteCassetteTape()) {
             var ol = getCassetteTape().copy();
             CassetteTapeItem.setMusic(getCassetteTape(), getMusic());
             setChanged();
@@ -403,6 +408,8 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     public CompoundTag onInstruction(ServerPlayer player, String name, int num, CompoundTag data) {
         if ("monitor".equals(name)) {
             this.monitor = MonitorType.getByName(data.getString("name"));
+            if (this.monitor == MonitorType.WRITE_EXECUTION && canWriteCassetteTape())
+                IMPCriteriaTriggers.WRITE_CASSETTE_TAPE.trigger(player, getCassetteTape());
             return null;
         } else if ("select_playlist".equals(name)) {
             if (data.contains("uuid")) {

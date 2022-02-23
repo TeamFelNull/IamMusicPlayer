@@ -1,5 +1,6 @@
 package dev.felnull.imp.server.music;
 
+import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
@@ -49,6 +50,11 @@ public class MusicManager {
     public void removePlayList(UUID playlistID) {
         getSaveData().getPlayLists().remove(playlistID);
         getSaveData().setDirty();
+    }
+
+    public void addMusicToPlayList(ServerPlayer player, UUID playlistId, Music music) {
+        addMusicToPlayList(playlistId, music);
+        IMPCriteriaTriggers.ADD_MUSIC.trigger(player);
     }
 
     public void addMusicToPlayList(UUID playlistId, Music music) {
@@ -136,7 +142,7 @@ public class MusicManager {
         if (!pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).canAddMusic()) return;
         for (Music music : musics) {
             var am = new Music(UUID.randomUUID(), music.getName(), music.getAuthor(), music.getSource(), music.getImage(), player.getGameProfile().getId(), System.currentTimeMillis());
-            addMusicToPlayList(pl.getUuid(), am);
+            addMusicToPlayList(player, pl.getUuid(), am);
         }
     }
 

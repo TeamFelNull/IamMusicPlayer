@@ -58,7 +58,7 @@ public class ServerMessageHandler {
             var pl = mm.getSaveData().getPlayLists().get(message.playlist);
             if (pl != null && pl.getAuthority().getAuthorityType(packetContext.getPlayer().getGameProfile().getId()).canAddMusic()) {
                 var m = new Music(UUID.randomUUID(), message.name, message.author, message.source, message.image, packetContext.getPlayer().getGameProfile().getId(), System.currentTimeMillis());
-                mm.addMusicToPlayList(pl.getUuid(), m);
+                mm.addMusicToPlayList((ServerPlayer) packetContext.getPlayer(), pl.getUuid(), m);
             }
         });
     }
@@ -93,7 +93,7 @@ public class ServerMessageHandler {
 
                 for (Music importMusic : message.importMusics) {
                     Music music = new Music(UUID.randomUUID(), importMusic.getName(), importMusic.getAuthor(), importMusic.getSource(), importMusic.getImage(), player.getGameProfile().getId(), System.currentTimeMillis());
-                    mm.addMusicToPlayList(pl.getUuid(), music);
+                    mm.addMusicToPlayList(player, pl.getUuid(), music);
                 }
 
                 var be = (MusicManagerBlockEntity) ((ServerPlayer) packetContext.getPlayer()).getLevel().getBlockEntity(message.blockEntityExistence.blockPos());

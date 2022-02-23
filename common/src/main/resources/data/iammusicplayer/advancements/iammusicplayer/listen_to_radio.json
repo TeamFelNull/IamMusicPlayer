@@ -1,0 +1,31 @@
+{
+  "parent": "iammusicplayer:iammusicplayer/listen_to_music",
+  "display": {
+    "icon": {
+      "item": "iammusicplayer:antenna"
+    },
+    "title": {
+      "translate": "advancements.iammusicplayer.listen_to_radio.title"
+    },
+    "description": {
+      "translate": "advancements.iammusicplayer.listen_to_radio.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "listen_to_radio": {
+      "trigger": "iammusicplayer:listen_to_music",
+      "conditions": {
+        "radio": true
+      }
+    }
+  },
+  "requirements": [
+    [
+      "listen_to_radio"
+    ]
+  ]
+}

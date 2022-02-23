@@ -1,5 +1,6 @@
 package dev.felnull.imp;
 
+import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.IMPBlockEntitys;
 import dev.felnull.imp.entity.village.IMPPoiType;
@@ -25,6 +26,7 @@ public class IamMusicPlayer {
         IMPMenus.init();
         IMPPoiType.init();
         IMPVillagerProfessions.init();
+        IMPCriteriaTriggers.init();
         IMPWorldData.init();
         ServerMusicHandler.init();
         ServerHandler.init();
