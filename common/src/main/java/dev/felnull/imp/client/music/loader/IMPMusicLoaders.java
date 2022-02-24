@@ -20,7 +20,7 @@ public class IMPMusicLoaders {
     public static void init() {
         registerLoader(YOUTUBE_DOWNLOADER, new YoutubeDownloaderMusicLoader());
         registerLoader(LAVA_YOUTUBE, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.YOUTUBE));
-       // registerLoader(LAVA_SOUNDCLOUD, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.SOUNDCLOUD));
+        // registerLoader(LAVA_SOUNDCLOUD, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.SOUNDCLOUD));
         registerLoader(LAVA_HTTP, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.HTTP));
         //    registerLoader(LAVA_NICONICO, new LavaPlayerMusicLoader(IMPMusicLoaderTypes.NICONICO));
     }

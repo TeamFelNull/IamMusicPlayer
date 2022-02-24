@@ -158,7 +158,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             if (UPLOAD_INFO_TEXT != null)
                 drawSmartText(poseStack, UPLOAD_INFO_TEXT, st, getStartY() + 43);
             if (UPLOAD_ERROR_TEXT != null && !isUploading())
-                drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 73, 0xFFFF0000);
+                drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 83, 0xFFFF0000);
 
             drawSmartFixedWidthText(poseStack, HOW_TEXT, st, getStartY() + 53, 270, 0xFF0000FF);
             drawSmartFixedWidthText(poseStack, WARNING_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
