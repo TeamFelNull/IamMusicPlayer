@@ -243,12 +243,12 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 var jop = getResponse(url);
                 eqTime = jop.getLeft();
                 var jo = jop.getRight();
-                if (jo == null || !jo.has("status")) {
+                if (jo == null || !jo.has("Status")) {
                     status = "Offline";
                     lastJo = jo;
                 } else {
                     var st = jo.get("status").getAsString();
-                    if ("transfer".equalsIgnoreCase(st)) {
+                    if ("Transfer".equalsIgnoreCase(st)) {
                         var v = String.valueOf(relayServerVersion);
                         if (jo.has(v)) {
                             var vjo = jo.get(v).getAsJsonObject();
@@ -287,7 +287,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             if (jo == null) {
                 try {
                     st = System.currentTimeMillis();
-                    jo = OEURLUtil.getJson(new URL(url + "/status"));
+                    jo = OEURLUtil.getJson(new URL(url + "status"));
                 } catch (IOException ignored) {
                 }
             }
