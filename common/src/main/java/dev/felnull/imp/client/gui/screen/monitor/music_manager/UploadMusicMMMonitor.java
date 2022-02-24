@@ -165,7 +165,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             drawSmartFixedWidthText(poseStack, RESPONSIBILITY_TEXT, st, getStartY() + 73, 270, 0xFFFF0000);
 
             if (isUploading())
-                drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 73);
+                drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 83);
         }
     }
 
@@ -186,10 +186,6 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     @Override
     protected MusicManagerBlockEntity.MonitorType getParentType() {
         return MusicManagerBlockEntity.MonitorType.ADD_MUSIC;
-    }
-
-    private String getRelayServerURL() {
-        return IamMusicPlayer.CONFIG.relayServerURL;
     }
 
     private void startConnectingCheck() {
@@ -246,12 +242,9 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     }*/
 
     private class ServerConnectingCheckThread extends Thread {
-
         @Override
         public void run() {
             try {
-
-
                 var url = IamMusicPlayer.CONFIG.relayServerURL;
                 String status = null;
                 JsonObject lastJo = null;
