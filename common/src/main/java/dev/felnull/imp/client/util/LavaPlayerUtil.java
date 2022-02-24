@@ -40,6 +40,7 @@ public class LavaPlayerUtil {
         }
         return Optional.empty();
     }
+
     public static void test() {
         Thread th = new Thread(() -> {
             try {
@@ -49,6 +50,7 @@ public class LavaPlayerUtil {
         });
         th.start();
     }
+
     public static Optional<AudioTrack> loadTrack(AudioPlayerManager audioPlayerManager, String identifier) throws ExecutionException, InterruptedException {
         AtomicReference<AudioTrack> audioTrack = new AtomicReference<>();
         AtomicReference<FriendlyException> fe = new AtomicReference<>();

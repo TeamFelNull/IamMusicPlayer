@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.music.tracker;
 
-import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 

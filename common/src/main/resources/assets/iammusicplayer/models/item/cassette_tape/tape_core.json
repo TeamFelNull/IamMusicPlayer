@@ -1,4 +1,4 @@
 {
-	"loader": "forge:obj",
-	"model": "iammusicplayer:models/item/cassette_tape/tape_core.obj"
+  "loader": "forge:obj",
+  "model": "iammusicplayer:models/item/cassette_tape/tape_core.obj"
 }

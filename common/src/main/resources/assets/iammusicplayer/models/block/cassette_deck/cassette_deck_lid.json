@@ -1,21 +1,77 @@
 {
-	"credit": "Made with Blockbench",
-	"textures": {
-		"0": "iammusicplayer:block/cassette_deck/cassette_deck",
-		"particle": "iammusicplayer:block/cassette_deck/cassette_deck"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [5, 3, 0.25],
-			"faces": {
-				"north": {"uv": [9.75, 0, 12.25, 1.5], "texture": "#0"},
-				"east": {"uv": [9.75, 1.5, 12.25, 1.75], "texture": "#0"},
-				"south": {"uv": [12.25, 0, 14.75, 1.5], "texture": "#0"},
-				"west": {"uv": [9.75, 1.5, 12.25, 1.75], "texture": "#0"},
-				"up": {"uv": [9.75, 1.5, 12.25, 1.75], "texture": "#0"},
-				"down": {"uv": [9.75, 1.5, 12.25, 1.75], "texture": "#0"}
-			}
-		}
-	]
+  "credit": "Made with Blockbench",
+  "textures": {
+    "0": "iammusicplayer:block/cassette_deck/cassette_deck",
+    "particle": "iammusicplayer:block/cassette_deck/cassette_deck"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        5,
+        3,
+        0.25
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            9.75,
+            0,
+            12.25,
+            1.5
+          ],
+          "texture": "#0"
+        },
+        "east": {
+          "uv": [
+            9.75,
+            1.5,
+            12.25,
+            1.75
+          ],
+          "texture": "#0"
+        },
+        "south": {
+          "uv": [
+            12.25,
+            0,
+            14.75,
+            1.5
+          ],
+          "texture": "#0"
+        },
+        "west": {
+          "uv": [
+            9.75,
+            1.5,
+            12.25,
+            1.75
+          ],
+          "texture": "#0"
+        },
+        "up": {
+          "uv": [
+            9.75,
+            1.5,
+            12.25,
+            1.75
+          ],
+          "texture": "#0"
+        },
+        "down": {
+          "uv": [
+            9.75,
+            1.5,
+            12.25,
+            1.75
+          ],
+          "texture": "#0"
+        }
+      }
+    }
+  ]
 }

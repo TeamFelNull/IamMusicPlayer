@@ -9,6 +9,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 
 public class SoundCloudMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
     private static final Component SC_ENTER_TEXT = new TranslatableComponent("imp.text.enterText.soundcloud");
+
     public SoundCloudMusicLoaderType() {
         super(IMPMusicLoaderTypes.SOUNDCLOUD);
 

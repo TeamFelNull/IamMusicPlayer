@@ -421,7 +421,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 IMAGE_SET_ERROR_TEXT = null;
             } catch (Exception e) {
                 IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
-             //   e.printStackTrace();
+                //   e.printStackTrace();
             }
         }
     }

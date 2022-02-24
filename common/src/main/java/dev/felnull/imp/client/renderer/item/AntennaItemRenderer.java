@@ -17,6 +17,7 @@ public class AntennaItemRenderer implements BEWLItemRenderer {
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float v, int i, int i1) {
         renderAntenna(poseStack, multiBufferSource, i, i1, 0f, 0f);
     }
+
     public static void renderAntenna(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float par, float rote) {
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         var spml = SpecialModelLoader.getInstance();

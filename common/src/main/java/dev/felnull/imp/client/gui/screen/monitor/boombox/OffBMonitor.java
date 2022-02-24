@@ -5,7 +5,6 @@ import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.data.BoomboxData;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.item.ItemStack;
 
 public class OffBMonitor extends BoomboxMonitor {
     public OffBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {

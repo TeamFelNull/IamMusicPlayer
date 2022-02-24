@@ -1,59 +1,199 @@
 {
-	"credit": "Made with Blockbench",
-	"textures": {
-		"1": "iammusicplayer:item/cassette_tape/label_no_image",
-		"particle": "iammusicplayer:item/cassette_tape/cassette_tape_base"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [4, 0.025, 1.75],
-			"faces": {
-				"north": {"uv": [0, 7, 16, 7.25], "rotation": 90, "texture": "#1"},
-				"east": {"uv": [0, 7, 16, 7.25], "rotation": 90, "texture": "#1"},
-				"south": {"uv": [0, 7, 16, 7.25], "rotation": 90, "texture": "#1"},
-				"west": {"uv": [0, 7, 16, 7.25], "rotation": 90, "texture": "#1"},
-				"up": {"uv": [16, 7, 0, 0], "texture": "#1"},
-				"down": {"uv": [16, 14.25, 0, 7.25], "texture": "#1"}
-			}
-		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [-81, 0, 0],
-			"translation": [1.5, 4.25, -2.5],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [-81, 0, 0],
-			"translation": [-1.5, 4.25, -2.5],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"firstperson_righthand": {
-			"rotation": [-141, 0, 0],
-			"translation": [4, -0.5, -6.5]
-		},
-		"firstperson_lefthand": {
-			"rotation": [-141, 0, 0],
-			"translation": [-2.5, -0.25, -6.5]
-		},
-		"ground": {
-			"translation": [1.75, 0, 2],
-			"scale": [0.5, 0.5, 0.5]
-		},
-		"gui": {
-			"rotation": [-90, 0, 0],
-			"translation": [3, 5, 0]
-		},
-		"head": {
-			"rotation": [-180, 0, 0],
-			"translation": [2, -10.75, -11.5],
-			"scale": [0.7, 0.7, 0.7]
-		},
-		"fixed": {
-			"rotation": [-90, 0, 0],
-			"translation": [2.5, 3, -5.5],
-			"scale": [0.7, 0.7, 0.7]
-		}
-	}
+  "credit": "Made with Blockbench",
+  "textures": {
+    "1": "iammusicplayer:item/cassette_tape/label_no_image",
+    "particle": "iammusicplayer:item/cassette_tape/cassette_tape_base"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        4,
+        0.025,
+        1.75
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            7,
+            16,
+            7.25
+          ],
+          "rotation": 90,
+          "texture": "#1"
+        },
+        "east": {
+          "uv": [
+            0,
+            7,
+            16,
+            7.25
+          ],
+          "rotation": 90,
+          "texture": "#1"
+        },
+        "south": {
+          "uv": [
+            0,
+            7,
+            16,
+            7.25
+          ],
+          "rotation": 90,
+          "texture": "#1"
+        },
+        "west": {
+          "uv": [
+            0,
+            7,
+            16,
+            7.25
+          ],
+          "rotation": 90,
+          "texture": "#1"
+        },
+        "up": {
+          "uv": [
+            16,
+            7,
+            0,
+            0
+          ],
+          "texture": "#1"
+        },
+        "down": {
+          "uv": [
+            16,
+            14.25,
+            0,
+            7.25
+          ],
+          "texture": "#1"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        -81,
+        0,
+        0
+      ],
+      "translation": [
+        1.5,
+        4.25,
+        -2.5
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        -81,
+        0,
+        0
+      ],
+      "translation": [
+        -1.5,
+        4.25,
+        -2.5
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        -141,
+        0,
+        0
+      ],
+      "translation": [
+        4,
+        -0.5,
+        -6.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        -141,
+        0,
+        0
+      ],
+      "translation": [
+        -2.5,
+        -0.25,
+        -6.5
+      ]
+    },
+    "ground": {
+      "translation": [
+        1.75,
+        0,
+        2
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "translation": [
+        3,
+        5,
+        0
+      ]
+    },
+    "head": {
+      "rotation": [
+        -180,
+        0,
+        0
+      ],
+      "translation": [
+        2,
+        -10.75,
+        -11.5
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        -90,
+        0,
+        0
+      ],
+      "translation": [
+        2.5,
+        3,
+        -5.5
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    }
+  }
 }

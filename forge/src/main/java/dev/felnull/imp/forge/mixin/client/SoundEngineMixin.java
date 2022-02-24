@@ -14,16 +14,16 @@ public class SoundEngineMixin {
         MusicEngine.getInstance().tick();
     }
 
-   /* @Inject(method = "pause", at = @At("HEAD"))
-    private void pause(CallbackInfo ci) {
-        MusicEngine.getInstance().pause();
-    }
+    /* @Inject(method = "pause", at = @At("HEAD"))
+     private void pause(CallbackInfo ci) {
+         MusicEngine.getInstance().pause();
+     }
 
-    @Inject(method = "resume", at = @At("HEAD"))
-    private void resume(CallbackInfo ci) {
-        MusicEngine.getInstance().resume();
-    }
-*/
+     @Inject(method = "resume", at = @At("HEAD"))
+     private void resume(CallbackInfo ci) {
+         MusicEngine.getInstance().resume();
+     }
+ */
     @Inject(method = "reload", at = @At("HEAD"))
     private void reload(CallbackInfo ci) {
         MusicEngine.getInstance().reload();
