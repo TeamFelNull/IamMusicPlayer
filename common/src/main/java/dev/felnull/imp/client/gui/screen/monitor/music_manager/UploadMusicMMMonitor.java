@@ -43,15 +43,18 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private static final Component UPLOADING_TEXT = new TranslatableComponent("imp.text.relayServer.uploading");
     private static final Component WARNING_TEXT = new TranslatableComponent("imp.text.relayServer.warning");
     private static final Component RESPONSIBILITY_TEXT = new TranslatableComponent("imp.text.relayServer.responsibility");
+    private static final Component HOW_TEXT = new TranslatableComponent("imp.text.relayServer.how");
     private SmartButton openFileButton;
-    private Component RELAY_SERVER_URL_TEXT;
+    private Component RELAY_SERVER_NAME_TEXT;
     private Component UPLOAD_INFO_TEXT;
     private Component UPLOAD_ERROR_TEXT;
     private boolean connected;
     private Component SERVER_STATUS_TEXT;
-    private ServerConnectingCheckThreadOld connectingCheckThread;
+    private ServerConnectingCheckThread connectingCheckThread;
     private UploadThread uploadThread;
     private long maxFileSize;
+    private String uploadUrl;
+    private boolean error;
 
     public UploadMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -60,7 +63,6 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        RELAY_SERVER_URL_TEXT = new TextComponent(getRelayServerURL());
         startConnectingCheck();
         this.addRenderWidget(new SmartButton(getStartX() + (width - 270) / 2, getStartY() + 180, 270, 15, BACK_TEXT, n -> {
             insMonitor(getParentType());
@@ -79,11 +81,13 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         stopConnectingCheckThread();
         stopUploadThread();
 
-        RELAY_SERVER_URL_TEXT = null;
+        RELAY_SERVER_NAME_TEXT = null;
         UPLOAD_INFO_TEXT = null;
         UPLOAD_ERROR_TEXT = null;
         connected = false;
+        error = false;
         SERVER_STATUS_TEXT = null;
+        uploadUrl = null;
     }
 
     @Override
@@ -123,7 +127,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     }
 
     private boolean canUpload() {
-        return !isConnectChecking() && connected;
+        return !isConnectChecking() && connected && uploadUrl != null;
     }
 
     private boolean isUploading() {
@@ -135,10 +139,18 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         super.render(poseStack, f, mouseX, mouseY);
         float st = getStartX() + ((float) width - 270f) / 2f;
         drawSmartText(poseStack, RELAY_SERVER_TEXT, st, getStartY() + 13);
-        drawSmartText(poseStack, RELAY_SERVER_URL_TEXT, st, getStartY() + 23, 0xFF008000);
 
-        if (SERVER_STATUS_TEXT != null)
-            drawSmartFixedWidthText(poseStack, isConnectChecking() ? CONNECTING_CHECKING : SERVER_STATUS_TEXT, st, getStartY() + 33, 270);
+        if (RELAY_SERVER_NAME_TEXT != null)
+            drawSmartText(poseStack, RELAY_SERVER_NAME_TEXT, st, getStartY() + 23, 0xFF008000);
+
+        var tx = SERVER_STATUS_TEXT;
+        int py = error ? 0 : 10;
+        if (isConnectChecking()) {
+            tx = CONNECTING_CHECKING;
+            py = 0;
+        }
+        if (tx != null)
+            drawSmartFixedWidthText(poseStack, tx, st, getStartY() + 23 + py, 270);
 
         if (canUpload()) {
             if (!isUploading())
@@ -148,8 +160,9 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             if (UPLOAD_ERROR_TEXT != null && !isUploading())
                 drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 73, 0xFFFF0000);
 
-            drawSmartFixedWidthText(poseStack, WARNING_TEXT, st, getStartY() + 53, 270, 0xFFFF0000);
-            drawSmartFixedWidthText(poseStack, RESPONSIBILITY_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
+            drawSmartFixedWidthText(poseStack, HOW_TEXT, st, getStartY() + 53, 270, 0xFF0000FF);
+            drawSmartFixedWidthText(poseStack, WARNING_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
+            drawSmartFixedWidthText(poseStack, RESPONSIBILITY_TEXT, st, getStartY() + 73, 270, 0xFFFF0000);
 
             if (isUploading())
                 drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 73);
@@ -182,7 +195,8 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private void startConnectingCheck() {
         stopConnectingCheckThread();
         connected = false;
-        connectingCheckThread = new ServerConnectingCheckThreadOld();
+        error = false;
+        connectingCheckThread = new ServerConnectingCheckThread();
         connectingCheckThread.start();
     }
 
@@ -212,7 +226,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         openFileButton.visible = canUpload() && !isUploading();
     }
 
-    private class ServerConnectingCheckThreadOld extends Thread {
+   /* private class ServerConnectingCheckThreadOld extends Thread {
         @Override
         public void run() {
             try {
@@ -229,51 +243,79 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 ex.printStackTrace();
             }
         }
-    }
+    }*/
 
     private class ServerConnectingCheckThread extends Thread {
 
         @Override
         public void run() {
-            var url = IamMusicPlayer.CONFIG.relayServerURL;
-            String status = null;
-            JsonObject lastJo = null;
-            long eqTime = 0;
-            while (status == null) {
-                var jop = getResponse(url);
-                eqTime = jop.getLeft();
-                var jo = jop.getRight();
-                if (jo == null || !jo.has("Status")) {
-                    status = "Offline";
-                    lastJo = jo;
-                } else {
-                    var st = jo.get("status").getAsString();
-                    if ("Transfer".equalsIgnoreCase(st)) {
-                        var v = String.valueOf(relayServerVersion);
-                        if (jo.has(v)) {
-                            var vjo = jo.get(v).getAsJsonObject();
-                            if (vjo.has("url")) {
-                                url = vjo.get("url").getAsString();
+            try {
+
+
+                var url = IamMusicPlayer.CONFIG.relayServerURL;
+                String status = null;
+                JsonObject lastJo = null;
+                long eqTime = 0;
+                while (status == null) {
+                    var jop = getResponse(url);
+                    eqTime = jop.getLeft();
+                    var jo = jop.getRight();
+                    if (jo == null || !jo.has("Status")) {
+                        status = "Offline";
+                        lastJo = jo;
+                    } else {
+                        var st = jo.get("Status").getAsString();
+                        if ("Transfer".equalsIgnoreCase(st)) {
+                            var v = String.valueOf(relayServerVersion);
+                            if (jo.has(v)) {
+                                var vjo = jo.get(v).getAsJsonObject();
+                                if (vjo.has("url")) {
+                                    url = vjo.get("url").getAsString();
+                                } else {
+                                    status = "Transfer Failure";
+                                    lastJo = jo;
+                                }
                             } else {
                                 status = "Transfer Failure";
                                 lastJo = jo;
                             }
                         } else {
-                            status = "Transfer Failure";
+                            status = st;
                             lastJo = jo;
                         }
-                    } else {
-                        status = st;
-                        lastJo = jo;
                     }
                 }
-            }
-            //long eqTime = System.currentTimeMillis() - stTime;
+                if ("Ok".equalsIgnoreCase(status)) {
+                    var name = "No Name";
+                    if (lastJo.has("Name"))
+                        name = lastJo.get("Name").getAsString();
+                    RELAY_SERVER_NAME_TEXT = new TextComponent(name);
 
-            System.out.println(eqTime);
-            System.out.println(lastJo);
-            System.out.println(url);
-            System.out.println(status);
+                    JsonObject time = null;
+                    if (lastJo.has("Time"))
+                        time = lastJo.getAsJsonObject("Time");
+                    long rt = 0;
+                    if (time != null && time.has("ResponseSpeed"))
+                        rt = time.get("ResponseSpeed").getAsLong();
+                    if (time != null && time.has("ResponseSpeed"))
+                        SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.response", eqTime, rt);
+                    maxFileSize = lastJo.get("MaxFileSize").getAsLong();
+                    UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
+                    String v = null;
+                    if (lastJo.has("Version"))
+                        v = lastJo.get("Version").getAsString();
+                    if (v != null)
+                        RELAY_SERVER_NAME_TEXT = ((TextComponent) RELAY_SERVER_NAME_TEXT).append(" V" + v);
+                    uploadUrl = url;
+                    connected = true;
+                } else {
+                    SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.error", status).withStyle(ChatFormatting.RED);
+                    error = true;
+                }
+            } catch (Exception ex) {
+                SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.error", ex.getMessage()).withStyle(ChatFormatting.RED);
+                error = true;
+            }
         }
 
         @NotNull
@@ -284,13 +326,13 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 jo = OEURLUtil.getJson(new URL(url));
             } catch (IOException ignored) {
             }
-            if (jo == null) {
+           /* if (jo == null) {
                 try {
                     st = System.currentTimeMillis();
                     jo = OEURLUtil.getJson(new URL(url + "status"));
                 } catch (IOException ignored) {
                 }
-            }
+            }*/
             return Pair.of(System.currentTimeMillis() - st, jo);
         }
     }
@@ -314,7 +356,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         public void run() {
             try {
                 var url = uploadToFile(Files.readAllBytes(file.toPath()));
-                if (url.isEmpty()) {
+                if (url == null || url.isEmpty()) {
                     UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.noURL");
                 } else {
                     UPLOAD_ERROR_TEXT = null;
@@ -336,7 +378,8 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     }
 
     private String uploadToFile(byte[] data) throws IOException, InterruptedException {
-        var url = getRelayServerURL() + "/music-upload";
+        if (uploadUrl == null) return null;
+        var url = uploadUrl + "music-upload";
         var client = HttpClient.newHttpClient();
         var req = HttpRequest.newBuilder(URI.create(url)).header("mc-uuid", IIMPSmartRender.mc.player.getGameProfile().getId().toString()).POST(HttpRequest.BodyPublishers.ofByteArray(data)).build();
         var res = client.send(req, HttpResponse.BodyHandlers.ofString());

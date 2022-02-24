@@ -162,6 +162,7 @@
   "imp.text.relayServer.uploading": "Uploading file...",
   "imp.text.relayServer.warning": "Please do not upload important data such as confidential information!",
   "imp.text.relayServer.responsibility": "We are not responsible for any damage caused by uploading.",
+  "imp.text.relayServer.how": "Uploading to Discord via a relay server.",
   "imp.text.uploadDropInfo": "Can upload file by drag and drop",
   "imp.text.fileUpload.tooManyFiles": "Too many files",
   "imp.text.fileUpload.fileNotFound": "File not found",
