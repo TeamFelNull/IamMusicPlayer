@@ -11,10 +11,11 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/iammusicplayer",
-    "sources": "https://github.com/TeamFelnull/IamMusicPlayer"
+    "sources": "https://github.com/TeamFelnull/IamMusicPlayer",
+    "issues": "https://github.com/TeamFelnull/IamMusicPlayer/issues"
   },
   "license": "GNU LGPLv3",
-  "icon": "assets/iammusicplayer/logo.png",
+  "icon": "assets/iammusicplayer/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -33,7 +34,7 @@
     "minecraft": ">=1.16.4",
     "architectury": ">=1.1.55",
     "cloth-config2": ">=5.0.38",
-    "otyacraftengine": ">=2.0-build10"
+    "otyacraftengine": ">=2.0-build90"
   },
   "mixins": [
     "iammusicplayer.mixins.json"
