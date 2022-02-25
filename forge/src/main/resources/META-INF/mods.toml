@@ -7,8 +7,10 @@ license = "GNU LGPLv3"
 modId = "iammusicplayer"
 version = "${version}"
 displayName = "Iam Music Player"
-displayURL="https://www.curseforge.com/minecraft/mc-mods/iammusicplayer"
-authors = "MORIMORI0317, nin8995, TeamFelNull"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/iammusicplayer"
+updateJSONURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/version_check.json"
+authors = "MORIMORI0317, nin8995"
+credits = "FelNull developers"
 logoFile = "logo.png"
 description = '''
 Thank you for downloading!
@@ -16,7 +18,7 @@ This mod is The Ikisugi Music Player MOD.
 '''
 
 [modproperties.iammusicplayer]
-catalogueImageIcon="icon.png"
+catalogueImageIcon = "icon.png"
 
 [[dependencies.iammusicplayer]]
 modId = "forge"

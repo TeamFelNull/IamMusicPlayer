@@ -238,6 +238,7 @@
   "_comment.e": "Entity",
   "entity.minecraft.villager.dj": "DJ",
   "entity.minecraft.villager.iammusicplayer.dj": "DJ",
+  "entity.minecraft.villager.iammusicplayer:dj": "DJ",
   "_comment.a": "Advancements",
   "advancements.iammusicplayer.root.title": "Iam Music Player",
   "advancements.iammusicplayer.root.description": "とてもイキスギた音楽プレイヤーMOD",
