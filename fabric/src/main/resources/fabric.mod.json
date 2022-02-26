@@ -34,7 +34,7 @@
     "minecraft": ">=1.16.4",
     "architectury": ">=1.1.55",
     "cloth-config2": ">=5.0.38",
-    "otyacraftengine": ">=2.0-build90"
+    "otyacraftengine": ">=2.0"
   },
   "mixins": [
     "iammusicplayer.mixins.json"

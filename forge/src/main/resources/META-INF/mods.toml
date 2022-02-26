@@ -51,6 +51,6 @@ side = "BOTH"
 [[dependencies.iammusicplayer]]
 modId = "otyacraftengine"
 mandatory = true
-versionRange = "[2.0-build3,)"
+versionRange = "[2.0,)"
 ordering = "AFTER"
 side = "BOTH"

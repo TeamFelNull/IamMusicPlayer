@@ -31,7 +31,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modImplementation("pre.dev.felnull:otyacraftengine-forge:${rootProject.oe_version}") {
+    modImplementation("dev.felnull:otyacraftengine-forge:${rootProject.oe_version}") {
         transitive = false
     }
 

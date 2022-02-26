@@ -29,7 +29,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modImplementation("pre.dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}") {
+    modImplementation("dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}") {
         transitive = false
     }
 
