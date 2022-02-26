@@ -33,7 +33,7 @@ public class PowerButton extends ImageButton {
         int tx = this.xTexStart;
         int ty = this.yTexStart;
 
-        if (this.isHovered())
+        if (this.isHoveredOrFocused())
             ty += this.height;
 
         if (screen.isPower())
@@ -41,7 +41,7 @@ public class PowerButton extends ImageButton {
 
         RenderSystem.enableDepthTest();
         blit(poseStack, this.x, this.y, (float) tx, (float) ty, this.width, this.height, this.textureWidth, this.textureHeight);
-        if (this.isHovered())
+        if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, i, j);
     }
 

@@ -27,7 +27,7 @@ public class BoomboxButton extends Button {
 
     @Override
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
-        int r = isHovered() ? 1 : 0;
+        int r = isHoveredOrFocused() ? 1 : 0;
         if (type.getState(buttons.get()))
             r += 2;
         OERenderUtil.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x, y, r * 19, 175, 19, 13);

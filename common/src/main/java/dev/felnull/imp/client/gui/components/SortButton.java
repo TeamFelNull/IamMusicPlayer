@@ -40,8 +40,8 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
 
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-        drawSmartButtonBox(poseStack, x, y, width, height, isHovered());
-        if (this.isHovered())
+        drawSmartButtonBox(poseStack, x, y, width, height, isHoveredOrFocused());
+        if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);
     }
 

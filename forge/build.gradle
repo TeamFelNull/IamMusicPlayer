@@ -1,12 +1,25 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+loom {
+    forge {
+        mixinConfig "iammusicplayer-common.mixins.json"
+        mixinConfig "iammusicplayer.mixins.json"
+    }
 }
 
 architectury {
     platformSetupLoomIde()
     forge()
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+    }
 }
 
 configurations {
@@ -16,32 +29,25 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
-
     forgeDependencies.extendsFrom shadowIn
     shadowCommon.extendsFrom shadowIn
 }
-loom {
-    forge {
-        mixinConfig "iammusicplayer.mixins.json"
-    }
-}
+
 dependencies {
-    forge "net.minecraftforge:forge:${rootProject.minecraft_version}-${rootProject.forge_version}"
+    forge "net.minecraftforge:forge:${rootProject.forge_version}"
 
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
-    modImplementation("dev.felnull:otyacraftengine-forge:${rootProject.oe_version}") {
-        transitive = false
-    }
-
     modApi "me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
+    modApi "pre.dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
 
-    shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}") {
+    shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}")/* {
         exclude group: 'org.slf4j', module: 'slf4j-api'
-    }
+    }*/
     /*shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }*/
@@ -84,6 +90,7 @@ shadowJar {
 }
 shadowJar {
     exclude "fabric.mod.json"
+    exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
@@ -116,85 +123,12 @@ publishing {
     publications {
         mavenForge(MavenPublication) {
             artifactId = rootProject.archives_base_name + "-" + project.name
-            artifact(remapJar)
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-            pom {
-                name = 'IamMusicPlayer'
-                description = 'The ikisugi music player mod.'
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'MORIMORI0317'
-                        name = 'MORIMORI0317'
-                    }
-                    developer {
-                        id = 'FelNull'
-                        name = 'TeamFelNull'
-                        email = 'teamfelnull@m.servg.red'
-                    }
-                }
-            }
+            from components.java
         }
     }
+
 
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
-            }
-        }
-    }
-}
 
-curseforge {
-    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
-        apiKey = System.getenv('curesforgeapikey')
-        project {
-            id = "${rootProject.curesforge_id}"
-            changelog = ""
-            releaseType = "${rootProject.release_type}"
-            addGameVersion "${rootProject.minecraft_version}"
-            addGameVersion 'Java 16'
-
-            relations {
-                requiredDependency "cloth-config-forge"
-                requiredDependency "architectury-forge"
-                requiredDependency "otyacraft-engine"
-            }
-
-            mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
-            }
-
-            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-dev.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-dev"
-            }
-            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-sources.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-sources"
-            }
-        }
-    }
-}
-
-if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
-    task publishModrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
-        token = System.getenv('modrinthapikey')
-        projectId = "${rootProject.modrinth_id}"
-        versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
-        versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Forge"
-        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")
-        versionType = "${project.release_type}".toUpperCase()
-        addGameVersion("${rootProject.minecraft_version}")
-        addLoader("forge")
-        addGameVersion "${rootProject.minecraft_version}"
     }
 }

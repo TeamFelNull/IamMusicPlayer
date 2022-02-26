@@ -24,7 +24,7 @@ public class MusicsFixedButtonsList extends FixedButtonsList<Music> implements I
 
     @Override
     protected void renderOneButton(PoseStack poseStack, Music item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
-        drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), this.getYImage(this.isHovered(bnum)));
+        drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), this.getYImage(this.isHoveredOrFocused(bnum)));
         var img = item.getImage();
         float sx = 2;
 

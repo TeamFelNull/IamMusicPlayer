@@ -35,13 +35,13 @@ public class ImageSetButton extends Button implements IIMPSmartRender {
 
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-        drawSmartButtonBox(poseStack, x, y, width, height, isHovered());
+        drawSmartButtonBox(poseStack, x, y, width, height, isHoveredOrFocused());
         if (type == ImageSetType.PLAYER_FACE) {
             OERenderUtil.drawPlayerFace(poseStack, mc.player.getGameProfile().getId(), (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 11);
         } else {
             OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.URL ? 22 : type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
         }
-        if (this.isHovered())
+        if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);
     }
 }

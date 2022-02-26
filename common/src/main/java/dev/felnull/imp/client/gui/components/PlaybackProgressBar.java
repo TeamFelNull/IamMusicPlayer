@@ -24,7 +24,7 @@ public class PlaybackProgressBar extends AbstractButton {
     @Override
     public void onClick(double d, double e) {
         super.onClick(d, e);
-        if (isHovered()) {
+        if (isHoveredOrFocused()) {
             if (e >= y && e <= (y + getHeight()) && d >= x && d <= (x + getWidth()))
                 playbackProgressControl.accept((float) ((d - x) / getWidth()));
         }
@@ -36,8 +36,8 @@ public class PlaybackProgressBar extends AbstractButton {
 
     @Override
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
-        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 52, 54 + (isHovered() ? 3 : 0), getWidth(), getHeight());
-        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 52, 48 + (isHovered() ? 3 : 0), (float) getWidth() * progressGetter.get(), getHeight());
+        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 52, 54 + (isHoveredOrFocused() ? 3 : 0), getWidth(), getHeight());
+        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 52, 48 + (isHoveredOrFocused() ? 3 : 0), (float) getWidth() * progressGetter.get(), getHeight());
     }
 
     @Override

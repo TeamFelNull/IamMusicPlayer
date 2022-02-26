@@ -19,7 +19,7 @@ public class PlayProgressWidget extends AbstractWidget {
 
     @Override
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
-        int z = isHovered() ? 6 : 0;
+        int z = isHoveredOrFocused() ? 6 : 0;
 
         OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 58, 81 + z, width, 3);
         OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 58, 78 + z, (float) width * progress.get(), 3);

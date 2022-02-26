@@ -1,18 +1,15 @@
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-    modImplementation("dev.felnull:otyacraftengine:${rootProject.oe_version}") {
-        transitive = false
-    }
-
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}"
     modApi "me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}"
+    modApi "pre.dev.felnull:otyacraftengine:${rootProject.oe_version}"
 
     implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
-
     implementation "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
 //    implementation 'com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT'
-
     implementation 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'com.mpatric:mp3agic:0.9.1'
@@ -22,46 +19,19 @@ architectury {
     common()
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/iammusicplayer.accesswidener")
+}
+
 publishing {
     publications {
         mavenCommon(MavenPublication) {
-            artifactId = "${rootProject.archives_base_name}"
-            /* artifact(remapJar)
-              artifact(sourcesJar) {
-                  builtBy remapSourcesJar
-              }*/
+            artifactId = rootProject.archives_base_name
             from components.java
-            pom {
-                name = 'IamMusicPlayer'
-                description = 'The ikisugi music player mod.'
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'MORIMORI0317'
-                        name = 'MORIMORI0317'
-                    }
-                    developer {
-                        id = 'FelNull'
-                        name = 'TeamFelNull'
-                        email = 'teamfelnull@m.servg.red'
-                    }
-                }
-            }
         }
     }
 
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
-            }
-        }
+
     }
 }

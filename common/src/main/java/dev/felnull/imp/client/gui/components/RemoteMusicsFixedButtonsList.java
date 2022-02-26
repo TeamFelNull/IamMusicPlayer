@@ -17,7 +17,7 @@ public class RemoteMusicsFixedButtonsList extends MusicsFixedButtonsList {
 
     @Override
     protected void renderOneButton(PoseStack poseStack, Music item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
-        drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), this.getYImage(this.isHovered(bnum)));
+        drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), this.getYImage(this.isHoveredOrFocused(bnum)));
 
         float sx = 1;
         var img = item.getImage();

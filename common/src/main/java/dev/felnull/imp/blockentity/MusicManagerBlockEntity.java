@@ -158,9 +158,9 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         OENbtUtil.writeMap(tag, "PlayerData", playerData);
-        return super.save(tag);
     }
 
     @Override

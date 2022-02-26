@@ -29,6 +29,6 @@ public class ContinuousWidget extends AbstractWidget implements IIMPSmartRender 
 
     @Override
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
-        drawSmartCenterText(poseStack, continuousTypeValue.get().getComponent(), x + width / 2f, y + 2, isHovered() ? 0XFF007F06 : 0XFF115D0E);
+        drawSmartCenterText(poseStack, continuousTypeValue.get().getComponent(), x + width / 2f, y + 2, isHoveredOrFocused() ? 0XFF007F06 : 0XFF115D0E);
     }
 }

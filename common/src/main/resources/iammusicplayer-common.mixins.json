@@ -1,11 +1,8 @@
 {
   "required": true,
-  "package": "dev.felnull.imp.forge.mixin",
+  "package": "dev.felnull.imp.mixin",
   "compatibilityLevel": "JAVA_16",
   "client": [
-    "client.IntegratedServerMixin",
-    "client.LibraryMixin",
-    "client.SoundEngineMixin"
   ],
   "mixins": [
   ],

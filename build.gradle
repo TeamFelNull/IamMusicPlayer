@@ -1,6 +1,6 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.10.0-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "0.11.0-SNAPSHOT" apply false
 }
 
 architectury {
@@ -32,11 +32,11 @@ allprojects {
 
     repositories {
         maven {
-            name = "felnull maven"
+            name = "felnull"
             url = "https://maven.felnull.dev/"
         }
         maven {
-            name = "Lava"
+            name = "lava"
             url = 'https://m2.dv8tion.net/releases'
         }
         maven { url 'https://jitpack.io' }
@@ -44,7 +44,7 @@ allprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
-        options.release = 16
+        options.release = 17
     }
 
     java {

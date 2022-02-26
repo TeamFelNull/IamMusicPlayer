@@ -164,8 +164,8 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
-        super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putBoolean("LidOpen", this.lidOpen);
         tag.putString("Monitor", monitor.getName());
         IMPNbtUtil.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
@@ -178,7 +178,6 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         tag.putLong("Position", this.position);
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("LoadingMusic", this.loadingMusic);
-        return tag;
     }
 
     @Override

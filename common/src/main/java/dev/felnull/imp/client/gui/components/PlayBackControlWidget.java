@@ -29,7 +29,7 @@ public class PlayBackControlWidget extends AbstractWidget implements IIMPSmartRe
     @Override
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
         var state = stateTypeSupplier.get();
-        int z = isHovered() ? 30 : 0;
+        int z = isHoveredOrFocused() ? 30 : 0;
         OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, state.ordinal() * 10 + z, 145, 10, 10);
     }
 

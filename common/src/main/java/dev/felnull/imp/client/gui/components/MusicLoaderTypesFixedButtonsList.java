@@ -28,7 +28,7 @@ public class MusicLoaderTypesFixedButtonsList extends FixedButtonsList<String> i
 
     @Override
     protected void renderOneButton(PoseStack poseStack, String item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
-        drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), selected.apply(item) ? 0 : this.getYImage(this.isHovered(bnum)));
+        drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), selected.apply(item) ? 0 : this.getYImage(this.isHoveredOrFocused(bnum)));
         var type = IMPMusicLoaderTypes.getMusicLoaderTypes().get(item);
         int tx = x + 2;
         if ((type != null && type.getIcon() != null) || "upload".equals(item)) {

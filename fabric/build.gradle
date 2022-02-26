@@ -1,16 +1,18 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.0.0"
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
-}
-
-architectury {
-    platformSetupLoomIde()
-    fabric()
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 repositories {
     maven { url "https://maven.terraformersmc.com/releases/" }
 }
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
 configurations {
     common
     shadowCommon
@@ -31,16 +33,13 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modImplementation("dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}") {
-        transitive = false
-    }
-
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${rootProject.rei_version}"
     modApi "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
+    modApi "pre.dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}"
 
     shadowIn "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
     //  shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT')
-
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'org.jsoup:jsoup:1.14.3'
@@ -54,7 +53,6 @@ processResources {
         expand "version": project.version
     }
 }
-
 shadowJar {
     configurations = [project.configurations.shadowIn]
     relocate 'org.slf4j', 'dev.felnull.imp.libs.org.slf4j'
@@ -79,13 +77,15 @@ shadowJar {
         exclude 'com.sedmelluq.discord.lavaplayer.natives.**'
     }
 }
-
 shadowJar {
+    exclude "architectury.common.json"
+
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"
 }
 
 remapJar {
+    injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveBaseName = "${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}"
@@ -111,95 +111,13 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = "${rootProject.archives_base_name}-${project.name}"
-            artifact(remapJar)
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
-            pom {
-                name = 'IamMusicPlayer'
-                description = 'The ikisugi music player mod.'
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'MORIMORI0317'
-                        name = 'MORIMORI0317'
-                    }
-                    developer {
-                        id = 'FelNull'
-                        name = 'TeamFelNull'
-                        email = 'teamfelnull@m.servg.red'
-                    }
-                }
-            }
+            artifactId = rootProject.archives_base_name + "-" + project.name
+            from components.java
         }
     }
+
 
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
-            }
-        }
-    }
-}
 
-curseforge {
-    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
-        apiKey = System.getenv('curesforgeapikey')
-        project {
-            id = "${rootProject.curesforge_id}"
-            changelog = ""
-            releaseType = "${rootProject.release_type}"
-            addGameVersion "${rootProject.minecraft_version}"
-            addGameVersion 'Java 16'
-            addGameVersion "Fabric"
-
-            relations {
-                requiredDependency "fabric-api"
-                requiredDependency "cloth-config"
-                requiredDependency "architectury-fabric"
-                requiredDependency "otyacraft-engine"
-            }
-
-            mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-            }
-
-            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-dev.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric-dev"
-            }
-            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-sources.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric-sources"
-            }
-            afterEvaluate {
-                uploadTask.dependsOn("build")
-            }
-        }
-    }
-    options {
-        forgeGradleIntegration = false
-    }
-}
-
-
-if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
-    task publishModrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
-        token = System.getenv('modrinthapikey')
-        projectId = "${rootProject.modrinth_id}"
-        versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-        versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")
-        versionType = "${project.release_type}".toUpperCase()
-        addGameVersion("${rootProject.minecraft_version}")
-        addLoader("fabric")
-        addGameVersion "${rootProject.minecraft_version}"
     }
 }

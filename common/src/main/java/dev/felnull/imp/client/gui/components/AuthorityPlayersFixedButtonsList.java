@@ -18,7 +18,7 @@ public class AuthorityPlayersFixedButtonsList extends PlayersFixedButtonsList {
 
     @Override
     protected void renderOneButton(PoseStack poseStack, UUID item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
-        int k = this.getYImage(this.isHovered(bnum));
+        int k = this.getYImage(this.isHoveredOrFocused(bnum));
         if (selected.apply(item))
             k = 0;
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);

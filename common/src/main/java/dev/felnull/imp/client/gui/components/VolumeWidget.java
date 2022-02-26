@@ -38,11 +38,11 @@ public class VolumeWidget extends AbstractWidget implements IIMPSmartRender {
         boolean imute = mute.getAsBoolean();
         int nv = imute ? 3 : vol / 100;
         int lfs = (nv * 2) + (vol <= 0 ? 0 : 2);
-        int z = isHovered() ? 20 : 0;
+        int z = isHoveredOrFocused() ? 20 : 0;
         OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, z, 156, imute ? 4 : 4 + lfs, 8);
         if (imute)
             OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 3, y, 12 + z, 156, 8, 8);
-        drawSmartText(poseStack, new TextComponent(String.valueOf(vol)), x + 5 + lfs, y + 0.5f, isHovered() ? 0XFF007F06 : 0XFF115D0E);
+        drawSmartText(poseStack, new TextComponent(String.valueOf(vol)), x + 5 + lfs, y + 0.5f, isHoveredOrFocused() ? 0XFF007F06 : 0XFF115D0E);
     }
 
     @Override

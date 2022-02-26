@@ -31,7 +31,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
 
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-        drawSmartButtonBox(poseStack, x, y, width, height, this.getYImage(this.isHovered()));
+        drawSmartButtonBox(poseStack, x, y, width, height, this.getYImage(this.isHoveredOrFocused()));
         float fx = center ? (float) (width - mc.font.width(getMessage())) / 2f : 2;
         float fy = (float) (height - 7) / 2f;
 
@@ -45,7 +45,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
         if (!hideText)
             drawSmartText(poseStack, getMessage(), x + fx, y + fy);
 
-        if (this.isHovered())
+        if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);
     }
 
