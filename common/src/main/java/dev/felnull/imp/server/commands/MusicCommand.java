@@ -16,8 +16,8 @@ import java.util.List;
 
 public class MusicCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var literalCommandNode = dispatcher.register(Commands.literal(IamMusicPlayer.MODID)
-                .then(Commands.literal("ringer").requires(n -> n.hasPermission(2)).executes(n -> ringerInfo(n.getSource(), null))
+        var literalCommandNode = dispatcher.register(Commands.literal(IamMusicPlayer.MODID).requires(n -> n.hasPermission(2))
+                .then(Commands.literal("ringer").executes(n -> ringerInfo(n.getSource(), null))
                         .then(Commands.literal("info").executes(n -> ringerInfo(n.getSource(), null))
                                 .then(Commands.argument("dimension", DimensionArgument.dimension()).executes(n -> ringerInfo(n.getSource(), DimensionArgument.getDimension(n, "dimension")))))
                         .then(Commands.literal("list").executes(n -> ringerList(n.getSource(), null))
