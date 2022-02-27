@@ -45,9 +45,9 @@ dependencies {
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
     modApi "pre.dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
 
-    shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}")/* {
+    shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
-    }*/
+    }
     /*shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT') {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }*/
