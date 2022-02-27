@@ -16,24 +16,16 @@
     "background": "iammusicplayer:textures/gui/advancements/backgrounds/imp.png"
   },
   "criteria": {
-    "iammusicplayer_item": {
-      "trigger": "minecraft:inventory_changed",
+    "iammusicplayer": {
+      "trigger": "otyacraftengine:mod_root",
       "conditions": {
-        "items": [
-          {
-            "items": [
-              "iammusicplayer:boombox",
-              "iammusicplayer:cassette_deck",
-              "iammusicplayer:music_manager"
-            ]
-          }
-        ]
+        "modid": "iammusicplayer"
       }
     }
   },
   "requirements": [
     [
-      "iammusicplayer_item"
+      "iammusicplayer"
     ]
   ]
 }

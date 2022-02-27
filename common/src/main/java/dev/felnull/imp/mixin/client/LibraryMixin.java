@@ -1,4 +1,4 @@
-package dev.felnull.imp.fabric.mixin.client;
+package dev.felnull.imp.mixin.client;
 
 import com.mojang.blaze3d.audio.Library;
 import dev.felnull.imp.client.music.MusicEngine;

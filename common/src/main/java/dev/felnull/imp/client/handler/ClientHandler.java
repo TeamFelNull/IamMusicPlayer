@@ -14,6 +14,7 @@ import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
+import dev.felnull.otyacraftengine.OtyacraftEngine;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.FabricOBJLoaderEvent;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -42,6 +43,19 @@ public class ClientHandler {
         ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
+        ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
+    }
+
+    private static void onPauseChange(boolean paused) {
+        var rm = MusicRingManager.getInstance();
+        var mm = MusicEngine.getInstance();
+        if (paused) {
+            rm.pause();
+            mm.pause();
+        } else {
+            rm.resume();
+            mm.resume();
+        }
     }
 
     private static InteractionResult onConfigSave(ConfigHolder<IMPConfig> configHolder, IMPConfig impConfig) {
@@ -69,7 +83,7 @@ public class ClientHandler {
         if (screen instanceof SoundOptionsScreen) {
             int i = 11;
             int x = screen.width / 2 - 155 + i % 2 * 160;
-            int y = screen.height / 6 - 12 + 24 * (i >> 1);
+            int y = screen.height / 6 - 12 + 22 * (i >> 1);
             screenAccess.addRenderableWidget(new MusicVolumeSlider(x, y, 150));
             screenAccess.addRenderableWidget(new ImageButton(x + 150 + 4, y, 20, 20, 48, 105, 20, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get()), new TranslatableComponent("imp.button.config")));
         }
@@ -82,17 +96,5 @@ public class ClientHandler {
             return EventResult.interruptFalse();
         }
         return EventResult.pass();
-    }
-
-    public static void onWorldPause(boolean pause) {
-        var rm = MusicRingManager.getInstance();
-        var mm = MusicEngine.getInstance();
-        if (pause) {
-            rm.pause();
-            mm.pause();
-        } else {
-            rm.resume();
-            mm.resume();
-        }
     }
 }
