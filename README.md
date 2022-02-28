@@ -8,7 +8,7 @@ The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
 If a kind person translates it, please open an [ Issue or Pull requests ] !
 
-[Templates used for translation](https://github.com/TeamFelnull/IamMusicPlayer/tree/1.16.5/src/main/resources/assets/iammusicplayer/lang)
+[Templates used for translation](https://github.com/TeamFelnull/IamMusicPlayer/tree/master/common/src/main/resources/assets/iammusicplayer/lang)
 
 # Using Library
 
