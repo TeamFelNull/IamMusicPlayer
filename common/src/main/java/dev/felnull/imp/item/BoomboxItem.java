@@ -33,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -101,12 +102,12 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     @Override
-    protected boolean canPlace(BlockPlaceContext blockPlaceContext, BlockState blockState) {
+    protected boolean canPlace(BlockPlaceContext blockPlaceContext, @NotNull BlockState blockState) {
         return !isPowerOn(blockPlaceContext.getItemInHand()) && super.canPlace(blockPlaceContext, blockState);
     }
 
     @Override
-    public void onDestroyed(ItemEntity itemEntity) {
+    public void onDestroyed(@NotNull ItemEntity itemEntity) {
         if (this.getBlock() instanceof BoomboxBlock) {
             ItemUtils.onContainerDestroyed(itemEntity, getContainItem(itemEntity.getItem()).stream());
         }
@@ -114,32 +115,31 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     public static void tick(Level level, Entity entity, ItemStack stack) {
-        if (entity instanceof LivingEntity livingEntity) {
-            if (!level.isClientSide()) {
-                if (getUUID(stack) == null)
-                    setUUID(stack, UUID.randomUUID());
+        if (!stack.is(IMPBlocks.BOOMBOX.asItem())) return;
+        if (!level.isClientSide()) {
+            if (getUUID(stack) == null)
+                setUUID(stack, UUID.randomUUID());
 
-                var mr = MusicRingManager.getInstance();
-                var uuid = getUUID(stack);
-                if (uuid != null && !mr.isExistRinger((ServerLevel) level, uuid)) {
-                    mr.addRinger((ServerLevel) level, new BoomboxItemRinger(livingEntity, uuid));
-                }
+            var mr = MusicRingManager.getInstance();
+            var uuid = getUUID(stack);
+            if (uuid != null && BoomboxEntityRinger.canRing(entity) && !mr.isExistRinger((ServerLevel) level, uuid)) {
+                mr.addRinger((ServerLevel) level, new BoomboxEntityRinger(entity, uuid));
             }
+        }
 
-            var data = getData(stack);
-            data.tick(level);
-            setData(stack, data);
+        var data = getData(stack);
+        data.tick(level);
+        setData(stack, data);
 
-            if (livingEntity.getMainHandItem() == stack || livingEntity.getOffhandItem() == stack) {
-                boolean power = isPowerOn(stack);
-                setTransferProgressOld(stack, getTransferProgress(stack));
-                setTransferProgress(stack, getTransferProgress(stack) + (power ? 1 : -1));
-            }
+        if (entity instanceof LivingEntity livingEntity && (livingEntity.getMainHandItem() == stack || livingEntity.getOffhandItem() == stack)) {
+            boolean power = isPowerOn(stack);
+            setTransferProgressOld(stack, getTransferProgress(stack));
+            setTransferProgress(stack, getTransferProgress(stack) + (power ? 1 : -1));
         }
     }
 
     @Override
-    protected boolean updateCustomBlockEntityTag(BlockPos blockPos, Level level, @Nullable Player player, ItemStack itemStack, BlockState blockState) {
+    protected boolean updateCustomBlockEntityTag(@NotNull BlockPos blockPos, Level level, @Nullable Player player, @NotNull ItemStack itemStack, @NotNull BlockState blockState) {
         var server = level.getServer();
         if (server != null) {
             var be = level.getBlockEntity(blockPos);

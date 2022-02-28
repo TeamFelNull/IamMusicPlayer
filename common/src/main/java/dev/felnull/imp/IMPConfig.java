@@ -36,4 +36,7 @@ public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("server")
     public long retryTime = 1000 * 3;
+
+    @ConfigEntry.Category("server")
+    public boolean dropItemRing = true;
 }

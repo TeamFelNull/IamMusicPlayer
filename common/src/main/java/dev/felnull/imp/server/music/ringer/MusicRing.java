@@ -7,6 +7,7 @@ import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -68,7 +69,8 @@ public class MusicRing {
                         waitRingers.remove(value.getRingerUUID());
                         long eq = getTime() - lastTime;
                         if (ms.getDuration() >= value.getRingerPosition() + eq || value.isRingerStream()) {
-                            value.setRingerPosition(value.getRingerPosition() + eq);
+                            var sc = value.getRingerMusicSource();
+                            value.setRingerPosition(Mth.clamp(value.getRingerPosition() + eq, 0, sc != null ? sc.getDuration() : 0));
                         } else {
                             value.setRingerPosition(0);
                             value.ringerEnd();
@@ -167,7 +169,7 @@ public class MusicRing {
         public RingedPlayerInfos(UUID uuid, long startTime) {
             this.uuid = uuid;
             this.startTime = startTime;
-            firstWaitPlayers.addAll(getLevel().players().stream().filter(n -> canListen(n)).map(n -> n.getGameProfile().getId()).toList());
+            firstWaitPlayers.addAll(getLevel().players().stream().filter(this::canListen).map(n -> n.getGameProfile().getId()).toList());
         }
 
         private void sendFirstPackets() {
@@ -191,7 +193,8 @@ public class MusicRing {
 
         private long getRingerPosition() {
             if (getRinger().isRingerStream()) return 0;
-            return getRinger().getRingerPosition();
+            var sc = getRinger().getRingerMusicSource();
+            return Mth.clamp(getRinger().getRingerPosition(), 0, sc != null ? sc.getDuration() : 0);
         }
 
         private void addReadyPlayer(ServerPlayer player, boolean result, boolean retry, long elapsed) {
