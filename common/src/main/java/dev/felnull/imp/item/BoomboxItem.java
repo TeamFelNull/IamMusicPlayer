@@ -23,6 +23,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -47,13 +48,13 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     @Override
-    public void inventoryTick(ItemStack itemStack, Level level, Entity entity, int i, boolean bl) {
+    public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull Entity entity, int i, boolean bl) {
         super.inventoryTick(itemStack, level, entity, i, bl);
         tick(level, entity, itemStack);
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+    public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
             if (!level.isClientSide()) {
@@ -71,7 +72,6 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             }
             return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
         }
-
         return super.use(level, player, interactionHand);
     }
 

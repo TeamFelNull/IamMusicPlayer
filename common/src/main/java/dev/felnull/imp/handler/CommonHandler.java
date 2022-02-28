@@ -9,10 +9,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 
 public class CommonHandler {
     public static void init() {
-        MoreEntityEvent.ENTITY_TICK.register(CommonHandler::entityTick);
+        MoreEntityEvent.ENTITY_TICK.register(CommonHandler::onEntityTick);
     }
 
-    private static EventResult entityTick(Entity entity) {
+    private static EventResult onEntityTick(Entity entity) {
         if (IamMusicPlayer.CONFIG.dropItemRing && entity instanceof ItemEntity)
             BoomboxItem.tick(entity.level, entity, ((ItemEntity) entity).getItem());
         return EventResult.pass();

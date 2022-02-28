@@ -12,11 +12,12 @@ import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonit
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
+import dev.felnull.imp.entity.IRingerPartyParrot;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
-import dev.felnull.otyacraftengine.OtyacraftEngine;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.FabricOBJLoaderEvent;
+import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.client.Minecraft;
@@ -29,6 +30,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +46,18 @@ public class ClientHandler {
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
+        MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
+    }
+
+    private static EventResult onEntityTick(Entity entity) {
+        if (!entity.level.isClientSide()) return EventResult.pass();
+        var mm = MusicEngine.getInstance();
+        if (entity instanceof IRingerPartyParrot ringerPartyParrot) {
+            var id = ringerPartyParrot.getRingerUUID();
+            if (id == null || !mm.isPlaying(id))
+                ringerPartyParrot.setRingerUUID(null);
+        }
+        return EventResult.pass();
     }
 
     private static void onPauseChange(boolean paused) {

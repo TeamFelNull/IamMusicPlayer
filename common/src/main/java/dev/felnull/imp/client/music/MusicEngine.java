@@ -6,14 +6,20 @@ import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
 import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
 import dev.felnull.imp.client.util.SoundMath;
+import dev.felnull.imp.entity.IRingerPartyParrot;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class MusicEngine {
+    private static final Minecraft mc = Minecraft.getInstance();
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
     private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
@@ -57,14 +63,26 @@ public class MusicEngine {
                 return true;
             }
         }
+        MusicPlayEntry playEntry;
         synchronized (MUSIC_PLAYERS) {
             if (!MUSIC_PLAYERS.containsKey(id))
                 return false;
-            var player = MUSIC_PLAYERS.get(id).player();
+            playEntry = MUSIC_PLAYERS.get(id);
+            var player = playEntry.player();
             if (!player.isPlaying())
                 player.play(delay);
         }
+        notifyNearbyEntities(id, playEntry);
         return true;
+    }
+
+    private void notifyNearbyEntities(UUID uuid, MusicPlayEntry playEntry) {
+        var v3 = playEntry.player().getCoordinatePosition();
+        float rp = playEntry.playbackInfo().getRange() / 90f;
+        for (LivingEntity livingentity : mc.level.getEntitiesOfClass(LivingEntity.class, (new AABB(new BlockPos(v3))).inflate(9.0d * rp))) {
+            if (livingentity instanceof IRingerPartyParrot ringerPartyParrot)
+                ringerPartyParrot.setRingerUUID(uuid);
+        }
     }
 
     public boolean loadAddMusicPlayer(UUID id, MusicPlaybackInfo playbackInfo, MusicSource source, long position, MusicLoadThread.MusicLoadResultListener listener) {
