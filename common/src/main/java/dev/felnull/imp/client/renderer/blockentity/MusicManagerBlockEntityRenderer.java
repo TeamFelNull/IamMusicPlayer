@@ -5,8 +5,8 @@ import dev.felnull.imp.block.MusicManagerBlock;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.model.IMPModels;
-import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
+import dev.felnull.otyacraftengine.client.util.OEModelUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -33,13 +33,12 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
     }
 
     public static void renderMusicManager(MusicManagerBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f) {
-        var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
-        var acLmp = spml.getModel(IMPModels.MUSIC_MANAGER_OFF_ACCESS_LAMP);
+        var acLmp = OEModelUtil.getModel(IMPModels.MUSIC_MANAGER_OFF_ACCESS_LAMP);
 
         if (blockEntity.isPower() && random.nextBoolean())
-            acLmp = spml.getModel(IMPModels.MUSIC_MANAGER_ACCESS_LAMP);
+            acLmp = OEModelUtil.getModel(IMPModels.MUSIC_MANAGER_ACCESS_LAMP);
 
         poseStack.pushPose();
         OERenderUtil.poseRotateDirection(poseStack, blockEntity.getBlockState().getValue(MusicManagerBlock.FACING), 1);

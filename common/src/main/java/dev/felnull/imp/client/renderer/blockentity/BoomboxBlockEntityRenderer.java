@@ -9,8 +9,8 @@ import dev.felnull.imp.client.renderer.item.AntennaItemRenderer;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.util.IMPItemUtil;
-import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
+import dev.felnull.otyacraftengine.client.util.OEModelUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -49,12 +49,11 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         boolean changeCassetteTape = data.isChangeCassetteTape();
         var oldCassetteTape = data.getOldCassetteTape();
 
-        var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
-        var handleM = spml.getModel(IMPModels.BOOMBOX_HANDLE);
-        var lidM = spml.getModel(IMPModels.BOOMBOX_LID);
-        var buttonsM = spml.getModel(IMPModels.BOOMBOX_BUTTONS);
+        var handleM = OEModelUtil.getModel(IMPModels.BOOMBOX_HANDLE);
+        var lidM = OEModelUtil.getModel(IMPModels.BOOMBOX_LID);
+        var buttonsM = OEModelUtil.getModel(IMPModels.BOOMBOX_BUTTONS);
 
         poseStack.pushPose();
         OERenderUtil.poseRotateDirection(poseStack, direction, 1);

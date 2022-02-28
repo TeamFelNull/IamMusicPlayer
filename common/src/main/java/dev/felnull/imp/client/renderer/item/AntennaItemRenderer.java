@@ -3,8 +3,8 @@ package dev.felnull.imp.client.renderer.item;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.felnull.imp.client.model.IMPModels;
-import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
+import dev.felnull.otyacraftengine.client.util.OEModelUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -20,11 +20,10 @@ public class AntennaItemRenderer implements BEWLItemRenderer {
 
     public static void renderAntenna(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float par, float rote) {
         VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
-        var spml = SpecialModelLoader.getInstance();
 
-        BakedModel antennaModel = spml.getModel(IMPModels.ANTENNA);
-        BakedModel antennaTopModel = spml.getModel(IMPModels.ANTENNA_TOP);
-        BakedModel antennaRootModel = spml.getModel(IMPModels.ANTENNA_ROOT);
+        BakedModel antennaModel = OEModelUtil.getModel(IMPModels.ANTENNA);
+        BakedModel antennaTopModel = OEModelUtil.getModel(IMPModels.ANTENNA_TOP);
+        BakedModel antennaRootModel = OEModelUtil.getModel(IMPModels.ANTENNA_ROOT);
 
         float ws = 0.025f / 2f;
 

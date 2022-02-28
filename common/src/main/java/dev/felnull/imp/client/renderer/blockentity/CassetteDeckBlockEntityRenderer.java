@@ -5,8 +5,8 @@ import dev.felnull.imp.block.CassetteDeckBlock;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonitor;
 import dev.felnull.imp.client.model.IMPModels;
-import dev.felnull.otyacraftengine.client.model.SpecialModelLoader;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
+import dev.felnull.otyacraftengine.client.util.OEModelUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -32,9 +32,8 @@ public class CassetteDeckBlockEntityRenderer extends AbstractBlockEntityRenderer
     }
 
     public static void renderCassetteDeck(CassetteDeckBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f) {
-        var spml = SpecialModelLoader.getInstance();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
-        var lidM = spml.getModel(IMPModels.CASSETTE_DECK_LID);
+        var lidM = OEModelUtil.getModel(IMPModels.CASSETTE_DECK_LID);
 
         float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
 

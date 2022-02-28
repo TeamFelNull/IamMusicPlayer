@@ -26,7 +26,6 @@ public class IamMusicPlayerClient {
         ClientHandler.init();
         RenderHandler.init();
         MusicHandler.init();
-        IMPModels.init();
         IMPBlockEntityRenderers.init();
         IMPItemRenderers.init();
         IMPScreenFactorys.init();
