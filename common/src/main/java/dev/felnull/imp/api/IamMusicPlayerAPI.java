@@ -89,7 +89,6 @@ public class IamMusicPlayerAPI {
      */
     @NotNull
     public static List<MusicRingerAccess> getRingers(ServerLevel level) {
-
         List<MusicRingerAccess> pls = new ArrayList<>();
         var mr = MusicRingManager.getInstance().getMusicRingers().get(level);
         if (mr != null) {

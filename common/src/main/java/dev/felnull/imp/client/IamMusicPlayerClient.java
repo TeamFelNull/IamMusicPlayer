@@ -7,7 +7,6 @@ import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonit
 import dev.felnull.imp.client.handler.ClientHandler;
 import dev.felnull.imp.client.handler.MusicHandler;
 import dev.felnull.imp.client.handler.RenderHandler;
-import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import dev.felnull.imp.client.music.subtitle.IMPMusicSubtitles;

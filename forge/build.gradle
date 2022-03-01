@@ -181,9 +181,9 @@ curseforge {
                 displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
             }
 
-        /*    addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-dev.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-dev"
-            }*/
+            /*    addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-dev.jar")) {
+                    displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-dev"
+                }*/
             addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.mod_version}-sources.jar")) {
                 displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-sources"
             }

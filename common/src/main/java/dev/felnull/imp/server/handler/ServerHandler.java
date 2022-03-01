@@ -2,7 +2,6 @@ package dev.felnull.imp.server.handler;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.architectury.event.events.common.EntityEvent;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.item.IMPItems;
