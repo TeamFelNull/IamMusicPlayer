@@ -67,7 +67,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
 
             @Override
             public void setCassetteTape(ItemStack stack) {
-                setItem(0, stack);
+                setItemNoUpdate(0, stack);
             }
 
             @Override
@@ -75,6 +75,17 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
                 setChanged();
             }
         });
+    }
+
+    @Override
+    public void setItem(int i, ItemStack stack) {
+        if (i == 0)
+            this.boomboxData.onCassetteTapeChange(stack, getCassetteTape());
+        setItemNoUpdate(i, stack);
+    }
+
+    public void setItemNoUpdate(int i, ItemStack stack) {
+        super.setItem(i, stack);
     }
 
     public void setBoomboxData(BoomboxData data) {
@@ -120,7 +131,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, BoomboxBlockEntity blockEntity) {
         blockEntity.boomboxData.tick(level);
-
         if (!level.isClientSide()) {
             blockEntity.ringerTick();
             blockEntity.setRaisedHandleState(blockEntity.boomboxData.getHandleRaisedProgress() >= blockEntity.boomboxData.getHandleRaisedMax());
@@ -214,8 +224,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
 
     public void setByItem(ItemStack stack) {
         setPower(BoomboxItem.isPowerOn(stack));
-        setItem(0, BoomboxItem.getCassetteTape(stack));
-        setItem(1, BoomboxItem.getAntenna(stack));
+        setItemNoUpdate(0, BoomboxItem.getCassetteTape(stack));
+        setItemNoUpdate(1, BoomboxItem.getAntenna(stack));
         setBoomboxData(BoomboxItem.getData(stack));
         setPower(BoomboxItem.isPowerOn(stack));
         if (BoomboxItem.getTransferProgress(stack) == 0) {

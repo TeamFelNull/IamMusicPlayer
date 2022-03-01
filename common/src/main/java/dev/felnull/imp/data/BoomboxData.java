@@ -44,11 +44,8 @@ public class BoomboxData {
     private int parabolicAntennaProgress;
     private int antennaProgressOld;
     private int antennaProgress;
-    private ItemStack lastCassetteTape = ItemStack.EMPTY;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
     private boolean changeCassetteTape;
-    private boolean noForceChangeCassetteTape;
-    private boolean noChangeCassetteTape;
     private boolean playing;
     private int volume = 150;
     private boolean loop;
@@ -63,12 +60,14 @@ public class BoomboxData {
     private Music selectedMusic;
     private ContinuousType continuousType = ContinuousType.NONE;
     private boolean radioStartFlg;
+    private boolean noChangeCassetteTape;
 
     public BoomboxData(@NotNull BoomboxData.DataAccess access) {
         this.access = access;
     }
 
     public void tick(Level level) {
+
         this.handleRaisedProgressOld = this.handleRaisedProgress;
         this.lidOpenProgressOld = this.lidOpenProgress;
         this.parabolicAntennaProgressOld = this.parabolicAntennaProgress;
@@ -97,6 +96,7 @@ public class BoomboxData {
 
         if (isPower() && isUseAntenna() && isAntennaExist() && getAntenna().is(IMPItems.PARABOLIC_ANTENNA))
             this.parabolicAntennaProgress += 2;
+
 
         if (!level.isClientSide()) {
             if (getRinger() != null)
@@ -150,10 +150,6 @@ public class BoomboxData {
 
             if (monitorType != MonitorType.RADIO_SELECT)
                 setRadioUrl("");
-
-            if (!ItemStack.matches(this.lastCassetteTape, this.getCassetteTape()))
-                changeCassetteTape(this.lastCassetteTape);
-            this.lastCassetteTape = this.getCassetteTape().copy();
 
             if (this.changeCassetteTape) {
                 if (!isLidOpen())
@@ -313,6 +309,18 @@ public class BoomboxData {
         return null;
     }
 
+    public void onCassetteTapeChange(ItemStack newItem, ItemStack oldItem) {
+        this.oldCassetteTape = oldItem.copy();
+        if (!isRadio()) {
+            setMusicPosition(0);
+            setPlaying(false);
+        }
+        if (!(getCassetteTape().isEmpty() && isLidOpen()))
+            this.changeCassetteTape = true;
+
+        update();
+    }
+
     public CompoundTag save(CompoundTag tag, boolean absolutely, boolean sync) {
         tag.putString("MonitorType", this.monitorType.getName());
         tag.putBoolean("HandleRaising", this.handleRaising);
@@ -342,10 +350,8 @@ public class BoomboxData {
             tag.putInt("ParabolicAntennaProgress", this.parabolicAntennaProgress);
             tag.putInt("AntennaProgressOld", this.antennaProgressOld);
             tag.putInt("AntennaProgress", this.antennaProgress);
-            tag.put("LastCassetteTape", this.lastCassetteTape.save(new CompoundTag()));
-            tag.putBoolean("NoForceChangeCassetteTape", this.noForceChangeCassetteTape);
-            tag.putBoolean("NoChangeCassetteTape", this.noChangeCassetteTape);
             tag.putString("LastMonitorType", this.lastMonitorType.getName());
+            tag.putBoolean("NoChangeCassetteTape", this.noChangeCassetteTape);
         }
 
         if (absolutely || sync) {
@@ -388,10 +394,8 @@ public class BoomboxData {
             this.parabolicAntennaProgress = tag.getInt("ParabolicAntennaProgress");
             this.antennaProgressOld = tag.getInt("AntennaProgressOld");
             this.antennaProgress = tag.getInt("AntennaProgress");
-            this.lastCassetteTape = ItemStack.of(tag.getCompound("LastCassetteTape"));
-            this.noForceChangeCassetteTape = tag.getBoolean("NoForceChangeCassetteTape");
-            this.noChangeCassetteTape = tag.getBoolean("NoChangeCassetteTape");
             this.lastMonitorType = MonitorType.getByName(tag.getString("LastMonitorType"));
+            this.noChangeCassetteTape = tag.getBoolean("NoChangeCassetteTape");
         }
 
         if (absolutely || sync) {
@@ -407,10 +411,14 @@ public class BoomboxData {
             if (this.lidOpen)
                 this.lidOpenProgress = getLidOpenProgressMax();
         }
+    }
 
-        if (!absolutely && !sync) {
-            this.noForceChangeCassetteTape = true;
-        }
+    public void setNoChangeCassetteTape(boolean noChangeCassetteTape) {
+        this.noChangeCassetteTape = noChangeCassetteTape;
+    }
+
+    public boolean isNoChangeCassetteTape() {
+        return noChangeCassetteTape;
     }
 
     public void setRadioSource(MusicSource radioSource) {
@@ -473,7 +481,6 @@ public class BoomboxData {
             if (m != null) {
                 var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
                 if (!ItemStack.matches(nc, getCassetteTape())) {
-                    setNoChangeCassetteTape(true);
                     setCassetteTape(nc);
                 }
             }
@@ -529,25 +536,6 @@ public class BoomboxData {
         return monitorType == MonitorType.REMOTE_PLAYBACK || monitorType == MonitorType.REMOTE_PLAYBACK_SELECT;
     }
 
-    public void changeCassetteTape(ItemStack old) {
-        if (noForceChangeCassetteTape) {
-            noForceChangeCassetteTape = false;
-            return;
-        }
-
-        if (noChangeCassetteTape && CassetteTapeItem.isSameCassetteTape(old, getCassetteTape())) {
-            noChangeCassetteTape = false;
-            return;
-        }
-
-        this.oldCassetteTape = old;
-        if (!isRadio()) {
-            setMusicPosition(0);
-            setPlaying(false);
-        }
-        if (!(getCassetteTape().isEmpty() && isLidOpen()))
-            this.changeCassetteTape = true;
-    }
 
     public void setPower(boolean power) {
         access.setPower(power);
@@ -569,10 +557,6 @@ public class BoomboxData {
         return playing;
     }
 
-    public void setNoChangeCassetteTape(boolean noChangeCassetteTape) {
-        this.noChangeCassetteTape = noChangeCassetteTape;
-        update();
-    }
 
     public void setPlaying(boolean playing) {
         if (canPlay() || !playing) {
@@ -581,20 +565,9 @@ public class BoomboxData {
         }
     }
 
-    public boolean isNoChangeCassetteTape() {
-        return noChangeCassetteTape;
-    }
-
-    public boolean isNoForceChangeCassetteTape() {
-        return noForceChangeCassetteTape;
-    }
 
     public ItemStack getOldCassetteTape() {
         return oldCassetteTape;
-    }
-
-    public ItemStack getLastCassetteTape() {
-        return lastCassetteTape;
     }
 
     public void setMonitorType(MonitorType monitorType) {
@@ -861,7 +834,6 @@ public class BoomboxData {
 
         void dataUpdate(BoomboxData data);
     }
-
 
     public Buttons getButtons() {
         return new Buttons(isRadio(), isPlaying(), !isPlaying() && getMusicPosition() > 0, isLoop(), isMute(), !isMute() && volume >= 300);

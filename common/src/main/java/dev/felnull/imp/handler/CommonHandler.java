@@ -14,7 +14,7 @@ public class CommonHandler {
 
     private static EventResult onEntityTick(Entity entity) {
         if (IamMusicPlayer.CONFIG.dropItemRing && entity instanceof ItemEntity)
-            BoomboxItem.tick(entity.level, entity, ((ItemEntity) entity).getItem());
+            BoomboxItem.tick(entity.level, entity, ((ItemEntity) entity).getItem(), true);
         return EventResult.pass();
     }
 }

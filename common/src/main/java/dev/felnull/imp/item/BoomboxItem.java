@@ -4,13 +4,10 @@ import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.data.BoomboxData;
-import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.item.IInstructionItem;
 import dev.felnull.otyacraftengine.item.ItemContainer;
-import dev.felnull.otyacraftengine.item.location.HandItemLocation;
-import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +20,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Parrot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -50,7 +46,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     @Override
     public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull Entity entity, int i, boolean bl) {
         super.inventoryTick(itemStack, level, entity, i, bl);
-        tick(level, entity, itemStack);
+        tick(level, entity, itemStack, false);
     }
 
     @Override
@@ -64,10 +60,8 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
                 if (player.isCrouching()) {
                     setPowerOn(itemStack, !isPowerOn(itemStack));
                 } else {
-                    if (isPowerOn(itemStack)) {
-                        var loc = new HandItemLocation(interactionHand);
-                        OEMenuUtil.openItemMenu((ServerPlayer) player, ItemContainer.createMenuProvider(itemStack, loc, 2, "BoomboxItems", BoomboxMenu::new), loc, itemStack, 2);
-                    }
+                    if (isPowerOn(itemStack))
+                        BoomboxItemContainer.openContainer((ServerPlayer) player, interactionHand, itemStack);
                 }
             }
             return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
@@ -87,10 +81,8 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
                             setPowerOn(itemStack, !isPowerOn(itemStack));
                         }
                     } else {
-                        if (isPowerOn(itemStack)) {
-                            var loc = new HandItemLocation(blockPlaceContext.getHand());
-                            OEMenuUtil.openItemMenu((ServerPlayer) player, ItemContainer.createMenuProvider(itemStack, loc, 2, "BoomboxItems", BoomboxMenu::new), loc, itemStack, 2);
-                        }
+                        if (isPowerOn(itemStack))
+                            BoomboxItemContainer.openContainer((ServerPlayer) player, blockPlaceContext.getHand(), itemStack);
                     }
                 }
                 return InteractionResult.sidedSuccess(blockPlaceContext.getLevel().isClientSide);
@@ -114,7 +106,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         super.onDestroyed(itemEntity);
     }
 
-    public static void tick(Level level, Entity entity, ItemStack stack) {
+    public static void tick(Level level, Entity entity, ItemStack stack, boolean musicOnly) {
         if (!stack.is(IMPBlocks.BOOMBOX.asItem())) return;
         if (!level.isClientSide()) {
             if (getUUID(stack) == null)
@@ -126,6 +118,8 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
                 mr.addRinger((ServerLevel) level, new BoomboxEntityRinger(entity, uuid));
             }
         }
+
+        if (musicOnly) return;
 
         var data = getData(stack);
         data.tick(level);
@@ -313,7 +307,6 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             d.setPlaying(false);
             d.setMusicPosition(0);
         }
-        d.setNoChangeCassetteTape(true);
         setData(itemStack, d);
         setPowerOn(itemStack, blockEntity.isPower());
         if (blockEntity.isPower()) {
@@ -325,15 +318,6 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         setUUID(itemStack, UUID.randomUUID());
         return itemStack;
     }
-
-    /*
-        @Override
-        public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-            var id = getUUID(itemStack);
-            if (id != null)
-                list.add(new TextComponent(id.toString()));
-        }
-    */
 
     public static boolean checkDuplication(ItemStack stack, Entity entity) {
         var stackId = getUUID(stack);

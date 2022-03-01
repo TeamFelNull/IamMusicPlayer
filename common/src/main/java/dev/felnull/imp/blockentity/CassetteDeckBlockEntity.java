@@ -42,15 +42,12 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     private UUID myPlayerSelectPlaylist;
     private Music music = null;
     private MonitorType monitor = MonitorType.OFF;
-    private ItemStack lastCassetteTape = ItemStack.EMPTY;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
     private final UUID ringerUUID = UUID.randomUUID();
     private boolean changeCassetteTape;
     private boolean lidOpen;
     private int lidOpenProgressOld;
     private int lidOpenProgress;
-    private boolean noChangeCassetteTape;
-    private boolean noChangeMusicCassetteTape;
     private int cassetteWriteProgress;
     private int volume = 150;
     private boolean mute;
@@ -107,13 +104,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
                     blockEntity.setPlaying(false);
             }
 
-            if (!ItemStack.matches(blockEntity.lastCassetteTape, blockEntity.getCassetteTape()))
-                blockEntity.changeCassetteTape(blockEntity.lastCassetteTape);
-
-            blockEntity.lastCassetteTape = blockEntity.getCassetteTape().copy();
-
             if (blockEntity.changeCassetteTape) {
-
                 if (!blockEntity.isLidOpen())
                     blockEntity.startLidOpen(true);
 
@@ -134,13 +125,8 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
 
     private void writeCassetteTape() {
         if (canWriteCassetteTape()) {
-            var ol = getCassetteTape().copy();
             CassetteTapeItem.setMusic(getCassetteTape(), getMusic());
             setChanged();
-            if (!ItemStack.matches(ol, getCassetteTape()))
-                noChangeCassetteTape = true;
-            if (!CassetteTapeItem.isSameCassetteTape(ol, getCassetteTape()))
-                noChangeMusicCassetteTape = true;
         }
     }
 
@@ -154,7 +140,6 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         IMPNbtUtil.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         if (tag.contains("Music"))
             this.music = OENbtUtil.readSerializable(tag, "Music", new Music());
-        noChangeCassetteTape = true;
         this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
         this.volume = tag.getInt("Volume");
         this.mute = tag.getBoolean("Mute");
@@ -198,6 +183,17 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("LoadingMusic", this.loadingMusic);
         return super.getSyncData(player, tag);
+    }
+
+    @Override
+    public void setItem(int i, ItemStack stack) {
+        if (i == 0)
+            onCassetteTapeChange(stack, getCassetteTape());
+        setItemNoChange(i, stack);
+    }
+
+    public void setItemNoChange(int i, ItemStack stack) {
+        super.setItem(i, stack);
     }
 
     public boolean isLoadingMusic() {
@@ -292,10 +288,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     public void setCassetteWriteProgress(int cassetteWriteProgress) {
         this.cassetteWriteProgress = cassetteWriteProgress;
         if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
-            var ol = getCassetteTape().copy();
             CassetteTapeItem.setTapePercentage(getCassetteTape(), (float) cassetteWriteProgress / (float) getCassetteWriteProgressAll());
-            if (!ItemStack.matches(ol, getCassetteTape()))
-                noChangeCassetteTape = true;
         }
         setChanged();
     }
@@ -364,28 +357,13 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         return oldCassetteTape;
     }
 
-    protected void changeCassetteTape(ItemStack old) {
-        boolean ncFlg = false;
-        if (!CassetteTapeItem.isSameCassetteTape(old, getCassetteTape())) {
-            if (monitor == MonitorType.WRITE_EXECUTION)
-                setMonitor(MonitorType.WRITE);
-            ncFlg = true;
-        }
-
-        if (noChangeMusicCassetteTape) {
-            noChangeMusicCassetteTape = false;
-            ncFlg = false;
-        }
-
-        if (noChangeCassetteTape && !ncFlg) {
-            noChangeCassetteTape = false;
-            return;
-        }
-
+    protected void onCassetteTapeChange(ItemStack newItem, ItemStack oldItem) {
+        if (monitor == MonitorType.WRITE_EXECUTION)
+            setMonitor(MonitorType.WRITE);
         setRingerPosition(0);
         setPlaying(false);
 
-        this.oldCassetteTape = old;
+        this.oldCassetteTape = oldItem;
         this.changeCassetteTape = true;
     }
 
@@ -529,9 +507,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
             var m = getRingerMusicSource();
             if (m != null) {
                 var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());
-                if (!ItemStack.matches(nc, getCassetteTape()))
-                    noChangeCassetteTape = true;
-                setItem(0, nc);
+                setItemNoChange(0, nc);
             }
         }
         setChanged();
