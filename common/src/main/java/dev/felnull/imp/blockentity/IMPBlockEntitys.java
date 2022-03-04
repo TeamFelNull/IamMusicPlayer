@@ -1,6 +1,5 @@
 package dev.felnull.imp.blockentity;
 
-import dev.architectury.hooks.block.BlockEntityHooks;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.otyacraftengine.OtyacraftEngine;
@@ -15,8 +14,8 @@ public class IMPBlockEntitys {
     public static final BlockEntityType<CassetteDeckBlockEntity> CASSETTE_DECK = register("cassette_deck", CassetteDeckBlockEntity::new, IMPBlocks.CASSETTE_DECK);
     public static final BlockEntityType<BoomboxBlockEntity> BOOMBOX = register("boombox", BoomboxBlockEntity::new, IMPBlocks.BOOMBOX);
 
-    private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityHooks.Constructor<T> constructor, Block... blocks) {
-        var be = BlockEntityHooks.builder(constructor, blocks).build(null);
+    private static <T extends BlockEntity> BlockEntityType<T> register(String name, BlockEntityType.BlockEntitySupplier<T> constructor, Block... blocks) {
+        var be = BlockEntityType.Builder.of(constructor, blocks).build(null);
         BLOCK_ENTITY_TYPES_REGISTER.register(name, () -> be);
         return be;
     }

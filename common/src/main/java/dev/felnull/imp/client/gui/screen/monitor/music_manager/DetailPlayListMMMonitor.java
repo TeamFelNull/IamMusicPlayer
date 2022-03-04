@@ -1,5 +1,6 @@
 package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
+import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
@@ -12,7 +13,6 @@ import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
-import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
@@ -40,8 +40,8 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     private SmartButton editButton;
     private SmartButton deleteButton;
     private SmartButton exitButton;
-    private RadioButton publishingRadio;
-    private RadioButton initAuthRadio;
+    private SmartRadioButton publishingRadio;
+    private SmartRadioButton initAuthRadio;
     private String cashName;
 
     public DetailPlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
@@ -65,12 +65,12 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         }));
         this.exitButton.visible = !canDelete();
 
-        this.publishingRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 5, getStartY() + 140, 20, 20, getPublishingText(), true, true, () -> new RadioButton[]{}, n -> {
-        }));
+        this.publishingRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 5, getStartY() + 140, getPublishingText(), null, ImmutableSet::of));
+        this.publishingRadio.setChecked(true);
         this.publishingRadio.active = false;
 
-        this.initAuthRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 189, getStartY() + 140, 20, 20, getInitAuthText(), true, true, () -> new RadioButton[]{}, n -> {
-        }));
+        this.initAuthRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 189, getStartY() + 140, getInitAuthText(), null, ImmutableSet::of));
+        this.initAuthRadio.setChecked(true);
         this.initAuthRadio.active = false;
 
         addRenderWidget(new MemberPlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 100, 5, new TranslatableComponent("imp.fixedList.memberPlayers"), memberPlayers, (fixedButtonsList, uuid, i, i1) -> {
