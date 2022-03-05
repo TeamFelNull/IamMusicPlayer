@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class MusicManagerMenu extends OEBEBaseMenu {
 
     public MusicManagerMenu(int windowId, Inventory playerInventory, Container container, BlockPos pos) {
-        super(IMPMenus.MUSIC_MANAGER, windowId, playerInventory, container, pos, -1, -1);
+        super(IMPMenus.MUSIC_MANAGER.get(), windowId, playerInventory, container, pos, -1, -1);
     }
 
     @Override

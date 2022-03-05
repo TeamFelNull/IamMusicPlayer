@@ -37,6 +37,6 @@ public class CassetteDeckBlock extends IMPBaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, IMPBlockEntitys.CASSETTE_DECK, CassetteDeckBlockEntity::tick);
+        return createTickerHelper(blockEntityType, IMPBlockEntitys.CASSETTE_DECK.get(), CassetteDeckBlockEntity::tick);
     }
 }

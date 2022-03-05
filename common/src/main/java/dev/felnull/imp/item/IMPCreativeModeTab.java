@@ -8,5 +8,5 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 public class IMPCreativeModeTab {
-    public static final CreativeModeTab MOD_TAB = CreativeTabRegistry.create(new ResourceLocation(IamMusicPlayer.MODID, IamMusicPlayer.MODID), () -> new ItemStack(IMPBlocks.BOOMBOX));
+    public static final CreativeModeTab MOD_TAB = CreativeTabRegistry.create(new ResourceLocation(IamMusicPlayer.MODID, IamMusicPlayer.MODID), () -> new ItemStack(IMPBlocks.BOOMBOX.get()));
 }

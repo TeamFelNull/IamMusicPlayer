@@ -33,7 +33,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     private final UUID ringerUUID = UUID.randomUUID();
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(IMPBlockEntitys.BOOMBOX, blockPos, blockState);
+        super(IMPBlockEntitys.BOOMBOX.get(), blockPos, blockState);
         this.boomboxData = new BoomboxData(new BoomboxData.DataAccess() {
             @Override
             public ItemStack getCassetteTape() {
@@ -109,11 +109,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
 
     @Override
     protected Component getDefaultName() {
-        return IMPBlocks.BOOMBOX.getName();
+        return IMPBlocks.BOOMBOX.get().getName();
     }
 
     @Override
-    protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
+    protected AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory) {
         return new BoomboxMenu(i, inventory, this, getBlockPos(), ItemStack.EMPTY, null);
     }
 

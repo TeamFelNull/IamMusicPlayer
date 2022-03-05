@@ -9,7 +9,7 @@ import dev.felnull.imp.client.gui.components.PlayersFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.otyacraftengine.client.gui.components.RadioButtonV2;
+import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.util.OEPlayerUtil;
@@ -48,19 +48,19 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        Supplier<Set<RadioButtonV2>> pRdos = () -> ImmutableSet.of(this.publicRadio, this.privateRadio);
+        Supplier<Set<RadioButton>> pRdos = () -> ImmutableSet.of(this.publicRadio, this.privateRadio);
         this.publicRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 5, getStartY() + 140, PUBLIC_RDO_TEXT, n -> setPublishingType(CreatePlayListMMMonitor.PublishingType.PUBLIC), pRdos));
-        this.publicRadio.setChecked(getPublishingType() == CreatePlayListMMMonitor.PublishingType.PUBLIC);
+        this.publicRadio.setSelected(getPublishingType() == CreatePlayListMMMonitor.PublishingType.PUBLIC);
 
         this.privateRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 95, getStartY() + 140, PRIVATE_RDO_TEXT, n -> setPublishingType(CreatePlayListMMMonitor.PublishingType.PRIVATE), pRdos));
-        this.privateRadio.setChecked(getPublishingType() == CreatePlayListMMMonitor.PublishingType.PRIVATE);
+        this.privateRadio.setSelected(getPublishingType() == CreatePlayListMMMonitor.PublishingType.PRIVATE);
 
-        Supplier<Set<RadioButtonV2>> iRdos = () -> ImmutableSet.of(this.initAuthReadOnlyRadio, this.initAuthMemberRadio);
+        Supplier<Set<RadioButton>> iRdos = () -> ImmutableSet.of(this.initAuthReadOnlyRadio, this.initAuthMemberRadio);
         this.initAuthReadOnlyRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 189, getStartY() + 140, READONLY_RDO_TEXT, n -> setInitialAuthority(CreatePlayListMMMonitor.InitialAuthorityType.READ_ONLY), iRdos));
-        this.initAuthReadOnlyRadio.setChecked(getInitialAuthorityType() == CreatePlayListMMMonitor.InitialAuthorityType.READ_ONLY);
+        this.initAuthReadOnlyRadio.setSelected(getInitialAuthorityType() == CreatePlayListMMMonitor.InitialAuthorityType.READ_ONLY);
 
         this.initAuthMemberRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 279, getStartY() + 140, MEMBER_RDO_TEXT, n -> setInitialAuthority(CreatePlayListMMMonitor.InitialAuthorityType.MEMBER), iRdos));
-        this.initAuthMemberRadio.setChecked(getInitialAuthorityType() == CreatePlayListMMMonitor.InitialAuthorityType.MEMBER);
+        this.initAuthMemberRadio.setSelected(getInitialAuthorityType() == CreatePlayListMMMonitor.InitialAuthorityType.MEMBER);
 
         this.invitePlayerByNameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 189, getStartY() + 112, 141, 12, new TranslatableComponent("imp.editBox.invitePlayerByName"));
         this.invitePlayerByNameEditBox.setMaxLength(300);

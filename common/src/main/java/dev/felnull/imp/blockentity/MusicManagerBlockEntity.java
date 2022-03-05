@@ -29,12 +29,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     private CompoundTag myData = new CompoundTag();
 
     public MusicManagerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(IMPBlockEntitys.MUSIC_MANAGER, blockPos, blockState);
+        super(IMPBlockEntitys.MUSIC_MANAGER.get(), blockPos, blockState);
     }
 
     @Override
     protected Component getDefaultName() {
-        return IMPBlocks.MUSIC_MANAGER.getName();
+        return IMPBlocks.MUSIC_MANAGER.get().getName();
     }
 
     @Override

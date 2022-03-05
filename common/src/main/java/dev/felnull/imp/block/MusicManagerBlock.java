@@ -37,6 +37,6 @@ public class MusicManagerBlock extends IMPBaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, IMPBlockEntitys.MUSIC_MANAGER, MusicManagerBlockEntity::tick);
+        return createTickerHelper(blockEntityType, IMPBlockEntitys.MUSIC_MANAGER.get(), MusicManagerBlockEntity::tick);
     }
 }

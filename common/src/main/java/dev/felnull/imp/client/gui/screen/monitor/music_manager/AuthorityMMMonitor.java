@@ -13,7 +13,7 @@ import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
-import dev.felnull.otyacraftengine.client.gui.components.RadioButtonV2;
+import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
@@ -64,19 +64,19 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
             }
         }, n -> n.equals(getSelectedPlayer())));
 
-        Supplier<Set<RadioButtonV2>> rdos = () -> ImmutableSet.of(this.readOnlyRadio, this.memberRadio, this.adminRadio, this.banRadio);
+        Supplier<Set<RadioButton>> rdos = () -> ImmutableSet.of(this.readOnlyRadio, this.memberRadio, this.adminRadio, this.banRadio);
 
         this.readOnlyRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 188, getStartY() + 47, READONLY_RDO_TEXT, n -> sendChangeAuthorityPacket(getSelectedPlayer(), AuthorityInfo.AuthorityType.READ_ONLY), rdos));
-        this.readOnlyRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.READ_ONLY);
+        this.readOnlyRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.READ_ONLY);
 
         this.memberRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 188, getStartY() + 72, MEMBER_RDO_TEXT, n -> sendChangeAuthorityPacket(getSelectedPlayer(), AuthorityInfo.AuthorityType.MEMBER), rdos));
-        this.memberRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.MEMBER);
+        this.memberRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.MEMBER);
 
         this.banRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 188, getStartY() + 97, BAN_RDO_TEXT, n -> sendChangeAuthorityPacket(getSelectedPlayer(), AuthorityInfo.AuthorityType.BAN), rdos));
-        this.banRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.BAN);
+        this.banRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.BAN);
 
         this.adminRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 188, getStartY() + 122, ADMIN_RDO_TEXT, n -> sendChangeAuthorityPacket(getSelectedPlayer(), AuthorityInfo.AuthorityType.ADMIN), rdos));
-        this.adminRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.READ_ONLY);
+        this.adminRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.READ_ONLY);
 
         this.readOnlyRadio.visible = canEdit(getSelectedPlayer());
         this.memberRadio.visible = canEdit(getSelectedPlayer());
@@ -215,10 +215,10 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
 
         this.expulsionButton.visible = canEdit(getSelectedPlayer());
 
-        this.readOnlyRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.READ_ONLY);
-        this.memberRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.MEMBER);
-        this.banRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.BAN);
-        this.adminRadio.setChecked(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.ADMIN);
+        this.readOnlyRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.READ_ONLY);
+        this.memberRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.MEMBER);
+        this.banRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.BAN);
+        this.adminRadio.setSelected(getAuthorityType(getSelectedPlayer()) == AuthorityInfo.AuthorityType.ADMIN);
     }
 
     @Override

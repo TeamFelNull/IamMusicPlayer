@@ -80,7 +80,7 @@ public class BoomboxBlock extends IMPBaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, IMPBlockEntitys.BOOMBOX, BoomboxBlockEntity::tick);
+        return createTickerHelper(blockEntityType, IMPBlockEntitys.BOOMBOX.get(), BoomboxBlockEntity::tick);
     }
 
     @Override

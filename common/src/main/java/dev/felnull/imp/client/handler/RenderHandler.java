@@ -46,7 +46,7 @@ public class RenderHandler {
     }
 
     public static EventResult onRenderItemInHand(PoseStack poseStack, MultiBufferSource multiBufferSource, InteractionHand hand, int packedLight, float partialTicks, float interpolatedPitch, float swingProgress, float equipProgress, ItemStack stack) {
-        if (stack.is(IMPBlocks.BOOMBOX.asItem())) {
+        if (stack.is(IMPBlocks.BOOMBOX.get().asItem())) {
             BoomboxHandRenderer.render(poseStack, multiBufferSource, hand, packedLight, partialTicks, interpolatedPitch, swingProgress, equipProgress, stack);
             return EventResult.interruptFalse();
         }
@@ -54,7 +54,7 @@ public class RenderHandler {
     }
 
     public static EventResult onRenderArmWithItem(ItemInHandLayer<? extends LivingEntity, ? extends EntityModel<?>> itemInHandLayer, LivingEntity livingEntity, ItemStack itemStack, ItemTransforms.TransformType transformType, HumanoidArm humanoidArm, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
-        if (itemStack.is(IMPBlocks.BOOMBOX.asItem()) && BoomboxItem.getTransferProgress(itemStack) >= 1f) {
+        if (itemStack.is(IMPBlocks.BOOMBOX.get().asItem()) && BoomboxItem.getTransferProgress(itemStack) >= 1f) {
             BoomboxHandRenderer.renderArmWithItem(itemInHandLayer, livingEntity, itemStack, transformType, humanoidArm, poseStack, multiBufferSource, i);
             return EventResult.interruptFalse();
         }

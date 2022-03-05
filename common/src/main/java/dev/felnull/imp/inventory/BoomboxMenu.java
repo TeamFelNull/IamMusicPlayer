@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 public class BoomboxMenu extends OEItemBEBaseMenu {
 
     public BoomboxMenu(int i, Inventory playerInventory, Container container, BlockPos pos, ItemStack itemStack, IPlayerItemLocation location) {
-        super(IMPMenus.BOOMBOX, i, playerInventory, container, pos, itemStack, location, 8, 93);
+        super(IMPMenus.BOOMBOX.get(), i, playerInventory, container, pos, itemStack, location, 8, 93);
     }
 
     @Override

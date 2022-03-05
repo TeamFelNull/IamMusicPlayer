@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
 public class CassetteDeckItemRenderer implements BEWLItemRenderer {
-    private final CassetteDeckBlockEntity entity = new CassetteDeckBlockEntity(BlockPos.ZERO, IMPBlocks.CASSETTE_DECK.defaultBlockState());
+    private final CassetteDeckBlockEntity entity = new CassetteDeckBlockEntity(BlockPos.ZERO, IMPBlocks.CASSETTE_DECK.get().defaultBlockState());
 
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float v, int i, int i1) {

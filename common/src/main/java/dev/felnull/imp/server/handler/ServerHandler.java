@@ -40,14 +40,14 @@ public class ServerHandler {
         if (normal || rare) {
             var antennaPoolB = LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(rare ? 0.364364f : 0.1919810f))
-                    .add(LootItem.lootTableItem(IMPItems.PARABOLIC_ANTENNA).setWeight(1))
-                    .add(LootItem.lootTableItem(IMPItems.ANTENNA).setWeight(rare ? 1 : 4));
+                    .add(LootItem.lootTableItem(IMPItems.PARABOLIC_ANTENNA.get()).setWeight(1))
+                    .add(LootItem.lootTableItem(IMPItems.ANTENNA.get()).setWeight(rare ? 1 : 4));
             access.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "antenna"), antennaPoolB);
 
             var djKitPoolB = LootPool.lootPool().setRolls(UniformGenerator.between(1, 3))
                     .when(LootItemRandomChanceCondition.randomChance(0.114514f))
-                    .add(LootItem.lootTableItem(IMPBlocks.BOOMBOX).setWeight(1))
-                    .add(LootItem.lootTableItem(IMPItems.CASSETTE_TAPE).setWeight(rare ? 3 : 6));
+                    .add(LootItem.lootTableItem(IMPBlocks.BOOMBOX.get()).setWeight(1))
+                    .add(LootItem.lootTableItem(IMPItems.CASSETTE_TAPE.get()).setWeight(rare ? 3 : 6));
             access.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "dj_kit"), djKitPoolB);
         }
     }

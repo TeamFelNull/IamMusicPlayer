@@ -18,11 +18,11 @@ public class IMPItemUtil {
     }
 
     public static boolean isRemotePlayBackAntenna(ItemStack stack) {
-        return isAntenna(stack) && stack.is(IMPItems.PARABOLIC_ANTENNA);
+        return isAntenna(stack) && stack.is(IMPItems.PARABOLIC_ANTENNA.get());
     }
 
     public static ItemStack createKamesutaAntenna() {
-        var st = new ItemStack(IMPItems.PARABOLIC_ANTENNA);
+        var st = new ItemStack(IMPItems.PARABOLIC_ANTENNA.get());
         st.setHoverName(new TextComponent("Kamesuta").withStyle(ChatFormatting.GREEN).withStyle(Style.EMPTY.withItalic(false)));
         return st;
     }

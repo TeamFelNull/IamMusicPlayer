@@ -94,7 +94,7 @@ public class BoomboxData {
                 this.lidOpenProgress--;
         }
 
-        if (isPower() && isUseAntenna() && isAntennaExist() && getAntenna().is(IMPItems.PARABOLIC_ANTENNA))
+        if (isPower() && isUseAntenna() && isAntennaExist() && getAntenna().is(IMPItems.PARABOLIC_ANTENNA.get()))
             this.parabolicAntennaProgress += 2;
 
 

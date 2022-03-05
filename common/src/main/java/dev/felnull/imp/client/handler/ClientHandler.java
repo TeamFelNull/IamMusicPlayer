@@ -105,7 +105,7 @@ public class ClientHandler {
 
     private static EventResult onPoseHumanoidArm(HumanoidArm arm, InteractionHand hand, HumanoidModel<? extends LivingEntity> model, LivingEntity livingEntity) {
         var item = livingEntity.getItemInHand(hand);
-        if (item.is(IMPBlocks.BOOMBOX.asItem()) && BoomboxItem.getTransferProgress(item) >= 1f) {
+        if (item.is(IMPBlocks.BOOMBOX.get().asItem()) && BoomboxItem.getTransferProgress(item) >= 1f) {
             BoomboxHandRenderer.pose(arm, model, item);
             return EventResult.interruptFalse();
         }

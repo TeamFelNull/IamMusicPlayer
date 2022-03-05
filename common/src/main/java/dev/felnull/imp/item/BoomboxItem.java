@@ -107,7 +107,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     public static void tick(Level level, Entity entity, ItemStack stack, boolean musicOnly) {
-        if (!stack.is(IMPBlocks.BOOMBOX.asItem())) return;
+        if (!stack.is(IMPBlocks.BOOMBOX.get().asItem())) return;
         if (!level.isClientSide()) {
             if (getUUID(stack) == null)
                 setUUID(stack, UUID.randomUUID());
@@ -299,7 +299,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     public static ItemStack createByBE(BoomboxBlockEntity blockEntity, boolean stopMusic) {
-        var itemStack = new ItemStack(IMPBlocks.BOOMBOX);
+        var itemStack = new ItemStack(IMPBlocks.BOOMBOX.get());
         setContainItem(itemStack, blockEntity.getItems());
         setData(itemStack, blockEntity.getBoomboxData());
         var d = getData(itemStack);

@@ -66,11 +66,11 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         this.exitButton.visible = !canDelete();
 
         this.publishingRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 5, getStartY() + 140, getPublishingText(), null, ImmutableSet::of));
-        this.publishingRadio.setChecked(true);
+        this.publishingRadio.setSelected(true);
         this.publishingRadio.active = false;
 
         this.initAuthRadio = this.addRenderWidget(new SmartRadioButton(getStartX() + 189, getStartY() + 140, getInitAuthText(), null, ImmutableSet::of));
-        this.initAuthRadio.setChecked(true);
+        this.initAuthRadio.setSelected(true);
         this.initAuthRadio.active = false;
 
         addRenderWidget(new MemberPlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 100, 5, new TranslatableComponent("imp.fixedList.memberPlayers"), memberPlayers, (fixedButtonsList, uuid, i, i1) -> {

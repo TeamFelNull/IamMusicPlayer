@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
 public class MusicManagerItemRenderer implements BEWLItemRenderer {
-    private final MusicManagerBlockEntity entity = new MusicManagerBlockEntity(BlockPos.ZERO, IMPBlocks.MUSIC_MANAGER.defaultBlockState());
+    private final MusicManagerBlockEntity entity = new MusicManagerBlockEntity(BlockPos.ZERO, IMPBlocks.MUSIC_MANAGER.get().defaultBlockState());
 
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {

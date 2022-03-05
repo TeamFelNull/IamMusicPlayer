@@ -7,5 +7,6 @@ public class IamMusicPlayerFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         IamMusicPlayer.init();
+        IamMusicPlayer.setup();
     }
 }

@@ -33,4 +33,8 @@ public class IamMusicPlayer {
         ServerHandler.init();
         CommonHandler.init();
     }
+
+    public static void setup() {
+        IMPVillagerProfessions.setup();
+    }
 }

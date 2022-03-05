@@ -16,8 +16,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
 public class BoomboxItemRenderer implements BEWLItemRenderer {
-    private final BoomboxBlockEntity onEntity = new BoomboxBlockEntity(BlockPos.ZERO, IMPBlocks.BOOMBOX.defaultBlockState().setValue(BoomboxBlock.POWERED, true));
-    private final BoomboxBlockEntity offEntity = new BoomboxBlockEntity(BlockPos.ZERO, IMPBlocks.BOOMBOX.defaultBlockState());
+    private final BoomboxBlockEntity onEntity = new BoomboxBlockEntity(BlockPos.ZERO, IMPBlocks.BOOMBOX.get().defaultBlockState().setValue(BoomboxBlock.POWERED, true));
+    private final BoomboxBlockEntity offEntity = new BoomboxBlockEntity(BlockPos.ZERO, IMPBlocks.BOOMBOX.get().defaultBlockState());
 
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {

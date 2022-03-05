@@ -113,6 +113,7 @@ components.java {
         skip()
     }
 }
+
 publishing {
     publications {
         mavenFabric(MavenPublication) {
