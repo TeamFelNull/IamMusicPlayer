@@ -10,9 +10,16 @@ If a kind person translates it, please open an [ Issue or Pull requests ] !
 
 [Templates used for translation](https://github.com/TeamFelnull/IamMusicPlayer/tree/master/common/src/main/resources/assets/iammusicplayer/lang)
 
-# Using Library
+# Using libraries
 
-[LavaPlayer](https://github.com/sedmelluq/lavaplayer) - music playback
+The following libraries are used for this mod,  
+but they are included in the mod's jar file and do not need to be installed separately.
+
+[LavaPlayer](https://github.com/sedmelluq/lavaplayer)  
+[Felnull Java library](https://github.com/TeamFelnull/FelNullJavaLibrary)  
+[Java Youtube Downloader](https://github.com/sealedtx/java-youtube-downloader)  
+[Mp3agic](https://github.com/mpatric/mp3agic)  
+etc..
 
 # Download
 

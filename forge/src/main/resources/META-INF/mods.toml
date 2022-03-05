@@ -22,21 +22,21 @@ catalogueImageIcon = "icon.png"
 [[dependencies.iammusicplayer]]
 modId = "forge"
 mandatory = true
-versionRange = "[39,)"
+versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.1,)"
+versionRange = "[1.18.2,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "architectury"
 mandatory = true
-versionRange = "[3.7.22,)"
+versionRange = "[4.0.29,)"
 ordering = "AFTER"
 side = "BOTH"
 
@@ -44,12 +44,12 @@ side = "BOTH"
 modId = "cloth_config"
 mandatory = true
 versionRange = "[6.2.57,)"
-ordering = "AFTER"
+ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "otyacraftengine"
 mandatory = true
-versionRange = "[2.3,)"
-ordering = "AFTER"
+versionRange = "[2.4,)"
+ordering = "NONE"
 side = "BOTH"
