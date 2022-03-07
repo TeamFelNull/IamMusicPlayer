@@ -323,8 +323,9 @@ public class MusicRing {
         }
 
         private boolean isKamesuta() {
-            var ath = getRinger().getRingerMusicAuthor();
-            return getRinger().getRingerAntenna().getHoverName().getString().equalsIgnoreCase("kamesuta") && ath != null && (ath.equalsIgnoreCase("kamesuta") || ath.equalsIgnoreCase("かめすた") || ath.equalsIgnoreCase("カメスタ"));
+            return false;
+            //var ath = getRinger().getRingerMusicAuthor();
+            //return getRinger().getRingerAntenna().getHoverName().getString().equalsIgnoreCase("kamesuta") && ath != null && (ath.equalsIgnoreCase("kamesuta") || ath.equalsIgnoreCase("かめすた") || ath.equalsIgnoreCase("カメスタ"));
         }
 
         private boolean canListen(Player player) {

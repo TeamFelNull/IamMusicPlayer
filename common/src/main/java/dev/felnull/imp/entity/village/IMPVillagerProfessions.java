@@ -8,7 +8,6 @@ import dev.architectury.registry.registries.RegistrySupplier;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.item.IMPItems;
-import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.util.OERegistryUtil;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -45,6 +44,7 @@ public class IMPVillagerProfessions {
         TradeRegistry.registerVillagerTrade(DJ.get(), 2, OERegistryUtil.createTradeEmeraldForItems(Items.REDSTONE, 12, 15, 2));
         TradeRegistry.registerVillagerTrade(DJ.get(), 3, OERegistryUtil.createTradeEmeraldForItems(Items.JUKEBOX, 1, 5, 20));
 
-        TradeRegistry.registerTradeForWanderingTrader(true, new SimpleTrade(new ItemStack(Items.EMERALD, 42), ItemStack.EMPTY, IMPItemUtil.createKamesutaAntenna(), 1, 10, 0.05f));
+//        TradeRegistry.registerTradeForWanderingTrader(true, new SimpleTrade(new ItemStack(Items.EMERALD, 42), ItemStack.EMPTY, IMPItemUtil.createKamesutaAntenna(), 1, 10, 0.05f));
+        TradeRegistry.registerTradeForWanderingTrader(true, new SimpleTrade(new ItemStack(Items.EMERALD, 42), ItemStack.EMPTY, new ItemStack(IMPItems.PARABOLIC_ANTENNA.get()), 1, 10, 0.05f));
     }
 }

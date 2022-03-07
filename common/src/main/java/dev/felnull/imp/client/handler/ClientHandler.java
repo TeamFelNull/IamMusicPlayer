@@ -17,11 +17,12 @@ import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.FabricOBJLoaderEvent;
+import dev.felnull.otyacraftengine.client.gui.TextureSpecifyLocation;
+import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.SoundOptionsScreen;
 import net.minecraft.client.model.HumanoidModel;
@@ -99,7 +100,7 @@ public class ClientHandler {
             int x = screen.width / 2 - 155 + i % 2 * 160;
             int y = screen.height / 6 - 12 + 22 * (i >> 1);
             screenAccess.addRenderableWidget(new MusicVolumeSlider(x, y, 150));
-            screenAccess.addRenderableWidget(new ImageButton(x + 150 + 4, y, 20, 20, 48, 105, 20, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get()), new TranslatableComponent("imp.button.config")));
+            screenAccess.addRenderableWidget(new IconButton(x + 150 + 4, y, 20, 20, new TranslatableComponent("imp.button.config"), new TextureSpecifyLocation(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
         }
     }
 
