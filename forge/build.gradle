@@ -47,6 +47,9 @@ dependencies {
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
     modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
 
+    modCompileOnly "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}:api"
+    modRuntimeOnly "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}"
+
     shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'org.slf4j', module: 'slf4j-api'
     }

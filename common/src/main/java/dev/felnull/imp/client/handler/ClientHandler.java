@@ -3,6 +3,7 @@ package dev.felnull.imp.client.handler;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
+import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.IamMusicPlayer;
@@ -11,6 +12,7 @@ import dev.felnull.imp.client.gui.components.MusicVolumeSlider;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
+import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.entity.IRingerPartyParrot;
 import dev.felnull.imp.item.BoomboxItem;
@@ -48,6 +50,7 @@ public class ClientHandler {
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
         MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
+        ClientTickEvent.CLIENT_POST.register(ClientHandler::ontClientTick);
     }
 
     private static EventResult onEntityTick(Entity entity) {
@@ -111,5 +114,10 @@ public class ClientHandler {
             return EventResult.interruptFalse();
         }
         return EventResult.pass();
+    }
+
+    private static void ontClientTick(Minecraft instance) {
+        if (IMPItemRenderers.manualItemRenderer != null)
+            IMPItemRenderers.manualItemRenderer.tick();
     }
 }

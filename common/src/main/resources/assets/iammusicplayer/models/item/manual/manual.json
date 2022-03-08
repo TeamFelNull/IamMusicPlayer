@@ -1,0 +1,36 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "iammusicplayer:item/manual/manual_front",
+		"1": "iammusicplayer:item/manual/manual_back",
+		"2": "iammusicplayer:item/manual/manual_side",
+		"3": "iammusicplayer:item/manual/manual_page",
+		"particle": "iammusicplayer:item/manual/manual_front"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [11, 0.125, 16],
+			"faces": {
+				"north": {"uv": [0, 3.75, 13.75, 2.5], "texture": "#2"},
+				"east": {"uv": [0, 2.5, 16, 1.25], "texture": "#2"},
+				"south": {"uv": [13.75, 3.75, 0, 2.5], "texture": "#2"},
+				"west": {"uv": [0, 1.25, 16, 0], "texture": "#2"},
+				"up": {"uv": [11, 16, 0, 0], "texture": "#3"},
+				"down": {"uv": [0, 0, 11, 16], "texture": "#1"}
+			}
+		},
+		{
+			"from": [10, 0.125, 0],
+			"to": [11, 0.25, 16],
+			"faces": {
+				"north": {"uv": [0, 3.75, 1.25, 2.5], "texture": "#2"},
+				"east": {"uv": [0, 2.5, 16, 1.25], "texture": "#2"},
+				"south": {"uv": [0, 3.75, 1.25, 2.5], "texture": "#2"},
+				"west": {"uv": [0, 1.25, 16, 0], "texture": "#2"},
+				"up": {"uv": [1, 16, 0, 0], "texture": "#0"},
+				"down": {"uv": [1, 16, 0, 0], "texture": "#0"}
+			}
+		}
+	]
+}

@@ -37,6 +37,9 @@ public class IMPModels {
 
     public static final ResourceLocation CASSETTE_DECK_LID = new ResourceLocation(IamMusicPlayer.MODID, "block/cassette_deck/cassette_deck_lid");
 
+    public static final ResourceLocation MANUAL = new ResourceLocation(IamMusicPlayer.MODID, "item/manual/manual");
+    public static final ResourceLocation MANUAL_TURNING = new ResourceLocation(IamMusicPlayer.MODID, "item/manual/manual_turning");
+
     public static void init(Consumer<ResourceLocation> addModel) {
         register(MUSIC_MANAGER_ACCESS_LAMP, addModel);
         register(MUSIC_MANAGER_OFF_ACCESS_LAMP, addModel);
@@ -63,6 +66,8 @@ public class IMPModels {
         register(ANTENNA_TOP, addModel);
         register(ANTENNA_ROOT, addModel);
         register(CASSETTE_DECK_LID, addModel);
+        register(MANUAL, addModel);
+        register(MANUAL_TURNING, addModel);
     }
 
     private static void register(ResourceLocation location, Consumer<ResourceLocation> addModel) {

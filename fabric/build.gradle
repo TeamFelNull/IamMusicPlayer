@@ -39,6 +39,7 @@ dependencies {
     modApi "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
     modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
     modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}"
+    modApi "vazkii.patchouli:Patchouli:${rootProject.patchouli_fabric_version}"
 
     shadowIn "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
     //  shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT')
