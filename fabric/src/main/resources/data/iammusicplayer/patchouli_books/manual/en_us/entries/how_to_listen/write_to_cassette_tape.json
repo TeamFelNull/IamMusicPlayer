@@ -1,0 +1,20 @@
+{
+  "name": "Write to cassette tape",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:how_to_listen",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "How to write music to a cassette tape using a cassette deck.$(br)If you have a Parabolic Antenna, this step is not necessary."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/click_write.png",
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/write.png"
+      ],
+      "title": "Start writing",
+      "text": "First, prepare a cassette tape, select the music you want to write from [Write], and press the start icon."
+    }
+  ]
+}

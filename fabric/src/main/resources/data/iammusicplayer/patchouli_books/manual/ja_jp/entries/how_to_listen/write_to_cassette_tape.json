@@ -1,0 +1,20 @@
+{
+  "name": "カセットテープに書き込む",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:how_to_listen",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "カセットデッキを利用しカセットテープに音楽を書き込む方法。$(br)もしパラボラアンテナを持っている場合は、この手順は必要ありません。"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/click_write.png",
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/write.png"
+      ],
+      "title": "書き込み開始",
+      "text": "まずカセットテープを用意して、[書き込み]から書き込みたい音楽を選択し開始アイコンを押してください。"
+    }
+  ]
+}
