@@ -1,6 +1,6 @@
 {
-  "name": "BOOK NAME",
-  "landing_text": "LANDING TEXT",
+  "name": "item.iammusicplayer.manual",
+  "landing_text": "book.imp.landing_text",
   "version": 1,
   "show_progress": false,
   "dont_generate_book": true,
@@ -8,6 +8,6 @@
   "book_texture": "iammusicplayer:textures/gui/patchouli/manual.png",
   "nameplate_color": "FFFFFF",
   "header_color" : "000000",
-  "link_color" : "111111",
-  "link_hover_color": "222222"
+  "link_color" : "4b4b4b",
+  "link_hover_color": "323232"
 }

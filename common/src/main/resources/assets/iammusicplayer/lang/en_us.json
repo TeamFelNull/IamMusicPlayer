@@ -7,7 +7,7 @@
   "item.iammusicplayer.cassette_tape.written": "Written Cassette Tape",
   "item.iammusicplayer.cassette_tape_glass.written": "Written Glass Cassette Tape",
   "item.iammusicplayer.manual": "IMP Manual",
-  "_comment.b": "Block",
+  "_comment.bl": "Block",
   "block.iammusicplayer.music_manager": "Music Manager",
   "block.iammusicplayer.cassette_deck": "Cassette Deck",
   "block.iammusicplayer.boombox": "Boombox",
@@ -259,6 +259,8 @@
   "advancements.iammusicplayer.listen_to_remote_music.description": "Play playlists directly using a parabolic antenna",
   "advancements.iammusicplayer.listen_to_kamesuta.title": "Kame Power!!!",
   "advancements.iammusicplayer.listen_to_kamesuta.description": "Play a video of a kamesuta using a kamesuta antenna",
+  "_comment.bo": "Book",
+  "book.imp.landing_text": "This book describes how to use IamMusicPlayer.$(br2)Please note that the English translation may be incorrect because the creator of this mod is Japanese.$(br2)If you find any bugs in this mod or conflicts with other mods, please let us know in the $(l:https://github.com/TeamFelnull/IamMusicPlayer/issues)GitHub issues$(/l).",
   "_comment.cr": "CreativeTab",
   "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
 }
