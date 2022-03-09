@@ -5,10 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.platform.Platform;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.model.IMPModels;
+import dev.felnull.imp.integration.PatchouliIntegration;
 import dev.felnull.imp.item.ManualItem;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
 import dev.felnull.otyacraftengine.client.util.OEModelUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.integration.PatchouliWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -18,7 +20,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import vazkii.patchouli.api.PatchouliAPI;
 
 public class ManualItemRenderer implements BEWLItemRenderer {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -70,7 +71,7 @@ public class ManualItemRenderer implements BEWLItemRenderer {
         }
         if (mc.isPaused()) return;
         openProgressO = openProgress;
-        if (Platform.isModLoaded("patchouli") && ManualItem.MANUAL_BOOK.equals(PatchouliAPI.get().getOpenBookGui())) {
+        if (PatchouliIntegration.isEnableIntegration() && ManualItem.MANUAL_BOOK.equals(PatchouliWrapper.getOpenBookGui())) {
             openProgress = Math.min(openProgress + 1, 10);
         } else {
             openProgress = Math.max(openProgress - 1, 0);

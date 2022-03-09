@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.renderer.item;
 
 import dev.felnull.imp.block.IMPBlocks;
+import dev.felnull.imp.integration.PatchouliIntegration;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.otyacraftengine.client.renderer.item.ItemRendererRegister;
 
@@ -16,7 +17,7 @@ public class IMPItemRenderers {
         ItemRendererRegister.register(IMPItems.CASSETTE_TAPE, cr);
         ItemRendererRegister.register(IMPItems.CASSETTE_TAPE_GLASS, cr);
         ItemRendererRegister.register(IMPItems.ANTENNA, new AntennaItemRenderer());
-        if (IMPItems.MANUAL != null) {
+        if (PatchouliIntegration.isEnableIntegration() && IMPItems.MANUAL != null) {
             manualItemRenderer = new ManualItemRenderer();
             ItemRendererRegister.register(IMPItems.MANUAL, manualItemRenderer);
         }

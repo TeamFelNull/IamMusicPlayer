@@ -5,7 +5,6 @@ dependencies {
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}"
     modApi "me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}"
     modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine:${rootProject.oe_version}"
-    modApi "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}:api"
 
     implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     implementation "com.sedmelluq:lavaplayer:${rootProject.lava_version}"

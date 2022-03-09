@@ -39,4 +39,8 @@ public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("server")
     public boolean dropItemRing = true;
+
+    @ConfigEntry.Gui.RequiresRestart
+    @ConfigEntry.Category("integration")
+    public boolean patchouliIntegration = true;
 }

@@ -225,6 +225,8 @@
   "text.autoconfig.iammusicplayer.option.maxWaitTime": "Max Wait Time",
   "text.autoconfig.iammusicplayer.option.retryTime": "Retry Time",
   "text.autoconfig.iammusicplayer.option.dropItemRing": "Whether to play in the dropped item",
+  "text.autoconfig.iammusicplayer.category.integration": "Integration",
+  "text.autoconfig.iammusicplayer.option.patchouliIntegration": "Patchouli Integration",
   "_comment.cc": "Config Value",
   "subtitleType.off": "Off",
   "subtitleType.vanilla": "Vanilla",
