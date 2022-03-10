@@ -118,11 +118,11 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
         OERenderUtil.renderTextureSprite(PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 72, 9, i, j, onPxW, onPxH, monitorHeight, ADD_PLAYLIST_TEXT, WIDGETS_TEXTURE, 73, 14, 5, 5, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 72 + 9, 9, i, j, onPxW, onPxH, monitorHeight, ADD_PLAYLIST_TEXT, WIDGETS_TEXTURE, 73, 14, 5, 5, 256, 256);
         renderSmartButtonSprite(poseStack, multiBufferSource, 102, 189, OERenderUtil.MIN_BREADTH * 2, 72, 9, i, j, onPxW, onPxH, monitorHeight, ADD_MUSIC_TEXT, WIDGETS_TEXTURE, 73, 14, 5, 5, 256, 256, getSelectedPlayList(blockEntity) == null);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 73, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 82, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 73 + 9, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 82 + 9, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
 
         renderSmartButtonSprite(poseStack, multiBufferSource, 174, 189, OERenderUtil.MIN_BREADTH * 2, 97, 9, i, j, onPxW, onPxH, monitorHeight, SORT_TYPE_NAME_TEXT, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
         renderSmartButtonSprite(poseStack, multiBufferSource, 271, 189, OERenderUtil.MIN_BREADTH * 2, 88, 9, i, j, onPxW, onPxH, monitorHeight, ORDER_TYPE_DESCENDING_TEXT, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
