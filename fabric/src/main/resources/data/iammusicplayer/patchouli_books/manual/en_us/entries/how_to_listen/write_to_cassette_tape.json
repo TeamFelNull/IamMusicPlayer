@@ -2,6 +2,7 @@
   "name": "Write to cassette tape",
   "icon": "iammusicplayer:cassette_deck",
   "category": "iammusicplayer:how_to_listen",
+  "sortnum": 1,
   "pages": [
     {
       "type": "patchouli:text",

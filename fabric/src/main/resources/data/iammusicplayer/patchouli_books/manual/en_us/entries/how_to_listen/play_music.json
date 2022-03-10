@@ -1,0 +1,20 @@
+{
+  "name": "Play music",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:how_to_listen",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "How to play music on a boombox."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/play_music/boombox_set_cassette_tape.png"
+      ],
+      "title": "Set the cassette tape",
+      "text": "Set the boombox and press the play button."
+    }
+  ]
+}

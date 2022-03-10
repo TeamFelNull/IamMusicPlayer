@@ -2,6 +2,7 @@
   "name": "Add playlists and music",
   "icon": "iammusicplayer:music_manager",
   "category": "iammusicplayer:how_to_listen",
+  "sortnum": 0,
   "pages": [
     {
       "type": "patchouli:text",

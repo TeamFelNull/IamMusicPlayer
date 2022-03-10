@@ -1,0 +1,20 @@
+{
+  "name": "音楽を再生",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:how_to_listen",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "ラジカセで音楽を再生する方法。"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/play_music/boombox_set_cassette_tape.png"
+      ],
+      "title": "カセットテープをセットする",
+      "text": "ラジカセにカセットテープをセットし、再生ボタンを押します。"
+    }
+  ]
+}

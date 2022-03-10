@@ -2,6 +2,7 @@
   "name": "カセットテープに書き込む",
   "icon": "iammusicplayer:cassette_deck",
   "category": "iammusicplayer:how_to_listen",
+  "sortnum": 1,
   "pages": [
     {
       "type": "patchouli:text",

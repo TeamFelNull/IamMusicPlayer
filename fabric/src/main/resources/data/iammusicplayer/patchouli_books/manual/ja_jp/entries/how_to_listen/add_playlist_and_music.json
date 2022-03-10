@@ -2,6 +2,7 @@
   "name": "プレイリストと音楽を追加",
   "icon": "iammusicplayer:music_manager",
   "category": "iammusicplayer:how_to_listen",
+  "sortnum": 0,
   "pages": [
     {
       "type": "patchouli:text",

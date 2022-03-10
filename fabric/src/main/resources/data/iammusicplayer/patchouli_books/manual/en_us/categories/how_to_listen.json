@@ -1,5 +1,6 @@
 {
     "name": "How to listen",
     "description": "Explain how to play and listen to music",
-    "icon": "iammusicplayer:boombox"
+    "icon": "iammusicplayer:boombox",
+    "sortnum": 0
 }
