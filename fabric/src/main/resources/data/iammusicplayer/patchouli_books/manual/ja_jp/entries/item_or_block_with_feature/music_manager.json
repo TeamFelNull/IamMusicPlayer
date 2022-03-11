@@ -15,8 +15,7 @@
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "iammusicplayer:music_manager",
-      "title": "作成の方法"
+      "recipe": "iammusicplayer:music_manager"
     }
   ]
 }

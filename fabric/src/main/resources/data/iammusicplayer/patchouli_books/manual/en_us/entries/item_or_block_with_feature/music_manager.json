@@ -15,8 +15,7 @@
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "iammusicplayer:music_manager",
-      "title": "How to craft"
+      "recipe": "iammusicplayer:music_manager"
     }
   ]
 }
