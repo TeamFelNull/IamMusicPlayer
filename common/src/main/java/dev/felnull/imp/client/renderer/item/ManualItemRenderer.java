@@ -86,7 +86,7 @@ public class ManualItemRenderer implements BEWLItemRenderer {
         renderText(poseStack, multiBufferSource, MANUAL_TEXT, light, 4.225f / 2f, 15.75f, 0.54f, true, 0xFFFFFFFF);
         renderText(poseStack, multiBufferSource, MOD_NAME_TEXT, light, 9.85f, 14.5f, 0.7f, false, 0);
         renderText(poseStack, multiBufferSource, MOD_VERSION_TEXT, light, 9.85f, 13.5f, 0.4f, false, 0);
-        renderText(poseStack, multiBufferSource, COVER_INFO_TEXT, light, 11f / 2f, 12, 0.475f, true, 0);
+        renderText(poseStack, multiBufferSource, COVER_INFO_TEXT, light, 11f / 2f, 12, 0.4f, true, 0);
         poseStack.popPose();
     }
 

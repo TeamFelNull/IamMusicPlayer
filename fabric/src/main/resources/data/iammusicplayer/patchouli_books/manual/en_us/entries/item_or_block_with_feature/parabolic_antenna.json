@@ -1,0 +1,18 @@
+{
+  "name": "Parabolic Antenna",
+  "icon": "iammusicplayer:parabolic_antenna",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "You can play it without having to write it on a cassette tape!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:parabolic_antenna",
+      "link_recipe": true,
+      "text": "Set it in the antenna slot of the boombox and press the radio button to display the playlist.$(br)Select the music you want to play from the playlist and it will start playing$(br)There are no crafting recipes and can be obtained by trading with DJ villagers or by loot chests."
+    }
+  ]
+}
