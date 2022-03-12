@@ -40,6 +40,6 @@
     "minecraft": ">=1.18.2",
     "architectury": ">=4.0.29",
     "cloth-config2": ">=6.2.57",
-    "otyacraftengine": ">=2.5"
+    "otyacraftengine": ">=2.6"
   }
 }
