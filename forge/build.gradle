@@ -1,7 +1,9 @@
+import com.modrinth.minotaur.dependencies.ModDependency
+
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.modrinth.minotaur" version "2.0.2"
 }
 loom {
     forge {
@@ -182,6 +184,7 @@ curseforge {
                 requiredDependency "cloth-config-forge"
                 requiredDependency "architectury-forge"
                 requiredDependency "otyacraft-engine"
+                optionalDependency "patchouli"
             }
 
             mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")) {
@@ -199,15 +202,18 @@ curseforge {
 }
 
 if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
-    task publishModrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
+    modrinth {
         token = System.getenv('modrinthapikey')
         projectId = "${rootProject.modrinth_id}"
         versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
         versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Forge"
         uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")
         versionType = "${project.release_type}".toUpperCase()
-        addGameVersion("${rootProject.minecraft_version}")
-        addLoader("forge")
-        addGameVersion "${rootProject.minecraft_version}"
+        gameVersions = ["${rootProject.minecraft_version}"]
+        loaders = ["forge"]
+        dependencies = [
+                new ModDependency("iu3upNjC", "required"),
+                new ModDependency("nU0bVIaL", "optional")
+        ]
     }
 }
