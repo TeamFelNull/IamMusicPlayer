@@ -70,7 +70,7 @@ public class YoutubeUtils {
 
     public static String getYoutubeMa4DirectLink(String videoID) {
         VideoInfo video = youtubeDownloader.getVideoInfo(new RequestVideoInfo(videoID)).data();
-        if (video != null)
+        if (video != null && video.bestAudioFormat() != null && video.bestAudioFormat().url() != null)
             return video.bestAudioFormat().url();
         return null;
     }
