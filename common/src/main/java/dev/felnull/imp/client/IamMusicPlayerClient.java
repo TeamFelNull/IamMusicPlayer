@@ -14,7 +14,10 @@ import dev.felnull.imp.client.music.subtitle.IMPMusicSubtitles;
 import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
 import dev.felnull.imp.client.renderer.blockentity.IMPBlockEntityRenderers;
 import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
+import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.otyacraftengine.client.gui.screen.debug.RenderTestScreen;
+import dev.felnull.otyacraftengine.client.gui.screen.debug.rendertest.ItemRenderTest;
 
 public class IamMusicPlayerClient {
     public static void init() {
