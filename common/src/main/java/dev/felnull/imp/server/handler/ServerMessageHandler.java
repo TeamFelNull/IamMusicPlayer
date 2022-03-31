@@ -3,6 +3,7 @@ package dev.felnull.imp.server.handler;
 import dev.architectury.networking.NetworkManager;
 import dev.architectury.utils.GameInstance;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
+import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
@@ -14,7 +15,20 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.*;
 
 public class ServerMessageHandler {
-    public static void onMusicPlayListChangeAuthority(IMPPackets.MusicPlayListChangeAuthority message, NetworkManager.PacketContext packetContext) {
+    public static void onHandLidCycleMessage(IMPPackets.LidCycleMessage message, NetworkManager.PacketContext packetContext) {
+        packetContext.queue(() -> {
+            var item = message.itemLocation.getItem(packetContext.getPlayer());
+            if (item.getItem() instanceof BoomboxItem) {
+                var id = BoomboxItem.getUUID(item);
+                if (id == null || !id.equals(message.boomboxId)) return;
+                var data = BoomboxItem.getData(item);
+                data.cycleLidOpen(packetContext.getPlayer().level);
+                BoomboxItem.setData(item, data);
+            }
+        });
+    }
+
+    public static void onMusicPlayListChangeAuthority(IMPPackets.MusicPlayListChangeAuthorityMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
             if (message.blockEntityExistence.check(player.getLevel()))

@@ -153,7 +153,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
         if (playerID == null) return;
         var ps = getSelectedMusicPlayList();
         if (ps != null)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_CHANGE_AUTHORITY, new IMPPackets.MusicPlayListChangeAuthority(ps.getUuid(), playerID, type, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
+            NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_CHANGE_AUTHORITY, new IMPPackets.MusicPlayListChangeAuthorityMessage(ps.getUuid(), playerID, type, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
     }
 
     protected AuthorityInfo.AuthorityType getAuthorityType(UUID playerId) {

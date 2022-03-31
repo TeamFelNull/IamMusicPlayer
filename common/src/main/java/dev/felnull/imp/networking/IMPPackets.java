@@ -7,6 +7,8 @@ import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.*;
 import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.util.IMPNbtUtil;
+import dev.felnull.otyacraftengine.item.location.IPlayerItemLocation;
+import dev.felnull.otyacraftengine.item.location.PlayerItemLocations;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import dev.felnull.otyacraftengine.networking.PacketMessage;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
@@ -32,18 +34,20 @@ public class IMPPackets {
     public static final ResourceLocation MUSIC_RING_STATE = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_state");
     public static final ResourceLocation MUSIC_RING_UPDATE_RESULT = new ResourceLocation(IamMusicPlayer.MODID, "music_ring_update_result");
     public static final ResourceLocation MULTIPLE_MUSIC_ADD = new ResourceLocation(IamMusicPlayer.MODID, "multiple_music_add");
+    public static final ResourceLocation HAND_LID_CYCLE = new ResourceLocation(IamMusicPlayer.MODID, "hand_lid_cycle");
 
     public static void init() {
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_SYNC, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicSyncRequestMessage(new MusicSyncRequestMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListAddMessage(new MusicPlayListMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_EDIT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListEditMessage(new MusicPlayListMessage(friendlyByteBuf), packetContext));
-        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_CHANGE_AUTHORITY, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListChangeAuthority(new MusicPlayListChangeAuthority(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_PLAYLIST_CHANGE_AUTHORITY, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicPlayListChangeAuthority(new MusicPlayListChangeAuthorityMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicAddMessage(new MusicMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_EDIT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicEditMessage(new MusicMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_READY_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicReadyResultMessage(new MusicRingReadyResultMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_RING_UPDATE_RESULT, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicUpdateResultMessage(new MusicRingUpdateResultMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MUSIC_OR_PLAYLIST_DELETE, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMusicOrPlayListDeleteMessage(new MusicOrPlayListDeleteMessage(friendlyByteBuf), packetContext));
         NetworkManager.registerReceiver(NetworkManager.c2s(), MULTIPLE_MUSIC_ADD, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onMultipleMusicAdd(new MultipleMusicAddMessage(friendlyByteBuf), packetContext));
+        NetworkManager.registerReceiver(NetworkManager.c2s(), HAND_LID_CYCLE, (friendlyByteBuf, packetContext) -> ServerMessageHandler.onHandLidCycleMessage(new LidCycleMessage(friendlyByteBuf), packetContext));
     }
 
     public static void clientInit() {
@@ -52,20 +56,44 @@ public class IMPPackets {
         NetworkManager.registerReceiver(NetworkManager.s2c(), MUSIC_RING_STATE, (friendlyByteBuf, packetContext) -> ClientMessageHandler.onMusicRingStateResponseMessage(new MusicRingStateMessage(friendlyByteBuf), packetContext));
     }
 
-    public static class MusicPlayListChangeAuthority implements PacketMessage {
+    public static class LidCycleMessage implements PacketMessage {
+        public final UUID boomboxId;
+        public final IPlayerItemLocation itemLocation;
+
+        public LidCycleMessage(FriendlyByteBuf buf) {
+            this.boomboxId = buf.readUUID();
+            this.itemLocation = PlayerItemLocations.create(buf.readResourceLocation(), buf.readNbt());
+        }
+
+        public LidCycleMessage(UUID boomboxId, IPlayerItemLocation itemLocation) {
+            this.boomboxId = boomboxId;
+            this.itemLocation = itemLocation;
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB() {
+            var buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(this.boomboxId);
+            buf.writeResourceLocation(this.itemLocation.getResourceLocation());
+            buf.writeNbt(this.itemLocation.toTag());
+            return buf;
+        }
+    }
+
+    public static class MusicPlayListChangeAuthorityMessage implements PacketMessage {
         public final UUID playlist;
         public final UUID player;
         public final AuthorityInfo.AuthorityType authorityType;
         public final BlockEntityExistence blockEntityExistence;
 
-        public MusicPlayListChangeAuthority(FriendlyByteBuf bf) {
+        public MusicPlayListChangeAuthorityMessage(FriendlyByteBuf bf) {
             this.playlist = bf.readUUID();
             this.player = bf.readUUID();
             this.authorityType = AuthorityInfo.AuthorityType.getByName(bf.readUtf());
             this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
         }
 
-        public MusicPlayListChangeAuthority(UUID playlist, UUID player, AuthorityInfo.AuthorityType authorityType, BlockEntityExistence blockEntityExistence) {
+        public MusicPlayListChangeAuthorityMessage(UUID playlist, UUID player, AuthorityInfo.AuthorityType authorityType, BlockEntityExistence blockEntityExistence) {
             this.playlist = playlist;
             this.player = player;
             this.authorityType = authorityType;

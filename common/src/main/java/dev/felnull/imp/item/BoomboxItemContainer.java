@@ -22,6 +22,18 @@ public class BoomboxItemContainer extends ItemContainer {
     }
 
     @Override
+    public ItemStack removeItem(int i, int j) {
+        if (i == 0) {
+            var old = getItem(0).copy();
+            var ret = super.removeItem(i, j);
+            var data = BoomboxItem.getData(getItemStack());
+            data.setOldCassetteTape(old);
+            return ret;
+        }
+        return super.removeItem(i, j);
+    }
+
+    @Override
     public void setItem(int i, ItemStack stack) {
         if (i == 0) {
             var data = BoomboxItem.getData(getItemStack());

@@ -45,6 +45,7 @@ public class BoomboxData {
     private int antennaProgressOld;
     private int antennaProgress;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
+    private boolean oldCassetteTapeFlg;
     private boolean changeCassetteTape;
     private boolean playing;
     private int volume = 150;
@@ -310,14 +311,22 @@ public class BoomboxData {
     }
 
     public void onCassetteTapeChange(ItemStack newItem, ItemStack oldItem) {
-        this.oldCassetteTape = oldItem.copy();
+        if (!oldCassetteTapeFlg)
+            this.oldCassetteTape = oldItem.copy();
+        oldCassetteTapeFlg = false;
+
         if (!isRadio()) {
             setMusicPosition(0);
             setPlaying(false);
         }
-        if (!(getCassetteTape().isEmpty() && isLidOpen()))
+        if (!(newItem.isEmpty() && isLidOpen()))
             this.changeCassetteTape = true;
+        update();
+    }
 
+    public void setOldCassetteTape(ItemStack oldCassetteTape) {
+        this.oldCassetteTape = oldCassetteTape;
+        this.oldCassetteTapeFlg = true;
         update();
     }
 
@@ -357,6 +366,7 @@ public class BoomboxData {
         if (absolutely || sync) {
             tag.putBoolean("ChangeCassetteTape", this.changeCassetteTape);
             tag.put("OldCassetteTape", this.oldCassetteTape.save(new CompoundTag()));
+            tag.putBoolean("OldCassetteTapeFlg", oldCassetteTapeFlg);
             tag.putBoolean("LoadingMusic", this.loadingMusic);
             tag.putBoolean("RadioStartFlg", this.radioStartFlg);
         }
@@ -401,6 +411,7 @@ public class BoomboxData {
         if (absolutely || sync) {
             this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
             this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
+            this.oldCassetteTapeFlg = tag.getBoolean("OldCassetteTapeFlg");
             this.loadingMusic = tag.getBoolean("LoadingMusic");
             this.radioStartFlg = tag.getBoolean("RadioStartFlg");
         }

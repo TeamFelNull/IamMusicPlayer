@@ -5,6 +5,7 @@ import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.hooks.client.screen.ScreenAccess;
+import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.IMPBlocks;
@@ -16,12 +17,14 @@ import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.entity.IRingerPartyParrot;
 import dev.felnull.imp.item.BoomboxItem;
+import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.FabricOBJLoaderEvent;
 import dev.felnull.otyacraftengine.client.gui.TextureSpecifyLocation;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
+import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.client.Minecraft;
@@ -37,6 +40,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ClientHandler {
     private static final Minecraft mc = Minecraft.getInstance();
@@ -51,6 +55,19 @@ public class ClientHandler {
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
         MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
         ClientTickEvent.CLIENT_POST.register(ClientHandler::ontClientTick);
+        ClientEvent.HAND_ATTACK.register(ClientHandler::onHandAttack);
+    }
+
+    private static EventResult onHandAttack(@NotNull ItemStack itemStack) {
+        if (itemStack.getItem() instanceof BoomboxItem && BoomboxItem.isPowerOn(itemStack)) {
+            if (mc.player.isCrouching()) {
+                var bu = BoomboxItem.getUUID(itemStack);
+                if (bu != null)
+                    NetworkManager.sendToServer(IMPPackets.HAND_LID_CYCLE, new IMPPackets.LidCycleMessage(bu, new HandItemLocation(InteractionHand.MAIN_HAND)).toFBB());
+            }
+            return EventResult.interruptFalse();
+        }
+        return EventResult.pass();
     }
 
     private static EventResult onEntityTick(Entity entity) {
