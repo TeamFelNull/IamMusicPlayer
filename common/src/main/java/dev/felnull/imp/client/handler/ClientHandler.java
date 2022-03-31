@@ -50,7 +50,7 @@ public class ClientHandler {
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(ClientHandler::onClientLevelLoad);
         ClientEvent.CHANGE_HAND_HEIGHT.register(ClientHandler::changeHandHeight);
         ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
-        AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
+        AutoConfig.getConfigHolder((Class<IMPConfig>) IamMusicPlayer.CONFIG.getClass()).registerSaveListener(ClientHandler::onConfigSave);
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
         MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
