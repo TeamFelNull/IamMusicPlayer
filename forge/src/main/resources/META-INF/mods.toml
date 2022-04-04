@@ -36,7 +36,7 @@ side = "BOTH"
 [[dependencies.iammusicplayer]]
 modId = "architectury"
 mandatory = true
-versionRange = "[4.0.29,)"
+versionRange = "[4.1.32,)"
 ordering = "AFTER"
 side = "BOTH"
 
