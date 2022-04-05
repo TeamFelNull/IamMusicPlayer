@@ -1,0 +1,21 @@
+{
+  "name": "刻录在磁带上",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:how_to_listen",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "如何把音乐刻录在一个$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)盒式磁带上$(/l)用一个$(l:iammusicplayer:item_or_block_with_feature/cassette_deck)盒式磁带堆$(/l)。$(br)如果你有一个$(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)抛物面天线$(/l), 这个步骤是不必要的。"
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/click_write.png",
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/write.png"
+      ],
+      "title": "开始刻录",
+      "text": "首先,准备一个$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)盒式磁带$(/l),从[刻录]中选择你想要刻录的音乐，并按开始图标。"
+    }
+  ]
+}
