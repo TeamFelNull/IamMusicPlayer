@@ -1,0 +1,21 @@
+{
+  "name": "盒式磁带堆",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "需要刻录音乐的设备$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)$(/l)盒式磁带。$(br)请参考$(l:iammusicplayer:how_to_listen/write_to_cassette_tape)刻录盒式磁带$(/l)刻录方法。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_deck",
+      "text": "除了写音乐，你还可以演奏来自$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)盒式磁带$(/l)"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_deck"
+    }
+  ]
+}

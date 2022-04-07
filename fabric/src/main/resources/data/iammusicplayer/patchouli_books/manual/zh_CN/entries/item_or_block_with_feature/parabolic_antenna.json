@@ -1,0 +1,18 @@
+{
+  "name": "抛物面天线",
+  "icon": "iammusicplayer:parabolic_antenna",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "你可以不把它刻录在磁带上就能播放它!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:parabolic_antenna",
+      "link_recipe": true,
+      "text": "将其设置在扬声器的天线槽中，按选择按钮显示播放列表。$(br)从播放列表中选择你想要播放的音乐，它就会开始播放$(br)没有合成配方,可以通过与DJ村民交易或通过战利品箱获得。"
+    }
+  ]
+}
