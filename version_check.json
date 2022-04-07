@@ -25,14 +25,14 @@
     "1.0": "The Frist Release."
   },
   "promos": {
-    "1.18.2-latest": "3.7",
-    "1.18.2-recommended": "3.7",
+    "1.18.2-latest": "3.10",
+    "1.18.2-recommended": "3.10",
     "1.18.1-latest": "3.4",
     "1.18.1-recommended": "3.4",
     "1.17.1-latest": "3.0",
     "1.17.1-recommended": "3.0",
-    "1.16.5-latest": "2.8",
-    "1.16.5-recommended": "2.8",
+    "1.16.5-latest": "2.10",
+    "1.16.5-recommended": "2.10",
     "1.16.1-latest": "1.4",
     "1.16.1-recommended": "1.4",
     "1.15.2-latest": "1.2",
