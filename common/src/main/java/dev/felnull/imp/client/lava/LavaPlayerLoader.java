@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public class LavaPlayerLoader {
     private static final Logger LOGGER = LogManager.getLogger(LavaPlayerLoader.class);
-    private static final String LAVA_VERSION = "lava-1.3.78";
+    private static final String LAVA_VERSION = "lava-walkyst-fork-1.3.97";
 
     public static void init() {
         NativeLibraryLoader[] loaders = null;

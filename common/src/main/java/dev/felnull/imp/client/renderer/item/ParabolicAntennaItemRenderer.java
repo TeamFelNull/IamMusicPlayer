@@ -16,10 +16,9 @@ public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
 
         var antenaName = IMPModels.PARABOLIC_ANTENNA;
         var name = itemStack.getHoverName().getString();
-     /*   if (name.equalsIgnoreCase("kamesuta")) {
+        if (name.equalsIgnoreCase("kamesuta")) {
             antenaName = IMPModels.KAMESUTA_ANTENNA;
-        } else*/
-        if (name.equalsIgnoreCase("ikisugi")) {
+        } else if (name.equalsIgnoreCase("ikisugi")) {
             antenaName = IMPModels.IKISUGI_ANTENNA;
         } else if (name.equalsIgnoreCase("f.c.o.h") || name.equalsIgnoreCase("fcoh")) {
             antenaName = IMPModels.FCOH_ANTENNA;
