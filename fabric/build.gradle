@@ -41,7 +41,7 @@ dependencies {
     modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}"
     modApi "vazkii.patchouli:Patchouli:${rootProject.patchouli_fabric_version}"
 
-    shadowIn "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
+    shadowIn "com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}"
     //  shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT')
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
@@ -58,30 +58,30 @@ processResources {
 }
 shadowJar {
     configurations = [project.configurations.shadowIn]
-    relocate 'org.slf4j', 'dev.felnull.imp.libs.org.slf4j'
-    relocate 'certificates', 'dev.felnull.imp.libs.certificates'
-    relocate 'com.fasterxml', 'dev.felnull.imp.libs.com.fasterxml'
-    relocate 'org.jsoup', 'dev.felnull.imp.libs.org.jsoup'
-    relocate 'natives', 'dev.felnull.imp.libs.natives'
-    relocate 'mozilla', 'dev.felnull.imp.libs.mozilla'
-    relocate 'net.iharder', 'dev.felnull.imp.libs.net.iharder'
-    relocate 'com.sedmelluq.lava', 'dev.felnull.imp.libs.com.sedmelluq.lava'
-    relocate 'org.apache.http', 'dev.felnull.imp.libs.org.apache.http'
-    relocate('org.apache.commons', 'dev.felnull.imp.libs.org.apache.commons') {
+    relocate 'org.slf4j', 'dev.felnull.imp.include.org.slf4j'
+    relocate 'certificates', 'dev.felnull.imp.include.certificates'
+    relocate 'com.fasterxml', 'dev.felnull.imp.include.com.fasterxml'
+    relocate 'org.jsoup', 'dev.felnull.imp.include.org.jsoup'
+    relocate 'natives', 'dev.felnull.imp.include.natives'
+    relocate 'mozilla', 'dev.felnull.imp.include.mozilla'
+    relocate 'net.iharder', 'dev.felnull.imp.include.net.iharder'
+    relocate 'com.sedmelluq.lava', 'dev.felnull.imp.include.com.sedmelluq.lava'
+    relocate 'org.apache.http', 'dev.felnull.imp.include.org.apache.http'
+    relocate('org.apache.commons', 'dev.felnull.imp.include.org.apache.commons') {
         include 'org.apache.commons.logging.**'
         include 'org.apache.commons.io.**'
         include 'org.apache.commons.codec.**'
     }
-    relocate 'com.github', 'dev.felnull.imp.libs.com.github'
-    relocate 'com.alibaba', 'dev.felnull.imp.libs.com.alibaba'
-    relocate 'dev.felnull.fnjl', 'dev.felnull.imp.libs.dev.felnull.fnjl'
-    relocate 'com.mpatric', 'dev.felnull.imp.libs.com.mpatric'
-    relocate('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.libs.com.sedmelluq.discord.lavaplayer') {
+    relocate 'com.github', 'dev.felnull.imp.include.com.github'
+    relocate 'com.alibaba', 'dev.felnull.imp.include.com.alibaba'
+    relocate 'dev.felnull.fnjl', 'dev.felnull.imp.include.dev.felnull.fnjl'
+    relocate 'com.mpatric', 'dev.felnull.imp.include.com.mpatric'
+    relocate('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.include.com.sedmelluq.discord.lavaplayer') {
         exclude 'com.sedmelluq.discord.lavaplayer.natives.**'
     }
     mergeServiceFiles {
-        relocate 'javax.ws.rs.ext', 'dev.felnull.imp.libs.javax.ws.rs.ext'
-        relocate 'org.glassfish.jersey.internal.spi', 'dev.felnull.imp.libs.org.glassfish.jersey.internal.spi'
+        relocate 'javax.ws.rs.ext', 'dev.felnull.imp.include.javax.ws.rs.ext'
+        relocate 'org.glassfish.jersey.internal.spi', 'dev.felnull.imp.include.org.glassfish.jersey.internal.spi'
     }
 }
 shadowJar {

@@ -16,6 +16,7 @@ The following libraries are used for this mod,
 but they are included in the mod's jar file and do not need to be installed separately.
 
 [LavaPlayer](https://github.com/sedmelluq/lavaplayer)  
+[LavaPlayer (fork)](https://github.com/walkyst/lavaplayer-fork)   
 [LavaPLayerNatives (macOS M1)](https://github.com/aikaterna/lavaplayer-natives)  
 [Felnull Java library](https://github.com/TeamFelnull/FelNullJavaLibrary)  
 [Java Youtube Downloader](https://github.com/sealedtx/java-youtube-downloader)  

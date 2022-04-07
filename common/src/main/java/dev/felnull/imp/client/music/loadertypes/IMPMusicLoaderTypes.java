@@ -12,13 +12,13 @@ public class IMPMusicLoaderTypes {
     private static final Map<String, IMusicLoaderType> LOADER_TYPES = new LinkedHashMap<>();
     public static AudioPlayerManager allAudioPlayerManager;
     public static final String YOUTUBE = "youtube";
-    // public static final String SOUNDCLOUD = "soundcloud";
+    public static final String SOUNDCLOUD = "soundcloud";
     public static final String HTTP = "http";
     //  public static final String NICONICO = "niconico";
 
     public static void init() {
         registerLoaderType(YOUTUBE, new YoutubeMusicLoaderType());
-        //    registerLoaderType(SOUNDCLOUD, new SoundCloudMusicLoaderType());
+        registerLoaderType(SOUNDCLOUD, new SoundCloudMusicLoaderType());
         registerLoaderType(HTTP, new HttpURLMusicLoaderType());
         //   registerLoaderType(NICONICO, new NicoNicoMusicLoaderType());
     }
