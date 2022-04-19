@@ -1,0 +1,23 @@
+{
+  "1": {
+    "darwin": {
+      "url": "",
+      "hash": ""
+    },
+    "darwin-aarch64": {
+      "url": "",
+      "hash": ""
+    },
+    "linux-x86-64": {
+      "url": "",
+      "hash": ""
+    },
+    "win-x86-64": {
+      "url": "",
+      "hash": {
+        "libmpg123-0.dll": "",
+        "connector.dll": ""
+      }
+    }
+  }
+}
