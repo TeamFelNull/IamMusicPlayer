@@ -8,6 +8,8 @@ import dev.felnull.fnjl.util.FNDataUtil;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.URL;
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class LavaNativeManager {
+    private static final Logger LOGGER = LogManager.getLogger(LavaNativeManager.class);
     private static final Gson GSON = new Gson();
     private static final LavaNativeManager INSTANCE = new LavaNativeManager();
     private static final String nativesVersion = "1";
@@ -27,11 +30,16 @@ public class LavaNativeManager {
         var npF = LavaPlayerLoader.getNaiveLibraryFolder().resolve(osAndArch).toFile();
         if (!checked(npF)) {
             try {
+                LOGGER.info("LavaPlayer natives download start");
                 downloadNatives(osAndArch);
+                LOGGER.info("LavaPlayer natives download successful");
             } catch (Exception e) {
+                LOGGER.error("LavaPlayer natives download failed", e);
                 return false;
             }
         }
+        LOGGER.info("LavaPlayer native(" + name + ") check successful");
+
         return npF.toPath().resolve(name).toFile().exists();
     }
 

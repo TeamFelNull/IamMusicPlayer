@@ -24,10 +24,11 @@ public class IMPSystemNativeLibraryProperties implements NativeLibraryProperties
         var sys = detectMatchingSystemType(this, systemFilter);
         if (sys == null)
             throw new IllegalStateException("System type is null");
-        boolean ret = LavaNativeManager.getInstance().load(sys.osType.identifier() + "-" + sys.architectureType.identifier(), libraryName + sys.osType.libraryFileSuffix());
+        var natName = sys.osType.identifier() + "-" + sys.architectureType.identifier();
+        boolean ret = LavaNativeManager.getInstance().load(natName, sys.formatLibraryName(libraryName));
         if (!ret)
             throw new UnsatisfiedLinkError("Failed to load the library");
-        var p = LavaPlayerLoader.getNaiveLibraryFolder().resolve(sys.osType.identifier() + "-" + sys.architectureType.identifier());
+        var p = LavaPlayerLoader.getNaiveLibraryFolder().resolve(natName);
         return p.toAbsolutePath().toString();
     }
 
