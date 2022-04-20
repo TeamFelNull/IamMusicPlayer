@@ -1,9 +1,7 @@
 package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.api.event.ClientMusicEvent;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
-import dev.felnull.imp.client.music.subtitle.SubtitleEntry;
 import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.entity.IRingerPartyParrot;
@@ -252,14 +250,6 @@ public class MusicEngine {
                     m.player().setFixedSound(ps == null);
                 }
                 m.player().update(m.playbackInfo());
-                var sub = m.player().getSubtitle();
-                if (m.player().isPlaying() && sub != null) {
-                    long pos = m.player().getPosition();
-                    long lst = LAST_SUBTITLE.containsKey(n) ? LAST_SUBTITLE.get(n) : 0;
-                    var subs = sub.getSubtitle(m.player(), m.playbackInfo(), lst, pos);
-                    subs.forEach(this::addSubtitle);
-                    LAST_SUBTITLE.put(n, pos);
-                }
             });
         }
         synchronized (MUSIC_LOADS) {
@@ -311,10 +301,6 @@ public class MusicEngine {
 
     public MusicLoadThread getLoadingMusic(UUID uuid) {
         return MUSIC_LOADS.get(uuid);
-    }
-
-    public void addSubtitle(SubtitleEntry subtitle) {
-        ClientMusicEvent.ADD_SUBTITLE.invoker().add(subtitle);
     }
 
     public boolean isLoad(UUID musicPlayerId) {

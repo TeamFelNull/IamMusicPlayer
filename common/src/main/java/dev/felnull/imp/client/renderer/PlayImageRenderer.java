@@ -2,6 +2,7 @@ package dev.felnull.imp.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNMath;
+import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
@@ -10,8 +11,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jsoup.Jsoup;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,6 +138,11 @@ public class PlayImageRenderer {
     }
 
     private class SoundCloudImageLoadThread extends Thread {
+        private static final String IMG_ST = "<img ";
+        private static final String IMG_END = ">";
+        private static final String SRC_ST = "src=\"";
+        private static final String SRC_END = "\"";
+
         private final String url;
 
         public SoundCloudImageLoadThread(String url) {
@@ -147,9 +153,10 @@ public class PlayImageRenderer {
         public void run() {
             String src;
             try {
-                var doc = Jsoup.connect(url).get();
+             /*   var doc = Jsoup.connect(url).get();
                 var img = doc.select("img").attr("itemprop", "image").first();
-                src = img.attr("src");
+                src = img.attr("src");*/
+                src = extractImage(FNURLUtil.getResponse(new URL(url)));
             } catch (Exception e) {
                 e.printStackTrace();
                 return;
@@ -157,6 +164,14 @@ public class PlayImageRenderer {
             synchronized (soundCloudArtworkURLs) {
                 soundCloudArtworkURLs.put(url, src);
             }
+        }
+
+        private static String extractImage(String src) {
+            var ts = src.substring(src.indexOf(IMG_ST) + IMG_ST.length());
+            ts = ts.substring(0, ts.indexOf(IMG_END));
+            ts = ts.substring(ts.indexOf(SRC_ST) + SRC_ST.length());
+            ts = ts.substring(0, ts.indexOf(SRC_END));
+            return ts;
         }
     }
 }

@@ -14,7 +14,7 @@ dependencies {
     }
 
     implementation 'com.github.sealedtx:java-youtube-downloader:3.0.2'
-    implementation 'org.jsoup:jsoup:1.14.3'
+    // implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'com.mpatric:mp3agic:0.9.1'
 }
 

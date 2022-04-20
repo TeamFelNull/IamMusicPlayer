@@ -4,9 +4,6 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loader.IMusicLoader;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
-import dev.felnull.imp.client.music.subtitle.IMPMusicSubtitles;
-import dev.felnull.imp.client.music.subtitle.IMusicSubtitle;
-import dev.felnull.imp.client.music.subtitle.SubtitleType;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import org.apache.logging.log4j.LogManager;
@@ -45,17 +42,14 @@ public class MusicLoadThread extends Thread {
                     break;
                 }
             } catch (InterruptedException ex) {
-                if (!timeOut)
-                    return;
-                if (IamMusicPlayer.CONFIG.errorLog)
-                    LOGGER.error("Load check time out: " + source.getIdentifier());
+                if (!timeOut) return;
+                if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Load check time out: " + source.getIdentifier());
                 timeOut = false;
             } catch (Exception ignored) {
             }
         }
         if (loader == null) {
-            if (IamMusicPlayer.CONFIG.errorLog)
-                LOGGER.error("Non existent music loader: " + source.getLoaderType());
+            if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Non existent music loader: " + source.getLoaderType());
             listener.onResult(false, System.currentTimeMillis() - time, null, false);
             return;
         }
@@ -67,35 +61,19 @@ public class MusicLoadThread extends Thread {
             player.load(position);
             timer.interrupt();
             timer = null;
-            if (!player.isLoadSuccess())
-                throw new IllegalStateException("Load failed");
+            if (!player.isLoadSuccess()) throw new IllegalStateException("Load failed");
         } catch (InterruptedException ignored) {
             if (timeOut) {
-                if (IamMusicPlayer.CONFIG.errorLog)
-                    LOGGER.error("Load time out: " + source.getIdentifier());
+                if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Load time out: " + source.getIdentifier());
                 listener.onResult(false, System.currentTimeMillis() - time, null, false);
             }
             player.destroy();
             return;
         } catch (Exception ex) {
-            if (player != null)
-                player.destroy();
-            if (IamMusicPlayer.CONFIG.errorLog)
-                LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
+            if (player != null) player.destroy();
+            if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
             listener.onResult(false, System.currentTimeMillis() - time, null, true);
             return;
-        }
-
-        if (IamMusicPlayer.CONFIG.subtitleType != SubtitleType.OFF) {
-            try {
-                IMusicSubtitle subtitle = IMPMusicSubtitles.createSubtitle(source.getLoaderType(), source);
-                if (subtitle != null && subtitle.isExist()) {
-                    subtitle.load();
-                    player.setSubtitle(subtitle);
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
         }
 
         listener.onResult(true, System.currentTimeMillis() - time, player, false);

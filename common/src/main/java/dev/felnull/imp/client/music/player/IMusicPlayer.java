@@ -1,6 +1,5 @@
 package dev.felnull.imp.client.music.player;
 
-import dev.felnull.imp.client.music.subtitle.IMusicSubtitle;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.world.phys.Vec3;
@@ -41,10 +40,6 @@ public interface IMusicPlayer {
     MusicSource getMusicSource();
 
     void setFixedSound(boolean enable);
-
-    void setSubtitle(IMusicSubtitle subtitle);
-
-    IMusicSubtitle getSubtitle();
 
     default float getPositionProgress() {
         return (float) getPosition() / (float) getMusicSource().getDuration();

@@ -122,8 +122,10 @@ public class ServerMessageHandler {
             var mm = MusicManager.getInstance();
             var pl = (ServerPlayer) packetContext.getPlayer();
             switch (message.syncType) {
-                case PLAYLIST_MY_LIST -> sendMusicSyncData(pl, message.syncType, message.syncId, mm.getPlayerPlayLists(pl, MusicManager.PlayListGetType.JOIN), new ArrayList<>());
-                case PLAYLIST_CAN_JOIN -> sendMusicSyncData(pl, message.syncType, message.syncId, mm.getPlayerPlayLists(pl, MusicManager.PlayListGetType.NO_JOIN), new ArrayList<>());
+                case PLAYLIST_MY_LIST ->
+                        sendMusicSyncData(pl, message.syncType, message.syncId, mm.getPlayerPlayLists(pl, MusicManager.PlayListGetType.JOIN), new ArrayList<>());
+                case PLAYLIST_CAN_JOIN ->
+                        sendMusicSyncData(pl, message.syncType, message.syncId, mm.getPlayerPlayLists(pl, MusicManager.PlayListGetType.NO_JOIN), new ArrayList<>());
                 case MUSIC_BY_PLAYLIST -> {
                     var mpl = mm.getSaveData().getPlayLists().get(message.syncId);
                     if (mpl != null && mpl.getAuthority().getAuthorityType(pl.getGameProfile().getId()).isMoreReadOnly()) {

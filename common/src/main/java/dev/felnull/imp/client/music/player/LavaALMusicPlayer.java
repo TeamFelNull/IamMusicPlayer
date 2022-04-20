@@ -6,7 +6,6 @@ import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.music.subtitle.IMusicSubtitle;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -56,7 +55,6 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     private double noSpatialVolume;
     private LavaLoadThread loadThread;
     private long lastLavaLoad;
-    private IMusicSubtitle subtitle;
 
     public LavaALMusicPlayer(MusicSource musicSource, AudioPlayerManager audioPlayerManager, AudioDataFormat audioFormat, boolean spatial) {
         this.musicSource = musicSource;
@@ -75,8 +73,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     public void load(long position) throws Exception {
         startPosition = position;
         var track = createTrack();
-        if (track.isEmpty())
-            throw new IllegalStateException("Could not load");
+        if (track.isEmpty()) throw new IllegalStateException("Could not load");
 
         track.get().setPosition(position);
         audioPlayer.startTrack(track.get(), false);
@@ -114,15 +111,13 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void play(long delay) {
-        if (!loaded)
-            return;
+        if (!loaded) return;
 
         if (musicSource.isLive() || musicSource.getDuration() == 0 || musicSource.getDuration() >= startPosition) {
             startTime = System.currentTimeMillis();
             startPosition += delay;
             float secdelay = delay / 1000f;
-            if (!spatial)
-                AL11.alSourcef(source, AL11.AL_GAIN, 0);
+            if (!spatial) AL11.alSourcef(source, AL11.AL_GAIN, 0);
             AL11.alSourcef(source, AL11.AL_SEC_OFFSET, secdelay);
             AL11.alSourcePlay(this.source);
             firstStart = true;
@@ -136,8 +131,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void destroy() {
-        if (loadThread != null)
-            loadThread.interrupt();
+        if (loadThread != null) loadThread.interrupt();
 
         startTime = 0;
         startPosition = 0;
@@ -198,12 +192,11 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void setCoordinatePosition(Vec3 vec3) {
-        if (vec3 == null)
-            if (mc.player != null) {
-                vec3 = mc.player.position();
-            } else {
-                vec3 = Vec3.ZERO;
-            }
+        if (vec3 == null) if (mc.player != null) {
+            vec3 = mc.player.position();
+        } else {
+            vec3 = Vec3.ZERO;
+        }
         this.pos = vec3;
         AL11.alSource3f(source, AL11.AL_POSITION, (float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
@@ -215,10 +208,8 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void setVolume(double v) {
-        if (spatial)
-            AL11.alSourcef(source, AL11.AL_GAIN, (float) v);
-        else
-            this.noSpatialVolume = v;
+        if (spatial) AL11.alSourcef(source, AL11.AL_GAIN, (float) v);
+        else this.noSpatialVolume = v;
     }
 
     @Override
@@ -265,22 +256,11 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     public void setFixedSound(boolean enable) {
         boolean flg = fixed != enable;
         this.fixed = enable;
-        if (flg)
-            if (enable) {
-                AL11.alSourcei(this.source, AL11.AL_DISTANCE_MODEL, AL11.AL_FALSE);
-            } else {
-                linearAttenuation(range);
-            }
-    }
-
-    @Override
-    public void setSubtitle(IMusicSubtitle subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    @Override
-    public IMusicSubtitle getSubtitle() {
-        return subtitle;
+        if (flg) if (enable) {
+            AL11.alSourcei(this.source, AL11.AL_DISTANCE_MODEL, AL11.AL_FALSE);
+        } else {
+            linearAttenuation(range);
+        }
     }
 
     private void linearAttenuation(float r) {
