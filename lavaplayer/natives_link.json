@@ -1,6 +1,6 @@
 {
   "1": {
-    "darwin": {
+    "darwin-x86-64": {
       "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/darwin-aarch64.zip",
       "hash": "a6235c390b57e495aadc51d73017f36f"
     },

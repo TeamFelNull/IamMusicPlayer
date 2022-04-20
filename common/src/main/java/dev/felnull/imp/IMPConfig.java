@@ -31,6 +31,9 @@ public class IMPConfig implements ConfigData {
     @ConfigEntry.Category("client")
     public String relayServerURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/relay_server.json";
 
+    @ConfigEntry.Category("client")
+    public String lavaPlayerNativesURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/lavaplayer/natives_link.json";
+
     @ConfigEntry.Category("server")
     public long maxWaitTime = 1000 * 10;
 

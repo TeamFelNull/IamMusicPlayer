@@ -50,7 +50,9 @@ dependencies {
     modCompileOnly "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}:api"
     modRuntimeOnly "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}"
 
-    shadowIn "com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}"
+    shadowIn ("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}"){
+        exclude group: 'com.sedmelluq', module: 'lavaplayer-natives'
+    }
 
     /* shadowIn("com.sedmelluq:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'org.slf4j', module: 'slf4j-api'

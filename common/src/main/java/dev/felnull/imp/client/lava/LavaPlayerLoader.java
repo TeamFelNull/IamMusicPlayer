@@ -4,12 +4,11 @@ import com.sedmelluq.discord.lavaplayer.natives.ConnectorNativeLibLoader;
 import com.sedmelluq.lava.common.natives.NativeLibraryLoader;
 import com.sedmelluq.lava.common.natives.architecture.DefaultOperatingSystemTypes;
 import com.sedmelluq.lava.common.natives.architecture.SystemType;
-import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.util.IMPPaths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.function.Predicate;
 
 public class LavaPlayerLoader {
@@ -37,10 +36,10 @@ public class LavaPlayerLoader {
 
     public static NativeLibraryLoader createFiltered(Class<?> classLoaderSample, String libraryName, Predicate<SystemType> systemFilter) {
         var bp = new IMPResourceNativeLibraryBinaryProvider(classLoaderSample);
-        return new NativeLibraryLoader(libraryName, systemFilter, new IMPSystemNativeLibraryProperties(bp, libraryName, systemFilter), bp);
+        return new NativeLibraryLoader(libraryName, systemFilter, new IMPSystemNativeLibraryProperties(libraryName, systemFilter), bp);
     }
 
     public static Path getNaiveLibraryFolder() {
-        return Paths.get(IamMusicPlayer.MODID).resolve(LAVA_VERSION);
+        return IMPPaths.getNaiveLibraryFolder(LAVA_VERSION);
     }
 }
