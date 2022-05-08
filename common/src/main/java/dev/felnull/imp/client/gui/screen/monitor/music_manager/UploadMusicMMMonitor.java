@@ -149,14 +149,11 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             tx = CONNECTING_CHECKING;
             py = 0;
         }
-        if (tx != null)
-            drawSmartFixedWidthText(poseStack, tx, st, getStartY() + 23 + py, 270);
+        if (tx != null) drawSmartFixedWidthText(poseStack, tx, st, getStartY() + 23 + py, 270);
 
         if (canUpload()) {
-            if (!isUploading())
-                drawSmartText(poseStack, DROP_INFO_TEXT, st, getStartY() + 120);
-            if (UPLOAD_INFO_TEXT != null)
-                drawSmartText(poseStack, UPLOAD_INFO_TEXT, st, getStartY() + 43);
+            if (!isUploading()) drawSmartText(poseStack, DROP_INFO_TEXT, st, getStartY() + 120);
+            if (UPLOAD_INFO_TEXT != null) drawSmartText(poseStack, UPLOAD_INFO_TEXT, st, getStartY() + 43);
             if (UPLOAD_ERROR_TEXT != null && !isUploading())
                 drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 83, 0xFFFF0000);
 
@@ -164,8 +161,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             drawSmartFixedWidthText(poseStack, WARNING_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
             drawSmartFixedWidthText(poseStack, RESPONSIBILITY_TEXT, st, getStartY() + 73, 270, 0xFFFF0000);
 
-            if (isUploading())
-                drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 83);
+            if (isUploading()) drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 83);
         }
     }
 
@@ -280,25 +276,20 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 }
                 if ("Ok".equalsIgnoreCase(status)) {
                     var name = "No Name";
-                    if (lastJo.has("Name"))
-                        name = lastJo.get("Name").getAsString();
+                    if (lastJo.has("Name")) name = lastJo.get("Name").getAsString();
                     RELAY_SERVER_NAME_TEXT = new TextComponent(name);
 
                     JsonObject time = null;
-                    if (lastJo.has("Time"))
-                        time = lastJo.getAsJsonObject("Time");
+                    if (lastJo.has("Time")) time = lastJo.getAsJsonObject("Time");
                     long rt = 0;
-                    if (time != null && time.has("ResponseSpeed"))
-                        rt = time.get("ResponseSpeed").getAsLong();
+                    if (time != null && time.has("ResponseSpeed")) rt = time.get("ResponseSpeed").getAsLong();
                     if (time != null && time.has("ResponseSpeed"))
                         SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.response", eqTime, rt);
                     maxFileSize = lastJo.get("MaxFileSize").getAsLong();
                     UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
                     String v = null;
-                    if (lastJo.has("Version"))
-                        v = lastJo.get("Version").getAsString();
-                    if (v != null)
-                        RELAY_SERVER_NAME_TEXT = ((TextComponent) RELAY_SERVER_NAME_TEXT).append(" V" + v);
+                    if (lastJo.has("Version")) v = lastJo.get("Version").getAsString();
+                    if (v != null) RELAY_SERVER_NAME_TEXT = ((TextComponent) RELAY_SERVER_NAME_TEXT).append(" V" + v);
                     uploadUrl = url;
                     connected = true;
                 } else {
@@ -348,7 +339,25 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         @Override
         public void run() {
             try {
-                var url = uploadToFile(Files.readAllBytes(file.toPath()));
+                var ujo = uploadToFile(Files.readAllBytes(file.toPath()));
+                if (ujo == null) {
+                    UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.error", "json is null");
+                    return;
+                }
+
+                if (!ujo.has("url")) {
+                    String error = "";
+                    if (ujo.has("Error"))
+                        error = ujo.get("Error").getAsString();
+                    String msg = "";
+                    if (ujo.has("Message"))
+                        msg = ujo.get("Message").getAsString();
+
+                    UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.failure", error, msg);
+                    return;
+                }
+
+                var url = ujo.get("url").getAsString();
                 if (url == null || url.isEmpty()) {
                     UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.noURL");
                 } else {
@@ -357,8 +366,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                     IIMPSmartRender.mc.submit(() -> {
                         setMusicSourceName(url);
                         setCreateName(file.getName());
-                        if (img != null)
-                            getScreen().musicFileImage = img;
+                        if (img != null) getScreen().musicFileImage = img;
                         insMonitor(getParentType());
                     });
                 }
@@ -370,15 +378,15 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         }
     }
 
-    private String uploadToFile(byte[] data) throws IOException, InterruptedException {
+    private JsonObject uploadToFile(byte[] data) throws IOException, InterruptedException {
         if (uploadUrl == null) return null;
         var url = uploadUrl + "music-upload";
         var client = HttpClient.newHttpClient();
         var req = HttpRequest.newBuilder(URI.create(url)).header("mc-uuid", IIMPSmartRender.mc.player.getGameProfile().getId().toString()).POST(HttpRequest.BodyPublishers.ofByteArray(data)).build();
         var res = client.send(req, HttpResponse.BodyHandlers.ofString());
-        var jo = GSON.fromJson(res.body(), JsonObject.class);
-        return jo.get("url").getAsString();
+        return GSON.fromJson(res.body(), JsonObject.class);
     }
+    //{"Error":"There was a problem processing the server, please upload after a while","Message":""}
 
     private byte[] getMusicImage(File file) {
         try {

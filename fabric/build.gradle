@@ -171,7 +171,7 @@ curseforge {
             relations {
                 requiredDependency "fabric-api"
                 requiredDependency "cloth-config"
-                requiredDependency "architectury-fabric"
+                requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
                 optionalDependency "patchouli-fabric"
             }
