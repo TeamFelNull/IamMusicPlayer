@@ -184,8 +184,8 @@ curseforge {
             addGameVersion 'Java 17'
 
             relations {
-                requiredDependency "cloth-config-forge"
-                requiredDependency "architectury-forge"
+                requiredDependency "cloth-config"
+                requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
                 optionalDependency "patchouli"
             }

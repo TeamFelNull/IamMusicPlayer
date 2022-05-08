@@ -168,6 +168,7 @@
   "imp.text.fileUpload.tooManyFiles": "Too many files",
   "imp.text.fileUpload.fileNotFound": "File not found",
   "imp.text.fileUpload.error": "Upload Error!: %s",
+  "imp.text.fileUpload.failure": "%s: %s",
   "imp.text.fileUpload.sizeOver": "Size over",
   "imp.text.fileUpload.directory": "Directory",
   "imp.text.fileUpload.noURL": "Empty URL",
