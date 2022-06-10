@@ -287,7 +287,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         }
     }
 
-    private float fillBuffer(float ang, ByteBuffer buff) {
+    /*private float fillBuffer(float ang, ByteBuffer buff) {
         int size = buff.capacity();
         trig++;
         for (int i = 0; i < size; i++) {
@@ -299,7 +299,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
             ang += 0.1f;
         }
         return ang;
-    }
+    }*/
 
 
     private ByteBuffer getBuffer(byte[] array) {
@@ -310,7 +310,6 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     }
 
     private int audioFormatToOpenAl(AudioFormat audioFormat) {
-
         AudioFormat.Encoding encoding = audioFormat.getEncoding();
         int j = audioFormat.getSampleSizeInBits();
         if (encoding.equals(AudioFormat.Encoding.PCM_UNSIGNED) || encoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
@@ -369,7 +368,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     private synchronized void lavaLoad(AudioFormat format) {
         int b = AL11.alGenBuffers();
-        ang = fillBuffer(ang, pcm);
+        // ang = fillBuffer(ang, pcm);
         int formatId = audioFormatToOpenAl(format);
         AL11.alBufferData(b, formatId, getBuffer(buffer), (int) format.getSampleRate() * (spatial ? 2 : 1));
         AL11.alSourceQueueBuffers(source, b);
