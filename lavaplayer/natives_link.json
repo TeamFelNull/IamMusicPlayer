@@ -1,11 +1,11 @@
 {
   "1": {
     "darwin-x86-64": {
-      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/darwin-aarch64.zip",
+      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/darwin.zip",
       "hash": "a6235c390b57e495aadc51d73017f36f"
     },
     "darwin-aarch64": {
-      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/darwin.zip",
+      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/darwin-aarch64.zip",
       "hash": "857bfa50ce793b4ae36cf0e028888739"
     },
     "linux-x86-64": {
