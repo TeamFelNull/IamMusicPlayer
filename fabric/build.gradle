@@ -167,7 +167,6 @@ curseforge {
             addGameVersion "${rootProject.minecraft_version}"
             addGameVersion 'Java 17'
             addGameVersion "Fabric"
-            addGameVersion "Quilt"
 
             relations {
                 requiredDependency "fabric-api"
@@ -208,7 +207,6 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
         versionType = "${project.release_type}".toUpperCase()
         addGameVersion("${rootProject.minecraft_version}")
         addLoader("fabric")
-        addLoader("quilt")
         addGameVersion "${rootProject.minecraft_version}"
     }
 }
