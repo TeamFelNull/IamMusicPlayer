@@ -14,6 +14,7 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -195,12 +196,12 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
 
     protected void stopPlayListLoad() {
         if (playListLoader != null) {
-            playListLoader.interrupt();
+            playListLoader.stopped();
             playListLoader = null;
         }
     }
 
-    private class PlayListLoadThread extends Thread {
+    private class PlayListLoadThread extends FlagThread {
         private final String id;
 
         public PlayListLoadThread(String id) {
@@ -209,6 +210,9 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
 
         @Override
         public void run() {
+            if (isStopped())
+                return;
+
             String sid = "";
             String sname = "";
             String satuhor = "";
@@ -222,10 +226,15 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
                         var en = new YoutubePlayListEntry(ret.name(), ret.author(), ret.source(), ret.imageInfo());
                         youtubePlayListEntries.add(en);
                     }
+                    if (isStopped())
+                        return;
                 }
                 sid = id;
                 sct = youtubePlayListEntries.size();
                 sname = pl.getLeft().getName();
+
+                if (isStopped())
+                    return;
 
                 var pid = YoutubeUtil.getPlayListID(id);
                 if (pid != null) {
@@ -234,6 +243,8 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
                 }
             } catch (Exception ignored) {
             }
+            if (isStopped())
+                return;
             setImportPlayList(sid);
             setImportPlayListMusicCount(sct);
             setImportPlayListName(sname);

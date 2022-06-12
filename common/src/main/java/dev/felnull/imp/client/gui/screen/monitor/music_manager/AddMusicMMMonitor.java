@@ -12,6 +12,7 @@ import dev.felnull.imp.client.music.loadertypes.MusicLoadResult;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import net.minecraft.client.gui.components.EditBox;
@@ -247,12 +248,12 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
 
     private void stopMusicLoad() {
         if (this.musicLoadThread != null) {
-            this.musicLoadThread.interrupt();
+            this.musicLoadThread.stopped();
             this.musicLoadThread = null;
         }
     }
 
-    private class MusicLoadThread extends Thread {
+    private class MusicLoadThread extends FlagThread {
         private final String name;
         private final String loaderType;
         private boolean autoIn;
@@ -267,26 +268,36 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         @Override
         public void run() {
             try {
+                if (isStopped()) return;
                 var loader = IMPMusicLoaderTypes.getMusicLoaderTypes().get(loaderType);
                 if ("upload".equals(loaderType))
                     loader = IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.HTTP);
+                if (isStopped()) return;
 
                 if (loader != null) {
+                    if (isStopped()) return;
                     var r = loader.load(name);
+                    if (isStopped()) return;
                     setLoadResult(r, autoIn);
                     if (r == null)
                         loadFailure = true;
+                    if (isStopped()) return;
                 } else if ("auto".equals(loaderType)) {
+                    if (isStopped()) return;
                     var ar = IMPMusicLoaderTypes.loadAuto(name);
+                    if (isStopped()) return;
                     if (ar != null) {
                         setMusicLoaderType(ar.getKey());
+                        if (isStopped()) return;
                         IIMPSmartRender.mc.submit(() -> {
                             musicSourceNameEditBox.setValue(ar.getValue().source().getIdentifier());
                             startMusicLoad(ar.getValue().source().getIdentifier(), autoIn);
                         });
+                        if (isStopped()) return;
                     } else {
                         loadFailure = true;
                     }
+                    if (isStopped()) return;
                 }
             } catch (InterruptedException ignored) {
             }

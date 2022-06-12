@@ -13,6 +13,7 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.client.util.FileChooserUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.util.OEImageUtil;
 import net.minecraft.client.gui.components.EditBox;
@@ -342,7 +343,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     private void stopImageUrlLoad() {
         if (imageUrlLoader != null) {
-            imageUrlLoader.interrupt();
+            imageUrlLoader.stopped();
             imageUrlLoader = null;
         }
         IMAGE_SET_ERROR_TEXT = null;
@@ -358,7 +359,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     private void stopImageUpload() {
         if (imageUploader != null) {
-            imageUploader.interrupt();
+            imageUploader.stopped();
             imageUploader = null;
         }
         IMAGE_SET_ERROR_TEXT = null;
@@ -396,7 +397,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         updateNotEnteredText();
     }
 
-    private class ImageUrlLoader extends Thread {
+    private class ImageUrlLoader extends FlagThread {
         private final String url;
 
         private ImageUrlLoader(String url) {
@@ -405,19 +406,25 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 var urll = FNURLUtil.getConnection(new URL(url));
+                if (isStopped()) return;
                 long max = 3145728L;
                 if (urll.getContentLengthLong() > max) {
                     startImageUpload(urll.getInputStream().readAllBytes());
                     return;
                 }
+                if (isStopped()) return;
                 byte[] img = urll.getInputStream().readAllBytes();
+                if (isStopped()) return;
                 if (!OEImageUtil.isImage(img)) {
                     IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.notImageUrl");
                     return;
                 }
+                if (isStopped()) return;
                 setImage(new ImageInfo(ImageInfo.ImageType.URL, url));
+                if (isStopped()) return;
                 IMAGE_SET_ERROR_TEXT = null;
             } catch (Exception e) {
                 IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.error", e.getLocalizedMessage());
@@ -426,7 +433,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         }
     }
 
-    private class ImageUploader extends Thread {
+    private class ImageUploader extends FlagThread {
         private byte[] data;
 
         private ImageUploader(byte[] data) {
@@ -435,27 +442,32 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 if (!OEImageUtil.isImage(data)) {
                     IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.notImage");
                     return;
                 }
+                if (isStopped()) return;
                 long max = 3145728L;
                 if (data.length > max) {
                     IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.optimizationImage");
                     data = OEImageUtil.reductionSize(data, max - 100);
                 }
+                if (isStopped()) return;
                 Files.write(Paths.get("test.gif"), data);
 
                 String url;
                 try {
+                    if (isStopped()) return;
                     url = uploadToImgur(data);
+                    if (isStopped()) return;
                 } catch (IOException e) {
                     IMAGE_SET_ERROR_TEXT = new TranslatableComponent("imp.text.imageLoad.uploadFailure", e.getMessage());
                     e.printStackTrace();
                     return;
                 }
-
+                if (isStopped()) return;
                 setImage(new ImageInfo(ImageInfo.ImageType.URL, url));
                 IMAGE_SET_ERROR_TEXT = null;
             } catch (Exception e) {
@@ -463,20 +475,24 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 e.printStackTrace();
             }
         }
+
+        private String uploadToImgur(byte[] data) throws IOException, InterruptedException {
+            if (isStopped()) return null;
+            HttpClient hc = HttpClient.newHttpClient();
+            HttpRequest hr = HttpRequest.newBuilder(URI.create("https://api.imgur.com/3/image"))
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(data))
+                    .header("Authorization", "Client-ID 9a0189f3c8b74b9")
+                    .build();
+            if (isStopped()) return null;
+            HttpResponse<String> res = hc.send(hr, HttpResponse.BodyHandlers.ofString());
+            if (isStopped()) return null;
+            JsonObject upData = GSON.fromJson(res.body(), JsonObject.class);
+            if (upData.getAsJsonObject("data") == null || upData.getAsJsonObject("data").get("link") == null)
+                throw new IOException("code " + upData.get("status").getAsInt());
+            return upData.getAsJsonObject("data").get("link").getAsString();
+        }
     }
 
-    private String uploadToImgur(byte[] data) throws IOException, InterruptedException {
-        HttpClient hc = HttpClient.newHttpClient();
-        HttpRequest hr = HttpRequest.newBuilder(URI.create("https://api.imgur.com/3/image"))
-                .POST(HttpRequest.BodyPublishers.ofByteArray(data))
-                .header("Authorization", "Client-ID 9a0189f3c8b74b9")
-                .build();
-        HttpResponse<String> res = hc.send(hr, HttpResponse.BodyHandlers.ofString());
-        JsonObject upData = GSON.fromJson(res.body(), JsonObject.class);
-        if (upData.getAsJsonObject("data") == null || upData.getAsJsonObject("data").get("link") == null)
-            throw new IOException("code " + upData.get("status").getAsInt());
-        return upData.getAsJsonObject("data").get("link").getAsString();
-    }
 
     @Nullable
     abstract protected DoneType getDoneType();

@@ -10,6 +10,7 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.util.FlagThread;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -131,7 +132,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void destroy() {
-        if (loadThread != null) loadThread.interrupt();
+        if (loadThread != null) loadThread.stopped();
 
         startTime = 0;
         startPosition = 0;
@@ -339,15 +340,17 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         return AL11.AL_FORMAT_MONO16;
     }
 
-    private class LavaLoadThread extends Thread {
+    private class LavaLoadThread extends FlagThread {
         private LavaLoadThread() {
             setName("LavaPlayer Load Thread : " + musicSource.getIdentifier());
         }
 
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 AudioFormat format = AudioDataFormatTools.toAudioFormat(audioFormat);
+                if(isStopped())return;
                 for (int i = 0; i < 500 * 6; i++) {
                     try {
                         if (stream.read(buffer) >= 0 && !isInterrupted()) {
@@ -358,7 +361,9 @@ public class LavaALMusicPlayer implements IMusicPlayer {
                     } catch (Exception ex) {
                         break;
                     }
+                    if(isStopped())return;
                 }
+                if(isStopped())return;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

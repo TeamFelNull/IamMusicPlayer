@@ -10,6 +10,7 @@ import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -84,7 +85,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
 
     private void stopMusicSearch() {
         if (this.searchThread != null) {
-            this.searchThread.interrupt();
+            this.searchThread.stopped();
             this.searchThread = null;
         }
     }
@@ -131,7 +132,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     public static record SearchMusicEntry(String name, String artist, MusicSource source, ImageInfo imageInfo) {
     }
 
-    private class SearchThread extends Thread {
+    private class SearchThread extends FlagThread {
         private final String name;
 
         public SearchThread(String name) {
@@ -140,15 +141,25 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
 
         @Override
         public void run() {
+            if (isStopped())
+                return;
             var lt = getRawMusicLoaderType();
             if (lt == null || !lt.isSearchable())
                 return;
+
+            if (isStopped())
+                return;
+
             List<SearchMusicEntry> slst;
             try {
                 slst = lt.search(name);
             } catch (InterruptedException e) {
                 return;
             }
+
+            if (isStopped())
+                return;
+
             setSearchMusics(slst);
         }
 

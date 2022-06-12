@@ -12,6 +12,7 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -139,7 +140,7 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
 
     private void stopRadioCheckLoad() {
         if (this.radioCheckLoader != null) {
-            this.radioCheckLoader.interrupt();
+            this.radioCheckLoader.stopped();
             this.radioCheckLoader = null;
         }
     }
@@ -160,7 +161,7 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
         getScreen().insRadioName(name);
     }
 
-    private class RadioCheckLoader extends Thread {
+    private class RadioCheckLoader extends FlagThread {
         private final String url;
 
         private RadioCheckLoader(String url) {
@@ -169,16 +170,20 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
 
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 var otrack = LavaPlayerUtil.loadTrack(IMPMusicLoaderTypes.allAudioPlayerManager, url);
+                if (isStopped()) return;
                 if (otrack.isPresent()) {
                     var track = otrack.get();
                     var info = track.getInfo();
                     if (!info.isStream) return;
+                    if (isStopped()) return;
 
                     if (track.getSourceManager() instanceof YoutubeAudioSourceManager)
                         mc.submit(() -> setRadioImage(new ImageInfo(ImageInfo.ImageType.YOUTUBE_THUMBNAIL, info.identifier)));
 
+                    if (isStopped()) return;
                     mc.submit(() -> {
                         setRadioSource(new MusicSource("", info.identifier, -1));
                         setRadioName(info.title);

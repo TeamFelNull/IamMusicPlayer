@@ -11,6 +11,7 @@ import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.util.FileChooserUtil;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import dev.felnull.otyacraftengine.util.OEURLUtil;
 import net.minecraft.ChatFormatting;
@@ -194,7 +195,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
 
     private void stopConnectingCheckThread() {
         if (connectingCheckThread != null) {
-            connectingCheckThread.interrupt();
+            connectingCheckThread.stopped();
             connectingCheckThread = null;
         }
     }
@@ -207,7 +208,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
 
     private void stopUploadThread() {
         if (uploadThread != null) {
-            uploadThread.interrupt();
+            uploadThread.stopped();
             uploadThread = null;
         }
     }
@@ -237,15 +238,17 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         }
     }*/
 
-    private class ServerConnectingCheckThread extends Thread {
+    private class ServerConnectingCheckThread extends FlagThread {
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 var url = IamMusicPlayer.CONFIG.relayServerURL;
                 String status = null;
                 JsonObject lastJo = null;
                 long eqTime = 0;
                 while (status == null) {
+                    if (isStopped()) return;
                     var jop = getResponse(url);
                     eqTime = jop.getLeft();
                     var jo = jop.getRight();
@@ -274,11 +277,13 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                         }
                     }
                 }
+                if (isStopped()) return;
                 if ("Ok".equalsIgnoreCase(status)) {
                     var name = "No Name";
                     if (lastJo.has("Name")) name = lastJo.get("Name").getAsString();
                     RELAY_SERVER_NAME_TEXT = new TextComponent(name);
 
+                    if (isStopped()) return;
                     JsonObject time = null;
                     if (lastJo.has("Time")) time = lastJo.getAsJsonObject("Time");
                     long rt = 0;
@@ -288,6 +293,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                     maxFileSize = lastJo.get("MaxFileSize").getAsLong();
                     UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
                     String v = null;
+                    if (isStopped()) return;
                     if (lastJo.has("Version")) v = lastJo.get("Version").getAsString();
                     if (v != null) RELAY_SERVER_NAME_TEXT = ((TextComponent) RELAY_SERVER_NAME_TEXT).append(" V" + v);
                     uploadUrl = url;
@@ -329,7 +335,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         getScreen().insCreateName(name);
     }
 
-    private class UploadThread extends Thread {
+    private class UploadThread extends FlagThread {
         private final File file;
 
         private UploadThread(File file) {
@@ -338,13 +344,16 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
 
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 var ujo = uploadToFile(Files.readAllBytes(file.toPath()));
+                if (isStopped()) return;
                 if (ujo == null) {
                     UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.error", "json is null");
                     return;
                 }
 
+                if (isStopped()) return;
                 if (!ujo.has("url")) {
                     String error = "";
                     if (ujo.has("Error"))
@@ -353,6 +362,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                     if (ujo.has("Message"))
                         msg = ujo.get("Message").getAsString();
 
+                    if (isStopped()) return;
                     UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.failure", error, msg);
                     return;
                 }

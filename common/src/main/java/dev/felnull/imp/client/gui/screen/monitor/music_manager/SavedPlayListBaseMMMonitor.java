@@ -9,6 +9,7 @@ import dev.felnull.imp.client.gui.components.PlayersFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtil;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
@@ -240,12 +241,12 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
 
     private void stopPlayerUUIDLoad() {
         if (playerUUIDLoadThread != null) {
-            playerUUIDLoadThread.interrupt();
+            playerUUIDLoadThread.stopped();
             playerUUIDLoadThread = null;
         }
     }
 
-    private class PlayerUUIDLoadThread extends Thread {
+    private class PlayerUUIDLoadThread extends FlagThread {
         private final String name;
 
         private PlayerUUIDLoadThread(String name) {
@@ -255,10 +256,13 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
         @Override
         public void run() {
             try {
+                if (isStopped()) return;
                 addInvitePlayer(UUID.fromString(name));
+                if (isStopped()) return;
                 return;
             } catch (Exception ignored) {
             }
+            if (isStopped()) return;
             OEPlayerUtil.getUUIDByName(name).ifPresent(SavedPlayListBaseMMMonitor.this::addInvitePlayer);
         }
     }

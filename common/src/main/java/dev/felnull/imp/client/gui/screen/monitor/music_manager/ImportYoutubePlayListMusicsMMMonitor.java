@@ -10,6 +10,7 @@ import dev.felnull.imp.client.music.loadertypes.YoutubeMusicLoaderType;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -70,12 +71,12 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
 
     private void stopImportMusicLoader() {
         if (importMusicLoader != null) {
-            importMusicLoader.interrupt();
+            importMusicLoader.stopped();
             importMusicLoader = null;
         }
     }
 
-    private class ImportMusicLoader extends Thread {
+    private class ImportMusicLoader extends FlagThread {
         private final String id;
 
         private ImportMusicLoader(String id) {
@@ -84,9 +85,11 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
 
         @Override
         public void run() {
+            if (isStopped()) return;
             try {
                 List<Music> musics = new ArrayList<>();
                 var pl = LavaPlayerUtil.loadTracks(getYoutubeLoaderType().getAudioPlayerManager(), id);
+                if (isStopped()) return;
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
@@ -95,7 +98,9 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
                         var music = new Music(UUID.randomUUID(), en.name(), en.artist(), en.source(), en.imageInfo(), mc.player.getGameProfile().getId(), System.currentTimeMillis());
                         musics.add(music);
                     }
+                    if (isStopped()) return;
                 }
+                if (isStopped()) return;
                 mc.submit(() -> {
                     if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
                         NetworkManager.sendToServer(IMPPackets.MULTIPLE_MUSIC_ADD, new IMPPackets.MultipleMusicAddMessage(musicManagerBlock.getMySelectedPlayList(), musics, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());

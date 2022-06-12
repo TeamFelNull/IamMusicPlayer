@@ -24,6 +24,5 @@ public class IamMusicPlayerForge {
 
     private void doClientStuff(FMLClientSetupEvent e) {
         IamMusicPlayerClient.init();
-        LavaPlayerUtil.test();
     }
 }
