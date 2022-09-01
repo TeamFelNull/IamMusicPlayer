@@ -37,7 +37,7 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
 
         var acLmp = OEModelUtil.getModel(IMPModels.MUSIC_MANAGER_OFF_ACCESS_LAMP);
 
-        if (blockEntity.isPower() && random.nextBoolean())
+        if (blockEntity.isPowered() && random.nextBoolean())
             acLmp = OEModelUtil.getModel(IMPModels.MUSIC_MANAGER_ACCESS_LAMP);
 
         poseStack.pushPose();

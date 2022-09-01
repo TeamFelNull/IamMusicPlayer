@@ -50,7 +50,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         super.init();
         this.addRenderableWidget(new BoomboxButton(leftPos + 5, topPos + 17, BoomboxData.ButtonType.POWER, n -> {
             insPressButton(BoomboxData.ButtonType.POWER);
-        }, this::getButtons, this::isPower));
+        }, this::getButtons, this::isPowered));
 
         this.addRenderableWidget(new BoomboxButton(leftPos + 5 + 19, topPos + 17, BoomboxData.ButtonType.RADIO, n -> {
             if (!getAntenna().isEmpty() && IMPItemUtil.isAntenna(getAntenna())) {
@@ -158,8 +158,8 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         return getBoomBoxData().getMusicPosition();
     }
 
-    private boolean isPower() {
-        return getBoomBoxData().isPower();
+    private boolean isPowered() {
+        return getBoomBoxData().isPowered();
     }
 
     public boolean isLoop() {

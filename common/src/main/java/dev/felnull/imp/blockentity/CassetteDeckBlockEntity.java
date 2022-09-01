@@ -57,7 +57,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     private boolean loadingMusic;
 
     public CassetteDeckBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(IMPBlockEntitys.CASSETTE_DECK.get(), blockPos, blockState);
+        super(IMPBlockEntities.CASSETTE_DECK.get(), blockPos, blockState);
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, CassetteDeckBlockEntity blockEntity) {
@@ -74,7 +74,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
 
         if (!level.isClientSide()) {
 
-            if (blockEntity.isPower()) {
+            if (blockEntity.isPowered()) {
                 if (blockEntity.monitor == MonitorType.OFF)
                     blockEntity.setMonitor(MonitorType.MENU);
             } else {
@@ -98,7 +98,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
                     blockEntity.setCassetteWriteProgress(0);
             }
 
-            if (blockEntity.monitor != MonitorType.PLAYBACK || !blockEntity.isMusicCassetteTapeExist()) {
+            if (blockEntity.monitor != MonitorType.PLAYBACK || !blockEntity.hasMusicCassetteTape()) {
                 blockEntity.setRingerPosition(0);
                 if (blockEntity.isPlaying())
                     blockEntity.setPlaying(false);
@@ -335,7 +335,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-        return new CassetteDeckMenu(i, inventory, this, getBlockPos());
+        return new CassetteDeckMenu(i, inventory, getBlockPos(), this);
     }
 
     @Override
@@ -410,27 +410,27 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
             }
             return null;
         } else if ("set_volume".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setVolume(data.getInt("volume"));
         } else if ("set_mute".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setMute(data.getBoolean("mute"));
         } else if ("set_playing".equals(name)) {
-            if (isPower()) {
+            if (isPowered()) {
                 boolean pl = data.getBoolean("playing");
                 setPlaying(pl);
                 if (!pl)
                     setRingerPosition(0);
             }
         } else if ("set_pause".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setPlaying(false);
         } else if ("restat_and_set_position".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setMusicPositionAndRestart(data.getLong("position"));
             return null;
         } else if ("set_loop".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setLoop(data.getBoolean("loop"));
         }
         return super.onInstruction(player, name, num, data);
@@ -457,7 +457,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     }
 
     @Override
-    public boolean isRingerExist() {
+    public boolean exists() {
         if (getLevel() == null || level != getLevel()) return false;
         return getBlockPos() != null && level.getBlockEntity(getBlockPos()) == this;
     }
@@ -472,22 +472,17 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         setPlaying(playing);
     }
 
-    private boolean isCassetteTapeExist() {
+    private boolean hasCassetteTape() {
         return !getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape());
     }
 
-    private boolean isMusicCassetteTapeExist() {
-        return isCassetteTapeExist() && CassetteTapeItem.getMusic(getCassetteTape()) != null;
+    private boolean hasMusicCassetteTape() {
+        return hasCassetteTape() && CassetteTapeItem.getMusic(getCassetteTape()) != null;
     }
 
     @Override
     public @Nullable MusicSource getRingerMusicSource() {
-        if (isMusicCassetteTapeExist()) {
-            var m = CassetteTapeItem.getMusic(getCassetteTape());
-            if (m != null)
-                return m.getSource();
-        }
-        return null;
+        return hasMusicCassetteTape() ? CassetteTapeItem.getMusic(getCassetteTape()).getSource() : null;
     }
 
     @Override
@@ -503,7 +498,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     @Override
     public void setRingerPosition(long position) {
         setPosition(position);
-        if (isMusicCassetteTapeExist()) {
+        if (hasMusicCassetteTape()) {
             var m = getRingerMusicSource();
             if (m != null) {
                 var nc = CassetteTapeItem.setTapePercentage(getCassetteTape().copy(), (float) position / (float) m.getDuration());

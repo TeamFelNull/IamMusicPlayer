@@ -21,6 +21,10 @@ public class IMPItemUtil {
         return isAntenna(stack) && stack.is(IMPItems.PARABOLIC_ANTENNA.get());
     }
 
+    public static boolean isRadioAntenna(ItemStack stack){
+        return isAntenna(stack) && stack.is(IMPItems.ANTENNA.get());
+    }
+
     public static ItemStack createKamesutaAntenna() {
         var st = new ItemStack(IMPItems.PARABOLIC_ANTENNA.get());
         st.setHoverName(new TextComponent("Kamesuta").withStyle(ChatFormatting.GREEN).withStyle(Style.EMPTY.withItalic(false)));

@@ -2,7 +2,7 @@ package dev.felnull.imp;
 
 import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.blockentity.IMPBlockEntitys;
+import dev.felnull.imp.blockentity.IMPBlockEntities;
 import dev.felnull.imp.entity.village.IMPPoiType;
 import dev.felnull.imp.entity.village.IMPVillagerProfessions;
 import dev.felnull.imp.handler.CommonHandler;
@@ -23,7 +23,7 @@ public class IamMusicPlayer {
         IMPPackets.init();
         IMPItems.init();
         IMPBlocks.init();
-        IMPBlockEntitys.init();
+        IMPBlockEntities.init();
         IMPMenus.init();
         IMPPoiType.init();
         IMPVillagerProfessions.init();

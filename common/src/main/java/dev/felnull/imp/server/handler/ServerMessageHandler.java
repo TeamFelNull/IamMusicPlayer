@@ -19,7 +19,7 @@ public class ServerMessageHandler {
         packetContext.queue(() -> {
             var item = message.itemLocation.getItem(packetContext.getPlayer());
             if (item.getItem() instanceof BoomboxItem) {
-                var id = BoomboxItem.getUUID(item);
+                var id = BoomboxItem.getRingerUUID(item);
                 if (id == null || !id.equals(message.boomboxId)) return;
                 var data = BoomboxItem.getData(item);
                 data.cycleLidOpen(packetContext.getPlayer().level);

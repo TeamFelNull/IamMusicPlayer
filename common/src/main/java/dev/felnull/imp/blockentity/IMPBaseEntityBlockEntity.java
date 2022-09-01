@@ -13,12 +13,12 @@ public abstract class IMPBaseEntityBlockEntity extends OEBaseContainerBlockEntit
         super(blockEntityType, blockPos, blockState);
     }
 
-    public boolean isPower() {
+    public boolean isPowered() {
         return getBlockState().getValue(IMPBaseEntityBlock.POWERED);
     }
 
     public void setPower(boolean on) {
-        if (on != isPower())
+        if (on != isPowered())
             getLevel().setBlock(getBlockPos(), getBlockState().setValue(IMPBaseEntityBlock.POWERED, on), 3);
     }
 

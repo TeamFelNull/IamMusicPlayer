@@ -59,9 +59,9 @@ public class ClientHandler {
     }
 
     private static EventResult onHandAttack(@NotNull ItemStack itemStack) {
-        if (itemStack.getItem() instanceof BoomboxItem && BoomboxItem.isPowerOn(itemStack)) {
+        if (itemStack.getItem() instanceof BoomboxItem && BoomboxItem.isPowered(itemStack)) {
             if (mc.player.isCrouching()) {
-                var bu = BoomboxItem.getUUID(itemStack);
+                var bu = BoomboxItem.getRingerUUID(itemStack);
                 if (bu != null)
                     NetworkManager.sendToServer(IMPPackets.HAND_LID_CYCLE, new IMPPackets.LidCycleMessage(bu, new HandItemLocation(InteractionHand.MAIN_HAND)).toFBB());
             }

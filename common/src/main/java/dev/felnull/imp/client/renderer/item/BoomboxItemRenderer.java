@@ -21,7 +21,7 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
 
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
-        boolean power = BoomboxItem.isPowerOn(itemStack);
+        boolean power = BoomboxItem.isPowered(itemStack);
         boolean radio = false;
 
         var state = power ? onEntity.getBlockState() : offEntity.getBlockState();

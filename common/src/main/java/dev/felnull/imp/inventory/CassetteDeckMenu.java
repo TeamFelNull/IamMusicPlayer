@@ -7,7 +7,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 
 public class CassetteDeckMenu extends OEBEBaseMenu {
-    public CassetteDeckMenu(int windowId, Inventory playerInventory, Container container, BlockPos pos) {
+    public CassetteDeckMenu(int windowId, Inventory playerInventory, BlockPos pos, Container container) {
         super(IMPMenus.CASSETTE_DECK.get(), windowId, playerInventory, container, pos, 8, 94);
     }
 

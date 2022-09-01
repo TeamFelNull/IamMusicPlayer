@@ -16,8 +16,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 public class IMPVillagerProfessions {
     private static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS = DeferredRegister.create(IamMusicPlayer.MODID, Registry.VILLAGER_PROFESSION_REGISTRY);
@@ -32,19 +34,28 @@ public class IMPVillagerProfessions {
     }
 
     public static void setup() {
-        TradeRegistry.registerVillagerTrade(DJ.get(), 1, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPItems.CASSETTE_TAPE.get()), 1, 1, 10, 2));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 1, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPItems.CASSETTE_TAPE_GLASS.get()), 1, 1, 10, 2));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 2, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPBlocks.MUSIC_MANAGER.get()), 18, 1, 1, 12));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 3, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPBlocks.CASSETTE_DECK.get()), 13, 1, 1, 12));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 4, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPBlocks.BOOMBOX.get()), 15, 1, 3, 12));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 5, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPItems.ANTENNA.get()), 15, 1, 1, 23));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 5, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(IMPItems.PARABOLIC_ANTENNA.get()), 33, 1, 1, 23));
+        registerBuying(DJ.get(), 1, IMPItems.CASSETTE_TAPE.get(), 1, 1, 10, 2);
+        registerBuying(DJ.get(), 1, IMPItems.CASSETTE_TAPE_GLASS.get(), 1, 1, 10, 2);
+        registerBuying(DJ.get(), 2, IMPBlocks.MUSIC_MANAGER.get(), 18, 1, 1, 12);
+        registerBuying(DJ.get(), 3, IMPBlocks.CASSETTE_DECK.get(), 13, 1, 1, 12);
+        registerBuying(DJ.get(), 4, IMPBlocks.BOOMBOX.get(), 15, 1, 3, 12);
+        registerBuying(DJ.get(), 5, IMPItems.ANTENNA.get(), 15, 1, 1, 23);
+        registerBuying(DJ.get(), 5, IMPItems.PARABOLIC_ANTENNA.get(), 33, 1, 1, 23);
 
-        TradeRegistry.registerVillagerTrade(DJ.get(), 1, OERegistryUtil.createTradeEmeraldForItems(Items.DRIED_KELP, 12, 15, 2));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 2, OERegistryUtil.createTradeEmeraldForItems(Items.NOTE_BLOCK, 8, 10, 13));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 2, OERegistryUtil.createTradeEmeraldForItems(Items.REDSTONE, 12, 15, 2));
-        TradeRegistry.registerVillagerTrade(DJ.get(), 3, OERegistryUtil.createTradeEmeraldForItems(Items.JUKEBOX, 1, 5, 20));
+        registerSelling(DJ.get(), 1, Items.DRIED_KELP, 12, 15, 2);
+        registerSelling(DJ.get(), 2, Items.NOTE_BLOCK, 8, 10, 13);
+        registerSelling(DJ.get(), 2, Items.REDSTONE, 12, 15, 2);
+        registerSelling(DJ.get(), 3, Items.JUKEBOX, 1, 5, 20);
 
         TradeRegistry.registerTradeForWanderingTrader(true, new SimpleTrade(new ItemStack(Items.EMERALD, 42), ItemStack.EMPTY, IMPItemUtil.createKamesutaAntenna(), 1, 10, 0.05f));
     }
+
+    public static void registerBuying(VillagerProfession profession, int level, ItemLike item, int emeraldCost, int numberOfItems, int maxUses, int villagerXp){
+        TradeRegistry.registerVillagerTrade(profession, level, OERegistryUtil.createTradeItemsForEmeralds(new ItemStack(item), emeraldCost, numberOfItems, maxUses, villagerXp));
+    }
+
+    public static void registerSelling(VillagerProfession profession, int level, ItemLike item, int cost, int maxUses, int villagerXp){
+        TradeRegistry.registerVillagerTrade(profession, level, OERegistryUtil.createTradeEmeraldForItems(item, cost, maxUses, villagerXp));
+    }
+
 }

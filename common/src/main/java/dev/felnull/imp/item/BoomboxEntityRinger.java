@@ -50,7 +50,7 @@ public class BoomboxEntityRinger implements IBoomboxRinger {
     }
 
     @Override
-    public boolean isRingerExist() {
+    public boolean exists() {
         return canRing(entity) && !getBoombox().isEmpty();
     }
 
@@ -72,18 +72,18 @@ public class BoomboxEntityRinger implements IBoomboxRinger {
         if (entity instanceof LivingEntity livingEntity) {
             for (EquipmentSlot value : EquipmentSlot.values()) {
                 var item = livingEntity.getItemBySlot(value);
-                if (uuid.equals(BoomboxItem.getUUID(item)))
+                if (uuid.equals(BoomboxItem.getRingerUUID(item)))
                     return item;
             }
         }
         if (entity instanceof Player player) {
             var li = player.getInventory().getItem(lastInventory);
-            if (uuid.equals(BoomboxItem.getUUID(li)))
+            if (uuid.equals(BoomboxItem.getRingerUUID(li)))
                 return li;
 
             for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                 var item = player.getInventory().getItem(i);
-                if (uuid.equals(BoomboxItem.getUUID(item))) {
+                if (uuid.equals(BoomboxItem.getRingerUUID(item))) {
                     lastInventory = i;
                     return item;
                 }
@@ -91,7 +91,7 @@ public class BoomboxEntityRinger implements IBoomboxRinger {
         }
         if (IamMusicPlayer.CONFIG.dropItemRing && entity instanceof ItemEntity itemEntity) {
             var item = itemEntity.getItem();
-            if (uuid.equals(BoomboxItem.getUUID(item)))
+            if (uuid.equals(BoomboxItem.getRingerUUID(item)))
                 return item;
         }
         return ItemStack.EMPTY;

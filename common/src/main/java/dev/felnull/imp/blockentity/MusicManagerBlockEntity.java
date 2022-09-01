@@ -29,7 +29,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     private CompoundTag myData = new CompoundTag();
 
     public MusicManagerBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(IMPBlockEntitys.MUSIC_MANAGER.get(), blockPos, blockState);
+        super(IMPBlockEntities.MUSIC_MANAGER.get(), blockPos, blockState);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int i, Inventory inventory) {
-        return new MusicManagerMenu(i, inventory, this, getBlockPos());
+        return new MusicManagerMenu(i, inventory, getBlockPos(), this);
     }
 
     public static void tick(Level level, BlockPos blockPos, BlockState blockState, MusicManagerBlockEntity blockEntity) {
@@ -48,7 +48,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
                 var monst = m.getString("Monitor");
                 if (!monst.isEmpty()) {
                     var type = MonitorType.getByName(monst);
-                    if ((blockEntity.isPower() && type == MonitorType.OFF) || (!blockEntity.isPower() && type != MonitorType.OFF))
+                    if ((blockEntity.isPowered() && type == MonitorType.OFF) || (!blockEntity.isPowered() && type != MonitorType.OFF))
                         m.putString("Monitor", MonitorType.getDefault(blockEntity, n).getName());
                     if (type == MonitorType.OFF) {
                         m.remove("SelectedPlayList");
@@ -619,7 +619,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         }
 
         public static MonitorType getDefault(MusicManagerBlockEntity blockEntity, UUID player) {
-            return blockEntity.isPower() ? PLAY_LIST : OFF;
+            return blockEntity.isPowered() ? PLAY_LIST : OFF;
         }
     }
 }

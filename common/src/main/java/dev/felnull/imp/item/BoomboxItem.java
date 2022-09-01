@@ -4,6 +4,7 @@ import dev.felnull.imp.block.BoomboxBlock;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.data.BoomboxData;
+import dev.felnull.imp.handler.CommonHandler;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.item.IInstructionItem;
@@ -51,20 +52,14 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
-        ItemStack itemStack = player.getItemInHand(interactionHand);
-        if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
+        var itemStack = player.getItemInHand(interactionHand);
+        if (player.isCrouching() || isPowered(itemStack)) {
             if (!level.isClientSide()) {
-                if (checkDuplication(itemStack, player))
-                    setUUID(itemStack, UUID.randomUUID());
-
-                if (player.isCrouching()) {
-                    setPowerOn(itemStack, !isPowerOn(itemStack));
-                } else {
-                    if (isPowerOn(itemStack))
-                        BoomboxItemContainer.openContainer((ServerPlayer) player, interactionHand, itemStack);
-                }
+                if (player.isCrouching())
+                    setPower(itemStack, !isPowered(itemStack));
+                else if (getTransferProgress(itemStack) == 10)
+                    BoomboxItemContainer.openContainer((ServerPlayer) player, interactionHand, itemStack);
             }
-            return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
         }
         return super.use(level, player, interactionHand);
     }
@@ -73,29 +68,21 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     public InteractionResult place(BlockPlaceContext blockPlaceContext) {
         var itemStack = blockPlaceContext.getItemInHand();
         var player = blockPlaceContext.getPlayer();
-        if (player != null && !(!player.isCrouching() && !isPowerOn(itemStack))) {
-            if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
-                if (!blockPlaceContext.getLevel().isClientSide()) {
-                    if (player.isCrouching()) {
-                        if (getTransferProgress(itemStack) == 0 || getTransferProgress(itemStack) == 10) {
-                            setPowerOn(itemStack, !isPowerOn(itemStack));
-                        }
-                    } else {
-                        if (isPowerOn(itemStack))
-                            BoomboxItemContainer.openContainer((ServerPlayer) player, blockPlaceContext.getHand(), itemStack);
-                    }
-                }
-                return InteractionResult.sidedSuccess(blockPlaceContext.getLevel().isClientSide);
-            } else {
-                return InteractionResult.FAIL;
+        if (player != null && (player.isCrouching() || isPowered(itemStack))) {
+            if (!blockPlaceContext.getLevel().isClientSide()) {
+                if (player.isCrouching())
+                    setPower(itemStack, !isPowered(itemStack));
+                else if (getTransferProgress(itemStack) == 10)
+                    BoomboxItemContainer.openContainer((ServerPlayer) player, blockPlaceContext.getHand(), itemStack);
             }
+            return InteractionResult.FAIL;
         }
         return super.place(blockPlaceContext);
     }
 
     @Override
     protected boolean canPlace(BlockPlaceContext blockPlaceContext, @NotNull BlockState blockState) {
-        return !isPowerOn(blockPlaceContext.getItemInHand()) && super.canPlace(blockPlaceContext, blockState);
+        return getTransferProgress(blockPlaceContext.getItemInHand()) == 0 && super.canPlace(blockPlaceContext, blockState);
     }
 
     @Override
@@ -108,14 +95,14 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
 
     public static void tick(Level level, Entity entity, ItemStack stack, boolean musicOnly) {
         if (!stack.is(IMPBlocks.BOOMBOX.get().asItem())) return;
-        if (!level.isClientSide()) {
-            if (getUUID(stack) == null)
-                setUUID(stack, UUID.randomUUID());
-
+        if (!level.isClientSide() && level instanceof ServerLevel sl) {
             var mr = MusicRingManager.getInstance();
-            var uuid = getUUID(stack);
-            if (uuid != null && BoomboxEntityRinger.canRing(entity) && !mr.isExistRinger((ServerLevel) level, uuid)) {
-                mr.addRinger((ServerLevel) level, new BoomboxEntityRinger(entity, uuid));
+            if (getRingerUUID(stack) == null || CommonHandler.itemBoomboxes.contains(getRingerUUID(stack)))
+                setRingerUUID(stack, UUID.randomUUID());
+            var uuid = getRingerUUID(stack);
+            CommonHandler.itemBoomboxes.add(uuid);
+            if (BoomboxEntityRinger.canRing(entity) && !mr.hasRinger(sl, uuid)) {
+                mr.addRinger(sl, new BoomboxEntityRinger(entity, uuid));
             }
         }
 
@@ -126,7 +113,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         setData(stack, data);
 
         if (entity instanceof LivingEntity livingEntity && (livingEntity.getMainHandItem() == stack || livingEntity.getOffhandItem() == stack)) {
-            boolean power = isPowerOn(stack);
+            boolean power = isPowered(stack);
             setTransferProgressOld(stack, getTransferProgress(stack));
             setTransferProgress(stack, getTransferProgress(stack) + (power ? 1 : -1));
         }
@@ -150,25 +137,23 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     public static boolean matches(ItemStack src, ItemStack target) {
         if (src == target)
             return true;
-        var uid = getUUID(src);
-        return uid != null && uid.equals(getUUID(target));
+        var uid = getRingerUUID(src);
+        return uid != null && uid.equals(getRingerUUID(target));
     }
 
     public static CompoundTag getBoomboxTag(ItemStack stack) {
-        if (stack.getTag() != null)
-            return stack.getTag().getCompound("BoomboxTag");
-        return null;
+        return stack.getTag() != null ? stack.getTag().getCompound("BoomboxTag") : null;
     }
 
     public static CompoundTag getOrCreateBoomboxTag(ItemStack stack) {
         var tag = stack.getOrCreateTag();
         if (!tag.contains("BoomboxTag"))
             tag.put("BoomboxTag", new CompoundTag());
-        return tag.getCompound("BoomboxTag");
+        return getBoomboxTag(stack);
     }
 
     public static BoomboxData getData(ItemStack stack) {
-        var data = new BoomboxData(new BoomboxData.DataAccess() {
+        return new BoomboxData(getBoomboxTag(stack), new BoomboxData.DataAccess() {
             @Override
             public ItemStack getCassetteTape() {
                 return BoomboxItem.getCassetteTape(stack);
@@ -180,29 +165,23 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             }
 
             @Override
-            public boolean isPower() {
-                return isPowerOn(stack);
+            public boolean isPowered() {
+                return BoomboxItem.isPowered(stack);
             }
 
             @Override
             public void setPower(boolean power) {
-                BoomboxItem.setPowerOn(stack, power);
+                BoomboxItem.setPower(stack, power);
             }
 
             @Override
             public IMusicRinger getRinger() {
-                var uuid = getUUID(stack);
-                var mr = MusicRingManager.getInstance();
-                if (uuid != null)
-                    return mr.getRinger(uuid);
-                return null;
+                return MusicRingManager.getInstance().getRinger(getRingerUUID(stack));
             }
 
             @Override
             public Vec3 getPosition() {
-                if (getRinger() == null)
-                    return Vec3.ZERO;
-                return getRinger().getRingerSpatialPosition();
+                return getRinger() != null ? getRinger().getRingerSpatialPosition() : Vec3.ZERO;
             }
 
             @Override
@@ -215,30 +194,24 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
                 setData(stack, data);
             }
         });
-        var tag = getBoomboxTag(stack);
-        if (tag != null)
-            data.load(tag.getCompound("BoomBoxData"), true, true);
-        return data;
     }
 
     public static void setData(ItemStack stack, BoomboxData data) {
         getOrCreateBoomboxTag(stack).put("BoomBoxData", data.save(new CompoundTag(), true, true));
     }
 
-    public static boolean isPowerOn(ItemStack itemStack) {
+    public static boolean isPowered(ItemStack itemStack) {
         if (getBoomboxTag(itemStack) != null)
             return getBoomboxTag(itemStack).getBoolean("Power");
         return false;
     }
 
-    public static void setPowerOn(ItemStack itemStack, boolean power) {
+    public static void setPower(ItemStack itemStack, boolean power) {
         getOrCreateBoomboxTag(itemStack).putBoolean("Power", power);
     }
 
     public static int getTransferProgress(ItemStack stack) {
-        if (getBoomboxTag(stack) != null)
-            return getBoomboxTag(stack).getInt("Transfer");
-        return 0;
+        return getBoomboxTag(stack) != null ? getBoomboxTag(stack).getInt("Transfer") : 0;
     }
 
     public static void setTransferProgress(ItemStack stack, int num) {
@@ -246,9 +219,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     public static int getTransferProgressOld(ItemStack stack) {
-        if (getBoomboxTag(stack) != null)
-            return getBoomboxTag(stack).getInt("TransferOld");
-        return 0;
+        return getBoomboxTag(stack) != null ? getBoomboxTag(stack).getInt("TransferOld") : 0;
     }
 
     public static void setTransferProgressOld(ItemStack stack, int num) {
@@ -259,13 +230,13 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
         return Mth.lerp(partialTicks, BoomboxItem.getTransferProgressOld(stack), BoomboxItem.getTransferProgress(stack)) / 10f;
     }
 
-    public static UUID getUUID(ItemStack stack) {
+    public static UUID getRingerUUID(ItemStack stack) {
         if (getBoomboxTag(stack) != null && getBoomboxTag(stack).contains("Identification"))
             return getBoomboxTag(stack).getUUID("Identification");
         return null;
     }
 
-    public static void setUUID(ItemStack stack, UUID id) {
+    public static void setRingerUUID(ItemStack stack, UUID id) {
         getOrCreateBoomboxTag(stack).putUUID("Identification", id);
     }
 
@@ -308,19 +279,19 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             d.setMusicPosition(0);
         }
         setData(itemStack, d);
-        setPowerOn(itemStack, blockEntity.isPower());
-        if (blockEntity.isPower()) {
+        setPower(itemStack, blockEntity.isPowered());
+        if (blockEntity.isPowered()) {
             setTransferProgress(itemStack, 10);
             setTransferProgressOld(itemStack, 10);
         }
         if (blockEntity.hasCustomName())
             itemStack.setHoverName(blockEntity.getCustomName());
-        setUUID(itemStack, UUID.randomUUID());
+        setRingerUUID(itemStack, UUID.randomUUID());
         return itemStack;
     }
 
     public static boolean checkDuplication(ItemStack stack, Entity entity) {
-        var stackId = getUUID(stack);
+        var stackId = getRingerUUID(stack);
         if (stackId == null) return false;
         List<ItemStack> allItem = new ArrayList<>();
 
@@ -333,7 +304,7 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
             allItem.addAll(player.getInventory().items);
         }
         for (ItemStack item : allItem) {
-            if (item != stack && !item.isEmpty() && stackId.equals(getUUID(item)))
+            if (item != stack && !item.isEmpty() && stackId.equals(getRingerUUID(item)))
                 return true;
         }
         return false;

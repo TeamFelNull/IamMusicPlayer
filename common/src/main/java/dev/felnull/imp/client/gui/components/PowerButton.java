@@ -36,7 +36,7 @@ public class PowerButton extends ImageButton {
         if (this.isHoveredOrFocused())
             ty += this.height;
 
-        if (screen.isPower())
+        if (screen.isPowered())
             tx += this.width;
 
         RenderSystem.enableDepthTest();
@@ -46,6 +46,6 @@ public class PowerButton extends ImageButton {
     }
 
     private static void onPower(IMPBaseContainerScreen<?> screen) {
-        screen.insPower(!screen.isPower());
+        screen.insPower(!screen.isPowered());
     }
 }

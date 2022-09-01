@@ -1,7 +1,7 @@
 package dev.felnull.imp.block;
 
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.blockentity.IMPBlockEntitys;
+import dev.felnull.imp.blockentity.IMPBlockEntities;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
 import net.minecraft.core.BlockPos;
@@ -37,6 +37,6 @@ public class MusicManagerBlock extends IMPBaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, IMPBlockEntitys.MUSIC_MANAGER.get(), MusicManagerBlockEntity::tick);
+        return createTickerHelper(blockEntityType, IMPBlockEntities.MUSIC_MANAGER.get(), MusicManagerBlockEntity::tick);
     }
 }

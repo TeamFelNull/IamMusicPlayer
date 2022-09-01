@@ -16,9 +16,9 @@ public abstract class IMPBaseContainerScreen<T extends OEBEBaseMenu> extends OEB
         instruction("power", on ? 1 : 0, new CompoundTag());
     }
 
-    public boolean isPower() {
+    public boolean isPowered() {
         if (getBlockEntity() instanceof IMPBaseEntityBlockEntity impBase)
-            return impBase.isPower();
+            return impBase.isPowered();
         return false;
     }
 }

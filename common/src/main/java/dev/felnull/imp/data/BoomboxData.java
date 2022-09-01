@@ -10,6 +10,7 @@ import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.imp.util.IMPNbtUtil;
 import dev.felnull.otyacraftengine.util.OENbtUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -63,39 +64,35 @@ public class BoomboxData {
     private boolean radioStartFlg;
     private boolean noChangeCassetteTape;
 
-    public BoomboxData(@NotNull BoomboxData.DataAccess access) {
+    public BoomboxData(CompoundTag boomboxTag, @NotNull BoomboxData.DataAccess access) {
         this.access = access;
+        if (boomboxTag != null)
+            this.load(boomboxTag.getCompound("BoomBoxData"), true, true);
     }
 
     public void tick(Level level) {
 
         this.handleRaisedProgressOld = this.handleRaisedProgress;
         this.lidOpenProgressOld = this.lidOpenProgress;
-        this.parabolicAntennaProgressOld = this.parabolicAntennaProgress;
         this.antennaProgressOld = this.antennaProgress;
+        this.parabolicAntennaProgressOld = this.parabolicAntennaProgress;
+
+        if (this.handleRaising)
+            this.handleRaisedProgress = Mth.clamp(this.handleRaisedProgress + 1, 0, getHandleRaisedMax());
+        else
+            this.handleRaisedProgress = Mth.clamp(this.handleRaisedProgress - 1, 0, getHandleRaisedMax());
+
+        if (this.lidOpen)
+            this.lidOpenProgress = Mth.clamp(this.lidOpenProgress + 1, 0, getLidOpenProgressMax());
+        else
+            this.lidOpenProgress = Mth.clamp(this.lidOpenProgress - 1, 0, getLidOpenProgressMax());
 
         if (isUseAntenna() && isRadioStream())
             this.antennaProgress = Mth.clamp(this.antennaProgress + 1, 0, 30);
         else
             this.antennaProgress = Mth.clamp(this.antennaProgress - 1, 0, 30);
 
-        if (this.handleRaising) {
-            if (this.handleRaisedProgress < getHandleRaisedMax())
-                this.handleRaisedProgress++;
-        } else {
-            if (this.handleRaisedProgress > 0)
-                this.handleRaisedProgress--;
-        }
-
-        if (this.lidOpen) {
-            if (this.lidOpenProgress < this.getLidOpenProgressMax())
-                this.lidOpenProgress++;
-        } else {
-            if (this.lidOpenProgress > 0)
-                this.lidOpenProgress--;
-        }
-
-        if (isPower() && isUseAntenna() && isAntennaExist() && getAntenna().is(IMPItems.PARABOLIC_ANTENNA.get()))
+        if (isPowered() && isUseAntenna() && isAntennaExist() && getAntenna().is(IMPItems.PARABOLIC_ANTENNA.get()))
             this.parabolicAntennaProgress += 2;
 
 
@@ -103,10 +100,10 @@ public class BoomboxData {
             if (getRinger() != null)
                 loadingMusic = getRinger().isRingerWait();
 
-            if (isPower() && monitorType == MonitorType.OFF)
+            if (isPowered() && monitorType == MonitorType.OFF)
                 monitorType = MonitorType.PLAYBACK;
 
-            if (!isPower() && monitorType != MonitorType.OFF)
+            if (!isPowered() && monitorType != MonitorType.OFF)
                 monitorType = MonitorType.OFF;
 
             if (monitorType != lastMonitorType) {
@@ -137,9 +134,11 @@ public class BoomboxData {
             if (monitorType == MonitorType.RADIO && getRadioSource().isEmpty())
                 monitorType = MonitorType.RADIO_SELECT;
 
-            if ((isRadio() && !isAntennaExist()) || (isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna())) || (isRadioStream() && IMPItemUtil.isRemotePlayBackAntenna(getAntenna()))) {
-                monitorType = MonitorType.PLAYBACK;
-            }
+            if ((isRadio() && !isAntennaExist()) || (isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna())) || (isRadioStream() && IMPItemUtil.isRemotePlayBackAntenna(getAntenna())))
+
+                if ((isRadioRemote() && !IMPItemUtil.isRemotePlayBackAntenna(getAntenna())) || (isRadioStream() && !IMPItemUtil.isRadioAntenna(getAntenna()))) {
+                    monitorType = MonitorType.PLAYBACK;
+                }
 
             if (!isRadioStream()) {
                 setRadioImage(ImageInfo.EMPTY);
@@ -175,20 +174,20 @@ public class BoomboxData {
         if ("buttons_press".equals(name)) {
             ButtonType type = ButtonType.getByName(data.getString("Type"));
             switch (type) {
-                case POWER -> setPower(!isPower());
+                case POWER -> setPower(!isPowered());
                 case LOOP -> setLoop(!isLoop());
                 case VOL_DOWN -> {
-                    if (isPower())
-                        setVolume(Math.max(volume - 10, 0));
+                    if (isPowered())
+                        setVolume(Mth.clamp(volume - 10, 0, 300));
                 }
                 case VOL_UP -> {
-                    if (isPower())
-                        setVolume(Math.min(volume + 10, 300));
+                    if (isPowered())
+                        setVolume(Mth.clamp(volume + 10, 0, 300));
                     setMute(false);
                 }
                 case VOL_MUTE -> setMute(!isMute());
                 case VOL_MAX -> {
-                    if (isPower())
+                    if (isPowered())
                         setVolume(300);
                     setMute(false);
                 }
@@ -207,13 +206,13 @@ public class BoomboxData {
                     }
                 }
                 case STOP -> {
-                    if (isPower()) {
+                    if (isPowered()) {
                         setPlaying(false);
                         setMusicPosition(0);
                     }
                 }
                 case PAUSE -> {
-                    if (isPower()) {
+                    if (isPowered()) {
                         setPlaying(false);
                         if (isRadioStream())
                             setMusicPosition(0);
@@ -222,11 +221,11 @@ public class BoomboxData {
             }
             return null;
         } else if ("set_volume".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setVolume(data.getInt("volume"));
             return null;
         } else if ("set_playing".equals(name)) {
-            if (isPower()) {
+            if (isPowered()) {
                 boolean pl = data.getBoolean("playing");
                 setPlaying(pl);
                 if (!pl)
@@ -234,23 +233,23 @@ public class BoomboxData {
             }
             return null;
         } else if ("set_pause".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setPlaying(false);
             return null;
         } else if ("set_loop".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setLoop(data.getBoolean("loop"));
             return null;
         } else if ("restat_and_set_position".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setMusicPositionAndRestart(data.getLong("position"));
             return null;
         } else if ("set_radio_url".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setRadioUrl(data.getString("url"));
             return null;
         } else if ("set_monitor".equals(name)) {
-            if (isPower()) {
+            if (isPowered()) {
                 var m = MonitorType.getByName(data.getString("name"));
                 setMonitorType(m);
                 if ((m == MonitorType.RADIO && getRadioSource() != null && !getRadioSource().isEmpty()) || (m == MonitorType.REMOTE_PLAYBACK && getSelectedMusic() != null && !getSelectedMusic().getSource().isEmpty()))
@@ -258,23 +257,23 @@ public class BoomboxData {
             }
             return null;
         } else if ("set_radio_source".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setRadioSource(OENbtUtil.readSerializable(data, "source", new MusicSource()));
             return null;
         } else if ("set_radio_image".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setRadioImage(OENbtUtil.readSerializable(data, "image", new ImageInfo()));
             return null;
         } else if ("set_radio_name".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setRadioName(data.getString("name"));
             return null;
         } else if ("set_radio_author".equals(name)) {
-            if (isPower())
+            if (isPowered())
                 setRadioAuthor(data.getString("author"));
             return null;
         } else if ("set_selected_play_list".equals(name)) {
-            if (isPower() && isRadioRemote()) {
+            if (isPowered() && isRadioRemote()) {
                 if (data.contains("pl")) {
                     var uuid = data.getUUID("pl");
                     var pl = MusicManager.getInstance().getSaveData().getPlayLists().get(uuid);
@@ -286,7 +285,7 @@ public class BoomboxData {
             }
             return null;
         } else if ("set_selected_music".equals(name)) {
-            if (isPower() && isRadioRemote()) {
+            if (isPowered() && isRadioRemote()) {
                 if (data.contains("m")) {
                     var uuid = data.getUUID("m");
                     var m = MusicManager.getInstance().getSaveData().getMusics().get(uuid);
@@ -302,7 +301,7 @@ public class BoomboxData {
             }
             return null;
         } else if ("set_continuous_type".equals(name)) {
-            if (isPower() && isRadioRemote()) {
+            if (isPowered() && isRadioRemote()) {
                 setContinuousType(ContinuousType.getByName(data.getString("type")));
             }
             return null;
@@ -645,7 +644,7 @@ public class BoomboxData {
     public void startLidOpen(boolean open, Level level) {
         setLidOpen(open);
         var pos = getPosition();
-        level.playSound(null, pos.x(), pos.y(), pos.z(), isLidOpen() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+        level.playSound(null, pos, isLidOpen() ? SoundEvents.WOODEN_DOOR_OPEN : SoundEvents.WOODEN_DOOR_CLOSE, SoundSource.BLOCKS, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
     }
 
     public boolean isLidOpen() {
@@ -785,12 +784,12 @@ public class BoomboxData {
         this.antennaProgressOld = antennaProgressOld;
     }
 
-    public boolean isPower() {
-        return access.isPower();
+    public boolean isPowered() {
+        return access.isPowered();
     }
 
-    public Vec3 getPosition() {
-        return access.getPosition();
+    public BlockPos getPosition() {
+        return new BlockPos(access.getPosition());
     }
 
     public void update() {
@@ -833,7 +832,7 @@ public class BoomboxData {
 
         ItemStack getAntenna();
 
-        boolean isPower();
+        boolean isPowered();
 
         void setPower(boolean power);
 

@@ -33,8 +33,9 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     private final UUID ringerUUID = UUID.randomUUID();
 
     public BoomboxBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(IMPBlockEntitys.BOOMBOX.get(), blockPos, blockState);
-        this.boomboxData = new BoomboxData(new BoomboxData.DataAccess() {
+
+        super(IMPBlockEntities.BOOMBOX.get(), blockPos, blockState);
+        this.boomboxData = new BoomboxData(null, new BoomboxData.DataAccess() {
             @Override
             public ItemStack getCassetteTape() {
                 return BoomboxBlockEntity.this.getCassetteTape();
@@ -46,8 +47,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
             }
 
             @Override
-            public boolean isPower() {
-                return BoomboxBlockEntity.this.isPower();
+            public boolean isPowered() {
+                return BoomboxBlockEntity.this.isPowered();
             }
 
             @Override
@@ -208,7 +209,7 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public boolean isRingerExist() {
+    public boolean exists() {
         if (getLevel() == null || level != getLevel()) return false;
         return getBlockPos() != null && level.getBlockEntity(getBlockPos()) == this;
     }
@@ -234,11 +235,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     public void setByItem(ItemStack stack) {
-        setPower(BoomboxItem.isPowerOn(stack));
+        setPower(BoomboxItem.isPowered(stack));
         setItemNoUpdate(0, BoomboxItem.getCassetteTape(stack));
         setItemNoUpdate(1, BoomboxItem.getAntenna(stack));
         setBoomboxData(BoomboxItem.getData(stack));
-        setPower(BoomboxItem.isPowerOn(stack));
+        setPower(BoomboxItem.isPowered(stack));
         if (BoomboxItem.getTransferProgress(stack) == 0) {
             boomboxData.setHandleRaising(true);
             boomboxData.setHandleRaisedProgress(boomboxData.getHandleRaisedMax());

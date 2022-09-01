@@ -2,7 +2,7 @@ package dev.felnull.imp.block;
 
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
-import dev.felnull.imp.blockentity.IMPBlockEntitys;
+import dev.felnull.imp.blockentity.IMPBlockEntities;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
 import net.minecraft.core.BlockPos;
@@ -80,7 +80,7 @@ public class BoomboxBlock extends IMPBaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, IMPBlockEntitys.BOOMBOX.get(), BoomboxBlockEntity::tick);
+        return createTickerHelper(blockEntityType, IMPBlockEntities.BOOMBOX.get(), BoomboxBlockEntity::tick);
     }
 
     @Override

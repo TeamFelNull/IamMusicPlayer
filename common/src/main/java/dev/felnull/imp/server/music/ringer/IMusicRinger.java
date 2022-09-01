@@ -20,7 +20,7 @@ public interface IMusicRinger {
 
     public UUID getRingerUUID();
 
-    public boolean isRingerExist();
+    public boolean exists();
 
     public boolean isRingerPlaying();
 
@@ -45,20 +45,28 @@ public interface IMusicRinger {
     public boolean isRingerStream();
 
     default public boolean isRingerWait() {
-        return MusicRingManager.getInstance().isWaitRinger(getRingerUUID(), getRingerLevel());
+        return getMusicRing().isWaitRinger(getRingerUUID());
+    }
+
+    default public MusicRing getMusicRing() {
+        return MusicRingManager.getInstance().getMusicRing(getRingerLevel());
+    }
+
+    default public boolean alreadyAdded() {
+        return getMusicRing().hasRinger(getRingerUUID());
     }
 
     default public void ringerTick() {
-        if (!MusicRingManager.getInstance().isExistRinger(getRingerLevel(), getRingerUUID()))
+        if (!alreadyAdded())
             addRingerInRingManager();
     }
 
     default public void addRingerInRingManager() {
-        MusicRingManager.getInstance().addRinger(getRingerLevel(), this);
+        getMusicRing().addRinger(this);
     }
 
     default public void ringerRestart() {
-        MusicRingManager.getInstance().restartRinger(getRingerLevel(), getRingerUUID());
+        getMusicRing().restart(getRingerUUID());
     }
 
     default public void ringerEnd() {
