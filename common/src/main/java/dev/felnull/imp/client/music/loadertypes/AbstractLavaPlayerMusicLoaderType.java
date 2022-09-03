@@ -8,13 +8,12 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderType {
-    private static final Component ENTER_TEXT = new TranslatableComponent("imp.text.enterText.default");
+    private static final Component ENTER_TEXT = Component.translatable("imp.text.enterText.default");
     private final String rawName;
     private final Component name;
     private final ResourceLocation icon;
@@ -22,7 +21,7 @@ public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderT
 
     public AbstractLavaPlayerMusicLoaderType(String name) {
         this.rawName = name;
-        this.name = new TranslatableComponent("imp.loaderType." + name);
+        this.name = Component.translatable("imp.loaderType." + name);
         this.icon = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/loader_types/" + name + ".png");
         this.audioPlayerManager = LavaPlayerUtil.createAudioPlayerManager();
         audioPlayerManager.getConfiguration().setOutputFormat(LavaPlayerMusicLoader.COMMON_PCM_S16_LE_C2);

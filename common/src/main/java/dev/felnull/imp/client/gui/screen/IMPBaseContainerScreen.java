@@ -13,7 +13,9 @@ public abstract class IMPBaseContainerScreen<T extends OEBEBaseMenu> extends OEB
     }
 
     public void insPower(boolean on) {
-        instruction("power", on ? 1 : 0, new CompoundTag());
+        var tag = new CompoundTag();
+        tag.putBoolean("power", on);
+        instruction("power", tag);
     }
 
     public boolean isPowered() {

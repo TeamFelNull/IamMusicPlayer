@@ -13,19 +13,18 @@ import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonit
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class PlaybackCDMonitor extends CassetteDeckMonitor {
     protected static final ResourceLocation PLAYBACK_BG_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/cassette_deck/monitor/playback.png");
     protected static final ResourceLocation PLAYBACK_IMAGE_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/cassette_deck/monitor/playback_image.png");
-    private static final Component NO_CASSETTE_TAPE_TEXT = new TranslatableComponent("imp.text.noCassetteTape");
-    private static final Component NO_MUSIC_CASSETTE_TAPE_TEXT = new TranslatableComponent("imp.text.noMusicCassetteTape");
-    private static final Component LOADING_MUSIC_TEXT = new TranslatableComponent("imp.text.musicLoading");
+    private static final Component NO_CASSETTE_TAPE_TEXT = Component.translatable("imp.text.noCassetteTape");
+    private static final Component NO_MUSIC_CASSETTE_TAPE_TEXT = Component.translatable("imp.text.noMusicCassetteTape");
+    private static final Component LOADING_MUSIC_TEXT = Component.translatable("imp.text.musicLoading");
     private SmartButton backButton;
     private VolumeWidget volumeWidget;
     private PlayBackControlWidget playBackControlWidget;
@@ -40,7 +39,7 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
 
-        this.backButton = this.addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 44, 14, 11, new TranslatableComponent("gui.back"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.MENU)));
+        this.backButton = this.addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 44, 14, 11, Component.translatable("gui.back"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.MENU)));
         this.backButton.setHideText(true);
         this.backButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8);
 
@@ -112,38 +111,38 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 44, OERenderUtil.MIN_BREADTH * 2f, 14, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 44, OERenderUtils.MIN_BREADTH * 2f, 14, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8, 256, 256);
 
         if (!getCassetteTape(blockEntity).isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape(blockEntity))) {
             Music music = CassetteTapeItem.getMusic(getCassetteTape(blockEntity));
             if (music != null) {
-                OERenderUtil.renderTextureSprite(PLAYBACK_BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+                OERenderUtils.renderTextureSprite(PLAYBACK_BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
                 if (!music.getImage().isEmpty())
-                    OERenderUtil.renderTextureSprite(PLAYBACK_IMAGE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+                    OERenderUtils.renderTextureSprite(PLAYBACK_IMAGE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
                 int sx = 2;
                 if (!music.getImage().isEmpty()) {
-                    renderPlayListImage(poseStack, multiBufferSource, music.getImage(), 1, 1, OERenderUtil.MIN_BREADTH * 4, height - 3 - 13, i, j, onPxW, onPxH, monitorHeight);
+                    renderPlayListImage(poseStack, multiBufferSource, music.getImage(), 1, 1, OERenderUtils.MIN_BREADTH * 4, height - 3 - 13, i, j, onPxW, onPxH, monitorHeight);
                     sx += height - 2 - 13;
                 }
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, Component.literal(OEClientUtils.getWidthOmitText(music.getName(), width - sx - 2, "...")), sx + (width - sx - 2f) / 2f, 3, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
 
                 var ptx = LOADING_MUSIC_TEXT;
                 if (!blockEntity.isLoadingMusic())
-                    ptx = new TextComponent(FNStringUtil.getTimeProgress(blockEntity.getPosition(), music.getSource().getDuration()));
+                    ptx = Component.literal(FNStringUtil.getTimeProgress(blockEntity.getPosition(), music.getSource().getDuration()));
 
-                renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 45f - (isShortProgressBar(blockEntity) ? 0 : 43f), 17f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
+                renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 45f - (isShortProgressBar(blockEntity) ? 0 : 43f), 17f, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
 
-                renderVolumeSprite(poseStack, multiBufferSource, 168, 16, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, getVolume(blockEntity), isMute(blockEntity));
-                renderPlayBackControl(poseStack, multiBufferSource, isShortProgressBar(blockEntity) ? 45 : 2, 30, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, blockEntity.isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING);
-                renderLoopControl(poseStack, multiBufferSource, 189, 31, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, blockEntity.isLoop());
+                renderVolumeSprite(poseStack, multiBufferSource, 168, 16, OERenderUtils.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, getVolume(blockEntity), isMute(blockEntity));
+                renderPlayBackControl(poseStack, multiBufferSource, isShortProgressBar(blockEntity) ? 45 : 2, 30, OERenderUtils.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, blockEntity.isPlaying() ? PlayBackControlWidget.StateType.STOP : PlayBackControlWidget.StateType.PLAYING);
+                renderLoopControl(poseStack, multiBufferSource, 189, 31, OERenderUtils.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, blockEntity.isLoop());
 
-                renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(blockEntity) ? 55 : 12, 33, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, isShortProgressBar(blockEntity) ? 133 : 176, (float) blockEntity.getPosition() / (float) music.getSource().getDuration());
+                renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(blockEntity) ? 55 : 12, 33, OERenderUtils.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, isShortProgressBar(blockEntity) ? 133 : 176, (float) blockEntity.getPosition() / (float) music.getSource().getDuration());
             } else {
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
             }
         } else {
-            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
         }
 
     }
@@ -155,18 +154,18 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
         if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
             Music music = CassetteTapeItem.getMusic(getCassetteTape());
             if (music != null) {
-                OERenderUtil.drawTexture(PLAYBACK_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+                OERenderUtils.drawTexture(PLAYBACK_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
                 if (!music.getImage().isEmpty())
-                    OERenderUtil.drawTexture(PLAYBACK_IMAGE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+                    OERenderUtils.drawTexture(PLAYBACK_IMAGE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
                 int sx = 2;
                 if (!music.getImage().isEmpty()) {
                     getPlayImageRenderer().draw(music.getImage(), poseStack, getStartX() + 1, getStartY() + 1, height - 2 - 13);
                     sx += height - 2 - 13;
                 }
-                drawSmartCenterText(poseStack, new TextComponent(OERenderUtil.getWidthString(music.getName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
+                drawSmartCenterText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(music.getName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
                 var ptx = LOADING_MUSIC_TEXT;
                 if (!getScreen().isLoading())
-                    ptx = new TextComponent(FNStringUtil.getTimeProgress(getScreen().getPosition(), music.getSource().getDuration()));
+                    ptx = Component.literal(FNStringUtil.getTimeProgress(getScreen().getPosition(), music.getSource().getDuration()));
                 drawSmartText(poseStack, ptx, getStartX() + 45 - (isShortProgressBar() ? 0 : 43), getStartY() + 17, 0XFF115D0E);
             } else {
                 drawSmartCenterText(poseStack, NO_MUSIC_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);

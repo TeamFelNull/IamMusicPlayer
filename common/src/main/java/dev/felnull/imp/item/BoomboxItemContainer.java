@@ -3,7 +3,7 @@ package dev.felnull.imp.item;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.otyacraftengine.item.ItemContainer;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
-import dev.felnull.otyacraftengine.item.location.IPlayerItemLocation;
+import dev.felnull.otyacraftengine.item.location.PlayerItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class BoomboxItemContainer extends ItemContainer {
 
-    public BoomboxItemContainer(ItemStack itemStack, IPlayerItemLocation location, int size, String tagName, Function<Player, Boolean> valid) {
+    public BoomboxItemContainer(ItemStack itemStack, PlayerItemLocation location, int size, String tagName, Function<Player, Boolean> valid) {
         super(itemStack, location, size, tagName, valid);
     }
 
@@ -47,7 +47,7 @@ public class BoomboxItemContainer extends ItemContainer {
         OEMenuUtil.openItemMenu(player, createBoomboxMenuProvider(stack, loc, 2, "BoomboxItems", BoomboxMenu::new), loc, stack, 2);
     }
 
-    private static MenuProvider createBoomboxMenuProvider(ItemStack stack, IPlayerItemLocation location, int size, String tagName, MenuFactory factory) {
+    private static MenuProvider createBoomboxMenuProvider(ItemStack stack, PlayerItemLocation location, int size, String tagName, MenuFactory factory) {
         var con = new BoomboxItemContainer(stack, location, size, tagName, player -> {
             if (location.getItem(player).isEmpty() || stack.isEmpty())
                 return false;

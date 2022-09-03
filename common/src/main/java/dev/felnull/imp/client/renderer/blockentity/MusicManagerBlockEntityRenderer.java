@@ -6,8 +6,8 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
-import dev.felnull.otyacraftengine.client.util.OEModelUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OEModelUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,22 +35,22 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
     public static void renderMusicManager(MusicManagerBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f) {
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
-        var acLmp = OEModelUtil.getModel(IMPModels.MUSIC_MANAGER_OFF_ACCESS_LAMP);
+        var acLmp = OEModelUtils.getModel(IMPModels.MUSIC_MANAGER_OFF_ACCESS_LAMP);
 
         if (blockEntity.isPowered() && random.nextBoolean())
-            acLmp = OEModelUtil.getModel(IMPModels.MUSIC_MANAGER_ACCESS_LAMP);
+            acLmp = OEModelUtils.getModel(IMPModels.MUSIC_MANAGER_ACCESS_LAMP);
 
         poseStack.pushPose();
-        OERenderUtil.poseRotateDirection(poseStack, blockEntity.getBlockState().getValue(MusicManagerBlock.FACING), 1);
+        OERenderUtils.poseRotateDirection(poseStack, blockEntity.getBlockState().getValue(MusicManagerBlock.FACING), 1);
 
         poseStack.pushPose();
-        OERenderUtil.renderModel(poseStack, vc, acLmp, i, j);
+        OERenderUtils.renderModel(poseStack, vc, acLmp, i, j);
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.translate(1, 0, 0);
-        OERenderUtil.poseRotateY(poseStack, 180);
-        OERenderUtil.poseTrans16(poseStack, 0.25f, 1.75f, -12.375f);
+        OERenderUtils.poseRotateY(poseStack, 180);
+        OERenderUtils.poseTrans16(poseStack, 0.25f, 1.75f, -12.375f);
         var monitor = getMonitor(blockEntity.getMyMonitor(mc.player));
         float px16 = 1f / 16f;
         monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 10.5f, px16 * 6.5f);

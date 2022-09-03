@@ -2,7 +2,7 @@ package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class MemberPlayersFixedButtonsList extends PlayersFixedButtonsList {
     @Override
     protected void renderOneButton(PoseStack poseStack, UUID item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), this.getYImage(this.isHoveredOrFocused(bnum)));
-        OERenderUtil.drawPlayerFace(poseStack, item, x + 1, y + 1, getOneButtonHeight() - 2);
+        OERenderUtils.drawPlayerFace(poseStack, item, x + 1, y + 1, getOneButtonHeight() - 2);
         drawSmartFixedWidthText(poseStack, getMessage(lnum), x + getOneButtonHeight() + 1, y + 2f, getOneButtonWidth() - 2 - getOneButtonHeight() - 1);
         var mp = playListSupplier.get();
         if (mp != null) {

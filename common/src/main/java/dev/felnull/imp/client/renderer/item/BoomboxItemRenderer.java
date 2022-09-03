@@ -7,8 +7,8 @@ import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.renderer.blockentity.BoomboxBlockEntityRenderer;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
-import dev.felnull.otyacraftengine.client.util.OEModelUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OEModelUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -25,9 +25,9 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
         boolean radio = false;
 
         var state = power ? onEntity.getBlockState() : offEntity.getBlockState();
-        var model = OEModelUtil.getModel(state);
+        var model = OEModelUtils.getModel(state);
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
-        OERenderUtil.renderModel(poseStack, vc, model, i, i1);
+        OERenderUtils.renderModel(poseStack, vc, model, i, i1);
 
         float handleRaised = 1;
 

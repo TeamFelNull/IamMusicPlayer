@@ -11,17 +11,16 @@ import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.util.FlagThread;
-import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
+import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListBaseMMMonitor {
-    protected static final Component IMPORTING_TEXT = new TranslatableComponent("imp.text.importing");
-    protected static final Component IMPORT_FAILURE_TEXT = new TranslatableComponent("imp.text.importFailure");
+    protected static final Component IMPORTING_TEXT = Component.translatable("imp.text.importing");
+    protected static final Component IMPORT_FAILURE_TEXT = Component.translatable("imp.text.importFailure");
     private ImportMusicLoader importMusicLoader;
     private boolean failureImportPlayList;
 
@@ -39,7 +38,7 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
         } else if (failureImportPlayList) {
             ipTx = IMPORT_FAILURE_TEXT;
         } else if (getImportPlayListMusicCount() > 0) {
-            ipTx = new TranslatableComponent("imp.text.importMusicCount", getImportPlayListMusicCount());
+            ipTx = Component.translatable("imp.text.importMusicCount", getImportPlayListMusicCount());
         }
         if (ipTx != null)
             drawSmartText(poseStack, ipTx, getStartX() + width - 95 + 7, getStartY() + 184);

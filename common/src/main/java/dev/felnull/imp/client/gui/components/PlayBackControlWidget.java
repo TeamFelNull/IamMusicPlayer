@@ -3,10 +3,10 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -16,7 +16,7 @@ public class PlayBackControlWidget extends AbstractWidget implements IIMPSmartRe
     private final Consumer<StateType> press;
 
     public PlayBackControlWidget(int x, int y, Supplier<StateType> stateTypeSupplier, Consumer<StateType> press) {
-        super(x, y, 10, 10, new TranslatableComponent("imp.widget.playBackControl"));
+        super(x, y, 10, 10, Component.translatable("imp.widget.playBackControl"));
         this.stateTypeSupplier = stateTypeSupplier;
         this.press = press;
     }
@@ -30,7 +30,7 @@ public class PlayBackControlWidget extends AbstractWidget implements IIMPSmartRe
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
         var state = stateTypeSupplier.get();
         int z = isHoveredOrFocused() ? 30 : 0;
-        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, state.ordinal() * 10 + z, 145, 10, 10);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, state.ordinal() * 10 + z, 145, 10, 10);
     }
 
     @Override

@@ -5,8 +5,8 @@ import dev.felnull.fnjl.util.FNMath;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.music.resource.ImageInfo;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import dev.felnull.otyacraftengine.client.util.OETextureUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import dev.felnull.otyacraftengine.client.util.OETextureUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec2;
@@ -32,29 +32,27 @@ public class PlayImageRenderer {
     }
 
     public void draw(ImageInfo imageInfo, PoseStack poseStack, float x, float y, float size, boolean cash) {
-        if (imageInfo.isEmpty())
-            return;
+        if (imageInfo.isEmpty()) return;
 
         if (imageInfo.getImageType() == ImageInfo.ImageType.PLAYER_FACE) {
             drawPlayerFaceImage(imageInfo.getIdentifier(), poseStack, x, y, size);
             return;
         }
         var td = getImageTexture(imageInfo, cash);
-        if (td != null)
-            drawTextureImage(td.getLeft(), poseStack, td.getRight().x, td.getRight().y, x, y, size);
+        if (td != null) drawTextureImage(td.getLeft(), poseStack, td.getRight().x, td.getRight().y, x, y, size);
     }
 
     public void drawPlayerFaceImage(String name, PoseStack poseStack, float x, float y, float size) {
-        var texture = OETextureUtil.getPlayerSkinTexture(name);
-        OERenderUtil.drawTexture(texture, poseStack, x, y, size, size, size, size, size * 8, size * 8);
-        OERenderUtil.drawTexture(texture, poseStack, x, y, size * 5, size, size, size, size * 8, size * 8);
+        var texture = OETextureUtils.getPlayerSkinTexture(name);
+        OERenderUtils.drawTexture(texture, poseStack, x, y, size, size, size, size, size * 8, size * 8);
+        OERenderUtils.drawTexture(texture, poseStack, x, y, size * 5, size, size, size, size * 8, size * 8);
     }
 
     private void drawTextureImage(ResourceLocation location, PoseStack poseStack, float wScale, float hScale, float x, float y, float size) {
         if (location == null) return;
         float w = size * wScale;
         float h = size * hScale;
-        OERenderUtil.drawTexture(location, poseStack, x + (size - w) / 2, y + (size - h) / 2, 0, 0, w, h, w, h);
+        OERenderUtils.drawTexture(location, poseStack, x + (size - w) / 2, y + (size - h) / 2, 0, 0, w, h, w, h);
     }
 
     public void renderSprite(ImageInfo imageInfo, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j) {
@@ -62,8 +60,7 @@ public class PlayImageRenderer {
     }
 
     public void renderSprite(ImageInfo imageInfo, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j, boolean cash) {
-        if (imageInfo.isEmpty())
-            return;
+        if (imageInfo.isEmpty()) return;
         if (imageInfo.getImageType() == ImageInfo.ImageType.PLAYER_FACE) {
             renderPlayerFaceImageSprite(imageInfo.getIdentifier(), poseStack, multiBufferSource, x, y, z, size, i, j);
             return;
@@ -74,21 +71,24 @@ public class PlayImageRenderer {
     }
 
     private void renderPlayerFaceImageSprite(String name, PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float size, int i, int j) {
-        OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, name, x, y, z, 0, 0, 0, size, i, j);
+        poseStack.pushPose();
+        poseStack.translate(x, y, z);
+        OERenderUtils.renderPlayerFaceSprite(poseStack, multiBufferSource, name, size, i, j);
+        poseStack.popPose();
     }
 
     private void renderTextureImageSprite(ResourceLocation location, PoseStack poseStack, MultiBufferSource multiBufferSource, float wScale, float hScale, float x, float y, float z, float size, int i, int j) {
         if (location == null) return;
         float w = size * wScale;
         float h = size * hScale;
-        OERenderUtil.renderTextureSprite(location, poseStack, multiBufferSource, x + (size - w) / 2, y + (size - h) / 2, z, 0, 0, 0, w, h, 0, 0, w, h, w, h, i, j);
+        OERenderUtils.renderTextureSprite(location, poseStack, multiBufferSource, x + (size - w) / 2, y + (size - h) / 2, z, 0, 0, 0, w, h, 0, 0, w, h, w, h, i, j);
     }
 
 
     private Pair<ResourceLocation, Vec2> getImageTexture(ImageInfo imageInfo, boolean cash) {
         if (imageInfo.getImageType() == ImageInfo.ImageType.URL) {
-            var loc = OETextureUtil.getURLTextureAsyncLoad(imageInfo.getIdentifier(), cash);
-            var scale = OETextureUtil.getTextureScale(loc);
+            var loc = OETextureUtils.getAndLoadURLTextureAsync(imageInfo.getIdentifier(), cash).getLocation();
+            var scale = OETextureUtils.getTextureScale(loc);
             float w = 1;
             float h = 1;
             if (scale != null) {
@@ -97,8 +97,8 @@ public class PlayImageRenderer {
             }
             return Pair.of(loc, new Vec2(w, h));
         } else if (imageInfo.getImageType() == ImageInfo.ImageType.YOUTUBE_THUMBNAIL) {
-            var loc = OETextureUtil.getURLTextureAsyncLoad(String.format(YOUTUBE_THUMBNAIL_URL, imageInfo.getIdentifier()), cash, MISSING_YOUTUBE_THUMBNAIL_TEXTURE);
-            var scale = OETextureUtil.getTextureScale(loc);
+            var loc = OETextureUtils.getAndLoadURLTextureAsync(String.format(YOUTUBE_THUMBNAIL_URL, imageInfo.getIdentifier()), cash).of(MISSING_YOUTUBE_THUMBNAIL_TEXTURE);
+            var scale = OETextureUtils.getTextureScale(loc);
             float w = 1;
             float h = 1;
             if (loc == MISSING_YOUTUBE_THUMBNAIL_TEXTURE) {
@@ -116,8 +116,8 @@ public class PlayImageRenderer {
                 if (soundCloudArtworkURLs.containsKey(idf)) {
                     var url = soundCloudArtworkURLs.get(idf);
                     if (url != null) {
-                        var loc = OETextureUtil.getURLTextureAsyncLoad(url, cash, MISSING_SOUND_CLOUD_ARTWORK_TEXTURE);
-                        var scale = OETextureUtil.getTextureScale(loc);
+                        var loc = OETextureUtils.getAndLoadURLTextureAsync(url, cash).of(MISSING_SOUND_CLOUD_ARTWORK_TEXTURE);
+                        var scale = OETextureUtils.getTextureScale(loc);
                         float w = 1;
                         float h = 1;
                         if (scale != null) {

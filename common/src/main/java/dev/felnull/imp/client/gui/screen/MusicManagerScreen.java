@@ -13,7 +13,7 @@ import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.util.OENbtUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -60,13 +60,13 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
         var tag = new CompoundTag();
         tag.putString("type", type.getName());
-        instruction("set_monitor", 0, tag);
+        instruction("set_monitor", tag);
     }
 
     public void insAddPlayList(UUID playListId) {
         var tag = new CompoundTag();
         tag.putUUID("playlist", playListId);
-        instruction("add_playlist", 0, tag);
+        instruction("add_playlist", tag);
     }
 
     private void changeScreenMonitor(MusicManagerBlockEntity.MonitorType type) {
@@ -100,125 +100,125 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     public void insImportPlayListMusicCount(int count) {
         var tag = new CompoundTag();
         tag.putInt("count", count);
-        instruction("set_import_playlist_music_count", 0, tag);
+        instruction("set_import_playlist_music_count", tag);
     }
 
     public void insImportPlayListAuthor(String author) {
         var tag = new CompoundTag();
         tag.putString("author", author);
-        instruction("set_import_playlist_author", 0, tag);
+        instruction("set_import_playlist_author", tag);
     }
 
     public void insImportPlayListName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_import_playlist_name", 0, tag);
+        instruction("set_import_playlist_name", tag);
     }
 
     public void insImportIdentifier(String identifier) {
         var tag = new CompoundTag();
         tag.putString("id", identifier);
-        instruction("set_import_identifier", 0, tag);
+        instruction("set_import_identifier", tag);
     }
 
     public void insImageURL(String url) {
         var tag = new CompoundTag();
         tag.putString("url", url);
-        instruction("set_image_url", 0, tag);
+        instruction("set_image_url", tag);
     }
 
     public void insImage(ImageInfo image) {
         var tag = new CompoundTag();
-        OENbtUtil.writeSerializable(tag, "image", image);
-        instruction("set_image", 0, tag);
+        tag.put("image", image.createSavedTag());
+        instruction("set_image", tag);
     }
 
     public void insCreateName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_create_name", 0, tag);
+        instruction("set_create_name", tag);
     }
 
     public void insPublishing(String publishing) {
         var tag = new CompoundTag();
         tag.putString("publishing", publishing);
-        instruction("set_publishing", 0, tag);
+        instruction("set_publishing", tag);
     }
 
     public void insInitialAuthority(String initialAuthority) {
         var tag = new CompoundTag();
         tag.putString("initial_authority", initialAuthority);
-        instruction("set_initial_authority", 0, tag);
+        instruction("set_initial_authority", tag);
     }
 
     public void insInvitePlayerName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_invite_player_name", 0, tag);
+        instruction("set_invite_player_name", tag);
     }
 
     public void insInvitePlayers(List<UUID> players) {
         var tag = new CompoundTag();
-        OENbtUtil.writeUUIDList(tag, "players", players);
-        instruction("set_invite_players", 0, tag);
+        OENbtUtils.writeUUIDList(tag, "players", players);
+        instruction("set_invite_players", tag);
     }
 
     public void insSelectedPlayList(UUID selectedPlayList) {
         var tag = new CompoundTag();
         if (selectedPlayList != null)
             tag.putUUID("playlist", selectedPlayList);
-        instruction("set_selected_playlist", 0, tag);
+        instruction("set_selected_playlist", tag);
     }
 
     public void insSelectedMusic(@Nullable UUID selectedMusic) {
         var tag = new CompoundTag();
         if (selectedMusic != null)
             tag.putUUID("music", selectedMusic);
-        instruction("set_selected_music", 0, tag);
+        instruction("set_selected_music", tag);
     }
 
     public void insSelectedPlayer(@Nullable UUID selectedPlayer) {
         var tag = new CompoundTag();
         if (selectedPlayer != null)
             tag.putUUID("player", selectedPlayer);
-        instruction("set_selected_player", 0, tag);
+        instruction("set_selected_player", tag);
     }
 
     public void insMusicLoaderType(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_music_loader_type", 0, tag);
+        instruction("set_music_loader_type", tag);
     }
 
     public void insMusicSourceName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_music_source_name", 0, tag);
+        instruction("set_music_source_name", tag);
     }
 
     public void insMusicSource(MusicSource source) {
         if (source == null)
             source = MusicSource.EMPTY;
         var tag = new CompoundTag();
-        OENbtUtil.writeSerializable(tag, "MusicSource", source);
-        instruction("set_music_source", 0, tag);
+        tag.put("MusicSource", source.createSavedTag());
+        instruction("set_music_source", tag);
     }
 
     public void insMusicSearchName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_music_search_name", 0, tag);
+        instruction("set_music_search_name", tag);
     }
 
     public void insMusicAuthor(String author) {
         var tag = new CompoundTag();
         tag.putString("author", author);
-        instruction("set_music_author", 0, tag);
+        instruction("set_music_author", tag);
     }
 
     @Override
-    public void onInstructionReturn(String name, int num, CompoundTag data) {
-        super.onInstructionReturn(name, num, data);
+    public void onInstructionReturn(String name, CompoundTag data) {
+        super.onInstructionReturn(name, data);
         if ("add_playlist".equals(name)) {
             if (data.contains("playlist")) {
                 insSelectedPlayList(data.getUUID("playlist"));

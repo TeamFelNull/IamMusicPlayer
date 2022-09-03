@@ -3,8 +3,7 @@ package dev.felnull.imp.inventory;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.otyacraftengine.inventory.OEItemBEBaseMenu;
-import dev.felnull.otyacraftengine.item.location.IPlayerItemLocation;
+import dev.felnull.otyacraftengine.item.location.PlayerItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -20,7 +19,7 @@ public class IMPMenus {
     public static final RegistrySupplier<MenuType<CassetteDeckMenu>> CASSETTE_DECK = registerBlockMenu("cassette_deck", CassetteDeckMenu::new);
     public static final RegistrySupplier<MenuType<BoomboxMenu>> BOOMBOX = registerItemAndBlockMenu("boombox", BoomboxMenu::new);
 
-    private static <T extends AbstractContainerMenu> RegistrySupplier<MenuType<T>> registerItemAndBlockMenu(String name, OEItemAndBlockMenuFactory<T> factoryItemAndBlock ) {
+    private static <T extends AbstractContainerMenu> RegistrySupplier<MenuType<T>> registerItemAndBlockMenu(String name, OEItemAndBlockMenuFactory<T> factoryItemAndBlock) {
         return MENUS.register(name, () -> OEMenuUtil.createMenuType(factoryItemAndBlock.getBlockMenuFactory(), factoryItemAndBlock.getItemMenuFactory()));
     }
 
@@ -33,12 +32,13 @@ public class IMPMenus {
     }
 
     public interface OEItemAndBlockMenuFactory<T extends AbstractContainerMenu> {
-        T create(int i, Inventory playerInventory, Container container, BlockPos pos, ItemStack itemStack, IPlayerItemLocation location);
+        T create(int i, Inventory playerInventory, Container container, BlockPos pos, ItemStack itemStack, PlayerItemLocation location);
 
-         default OEMenuUtil.OEBlockMenuFactory<T> getBlockMenuFactory(){
+        default OEMenuUtil.OEBlockMenuFactory<T> getBlockMenuFactory() {
             return (i, inventory, blockPos, container) -> create(i, inventory, container, blockPos, ItemStack.EMPTY, null);
         }
-         default OEMenuUtil.OEItemMenuFactory<T> getItemMenuFactory(){
+
+        default OEMenuUtil.OEItemMenuFactory<T> getItemMenuFactory() {
             return (i, inventory, itemStack, iPlayerItemLocation, container) -> create(i, inventory, container, BlockPos.ZERO, itemStack, iPlayerItemLocation);
         }
     }

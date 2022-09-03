@@ -1,9 +1,8 @@
 package dev.felnull.imp.client.model;
 
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.otyacraftengine.client.callpoint.ModelRegister;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.function.Consumer;
 
 public class IMPModels {
     public static final ResourceLocation MUSIC_MANAGER_ACCESS_LAMP = new ResourceLocation(IamMusicPlayer.MODID, "block/music_manager/music_manager_access_lamp");
@@ -40,38 +39,38 @@ public class IMPModels {
     public static final ResourceLocation MANUAL = new ResourceLocation(IamMusicPlayer.MODID, "item/manual/manual");
     public static final ResourceLocation MANUAL_TURNING = new ResourceLocation(IamMusicPlayer.MODID, "item/manual/manual_turning");
 
-    public static void init(Consumer<ResourceLocation> addModel) {
-        register(MUSIC_MANAGER_ACCESS_LAMP, addModel);
-        register(MUSIC_MANAGER_OFF_ACCESS_LAMP, addModel);
-        register(BOOMBOX_HANDLE, addModel);
-        register(BOOMBOX_LID, addModel);
-        register(BOOMBOX_BUTTONS, addModel);
-        register(PARABOLIC_ANTENNA, addModel);
-        register(KAMESUTA_ANTENNA, addModel);
-        register(KATYOU_ANTENNA, addModel);
-        register(IKISUGI_ANTENNA, addModel);
-        register(FCOH_ANTENNA, addModel);
-        register(CASSETTE_TAPE_BASE_NORMAL_MODEL, addModel);
-        register(CASSETTE_TAPE_BASE_GLASS_MODEL, addModel);
-        register(CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL, addModel);
-        register(CASSETTE_TAPE_MODEL, addModel);
-        register(CASSETTE_TAPE_CONECTER, addModel);
-        register(CASSETTE_TAPE_GLASS_MODEL, addModel);
-        register(CASSETTE_TAPE_CORE_MODEL, addModel);
-        register(CASSETTE_TAPE_CORE_AROUND_MODEL, addModel);
-        register(CASSETTE_TAPE_ROLL_MODEL, addModel);
-        register(CASSETTE_TAPE_LABEL_MODEL, addModel);
-        register(CASSETTE_TAPE_LABEL_NO_IMAGE_MODEL, addModel);
-        register(ANTENNA, addModel);
-        register(ANTENNA_TOP, addModel);
-        register(ANTENNA_ROOT, addModel);
-        register(CASSETTE_DECK_LID, addModel);
-        register(MANUAL, addModel);
-        register(MANUAL_TURNING, addModel);
+    public static void init(ModelRegister modelRegister) {
+        register(MUSIC_MANAGER_ACCESS_LAMP, modelRegister);
+        register(MUSIC_MANAGER_OFF_ACCESS_LAMP, modelRegister);
+        register(BOOMBOX_HANDLE, modelRegister);
+        register(BOOMBOX_LID, modelRegister);
+        register(BOOMBOX_BUTTONS, modelRegister);
+        register(PARABOLIC_ANTENNA, modelRegister);
+        register(KAMESUTA_ANTENNA, modelRegister);
+        register(KATYOU_ANTENNA, modelRegister);
+        register(IKISUGI_ANTENNA, modelRegister);
+        register(FCOH_ANTENNA, modelRegister);
+        register(CASSETTE_TAPE_BASE_NORMAL_MODEL, modelRegister);
+        register(CASSETTE_TAPE_BASE_GLASS_MODEL, modelRegister);
+        register(CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL, modelRegister);
+        register(CASSETTE_TAPE_MODEL, modelRegister);
+        register(CASSETTE_TAPE_CONECTER, modelRegister);
+        register(CASSETTE_TAPE_GLASS_MODEL, modelRegister);
+        register(CASSETTE_TAPE_CORE_MODEL, modelRegister);
+        register(CASSETTE_TAPE_CORE_AROUND_MODEL, modelRegister);
+        register(CASSETTE_TAPE_ROLL_MODEL, modelRegister);
+        register(CASSETTE_TAPE_LABEL_MODEL, modelRegister);
+        register(CASSETTE_TAPE_LABEL_NO_IMAGE_MODEL, modelRegister);
+        register(ANTENNA, modelRegister);
+        register(ANTENNA_TOP, modelRegister);
+        register(ANTENNA_ROOT, modelRegister);
+        register(CASSETTE_DECK_LID, modelRegister);
+        register(MANUAL, modelRegister);
+        register(MANUAL_TURNING, modelRegister);
     }
 
-    private static void register(ResourceLocation location, Consumer<ResourceLocation> addModel) {
-        addModel.accept(location);
+    private static void register(ResourceLocation location, ModelRegister modelRegister) {
+        modelRegister.addModelLoad(location);
     }
 
 }

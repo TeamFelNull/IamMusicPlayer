@@ -32,7 +32,7 @@ public class ServerMessageHandler {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
             if (message.blockEntityExistence.check(player.getLevel()))
-                MusicManager.getInstance().changeAuthority(message.playlist, message.player, message.authorityType, player);
+                MusicManager.getInstance().changeAuthority(packetContext.getPlayer().getServer(), message.playlist, message.player, message.authorityType, player);
         });
     }
 
@@ -40,7 +40,7 @@ public class ServerMessageHandler {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
             if (message.blockEntityExistence.check(player.getLevel()))
-                MusicManager.getInstance().addMultipleMusic(message.playlist, message.musics, player);
+                MusicManager.getInstance().addMultipleMusic(packetContext.getPlayer().getServer(), message.playlist, message.musics, player);
         });
     }
 
@@ -50,9 +50,9 @@ public class ServerMessageHandler {
             if (message.blockEntityExistence.check(player.getLevel())) {
                 var mm = MusicManager.getInstance();
                 if (message.music) {
-                    mm.deleteMusic(message.playListID, message.musicID, player);
+                    mm.deleteMusic(packetContext.getPlayer().getServer(), message.playListID, message.musicID, player);
                 } else {
-                    mm.deletePlayList(message.playListID, player);
+                    mm.deletePlayList(packetContext.getPlayer().getServer(), message.playListID, player);
                 }
             }
         });
@@ -69,7 +69,7 @@ public class ServerMessageHandler {
     public static void onMusicAddMessage(IMPPackets.MusicMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             var mm = MusicManager.getInstance();
-            var pl = mm.getSaveData().getPlayLists().get(message.playlist);
+            var pl = mm.getSaveData(packetContext.getPlayer().getServer()).getPlayLists().get(message.playlist);
             if (pl != null && pl.getAuthority().getAuthorityType(packetContext.getPlayer().getGameProfile().getId()).canAddMusic()) {
                 var m = new Music(UUID.randomUUID(), message.name, message.author, message.source, message.image, packetContext.getPlayer().getGameProfile().getId(), System.currentTimeMillis());
                 mm.addMusicToPlayList((ServerPlayer) packetContext.getPlayer(), pl.getUuid(), m);
@@ -81,7 +81,7 @@ public class ServerMessageHandler {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
             if (message.blockEntityExistence.check(player.getLevel()))
-                MusicManager.getInstance().editMusic(message.uuid, message.playlist, message.name, message.image, player);
+                MusicManager.getInstance().editMusic(packetContext.getPlayer().getServer(), message.uuid, message.playlist, message.name, message.image, player);
         });
     }
 
@@ -89,7 +89,7 @@ public class ServerMessageHandler {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
             if (message.blockEntityExistence.check(player.getLevel()))
-                MusicManager.getInstance().editPlayList(message.uuid, message.name, message.image, message.invitePlayers, message.publiced, message.initMember, player);
+                MusicManager.getInstance().editPlayList(packetContext.getPlayer().getServer(), message.uuid, message.name, message.image, message.invitePlayers, message.publiced, message.initMember, player);
         });
     }
 
@@ -102,8 +102,8 @@ public class ServerMessageHandler {
                 var auth = new AuthorityInfo(message.publiced, packetContext.getPlayer().getGameProfile().getId(), packetContext.getPlayer().getGameProfile().getName(), authTypes, message.initMember ? AuthorityInfo.AuthorityType.MEMBER : AuthorityInfo.AuthorityType.READ_ONLY);
                 var pl = new MusicPlayList(UUID.randomUUID(), message.name, message.image, auth, new ArrayList<>(), System.currentTimeMillis());
                 var mm = MusicManager.getInstance();
-                mm.addPlayList(pl);
-                mm.addPlayListToPlayer(pl.getUuid(), (ServerPlayer) packetContext.getPlayer());
+                mm.addPlayList(packetContext.getPlayer().getServer(), pl);
+                mm.addPlayListToPlayer(packetContext.getPlayer().getServer(), pl.getUuid(), (ServerPlayer) packetContext.getPlayer());
 
                 for (Music importMusic : message.importMusics) {
                     Music music = new Music(UUID.randomUUID(), importMusic.getName(), importMusic.getAuthor(), importMusic.getSource(), importMusic.getImage(), player.getGameProfile().getId(), System.currentTimeMillis());
@@ -127,11 +127,11 @@ public class ServerMessageHandler {
                 case PLAYLIST_CAN_JOIN ->
                         sendMusicSyncData(pl, message.syncType, message.syncId, mm.getPlayerPlayLists(pl, MusicManager.PlayListGetType.NO_JOIN), new ArrayList<>());
                 case MUSIC_BY_PLAYLIST -> {
-                    var mpl = mm.getSaveData().getPlayLists().get(message.syncId);
+                    var mpl = mm.getSaveData(packetContext.getPlayer().getServer()).getPlayLists().get(message.syncId);
                     if (mpl != null && mpl.getAuthority().getAuthorityType(pl.getGameProfile().getId()).isMoreReadOnly()) {
                         List<Music> musics = new ArrayList<>();
                         mpl.getMusicList().forEach(n -> {
-                            var music = mm.getSaveData().getMusics().get(n);
+                            var music = mm.getSaveData(packetContext.getPlayer().getServer()).getMusics().get(n);
                             if (music != null)
                                 musics.add(music);
                         });

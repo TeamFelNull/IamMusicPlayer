@@ -4,18 +4,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.utils.value.BooleanValue;
 import dev.architectury.utils.value.FloatValue;
 import dev.felnull.fnjl.util.FNStringUtil;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.client.gui.components.LoopControlWidget;
 import dev.felnull.imp.client.gui.components.PlayProgressWidget;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
-import dev.felnull.imp.data.BoomboxData;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
-    private static final Component LOADING_MUSIC_TEXT = new TranslatableComponent("imp.text.musicLoading");
+    private static final Component LOADING_MUSIC_TEXT = Component.translatable("imp.text.musicLoading");
     private LoopControlWidget loopControlWidget;
     private PlayProgressWidget playProgressWidget;
 
@@ -101,7 +99,7 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
         if (!canPlay()) return;
         var ptx = LOADING_MUSIC_TEXT;
         if (!getScreen().isMusicLoading())
-            ptx = new TextComponent(FNStringUtil.getTimeProgress(getScreen().getMusicPosition(), getPlayBackSource().getDuration()));
+            ptx = Component.translatable(FNStringUtil.getTimeProgress(getScreen().getMusicPosition(), getPlayBackSource().getDuration()));
         drawSmartText(poseStack, ptx, getStartX() + 38 - (isShortProgressBar() ? 0 : 36), getStartY() + 15, 0XFF115D0E);
     }
 
@@ -111,13 +109,13 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
         if (!canPlay(data)) return;
         var ptx = LOADING_MUSIC_TEXT;
         if (!data.isLoadingMusic())
-            ptx = new TextComponent(FNStringUtil.getTimeProgress(data.getMusicPosition(), getPlayBackSource(data).getDuration()));
+            ptx = Component.translatable(FNStringUtil.getTimeProgress(data.getMusicPosition(), getPlayBackSource(data).getDuration()));
 
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
 
-        renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 38f - (isShortProgressBar(data) ? 0 : 36f), 17f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
-        renderLoopControl(poseStack, multiBufferSource, isShortTipProgressBar() ? 156 : 189, isShortTipProgressBar() ? 15 : 26, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
-        renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(data) ? 48 : 12, 28, OERenderUtil.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, getProgressBarWidth(data), (float) data.getMusicPosition() / (float) getPlayBackSource(data).getDuration());
+        renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, ptx, 38f - (isShortProgressBar(data) ? 0 : 36f), 17f, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0XFF115D0E, i);
+        renderLoopControl(poseStack, multiBufferSource, isShortTipProgressBar() ? 156 : 189, isShortTipProgressBar() ? 15 : 26, OERenderUtils.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, data.isLoop());
+        renderPlayProgress(poseStack, multiBufferSource, isShortProgressBar(data) ? 48 : 12, 28, OERenderUtils.MIN_BREADTH * 2, i, j, onPxW, onPxH, monitorHeight, getProgressBarWidth(data), (float) data.getMusicPosition() / (float) getPlayBackSource(data).getDuration());
     }
 }

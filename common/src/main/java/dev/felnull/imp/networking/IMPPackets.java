@@ -7,11 +7,12 @@ import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.*;
 import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.util.IMPNbtUtil;
-import dev.felnull.otyacraftengine.item.location.IPlayerItemLocation;
+import dev.felnull.otyacraftengine.item.location.PlayerItemLocation;
 import dev.felnull.otyacraftengine.item.location.PlayerItemLocations;
-import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
 import dev.felnull.otyacraftengine.networking.PacketMessage;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
+import dev.felnull.otyacraftengine.util.OENbtUtils;
 import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -58,24 +59,22 @@ public class IMPPackets {
 
     public static class LidCycleMessage implements PacketMessage {
         public final UUID boomboxId;
-        public final IPlayerItemLocation itemLocation;
+        public final PlayerItemLocation itemLocation;
 
         public LidCycleMessage(FriendlyByteBuf buf) {
             this.boomboxId = buf.readUUID();
-            this.itemLocation = PlayerItemLocations.create(buf.readResourceLocation(), buf.readNbt());
+            this.itemLocation = PlayerItemLocations.loadFromTag(buf.readNbt());
         }
 
-        public LidCycleMessage(UUID boomboxId, IPlayerItemLocation itemLocation) {
+        public LidCycleMessage(UUID boomboxId, PlayerItemLocation itemLocation) {
             this.boomboxId = boomboxId;
             this.itemLocation = itemLocation;
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            var buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(this.boomboxId);
-            buf.writeResourceLocation(this.itemLocation.getResourceLocation());
-            buf.writeNbt(this.itemLocation.toTag());
+            buf.writeNbt(PlayerItemLocations.saveToTag(this.itemLocation));
             return buf;
         }
     }
@@ -90,7 +89,7 @@ public class IMPPackets {
             this.playlist = bf.readUUID();
             this.player = bf.readUUID();
             this.authorityType = AuthorityInfo.AuthorityType.getByName(bf.readUtf());
-            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+            this.blockEntityExistence = BlockEntityExistence.read(bf);
         }
 
         public MusicPlayListChangeAuthorityMessage(UUID playlist, UUID player, AuthorityInfo.AuthorityType authorityType, BlockEntityExistence blockEntityExistence) {
@@ -101,12 +100,11 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(playlist);
             buf.writeUUID(player);
             buf.writeUtf(authorityType.getName());
-            this.blockEntityExistence.writeFBB(buf);
+            this.blockEntityExistence.write(buf);
             return buf;
         }
     }
@@ -120,7 +118,7 @@ public class IMPPackets {
             this.playlist = bf.readUUID();
             this.musics = new ArrayList<>();
             IMPNbtUtil.readMusics(bf.readNbt(), "Musics", musics);
-            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+            this.blockEntityExistence = BlockEntityExistence.read(bf);
         }
 
         public MultipleMusicAddMessage(UUID playlist, List<Music> musics, BlockEntityExistence blockEntityExistence) {
@@ -130,11 +128,10 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(this.playlist);
             buf.writeNbt(IMPNbtUtil.writeMusics(new CompoundTag(), "Musics", musics));
-            this.blockEntityExistence.writeFBB(buf);
+            this.blockEntityExistence.write(buf);
             return buf;
         }
     }
@@ -148,7 +145,7 @@ public class IMPPackets {
         public MusicOrPlayListDeleteMessage(FriendlyByteBuf bf) {
             this.playListID = bf.readUUID();
             this.musicID = bf.readUUID();
-            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+            this.blockEntityExistence = BlockEntityExistence.read(bf);
             this.music = bf.readBoolean();
         }
 
@@ -160,11 +157,10 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(this.playListID);
             buf.writeUUID(this.musicID);
-            this.blockEntityExistence.writeFBB(buf);
+            this.blockEntityExistence.write(buf);
             buf.writeBoolean(this.music);
             return buf;
         }
@@ -190,8 +186,7 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(this.uuid);
             buf.writeUUID(this.waitId);
             buf.writeInt(this.state);
@@ -211,7 +206,7 @@ public class IMPPackets {
             this.waitId = bf.readUUID();
             this.num = bf.readInt();
             this.elapsed = bf.readLong();
-            this.playbackInfo = OENbtUtil.readSerializable(bf.readNbt(), "pbi", new MusicPlaybackInfo());
+            this.playbackInfo = TagSerializable.loadSavedTag(bf.readNbt().getCompound("pbi"), new MusicPlaybackInfo());
         }
 
         public MusicRingStateMessage(UUID uuid, UUID waitId, int num) {
@@ -227,13 +222,14 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(uuid);
             buf.writeUUID(waitId);
             buf.writeInt(num);
             buf.writeLong(elapsed);
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "pbi", this.playbackInfo));
+            var tag = new CompoundTag();
+            tag.put("pbi", this.playbackInfo.createSavedTag());
+            buf.writeNbt(tag);
             return buf;
         }
     }
@@ -262,8 +258,7 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(waitID);
             buf.writeUUID(uuid);
             buf.writeBoolean(result);
@@ -283,8 +278,8 @@ public class IMPPackets {
         public MusicReadyMessage(FriendlyByteBuf bf) {
             this.waitId = bf.readUUID();
             this.uuid = bf.readUUID();
-            this.source = OENbtUtil.readSerializable(bf.readNbt(), "ms", new MusicSource());
-            this.playbackInfo = OENbtUtil.readSerializable(bf.readNbt(), "pbi", new MusicPlaybackInfo());
+            this.source = TagSerializable.loadSavedTag(bf.readNbt().getCompound("ms"), new MusicSource());
+            this.playbackInfo = TagSerializable.loadSavedTag(bf.readNbt().getCompound("pbi"), new MusicPlaybackInfo());
             this.position = bf.readLong();
         }
 
@@ -301,10 +296,19 @@ public class IMPPackets {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(this.waitId);
             buf.writeUUID(this.uuid);
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "ms", this.source));
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "pbi", this.playbackInfo));
+            var stag = new CompoundTag();
+            stag.put("ms", this.source.createSavedTag());
+            buf.writeNbt(stag);
+            var ptag = new CompoundTag();
+            ptag.put("pbi", this.playbackInfo.getTrackerTag());
+            buf.writeNbt(ptag);
             buf.writeLong(this.position);
             return buf;
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
+            return null;
         }
     }
 
@@ -322,9 +326,9 @@ public class IMPPackets {
             this.playlist = bf.readUUID();
             this.name = bf.readUtf();
             this.author = bf.readUtf();
-            this.image = OENbtUtil.readSerializable(bf.readNbt(), "Image", new ImageInfo());
-            this.source = OENbtUtil.readSerializable(bf.readNbt(), "Source", new MusicSource());
-            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+            this.image = TagSerializable.loadSavedTag(bf.readNbt().getCompound("Image"), new ImageInfo());
+            this.source = TagSerializable.loadSavedTag(bf.readNbt().getCompound("Source"), new MusicSource());
+            this.blockEntityExistence = BlockEntityExistence.read(bf);
         }
 
         public MusicMessage(UUID playlist, String name, String author, ImageInfo image, MusicSource source, BlockEntityExistence blockEntityExistence) {
@@ -342,15 +346,18 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(this.uuid);
             buf.writeUUID(this.playlist);
             buf.writeUtf(this.name);
             buf.writeUtf(this.author);
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Image", image));
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Source", source));
-            blockEntityExistence.writeFBB(buf);
+            var itag = new CompoundTag();
+            itag.put("Image", image.createSavedTag());
+            buf.writeNbt(itag);
+            var stag = new CompoundTag();
+            stag.put("Source", source.createSavedTag());
+            buf.writeNbt(stag);
+            blockEntityExistence.write(buf);
             return buf;
         }
     }
@@ -368,12 +375,12 @@ public class IMPPackets {
         public MusicPlayListMessage(FriendlyByteBuf bf) {
             this.uuid = bf.readUUID();
             this.name = bf.readUtf();
-            this.image = OENbtUtil.readSerializable(bf.readNbt(), "Image", new ImageInfo());
+            this.image = TagSerializable.loadSavedTag(bf.readNbt().getCompound("Image"), new ImageInfo());
             this.publiced = bf.readBoolean();
             this.initMember = bf.readBoolean();
             this.invitePlayers = new ArrayList<>();
-            OENbtUtil.readUUIDList(bf.readNbt(), "InvitePlayers", invitePlayers);
-            this.blockEntityExistence = BlockEntityExistence.readFBB(bf);
+            OENbtUtils.readUUIDList(bf.readNbt(), "InvitePlayers", invitePlayers);
+            this.blockEntityExistence = BlockEntityExistence.read(bf);
             this.importMusics = new ArrayList<>();
             IMPNbtUtil.readMusics(bf.readNbt(), "ImportMusics", importMusics);
         }
@@ -394,15 +401,16 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(this.uuid);
             buf.writeUtf(this.name);
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "Image", image));
+            var tag = new CompoundTag();
+            tag.put("Image", image.createSavedTag());
+            buf.writeNbt(tag);
             buf.writeBoolean(publiced);
             buf.writeBoolean(initMember);
-            buf.writeNbt(OENbtUtil.writeUUIDList(new CompoundTag(), "InvitePlayers", invitePlayers));
-            blockEntityExistence.writeFBB(buf);
+            buf.writeNbt(OENbtUtils.writeUUIDList(new CompoundTag(), "InvitePlayers", invitePlayers));
+            blockEntityExistence.write(buf);
             buf.writeNbt(IMPNbtUtil.writeMusics(new CompoundTag(), "ImportMusics", importMusics));
             return buf;
         }
@@ -431,8 +439,7 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeInt(syncType.ordinal());
             buf.writeUUID(syncId);
             buf.writeNbt(IMPNbtUtil.writeMusicPlayLists(new CompoundTag(), "PlayLists", playLists));
@@ -455,8 +462,7 @@ public class IMPPackets {
         }
 
         @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeInt(syncType.ordinal());
             buf.writeUUID(syncId);
             return buf;

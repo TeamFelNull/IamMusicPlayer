@@ -15,12 +15,10 @@ import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.FlagThread;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -28,8 +26,8 @@ import java.util.List;
 
 public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation IMPORT_YOUTUBE_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/import_youtube_play_list.png");
-    private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
-    private static final Component LOADING_TEXT = new TranslatableComponent("imp.text.playlistLoading");
+    private static final Component BACK_TEXT = Component.translatable("gui.back");
+    private static final Component LOADING_TEXT = Component.translatable("imp.text.playlistLoading");
     private final List<ImportYoutubePlayListMMMonitor.YoutubePlayListEntry> youtubePlayListEntries = new ArrayList<>();
     private SmartButton importButton;
     private PlayListLoadThread playListLoader;
@@ -54,12 +52,12 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
         }));
         this.importButton.active = canImport();
 
-        this.playlistIdentifierEditBox = addRenderWidget(new EditBox(mc.font, getStartX() + 6, getStartY() + 164, 175, 12, new TranslatableComponent("imp.editBox.youtubePlaylistIdentifier")));
+        this.playlistIdentifierEditBox = addRenderWidget(new EditBox(mc.font, getStartX() + 6, getStartY() + 164, 175, 12, Component.translatable("imp.editBox.youtubePlaylistIdentifier")));
         this.playlistIdentifierEditBox.setMaxLength(300);
         this.playlistIdentifierEditBox.setResponder(this::startPlayListLoad);
         this.playlistIdentifierEditBox.setValue(getImportPlayList());
 
-        addRenderWidget(new YoutubePlayListMusicsFixedButtonsList(getStartX() + 1, getStartY() + 10, 368, 148, 4, new TranslatableComponent("imp.fixedList.youtubePlayListMusics"), youtubePlayListEntries));
+        addRenderWidget(new YoutubePlayListMusicsFixedButtonsList(getStartX() + 1, getStartY() + 10, 368, 148, 4, Component.translatable("imp.fixedList.youtubePlayListMusics"), youtubePlayListEntries));
 
         startPlayListLoad(getImportPlayList());
     }
@@ -69,13 +67,13 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(IMPORT_YOUTUBE_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(IMPORT_YOUTUBE_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (isPlayListLoading()) {
             drawSmartText(poseStack, LOADING_TEXT, getStartX() + 2, getStartY() + 11);
         }
 
-        drawSmartText(poseStack, new TextComponent(getImportPlayListName()), getStartX() + 200, getStartY() + 167);
-        drawSmartText(poseStack, new TextComponent(getImportPlayListAuthor()), getStartX() + 200, getStartY() + 183);
+        drawSmartText(poseStack, Component.literal(getImportPlayListName()), getStartX() + 200, getStartY() + 167);
+        drawSmartText(poseStack, Component.literal(getImportPlayListAuthor()), getStartX() + 200, getStartY() + 183);
     }
 
     @Override
@@ -83,17 +81,17 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        OERenderUtil.renderTextureSprite(IMPORT_YOUTUBE_PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        OERenderUtils.renderTextureSprite(IMPORT_YOUTUBE_PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, CreatePlayListMMMonitor.IMPORT_TEXT, true, !canImport(blockEntity));
+        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtils.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 95, 180, OERenderUtils.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, CreatePlayListMMMonitor.IMPORT_TEXT, true, !canImport(blockEntity));
 
-        renderSmartEditBoxSprite(poseStack, multiBufferSource, 6, 164, OERenderUtil.MIN_BREADTH * 4, 175, 12, i, j, onPxW, onPxH, monitorHeight, getImportPlayList(blockEntity));
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 6, 164, OERenderUtils.MIN_BREADTH * 4, 175, 12, i, j, onPxW, onPxH, monitorHeight, getImportPlayList(blockEntity));
 
-        renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(getImportPlayListName(blockEntity)), 200, 167, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
-        renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(getImportPlayListAuthor(blockEntity)), 200, 183, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(getImportPlayListName(blockEntity)), 200, 167, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(getImportPlayListAuthor(blockEntity)), 200, 183, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
 
-        renderScrollbarSprite(poseStack, multiBufferSource, 360, 10, OERenderUtil.MIN_BREADTH * 2, 148, i, j, onPxW, onPxH, monitorHeight, 1, 1);
+        renderScrollbarSprite(poseStack, multiBufferSource, 360, 10, OERenderUtils.MIN_BREADTH * 2, 148, i, j, onPxW, onPxH, monitorHeight, 1, 1);
     }
 
     @Override

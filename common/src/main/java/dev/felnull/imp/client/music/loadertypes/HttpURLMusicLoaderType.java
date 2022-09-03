@@ -4,11 +4,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class HttpURLMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
-    private static final Component URL_ENTER_TEXT = new TranslatableComponent("imp.text.enterText.url");
+    private static final Component URL_ENTER_TEXT = Component.translatable("imp.text.enterText.url");
 
     public HttpURLMusicLoaderType() {
         super(IMPMusicLoaderTypes.HTTP);

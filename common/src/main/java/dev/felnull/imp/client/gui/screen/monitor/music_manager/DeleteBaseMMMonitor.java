@@ -4,16 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class DeleteBaseMMMonitor extends MusicManagerMonitor {
-    private static final Component CANCEL_TEXT = new TranslatableComponent("gui.cancel");
-    private static final Component DELETE_TEXT = new TranslatableComponent("imp.button.delete").withStyle(ChatFormatting.DARK_RED);
+    private static final Component CANCEL_TEXT = Component.translatable("gui.cancel");
+    private static final Component DELETE_TEXT = Component.translatable("imp.button.delete").withStyle(ChatFormatting.DARK_RED);
     private Component WARING;
     private String cashName;
 
@@ -24,7 +23,7 @@ public abstract class DeleteBaseMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.WARING = new TranslatableComponent("imp.text.deleteWarning", getWaringName());
+        this.WARING = Component.translatable("imp.text.deleteWarning", getWaringName());
         this.cashName = getWaringName();
 
         this.addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 177, 15, DELETE_TEXT, n -> {
@@ -45,7 +44,7 @@ public abstract class DeleteBaseMMMonitor extends MusicManagerMonitor {
         super.tick();
         if (!this.cashName.equals(getWaringName())) {
             this.cashName = getWaringName();
-            this.WARING = new TranslatableComponent("imp.text.deleteWarning", this.cashName);
+            this.WARING = Component.translatable("imp.text.deleteWarning", this.cashName);
         }
     }
 
@@ -54,7 +53,7 @@ public abstract class DeleteBaseMMMonitor extends MusicManagerMonitor {
         super.render(poseStack, f, mouseX, mouseY);
         poseStack.pushPose();
         float sc = Math.min(1f, (width - 20f) / (float) mc.font.width(WARING));
-        OERenderUtil.poseScaleAll(poseStack, sc);
+        OERenderUtils.poseScaleAll(poseStack, sc);
         drawSmartCenterText(poseStack, WARING, (getStartX() + (float) width / 2f) / sc, (getStartY() + (float) height / 2f - 16.5f) / sc);
         poseStack.popPose();
     }
@@ -65,12 +64,12 @@ public abstract class DeleteBaseMMMonitor extends MusicManagerMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
 
-        var wrtx = new TranslatableComponent("imp.text.deleteWarning", getWaringName(blockEntity));
+        var wrtx = Component.translatable("imp.text.deleteWarning", getWaringName(blockEntity));
         float sc = Math.min(1f, (width - 20f) / (float) mc.font.width(wrtx));
-        renderSmartCenterTextSprite(poseStack, multiBufferSource, wrtx, (float) width / 2f, (float) height / 2f - 16.5f, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, sc, i);
+        renderSmartCenterTextSprite(poseStack, multiBufferSource, wrtx, (float) width / 2f, (float) height / 2f - 16.5f, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, sc, i);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 3, 177, 15, i, j, onPxW, onPxH, monitorHeight, DELETE_TEXT, true);
-        renderSmartButtonSprite(poseStack, multiBufferSource, width - 5 - 177, 180, OERenderUtil.MIN_BREADTH * 3, 177, 15, i, j, onPxW, onPxH, monitorHeight, CANCEL_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtils.MIN_BREADTH * 3, 177, 15, i, j, onPxW, onPxH, monitorHeight, DELETE_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, width - 5 - 177, 180, OERenderUtils.MIN_BREADTH * 3, 177, 15, i, j, onPxW, onPxH, monitorHeight, CANCEL_TEXT, true);
     }
 
     abstract public void onDelete();

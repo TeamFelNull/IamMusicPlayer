@@ -8,19 +8,18 @@ import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class DetailMusicMMMonitor extends MusicBaseMMMonitor {
-    private static final Component EDIT_TEXT = new TranslatableComponent("imp.button.edit");
-    private static final Component DELETE_TEXT = new TranslatableComponent("imp.button.delete").withStyle(ChatFormatting.DARK_RED);
+    private static final Component EDIT_TEXT = Component.translatable("imp.button.edit");
+    private static final Component DELETE_TEXT = Component.translatable("imp.button.delete").withStyle(ChatFormatting.DARK_RED);
     private SmartButton editButton;
     private SmartButton deleteButton;
     private String cashName;
@@ -48,10 +47,10 @@ public class DetailMusicMMMonitor extends MusicBaseMMMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
         if (canEdit(blockEntity))
-            renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87, 180, OERenderUtil.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, EDIT_TEXT, true);
+            renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87, 180, OERenderUtils.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, EDIT_TEXT, true);
 
         if (canDelete(blockEntity))
-            renderSmartButtonSprite(poseStack, multiBufferSource, width - 5 - 87, 180, OERenderUtil.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, DELETE_TEXT, true);
+            renderSmartButtonSprite(poseStack, multiBufferSource, width - 5 - 87, 180, OERenderUtils.MIN_BREADTH * 2, 87, 15, i, j, onPxW, onPxH, monitorHeight, DELETE_TEXT, true);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package dev.felnull.imp.server.music.ringer;
 
-import dev.felnull.imp.data.BoomboxData;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.MusicManager;
@@ -79,18 +79,18 @@ public interface IBoomboxRinger extends IMusicRinger {
                 var m = getRingerBoomboxData().getSelectedMusic();
                 if (m == null) return;
                 var mm = MusicManager.getInstance();
-                var pl = mm.getPlaylistByMusic(m.getUuid());
+                var pl = mm.getPlaylistByMusic(getRingerLevel().getServer(), m.getUuid());
                 if (pl == null) return;
                 var ml = new ArrayList<>(pl.getMusicList());
                 if (ml.isEmpty() || ml.size() == 1) return;
                 Music nm = null;
                 if (con == BoomboxData.ContinuousType.ORDER) {
                     var nmi = ml.get((ml.indexOf(m.getUuid()) + 1) % ml.size());
-                    nm = mm.getSaveData().getMusics().get(nmi);
+                    nm = mm.getSaveData(getRingerLevel().getServer()).getMusics().get(nmi);
                 } else if (con == BoomboxData.ContinuousType.RANDOM) {
                     ml.remove(m.getUuid());
                     var nmi = ml.get(rand.nextInt(ml.size()));
-                    nm = mm.getSaveData().getMusics().get(nmi);
+                    nm = mm.getSaveData(getRingerLevel().getServer()).getMusics().get(nmi);
                 }
                 if (nm != null)
                     getRingerBoomboxData().setSelectedMusic(nm);

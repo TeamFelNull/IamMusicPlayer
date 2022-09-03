@@ -5,7 +5,7 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
-import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
+import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,8 +25,7 @@ public class DeletePlayListMMMonitor extends DeleteBaseMMMonitor {
     @Override
     public @NotNull String getWaringName(MusicManagerBlockEntity musicManagerBlockEntity) {
         var mp = getSelectedMusicPlayList(musicManagerBlockEntity);
-        if (mp != null)
-            return mp.getName();
+        if (mp != null) return mp.getName();
         return "";
     }
 
@@ -37,8 +36,7 @@ public class DeletePlayListMMMonitor extends DeleteBaseMMMonitor {
 
     protected MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
         var pls = getSyncManager().getMyPlayList();
-        if (pls == null)
-            return null;
+        if (pls == null) return null;
         return getSyncManager().getMyPlayList().stream().filter(n -> n.getUuid().equals(getSelectedPlayList(musicManagerBlockEntity))).findFirst().orElse(null);
     }
 

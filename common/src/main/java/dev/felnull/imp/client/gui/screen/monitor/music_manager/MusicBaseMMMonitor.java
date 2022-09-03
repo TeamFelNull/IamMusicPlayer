@@ -10,11 +10,10 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
 import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,10 +21,10 @@ import org.jetbrains.annotations.Nullable;
 public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
     private static final ResourceLocation ADD_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_music.png");
     private static final ResourceLocation SHOW_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/show_music.png");
-    private static final Component PLAYBACK_CONTROL_TEXT = new TranslatableComponent("imp.button.playbackControl");
-    protected static final Component MUSIC_SOURCE_TEXT = new TranslatableComponent("imp.text.musicSource");
-    private static final Component PLAYBACK_NON_PROGRESS_TEXT = new TextComponent("--:--/--:--");
-    private static final Component PLAYBACK_LOADING_PROGRESS_TEXT = new TranslatableComponent("imp.text.playbackLoading");
+    private static final Component PLAYBACK_CONTROL_TEXT = Component.translatable("imp.button.playbackControl");
+    protected static final Component MUSIC_SOURCE_TEXT = Component.translatable("imp.text.musicSource");
+    private static final Component PLAYBACK_NON_PROGRESS_TEXT = Component.translatable("--:--/--:--");
+    private static final Component PLAYBACK_LOADING_PROGRESS_TEXT = Component.translatable("imp.text.playbackLoading");
     private SmartButton playControlButton;
     protected int playBackX;
     protected int playBackY;
@@ -54,7 +53,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         this.playControlButton.setIcon(WIDGETS_TEXTURE, 0, 123, 11, 11);
         this.playControlButton.active = !getMusicSource().isEmpty();
 
-        this.addRenderWidget(new PlaybackProgressBar(getStartX() + this.playBackX + 22, getStartY() + this.playBackY + 14, new TranslatableComponent("imp.progressBar.playbackControl"), () -> {
+        this.addRenderWidget(new PlaybackProgressBar(getStartX() + this.playBackX + 22, getStartY() + this.playBackY + 14, Component.translatable("imp.progressBar.playbackControl"), () -> {
             if (getScreen().isMusicPlaying())
                 return getScreen().getMusicPlayer().getPositionProgress();
             return 0f;
@@ -90,19 +89,19 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(isLoaderSelect ? ADD_MUSIC_TEXTURE : SHOW_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(isLoaderSelect ? ADD_MUSIC_TEXTURE : SHOW_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         drawSmartText(poseStack, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
 
-        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getStartX() + playBackX, getStartY() + playBackY, 68, 90, 177, 20);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getStartX() + playBackX, getStartY() + playBackY, 68, 90, 177, 20);
 
         Component pt;
         if (getScreen().isMusicPlaying()) {
             var mp = getScreen().getMusicPlayer();
-            pt = new TextComponent(FNStringUtil.getTimeProgress(mp.getPosition(), mp.getMusicSource().getDuration()));
+            pt = Component.literal(FNStringUtil.getTimeProgress(mp.getPosition(), mp.getMusicSource().getDuration()));
         } else if (getScreen().isMusicLoading()) {
             pt = PLAYBACK_LOADING_PROGRESS_TEXT;
         } else if (!getMusicSource().isEmpty()) {
-            pt = new TextComponent(FNStringUtil.getTimeProgress(0, getMusicSource().getDuration()));
+            pt = Component.literal(FNStringUtil.getTimeProgress(0, getMusicSource().getDuration()));
         } else {
             pt = PLAYBACK_NON_PROGRESS_TEXT;
         }
@@ -119,7 +118,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
                 int sx = 0;
                 var ic = lt.getIcon();
                 if (ic != null) {
-                    OERenderUtil.drawTexture(ic, poseStack, getStartX() + 190, getStartY() + 23, 0, 0, 13, 13, 13, 13);
+                    OERenderUtils.drawTexture(ic, poseStack, getStartX() + 190, getStartY() + 23, 0, 0, 13, 13, 13, 13);
                     sx += 13;
                 }
                 drawSmartText(poseStack, lt.getName(), getStartX() + 190 + sx + 2, getStartY() + 21f + (15f - 6.5f) / 2f);
@@ -133,40 +132,40 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
 
-        OERenderUtil.renderTextureSprite(isLoaderSelect ? ADD_MUSIC_TEXTURE : SHOW_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
-        renderSmartTextSprite(poseStack, multiBufferSource, MUSIC_SOURCE_TEXT, 189, 13, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+        OERenderUtils.renderTextureSprite(isLoaderSelect ? ADD_MUSIC_TEXTURE : SHOW_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        renderSmartTextSprite(poseStack, multiBufferSource, MUSIC_SOURCE_TEXT, 189, 13, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, playBackX, playBackY, OERenderUtil.MIN_BREADTH * 3, 177, 20, 68, 90, 177, 20, 256, 256, i, j, onPxW, onPxH, monitorHeight);
+        renderTextureSprite(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, multiBufferSource, playBackX, playBackY, OERenderUtils.MIN_BREADTH * 3, 177, 20, 68, 90, 177, 20, 256, 256, i, j, onPxW, onPxH, monitorHeight);
 
         Component pt;
         if (!getMusicSource(blockEntity).isEmpty()) {
-            pt = new TextComponent(FNStringUtil.getTimeProgress(0, getMusicSource(blockEntity).getDuration()));
+            pt = Component.literal(FNStringUtil.getTimeProgress(0, getMusicSource(blockEntity).getDuration()));
         } else {
             pt = PLAYBACK_NON_PROGRESS_TEXT;
         }
-        renderSmartTextSprite(poseStack, multiBufferSource, pt, playBackX + 22, playBackY + 4, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, pt, playBackX + 22, playBackY + 4, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, playBackX, playBackY, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 0, 123, 11, 11, 256, 256, getMusicSource(blockEntity).isEmpty());
+        renderSmartButtonSprite(poseStack, multiBufferSource, playBackX, playBackY, OERenderUtils.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 0, 123, 11, 11, 256, 256, getMusicSource(blockEntity).isEmpty());
 
-        OERenderUtil.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * (this.playBackX + 22), monitorHeight - onPxH * (this.playBackY + 14 + 3), OERenderUtil.MIN_BREADTH * 4, 0, 0, 0, onPxW * 153f, onPxH * 3f, 52, 54, 153, 3, 256, 256, i, j);
+        OERenderUtils.renderTextureSprite(WIDGETS_TEXTURE, poseStack, multiBufferSource, onPxW * (this.playBackX + 22), monitorHeight - onPxH * (this.playBackY + 14 + 3), OERenderUtils.MIN_BREADTH * 4, 0, 0, 0, onPxW * 153f, onPxH * 3f, 52, 54, 153, 3, 256, 256, i, j);
 
         if (!getMusicAuthor(blockEntity).isEmpty()) {
-            int le = 176 - mc.font.width(new TranslatableComponent("imp.text.musicAuthor", ""));
-            var aut = OERenderUtil.getWidthString(getMusicAuthor(blockEntity), le, "...");
-            renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicAuthor", aut), this.playBackX, this.playBackY + 25, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+            int le = 176 - mc.font.width(Component.translatable("imp.text.musicAuthor", ""));
+            var aut = OEClientUtils.getWidthOmitText(getMusicAuthor(blockEntity), le, "...");
+            renderSmartTextSprite(poseStack, multiBufferSource, Component.translatable("imp.text.musicAuthor", aut), this.playBackX, this.playBackY + 25, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
         }
 
         if (!isLoaderSelect) {
-            renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 22, OERenderUtil.MIN_BREADTH * 3, 176, 15, i, j, onPxW, onPxH, monitorHeight);
+            renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 22, OERenderUtils.MIN_BREADTH * 3, 176, 15, i, j, onPxW, onPxH, monitorHeight);
             var lt = getRawMusicLoaderType(blockEntity);
             if (lt != null) {
                 int sx = 0;
                 var ic = lt.getIcon();
                 if (ic != null) {
-                    renderTextureSprite(ic, poseStack, multiBufferSource, 190, 23, OERenderUtil.MIN_BREADTH * 5, 13, 13, 0, 0, 13, 13, 13, 13, i, j, onPxW, onPxH, monitorHeight);
+                    renderTextureSprite(ic, poseStack, multiBufferSource, 190, 23, OERenderUtils.MIN_BREADTH * 5, 13, 13, 0, 0, 13, 13, 13, 13, i, j, onPxW, onPxH, monitorHeight);
                     sx += 13;
                 }
-                renderSmartTextSprite(poseStack, multiBufferSource, lt.getName(), 190 + sx + 2, 21f + (15f - 6.5f) / 2f + 2f, OERenderUtil.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, lt.getName(), 190 + sx + 2, 21f + (15f - 6.5f) / 2f + 2f, OERenderUtils.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
             }
         }
 
@@ -176,9 +175,9 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         if (author.isEmpty()) {
             AUTHOR_TEXT = null;
         } else {
-            int le = 176 - mc.font.width(new TranslatableComponent("imp.text.musicAuthor", ""));
-            var aut = OERenderUtil.getWidthString(author, le, "...");
-            AUTHOR_TEXT = new TranslatableComponent("imp.text.musicAuthor", aut);
+            int le = 176 - mc.font.width(Component.translatable("imp.text.musicAuthor", ""));
+            var aut = OEClientUtils.getWidthOmitText(author, le, "...");
+            AUTHOR_TEXT = Component.translatable("imp.text.musicAuthor", aut);
         }
     }
 

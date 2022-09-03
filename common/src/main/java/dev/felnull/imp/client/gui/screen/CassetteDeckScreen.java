@@ -6,7 +6,7 @@ import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonitor;
 import dev.felnull.imp.inventory.CassetteDeckMenu;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.nbt.CompoundTag;
@@ -47,7 +47,7 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
     protected void renderBg(PoseStack poseStack, float f, int i, int j) {
         super.renderBg(poseStack, f, i, j);
         if (getCassetteTape().isEmpty())
-            OERenderUtil.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 99, 0, 0, 16, 16, 16, 16);
+            OERenderUtils.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 99, 0, 0, 16, 16, 16, 16);
 
         if (monitor != null)
             monitor.render(poseStack, f, i, j);
@@ -86,14 +86,14 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
     public void insPositionAndRestart(long position) {
         var tag = new CompoundTag();
         tag.putLong("position", position);
-        instruction("restat_and_set_position", 0, tag);
+        instruction("restat_and_set_position", tag);
     }
 
 
     public void insLoop(boolean loop) {
         var tag = new CompoundTag();
         tag.putBoolean("loop", loop);
-        instruction("set_loop", 0, tag);
+        instruction("set_loop", tag);
     }
 
     public boolean isLoop() {
@@ -127,43 +127,43 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
     }
 
     public void insPause() {
-        instruction("set_pause", 0, new CompoundTag());
+        instruction("set_pause", new CompoundTag());
     }
 
     public void insPlaying(boolean playing) {
         var tag = new CompoundTag();
         tag.putBoolean("playing", playing);
-        instruction("set_playing", 0, tag);
+        instruction("set_playing", tag);
     }
 
     public void insVolume(int volume) {
         var tag = new CompoundTag();
         tag.putInt("volume", volume);
-        instruction("set_volume", 0, tag);
+        instruction("set_volume", tag);
     }
 
     public void insMute(boolean mute) {
         var tag = new CompoundTag();
         tag.putBoolean("mute", mute);
-        instruction("set_mute", 0, tag);
+        instruction("set_mute", tag);
     }
 
     public void insMonitor(CassetteDeckBlockEntity.MonitorType monitorType) {
         var tag = new CompoundTag();
         tag.putString("name", monitorType.getName());
-        instruction("monitor", 0, tag);
+        instruction("monitor", tag);
     }
 
     public void insSelectPlaylist(UUID uuid) {
         var tag = new CompoundTag();
         tag.putUUID("uuid", uuid);
-        instruction("select_playlist", 0, tag);
+        instruction("select_playlist", tag);
     }
 
     public void insMusic(UUID uuid) {
         var tag = new CompoundTag();
         tag.putUUID("music", uuid);
-        instruction("set_music", 0, tag);
+        instruction("set_music", tag);
     }
 
     public CassetteDeckBlockEntity.MonitorType getRawMonitorType() {

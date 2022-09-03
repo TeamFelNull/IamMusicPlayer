@@ -9,7 +9,6 @@ import dev.felnull.imp.handler.CommonHandler;
 import dev.felnull.imp.inventory.IMPMenus;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.networking.IMPPackets;
-import dev.felnull.imp.server.data.IMPWorldData;
 import dev.felnull.imp.server.handler.ServerHandler;
 import dev.felnull.imp.server.handler.ServerMusicHandler;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -28,7 +27,6 @@ public class IamMusicPlayer {
         IMPPoiType.init();
         IMPVillagerProfessions.init();
         IMPCriteriaTriggers.init();
-        IMPWorldData.init();
         ServerMusicHandler.init();
         ServerHandler.init();
         CommonHandler.init();

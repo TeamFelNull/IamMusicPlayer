@@ -1,11 +1,11 @@
 package dev.felnull.imp.music.resource;
 
-import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Objects;
 
-public class ImageInfo implements ITAGSerializable {
+public class ImageInfo implements TagSerializable {
     public static final ImageInfo EMPTY = new ImageInfo(ImageType.EMPTY, "");
     private ImageType imageType;
     private String identifier;
@@ -19,10 +19,9 @@ public class ImageInfo implements ITAGSerializable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.putString("ImageType", this.imageType.getNmae());
         tag.putString("Identifier", this.identifier);
-        return tag;
     }
 
     @Override

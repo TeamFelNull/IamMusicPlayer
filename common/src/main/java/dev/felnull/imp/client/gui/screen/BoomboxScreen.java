@@ -2,18 +2,17 @@ package dev.felnull.imp.client.gui.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.components.BoomboxButton;
 import dev.felnull.imp.client.gui.screen.monitor.boombox.BoomboxMonitor;
-import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.gui.screen.OEItemBEContainerBaseScreen;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.nbt.CompoundTag;
@@ -104,9 +103,9 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     protected void renderBg(PoseStack poseStack, float f, int i, int j) {
         super.renderBg(poseStack, f, i, j);
         if (getCassetteTape().isEmpty())
-            OERenderUtil.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 98, 0, 0, 16, 16, 16, 16);
+            OERenderUtils.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 98, 0, 0, 16, 16, 16, 16);
         if (getAntenna().isEmpty())
-            OERenderUtil.drawTexture(EMPTY_ANTENNA_SLOT, poseStack, leftPos + 183, topPos + 124, 0, 0, 16, 16, 16, 16);
+            OERenderUtils.drawTexture(EMPTY_ANTENNA_SLOT, poseStack, leftPos + 183, topPos + 124, 0, 0, 16, 16, 16, 16);
 
         if (monitor != null)
             monitor.render(poseStack, f, i, j);
@@ -126,20 +125,20 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
         var tag = new CompoundTag();
         if (uuid != null)
             tag.putUUID("pl", uuid);
-        instruction("set_selected_play_list", 0, tag);
+        instruction("set_selected_play_list", tag);
     }
 
     public void insRadioUrl(String url) {
         var tag = new CompoundTag();
         tag.putString("url", url);
-        instruction("set_radio_url", 0, tag);
+        instruction("set_radio_url", tag);
     }
 
     public void insSelectedMusic(@Nullable UUID musicId) {
         var tag = new CompoundTag();
         if (musicId != null)
             tag.putUUID("m", musicId);
-        instruction("set_selected_music", 0, tag);
+        instruction("set_selected_music", tag);
     }
 
     public boolean isMute() {
@@ -177,7 +176,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     public void insMonitor(BoomboxData.MonitorType monitorType) {
         var tag = new CompoundTag();
         tag.putString("name", monitorType.getName());
-        instruction("set_monitor", 0, tag);
+        instruction("set_monitor", tag);
     }
 
     public boolean isMusicLoading() {
@@ -195,59 +194,59 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     public void insVolume(int volume) {
         var tag = new CompoundTag();
         tag.putInt("volume", volume);
-        instruction("set_volume", 0, tag);
+        instruction("set_volume", tag);
     }
 
     public void insPositionAndRestart(long position) {
         var tag = new CompoundTag();
         tag.putLong("position", position);
-        instruction("restat_and_set_position", 0, tag);
+        instruction("restat_and_set_position", tag);
     }
 
     public void insContinuousType(@NotNull BoomboxData.ContinuousType continuousType) {
         var tag = new CompoundTag();
         tag.putString("type", continuousType.getName());
-        instruction("set_continuous_type", 0, tag);
+        instruction("set_continuous_type", tag);
     }
 
     public void insLoop(boolean loop) {
         var tag = new CompoundTag();
         tag.putBoolean("loop", loop);
-        instruction("set_loop", 0, tag);
+        instruction("set_loop", tag);
     }
 
     public void insPause() {
-        instruction("set_pause", 0, new CompoundTag());
+        instruction("set_pause", new CompoundTag());
     }
 
     public void insPlaying(boolean playing) {
         var tag = new CompoundTag();
         tag.putBoolean("playing", playing);
-        instruction("set_playing", 0, tag);
+        instruction("set_playing", tag);
     }
 
     public void insRadioSource(MusicSource source) {
         var tag = new CompoundTag();
-        OENbtUtil.writeSerializable(tag, "source", source);
-        instruction("set_radio_source", 0, tag);
+        tag.put("source", source.createSavedTag());
+        instruction("set_radio_source", tag);
     }
 
     public void insRadioImage(ImageInfo imageInfo) {
         var tag = new CompoundTag();
-        OENbtUtil.writeSerializable(tag, "image", imageInfo);
-        instruction("set_radio_image", 0, tag);
+        tag.put("image", imageInfo.createSavedTag());
+        instruction("set_radio_image", tag);
     }
 
     public void insRadioName(String name) {
         var tag = new CompoundTag();
         tag.putString("name", name);
-        instruction("set_radio_name", 0, tag);
+        instruction("set_radio_name", tag);
     }
 
     public void insRadioAuthor(String author) {
         var tag = new CompoundTag();
         tag.putString("author", author);
-        instruction("set_radio_author", 0, tag);
+        instruction("set_radio_author", tag);
     }
 
     @Override
@@ -262,7 +261,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
     private void insPressButton(BoomboxData.ButtonType type) {
         var tag = new CompoundTag();
         tag.putString("Type", type.getName());
-        instruction("buttons_press", 0, tag);
+        instruction("buttons_press", tag);
     }
 
     private void changeScreenMonitor(BoomboxData.MonitorType type) {

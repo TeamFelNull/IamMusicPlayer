@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.screen.IMPBaseContainerScreen;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class PowerButton extends ImageButton {
@@ -17,7 +17,7 @@ public class PowerButton extends ImageButton {
     private final int textureHeight;
 
     public PowerButton(IMPBaseContainerScreen<?> screen, int x, int y, int width, int height, int xTexStart, int yTexStart, ResourceLocation resourceLocation, int textureWidth, int textureHeight) {
-        super(x, y, width, height, xTexStart, yTexStart, height, resourceLocation, textureWidth, textureHeight, button -> onPower(screen), new TranslatableComponent("imp.button.power"));
+        super(x, y, width, height, xTexStart, yTexStart, height, resourceLocation, textureWidth, textureHeight, button -> onPower(screen), Component.translatable("imp.button.power"));
         this.screen = screen;
         this.resourceLocation = resourceLocation;
         this.xTexStart = xTexStart;

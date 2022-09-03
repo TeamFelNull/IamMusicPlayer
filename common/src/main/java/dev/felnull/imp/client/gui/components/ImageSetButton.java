@@ -3,11 +3,10 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 public class ImageSetButton extends Button implements IIMPSmartRender {
     private final ImageSetType type;
@@ -25,7 +24,7 @@ public class ImageSetButton extends Button implements IIMPSmartRender {
         private final Component name;
 
         private ImageSetType(String name) {
-            this.name = new TranslatableComponent("imp.button.imageSet." + name);
+            this.name = Component.translatable("imp.button.imageSet." + name);
         }
 
         public Component getName() {
@@ -37,9 +36,9 @@ public class ImageSetButton extends Button implements IIMPSmartRender {
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
         drawSmartButtonBox(poseStack, x, y, width, height, isHoveredOrFocused());
         if (type == ImageSetType.PLAYER_FACE) {
-            OERenderUtil.drawPlayerFace(poseStack, mc.player.getGameProfile().getId(), (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 11);
+            OERenderUtils.drawPlayerFace(poseStack, mc.player.getGameProfile().getId(), (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 11);
         } else {
-            OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.URL ? 22 : type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.URL ? 22 : type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
         }
         if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);

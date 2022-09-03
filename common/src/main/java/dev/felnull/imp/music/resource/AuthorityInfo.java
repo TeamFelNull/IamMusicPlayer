@@ -1,15 +1,14 @@
 package dev.felnull.imp.music.resource;
 
 import dev.felnull.imp.util.IMPNbtUtil;
-import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class AuthorityInfo implements ITAGSerializable {
+public class AuthorityInfo implements TagSerializable {
     private boolean publiced;
     private UUID owner;
     private String ownerName;
@@ -32,13 +31,12 @@ public class AuthorityInfo implements ITAGSerializable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.putBoolean("Public", publiced);
         tag.putUUID("Owner", owner);
         IMPNbtUtil.writeAuthority(tag, "Authority", authority);
         tag.putString("OwnerName", ownerName);
         tag.putString("InitialAuthority", initialAuthority.getName());
-        return tag;
     }
 
     @Override
@@ -132,7 +130,7 @@ public class AuthorityInfo implements ITAGSerializable {
 
         private AuthorityType(String name, int level) {
             this.name = name;
-            this.text = new TranslatableComponent("imp.text.authority." + name);
+            this.text = Component.translatable("imp.text.authority." + name);
             this.level = level;
         }
 

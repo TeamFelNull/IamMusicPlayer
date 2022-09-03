@@ -5,9 +5,9 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.screen.CassetteDeckScreen;
 import dev.felnull.imp.client.gui.screen.monitor.Monitor;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,7 +22,7 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
     private final CassetteDeckScreen screen;
 
     public CassetteDeckMonitor(CassetteDeckBlockEntity.MonitorType monitorType, CassetteDeckScreen screen) {
-        super(new TranslatableComponent("imp.monitor.cassette_deck." + monitorType.getName()), 7, 18, 200, 56);
+        super(Component.translatable("imp.monitor.cassette_deck." + monitorType.getName()), 7, 18, 200, 56);
         this.monitorType = monitorType;
         this.screen = screen;
     }
@@ -91,13 +91,13 @@ public abstract class CassetteDeckMonitor extends Monitor<CassetteDeckBlockEntit
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
     }
 
     @Override
     public void renderAppearance(CassetteDeckBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight) {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
-        OERenderUtil.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        OERenderUtils.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
     }
 
     @Override

@@ -1,16 +1,13 @@
 package dev.felnull.imp.client.entrypoint;
 
 import dev.felnull.imp.client.model.IMPModels;
-import dev.felnull.otyacraftengine.client.entrypoint.IOEClientEntryPoint;
-import dev.felnull.otyacraftengine.client.entrypoint.OEClientEntryPoint;
-import net.minecraft.resources.ResourceLocation;
+import dev.felnull.otyacraftengine.client.callpoint.ClientCallPoint;
+import dev.felnull.otyacraftengine.client.callpoint.ModelRegister;
 
-import java.util.function.Consumer;
-
-@OEClientEntryPoint
-public class IMPOEClientEntryPoint implements IOEClientEntryPoint {
+@ClientCallPoint.Sign
+public class IMPOEClientEntryPoint implements ClientCallPoint {
     @Override
-    public void onModelRegistry(Consumer<ResourceLocation> addModel) {
-        IMPModels.init(addModel);
+    public void onModelRegistry(ModelRegister register) {
+        IMPModels.init(register);
     }
 }

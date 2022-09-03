@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class AuthorityPlayersFixedButtonsList extends PlayersFixedButtonsList {
         if (selected.apply(item))
             k = 0;
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), k);
-        OERenderUtil.drawPlayerFace(poseStack, item, x + 1, y + 1, getOneButtonHeight() - 2);
+        OERenderUtils.drawPlayerFace(poseStack, item, x + 1, y + 1, getOneButtonHeight() - 2);
         drawSmartFixedWidthText(poseStack, getMessage(lnum), x + getOneButtonHeight() + 1, y + (getOneButtonHeight() - 6.5f) / 2f, getOneButtonWidth() - 2 - getOneButtonHeight() - 1);
     }
 }

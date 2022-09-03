@@ -2,15 +2,15 @@ package dev.felnull.imp.client.gui.screen.monitor.boombox;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.client.gui.screen.monitor.Monitor;
-import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -24,7 +24,7 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
     private final BoomboxScreen screen;
 
     public BoomboxMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
-        super(new TranslatableComponent("imp.monitor.boombox." + monitorType.getName()), 7, 36, 200, 37);
+        super(Component.translatable("imp.monitor.boombox." + monitorType.getName()), 7, 36, 200, 37);
         this.monitorType = monitorType;
         this.screen = screen;
     }
@@ -73,11 +73,11 @@ public abstract class BoomboxMonitor extends Monitor<BoomboxBlockEntity> {
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
     }
 
     public void renderAppearance(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, float monitorWidth, float monitorHeight, BoomboxData data) {
-        OERenderUtil.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        OERenderUtils.renderTextureSprite(BG_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
     }
 
     @Override

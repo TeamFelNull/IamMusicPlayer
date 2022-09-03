@@ -3,7 +3,8 @@ package dev.felnull.imp.block;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.IMPBlockEntities;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
-import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
+import dev.felnull.otyacraftengine.shape.bundle.DirectionVoxelShapesBundle;
+import dev.felnull.otyacraftengine.util.OEVoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
@@ -17,7 +18,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class MusicManagerBlock extends IMPBaseEntityBlock {
-    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "music_manager"), MusicManagerBlock.class));
+    private static final DirectionVoxelShapesBundle SHAPE = OEVoxelShapeUtils.makeAllDirection(OEVoxelShapeUtils.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "music_manager"), MusicManagerBlock.class));
 
     protected MusicManagerBlock(Properties properties) {
         super(properties);

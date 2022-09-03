@@ -11,11 +11,10 @@ import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.FlagThread;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class SearchMusicMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation SEARCH_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/search_music.png");
-    private static final Component SEARCHING_TEXT = new TranslatableComponent("imp.text.searching");
+    private static final Component SEARCHING_TEXT = Component.translatable("imp.text.searching");
     private final List<SearchMusicEntry> searchMusics = new ArrayList<>();
     private SearchMusicsFixedButtonsList searchMusicsFixedButtonsList;
     private EditBox searchNameEditBox;
@@ -36,13 +35,13 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.searchMusicsFixedButtonsList = this.addRenderWidget(new SearchMusicsFixedButtonsList(getStartX() + 2, getStartY() + 25, 366, 172, 4, new TranslatableComponent("imp.fixedList.searchMusic"), searchMusics, (fixedButtonsList, searchMusicEntry, i, i1) -> {
+        this.searchMusicsFixedButtonsList = this.addRenderWidget(new SearchMusicsFixedButtonsList(getStartX() + 2, getStartY() + 25, 366, 172, 4, Component.translatable("imp.fixedList.searchMusic"), searchMusics, (fixedButtonsList, searchMusicEntry, i, i1) -> {
             setMusicSourceName(searchMusicEntry.source().getIdentifier());
             getScreen().lastSearch = true;
             insMonitor(MusicManagerBlockEntity.MonitorType.ADD_MUSIC);
         }));
 
-        this.searchNameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 2, getStartY() + 11, 367, 12, new TranslatableComponent("imp.editBox.musicSearchName"));
+        this.searchNameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 2, getStartY() + 11, 367, 12, Component.translatable("imp.editBox.musicSearchName"));
         this.searchNameEditBox.setMaxLength(300);
         this.searchNameEditBox.setValue(getMusicSearchName());
         this.searchNameEditBox.setResponder(this::setMusicSearchName);
@@ -61,7 +60,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(SEARCH_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(SEARCH_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (searchMusics.isEmpty() && !getMusicSearchName().isEmpty() && searchThread != null && searchThread.isAlive())
             drawSmartText(poseStack, SEARCHING_TEXT, getStartX() + 3, getStartY() + 27);
     }
@@ -71,10 +70,10 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        OERenderUtil.renderTextureSprite(SEARCH_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
-        renderSmartEditBoxSprite(poseStack, multiBufferSource, 2, 11, OERenderUtil.MIN_BREADTH * 3, 367, 12, i, j, onPxW, onPxH, monitorHeight, getMusicSearchName(blockEntity));
+        OERenderUtils.renderTextureSprite(SEARCH_MUSIC_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 3, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        renderSmartEditBoxSprite(poseStack, multiBufferSource, 2, 11, OERenderUtils.MIN_BREADTH * 3, 367, 12, i, j, onPxW, onPxH, monitorHeight, getMusicSearchName(blockEntity));
 
-        renderScrollbarSprite(poseStack, multiBufferSource, 359, 25, OERenderUtil.MIN_BREADTH * 3, 172, i, j, onPxW, onPxH, monitorHeight, 0, 6);
+        renderScrollbarSprite(poseStack, multiBufferSource, 359, 25, OERenderUtils.MIN_BREADTH * 3, 172, i, j, onPxW, onPxH, monitorHeight, 0, 6);
     }
 
     private void startMusicSearch(String name) {

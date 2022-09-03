@@ -10,8 +10,9 @@ import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
-import dev.felnull.imp.util.IMPNbtUtil;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
+import dev.felnull.otyacraftengine.util.OENbtUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -115,8 +116,9 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
             }
             blockEntity.loadingMusic = blockEntity.isRingerWait();
             blockEntity.ringerTick();
-            blockEntity.sync();
         }
+
+        blockEntity.baseAfterTick();
     }
 
     private boolean canWriteCassetteTape() {
@@ -137,9 +139,9 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         if (this.lidOpen)
             lidOpenProgress = getLidOpenProgressAll();
         this.monitor = MonitorType.getByName(tag.getString("Monitor"));
-        IMPNbtUtil.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         if (tag.contains("Music"))
-            this.music = OENbtUtil.readSerializable(tag, "Music", new Music());
+            this.music = TagSerializable.loadSavedTag(tag.getCompound("Music"), new Music());
         this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
         this.volume = tag.getInt("Volume");
         this.mute = tag.getBoolean("Mute");
@@ -153,9 +155,9 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         super.saveAdditional(tag);
         tag.putBoolean("LidOpen", this.lidOpen);
         tag.putString("Monitor", monitor.getName());
-        IMPNbtUtil.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         if (this.music != null)
-            OENbtUtil.writeSerializable(tag, "Music", music);
+            tag.put("Music", music.createSavedTag());
         tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
         tag.putInt("Volume", this.volume);
         tag.putBoolean("Mute", this.mute);
@@ -166,15 +168,17 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     }
 
     @Override
-    public CompoundTag getSyncData(ServerPlayer player, CompoundTag tag) {
+    public void saveToUpdateTag(CompoundTag tag) {
+        super.saveToUpdateTag(tag);
         tag.putBoolean("LidOpen", this.lidOpen);
         tag.put("OldCassetteTape", this.oldCassetteTape.save(new CompoundTag()));
         tag.putBoolean("ChangeCassetteTape", this.changeCassetteTape);
         tag.putString("Monitor", monitor.getName());
-        if (playerSelectPlaylists.containsKey(player.getGameProfile().getId()))
-            tag.putUUID("PlayerSelectPlaylist", playerSelectPlaylists.get(player.getGameProfile().getId()));
+
+        OENbtUtils.writeUUIDMap(tag, "PlayerSelectPlaylist", playerSelectPlaylists);
+
         if (this.music != null)
-            OENbtUtil.writeSerializable(tag, "Music", music);
+            tag.put("Music", music.createSavedTag());
         tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
         tag.putInt("Volume", this.volume);
         tag.putBoolean("Mute", this.mute);
@@ -182,7 +186,6 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         tag.putLong("Position", this.position);
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("LoadingMusic", this.loadingMusic);
-        return super.getSyncData(player, tag);
     }
 
     @Override
@@ -201,16 +204,20 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     }
 
     @Override
-    public void onSync(CompoundTag tag) {
-        super.onSync(tag);
+    public void loadToUpdateTag(CompoundTag tag) {
+        super.loadToUpdateTag(tag);
         this.lidOpen = tag.getBoolean("LidOpen");
         this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
         this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
         this.monitor = MonitorType.getByName(tag.getString("Monitor"));
-        if (tag.contains("PlayerSelectPlaylist"))
-            this.myPlayerSelectPlaylist = tag.getUUID("PlayerSelectPlaylist");
+
+        if (tag.contains("PlayerSelectPlaylist")) {
+            var map = OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylist", new HashMap<>());
+            this.myPlayerSelectPlaylist = map.get(Minecraft.getInstance().player.getGameProfile().getId());
+        }
+
         if (tag.contains("Music"))
-            this.music = OENbtUtil.readSerializable(tag, "Music", new Music());
+            this.music = TagSerializable.loadSavedTag(tag.getCompound("Music"), new Music());
         else
             this.music = null;
         this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
@@ -382,7 +389,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
     }
 
     @Override
-    public CompoundTag onInstruction(ServerPlayer player, String name, int num, CompoundTag data) {
+    public CompoundTag onInstruction(ServerPlayer player, String name, CompoundTag data) {
         if ("monitor".equals(name)) {
             this.monitor = MonitorType.getByName(data.getString("name"));
             if (this.monitor == MonitorType.WRITE_EXECUTION && canWriteCassetteTape())
@@ -391,7 +398,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         } else if ("select_playlist".equals(name)) {
             if (data.contains("uuid")) {
                 var uuid = data.getUUID("uuid");
-                var pl = MusicManager.getInstance().getSaveData().getPlayLists().get(uuid);
+                var pl = MusicManager.getInstance().getSaveData(getRingerLevel().getServer()).getPlayLists().get(uuid);
                 if (pl != null && pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).isMoreReadOnly())
                     setPlayerSelectPlayList(player, uuid);
             } else {
@@ -401,9 +408,9 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         } else if ("set_music".equals(name)) {
             if (data.contains("music")) {
                 var mm = MusicManager.getInstance();
-                var m = mm.getSaveData().getMusics().get(data.getUUID("music"));
+                var m = mm.getSaveData(getRingerLevel().getServer()).getMusics().get(data.getUUID("music"));
                 if (m != null) {
-                    var pl = mm.getPlaylistByMusic(m.getUuid());
+                    var pl = mm.getPlaylistByMusic(getRingerLevel().getServer(), m.getUuid());
                     if (pl != null && pl.getAuthority().getAuthorityType(player.getGameProfile().getId()).isMoreReadOnly())
                         setMusic(m);
                 }
@@ -433,7 +440,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
             if (isPowered())
                 setLoop(data.getBoolean("loop"));
         }
-        return super.onInstruction(player, name, num, data);
+        return super.onInstruction(player, name, data);
     }
 
     public void setMusicPositionAndRestart(long position) {

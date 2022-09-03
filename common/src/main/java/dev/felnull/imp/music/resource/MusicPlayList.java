@@ -1,7 +1,7 @@
 package dev.felnull.imp.music.resource;
 
-import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
+import dev.felnull.otyacraftengine.util.OENbtUtils;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-public class MusicPlayList implements ITAGSerializable, IIMPComparable {
+public class MusicPlayList implements TagSerializable, IIMPComparable {
     private UUID uuid;
     private String name;
     private ImageInfo image;
@@ -31,23 +31,22 @@ public class MusicPlayList implements ITAGSerializable, IIMPComparable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.putUUID("UUID", uuid);
         tag.putString("Name", name);
-        OENbtUtil.writeSerializable(tag, "Image", image);
-        OENbtUtil.writeSerializable(tag, "Authority", authority);
-        OENbtUtil.writeUUIDList(tag, "MusicList", musicList);
+        tag.put("Image", image.createSavedTag());
+        tag.put("Authority", authority.createSavedTag());
+        OENbtUtils.writeUUIDList(tag, "MusicList", musicList);
         tag.putLong("CreateDate", createDate);
-        return tag;
     }
 
     @Override
     public void load(CompoundTag tag) {
         this.uuid = tag.getUUID("UUID");
         this.name = tag.getString("Name");
-        this.image = OENbtUtil.readSerializable(tag, "Image", new ImageInfo());
-        this.authority = OENbtUtil.readSerializable(tag, "Authority", new AuthorityInfo());
-        OENbtUtil.readUUIDList(tag, "MusicList", musicList);
+        this.image = TagSerializable.loadSavedTag(tag.getCompound("Image"), new ImageInfo());
+        this.authority = TagSerializable.loadSavedTag(tag.getCompound("Authority"), new AuthorityInfo());
+        OENbtUtils.readUUIDList(tag, "MusicList", musicList);
         this.createDate = tag.getLong("CreateDate");
     }
 

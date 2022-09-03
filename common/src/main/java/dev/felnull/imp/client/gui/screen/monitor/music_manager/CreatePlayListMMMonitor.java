@@ -13,20 +13,19 @@ import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.util.FlagThread;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
-    protected static final Component IMPORT_TEXT = new TranslatableComponent("imp.button.import");
-    protected static final Component IMPORTING_TEXT = new TranslatableComponent("imp.text.importing");
-    protected static final Component IMPORT_FAILURE_TEXT = new TranslatableComponent("imp.text.importFailure");
+    protected static final Component IMPORT_TEXT = Component.translatable("imp.button.import");
+    protected static final Component IMPORTING_TEXT = Component.translatable("imp.text.importing");
+    protected static final Component IMPORT_FAILURE_TEXT = Component.translatable("imp.text.importFailure");
     private ImportMusicLoader importMusicLoader;
     private boolean failureImportPlayList;
 
@@ -43,7 +42,7 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
         } else if (failureImportPlayList) {
             ipTx = IMPORT_FAILURE_TEXT;
         } else if (getImportMusicsCount() > 0) {
-            ipTx = new TranslatableComponent("imp.text.importMusicCount", getImportMusicsCount());
+            ipTx = Component.translatable("imp.text.importMusicCount", getImportMusicsCount());
         }
         if (ipTx != null)
             drawSmartText(poseStack, ipTx, getStartX() + width - 95 + 7, getStartY() + 184);
@@ -60,10 +59,10 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, IMPORT_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87, 180, OERenderUtils.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, IMPORT_TEXT, true);
 
         if (getImportMusicsCount(blockEntity) > 0)
-            renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.importMusicCount", getImportMusicsCount(blockEntity)), width - 95 + 7, 184, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, Component.translatable("imp.text.importMusicCount", getImportMusicsCount(blockEntity)), width - 95 + 7, 184, OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
     }
 
     @Override

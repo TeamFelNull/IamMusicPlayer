@@ -3,13 +3,16 @@
   "id": "iammusicplayer",
   "version": "${version}",
   "name": "Iam Music Player",
-  "description": "Thank you for downloading!\nThis mod is The Ikisugi Music Player MOD.",
+  "description": "Add a boombox that can play music.\nThe ikisugi music player mod...",
   "authors": [
     "MORIMORI0317",
-    "nin8995",
+    "nin8995"
+  ],
+  "contributors": [
     "FelNull developers"
   ],
   "contact": {
+    "email": "teamfelnull@felnull.dev",
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/iammusicplayer",
     "sources": "https://github.com/TeamFelnull/IamMusicPlayer",
     "issues": "https://github.com/TeamFelnull/IamMusicPlayer/issues"
@@ -24,22 +27,19 @@
     "client": [
       "dev.felnull.imp.fabric.client.IamMusicPlayerClientFabric"
     ],
-    "modmenu": [
-      "dev.felnull.imp.fabric.integration.ModMenuIntegration"
+    "fabric-datagen": [
+      "dev.felnull.imp.fabric.data.IamMusicPlayerDataGenFabric"
     ],
     "otyacraftengine_client": [
       "dev.felnull.imp.client.entrypoint.IMPOEClientEntryPoint"
     ]
   },
   "mixins": [
-    "iammusicplayer.mixins.json",
     "iammusicplayer-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.18.2",
-    "architectury": ">=4.1.32",
-    "cloth-config2": ">=6.2.57",
-    "otyacraftengine": ">=2.14"
+    "minecraft": ">=1.19.2",
+    "architectury": ">=6.2.43"
   }
 }

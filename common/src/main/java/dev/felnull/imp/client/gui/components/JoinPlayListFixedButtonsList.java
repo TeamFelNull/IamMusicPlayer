@@ -3,16 +3,15 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.network.chat.Component;
 
 import java.util.Date;
 import java.util.List;
 
 public class JoinPlayListFixedButtonsList extends PlayListFixedButtonsList {
     public JoinPlayListFixedButtonsList(int x, int y, List<MusicPlayList> list, PressEntry<MusicPlayList> onPressEntry) {
-        super(x, y, 368, 168, 6, new TranslatableComponent("imp.fixedList.joinPlaylist"), list, onPressEntry);
+        super(x, y, 368, 168, 6, Component.translatable("imp.fixedList.joinPlaylist"), list, onPressEntry);
     }
 
     @Override
@@ -29,16 +28,16 @@ public class JoinPlayListFixedButtonsList extends PlayListFixedButtonsList {
             PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         }
 
-        drawSmartFixedWidthText(poseStack, new TextComponent(item.getName()), x + sx, y + 3, 90);
-        drawSmartFixedWidthText(poseStack, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 17, 90);
+        drawSmartFixedWidthText(poseStack, Component.literal(item.getName()), x + sx, y + 3, 90);
+        drawSmartFixedWidthText(poseStack, Component.literal(MyPlayListFixedButtonsList.dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 17, 90);
 
-        OERenderUtil.drawPlayerFace(poseStack, item.getAuthority().getOwnerName(), x + sx + 101, y + 2, 9);
-        drawSmartFixedWidthText(poseStack, new TextComponent(item.getAuthority().getOwnerName()), x + sx + 112, y + 3, 90);
-        drawSmartFixedWidthText(poseStack, new TranslatableComponent("imp.text.musicCount", item.getMusicList().size()), x + sx + 101, y + 17, 45);
-        drawSmartFixedWidthText(poseStack, new TranslatableComponent("imp.text.playerCount", item.getPlayerCount()), x + sx + 156, y + 17, 45);
+        OERenderUtils.drawPlayerFace(poseStack, item.getAuthority().getOwnerName(), x + sx + 101, y + 2, 9);
+        drawSmartFixedWidthText(poseStack, Component.literal(item.getAuthority().getOwnerName()), x + sx + 112, y + 3, 90);
+        drawSmartFixedWidthText(poseStack, Component.translatable("imp.text.musicCount", item.getMusicList().size()), x + sx + 101, y + 17, 45);
+        drawSmartFixedWidthText(poseStack, Component.translatable("imp.text.playerCount", item.getPlayerCount()), x + sx + 156, y + 17, 45);
 
         if (item.getAuthority().getAuthorityType(mc.player.getGameProfile().getId()).isInvitation()) {
-            drawSmartFixedWidthText(poseStack, new TranslatableComponent("imp.text.invitation"), x + sx + 204, y + 3, 100, 0xFF0000FF);
+            drawSmartFixedWidthText(poseStack, Component.translatable("imp.text.invitation"), x + sx + 204, y + 3, 100, 0xFF0000FF);
         }
     }
 }

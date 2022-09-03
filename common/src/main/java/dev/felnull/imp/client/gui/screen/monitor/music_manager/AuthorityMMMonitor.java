@@ -14,14 +14,12 @@ import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
-import dev.felnull.otyacraftengine.client.util.OEClientUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import dev.felnull.otyacraftengine.networking.BlockEntityExistence;
+import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,13 +28,13 @@ import java.util.function.Supplier;
 
 public class AuthorityMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation AUTHORITY_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/authority.png");
-    private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
-    private static final Component EXPULSION_BUTTON_TEXT = new TranslatableComponent("imp.button.expulsion").withStyle(ChatFormatting.DARK_RED);
-    private static final Component CANT_CHANGE_AUTHORITY = new TranslatableComponent("imp.text.cantChangeAuthority");
-    private static final Component READONLY_RDO_TEXT = new TranslatableComponent("imp.radioButton.readonly");
-    private static final Component MEMBER_RDO_TEXT = new TranslatableComponent("imp.radioButton.member");
-    private static final Component BAN_RDO_TEXT = new TranslatableComponent("imp.radioButton.ban");
-    private static final Component ADMIN_RDO_TEXT = new TranslatableComponent("imp.radioButton.admin");
+    private static final Component BACK_TEXT = Component.translatable("gui.back");
+    private static final Component EXPULSION_BUTTON_TEXT = Component.translatable("imp.button.expulsion").withStyle(ChatFormatting.DARK_RED);
+    private static final Component CANT_CHANGE_AUTHORITY = Component.translatable("imp.text.cantChangeAuthority");
+    private static final Component READONLY_RDO_TEXT = Component.translatable("imp.radioButton.readonly");
+    private static final Component MEMBER_RDO_TEXT = Component.translatable("imp.radioButton.member");
+    private static final Component BAN_RDO_TEXT = Component.translatable("imp.radioButton.ban");
+    private static final Component ADMIN_RDO_TEXT = Component.translatable("imp.radioButton.admin");
     private final List<UUID> members = new ArrayList<>();
     private List<MusicPlayList> cashPlayLists;
     private SmartRadioButton readOnlyRadio;
@@ -53,11 +51,10 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
         addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> {
-            if (getParentType() != null)
-                insMonitor(getParentType());
+            if (getParentType() != null) insMonitor(getParentType());
         }));
 
-        addRenderWidget(new AuthorityPlayersFixedButtonsList(getStartX() + 6, getStartY() + 23, 175, 135, 9, new TranslatableComponent("imp.fixedList.authorityPlayers"), members, new FixedButtonsList.PressEntry<UUID>() {
+        addRenderWidget(new AuthorityPlayersFixedButtonsList(getStartX() + 6, getStartY() + 23, 175, 135, 9, Component.translatable("imp.fixedList.authorityPlayers"), members, new FixedButtonsList.PressEntry<UUID>() {
             @Override
             public void onPressEntry(FixedButtonsList<UUID> fixedButtonsList, UUID uuid, int i, int i1) {
                 setSelectedPlayer(uuid);
@@ -96,15 +93,14 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(AUTHORITY_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width / (getSelectedPlayer() != null ? 1f : 2f), height, width, height);
+        OERenderUtils.drawTexture(AUTHORITY_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width / (getSelectedPlayer() != null ? 1f : 2f), height, width, height);
         var sp = getSelectedPlayer();
         if (sp != null) {
-            OERenderUtil.drawPlayerFace(poseStack, sp, getStartX() + 189, getStartY() + 23, 21);
-            var str = OEClientUtil.getPlayerNameByUUID(sp).orElseGet(sp::toString);
-            drawSmartFixedWidthText(poseStack, new TextComponent(str), getStartX() + 212, getStartY() + 25, 150);
+            OERenderUtils.drawPlayerFace(poseStack, sp, getStartX() + 189, getStartY() + 23, 21);
+            var str = OEClientUtils.getPlayerNameByUUID(sp).orElseGet(sp::toString);
+            drawSmartFixedWidthText(poseStack, Component.literal(str), getStartX() + 212, getStartY() + 25, 150);
             drawSmartFixedWidthText(poseStack, getAuthorityType(sp).getText(), getStartX() + 212, getStartY() + 35, 150);
-            if (!canEdit(sp))
-                drawSmartText(poseStack, CANT_CHANGE_AUTHORITY, getStartX() + 188, getStartY() + 47);
+            if (!canEdit(sp)) drawSmartText(poseStack, CANT_CHANGE_AUTHORITY, getStartX() + 188, getStartY() + 47);
         }
     }
 
@@ -113,25 +109,25 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        OERenderUtil.renderTextureSprite(AUTHORITY_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth / (getSelectedPlayer(blockEntity) != null ? 1f : 2f), monitorHeight, 0, 0, width / (getSelectedPlayer(blockEntity) != null ? 1f : 2f), height, width, height, i, j);
+        OERenderUtils.renderTextureSprite(AUTHORITY_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 2, 0, 0, 0, monitorWidth / (getSelectedPlayer(blockEntity) != null ? 1f : 2f), monitorHeight, 0, 0, width / (getSelectedPlayer(blockEntity) != null ? 1f : 2f), height, width, height, i, j);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 5, 180, OERenderUtils.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true);
 
         var sp = getSelectedPlayer(blockEntity);
         if (sp != null) {
-            renderPlayerFaceSprite(poseStack, multiBufferSource, sp, 189, 23, OERenderUtil.MIN_BREADTH * 4, 21, i, j, onPxW, onPxH, monitorHeight);
-            var str = OEClientUtil.getPlayerNameByUUID(sp).orElseGet(sp::toString);
-            renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(str, 130, "...")), 215, 26, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-            renderSmartTextSprite(poseStack, multiBufferSource, getAuthorityType(blockEntity, sp).getText(), 215, 36, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+            renderPlayerFaceSprite(poseStack, multiBufferSource, sp, 189, 23, OERenderUtils.MIN_BREADTH * 4, 21, i, j, onPxW, onPxH, monitorHeight);
+            var str = OEClientUtils.getPlayerNameByUUID(sp).orElseGet(sp::toString);
+            renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(OEClientUtils.getWidthOmitText(str, 130, "...")), 215, 26, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, getAuthorityType(blockEntity, sp).getText(), 215, 36, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
             if (canEdit(blockEntity, sp)) {
-                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 47, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, READONLY_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.READ_ONLY);
-                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 72, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, MEMBER_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.MEMBER);
-                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 97, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, BAN_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.BAN);
-                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 122, OERenderUtil.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, ADMIN_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.ADMIN);
+                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 47, OERenderUtils.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, READONLY_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.READ_ONLY);
+                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 72, OERenderUtils.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, MEMBER_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.MEMBER);
+                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 97, OERenderUtils.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, BAN_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.BAN);
+                renderSmartRadioButtonSprite(poseStack, multiBufferSource, 188, 122, OERenderUtils.MIN_BREADTH * 4, 20, 20, i, j, onPxW, onPxH, monitorHeight, ADMIN_RDO_TEXT, getAuthorityType(blockEntity, getSelectedPlayer(blockEntity)) == AuthorityInfo.AuthorityType.ADMIN);
 
-                renderSmartButtonSprite(poseStack, multiBufferSource, 188, 147, OERenderUtil.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, EXPULSION_BUTTON_TEXT, true);
+                renderSmartButtonSprite(poseStack, multiBufferSource, 188, 147, OERenderUtils.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, EXPULSION_BUTTON_TEXT, true);
             } else {
-                renderSmartTextSprite(poseStack, multiBufferSource, CANT_CHANGE_AUTHORITY, 188, 48, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, CANT_CHANGE_AUTHORITY, 188, 48, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
             }
         }
 
@@ -141,11 +137,11 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
         if (pl != null)
             pls.addAll(pl.getAuthority().getPlayersAuthority().entrySet().stream().filter(n -> n.getValue() != AuthorityInfo.AuthorityType.NONE && n.getValue() != AuthorityInfo.AuthorityType.INVITATION).map(Map.Entry::getKey).toList());
 
-        renderFixedListSprite(poseStack, multiBufferSource, 6, 23, OERenderUtil.MIN_BREADTH * 4, 175, 135, i, j, onPxW, onPxH, monitorHeight, pls, 9, (poseStack1, multiBufferSource1, x, y, z, w, h, i1, j1, entry) -> {
-            renderSmartButtonBoxSprite(poseStack1, multiBufferSource1, x, y, z + OERenderUtil.MIN_BREADTH, w, h, i1, j1, onPxW, onPxH, monitorHeight, entry.equals(getSelectedPlayer(blockEntity)));
-            renderPlayerFaceSprite(poseStack1, multiBufferSource1, entry, x + 1, y + 1, z + OERenderUtil.MIN_BREADTH * 3, h - 2, i1, j1, onPxW, onPxH, monitorHeight);
-            renderSmartTextSprite(poseStack1, multiBufferSource1, new TextComponent(OERenderUtil.getWidthString(OEClientUtil.getPlayerNameByUUID(entry).orElseGet(entry::toString), w - (h + 7), "...")), x + h + 3f, y + (h - 6.5f) / 2f, z + OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i1);
-            //   renderSmartTextSprite(poseStack1, multiBufferSource1, getAuthorityType(blockEntity, entry).getText(), x + h + 3f, y + 11f, z + OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i1);
+        renderFixedListSprite(poseStack, multiBufferSource, 6, 23, OERenderUtils.MIN_BREADTH * 4, 175, 135, i, j, onPxW, onPxH, monitorHeight, pls, 9, (poseStack1, multiBufferSource1, x, y, z, w, h, i1, j1, entry) -> {
+            renderSmartButtonBoxSprite(poseStack1, multiBufferSource1, x, y, z + OERenderUtils.MIN_BREADTH, w, h, i1, j1, onPxW, onPxH, monitorHeight, entry.equals(getSelectedPlayer(blockEntity)));
+            renderPlayerFaceSprite(poseStack1, multiBufferSource1, entry, x + 1, y + 1, z + OERenderUtils.MIN_BREADTH * 3, h - 2, i1, j1, onPxW, onPxH, monitorHeight);
+            renderSmartTextSprite(poseStack1, multiBufferSource1, Component.literal(OEClientUtils.getWidthOmitText(OEClientUtils.getPlayerNameByUUID(entry).orElseGet(entry::toString), w - (h + 7), "...")), x + h + 3f, y + (h - 6.5f) / 2f, z + OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i1);
+            //   renderSmartTextSprite(poseStack1, multiBufferSource1, getAuthorityType(blockEntity, entry).getText(), x + h + 3f, y + 11f, z + OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i1);
         });
     }
 
@@ -164,8 +160,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
 
     protected AuthorityInfo.AuthorityType getAuthorityType(MusicManagerBlockEntity musicManagerBlockEntity, UUID playerId) {
         var pl = getSelectedMusicPlayList(musicManagerBlockEntity);
-        if (pl != null)
-            return pl.getAuthority().getAuthorityType(playerId);
+        if (pl != null) return pl.getAuthority().getAuthorityType(playerId);
         return AuthorityInfo.AuthorityType.NONE;
     }
 
@@ -241,8 +236,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
 
     protected MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
         var pls = getSyncManager().getMyPlayList();
-        if (pls == null)
-            return null;
+        if (pls == null) return null;
         return pls.stream().filter(n -> n.getUuid().equals(getSelectedPlayList(musicManagerBlockEntity))).findFirst().orElse(null);
     }
 

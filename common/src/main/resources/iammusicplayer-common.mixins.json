@@ -1,8 +1,7 @@
 {
   "required": true,
   "package": "dev.felnull.imp.mixin",
-  "compatibilityLevel": "JAVA_16",
-  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
   "client": [
     "client.LibraryMixin",
     "client.SoundEngineMixin"

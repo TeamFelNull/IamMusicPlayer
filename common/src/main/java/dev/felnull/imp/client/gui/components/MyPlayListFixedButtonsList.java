@@ -3,9 +3,8 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import net.minecraft.network.chat.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +16,7 @@ public class MyPlayListFixedButtonsList extends PlayListFixedButtonsList {
     private final Function<MusicPlayList, Boolean> selected;
 
     public MyPlayListFixedButtonsList(int x, int y, List<MusicPlayList> list, PressEntry<MusicPlayList> onPressEntry, Function<MusicPlayList, Boolean> selected) {
-        super(x, y, 100, 168, 8, new TranslatableComponent("imp.fixedList.myPlaylist"), list, onPressEntry);
+        super(x, y, 100, 168, 8, Component.translatable("imp.fixedList.myPlaylist"), list, onPressEntry);
         this.selected = selected;
     }
 
@@ -37,8 +36,8 @@ public class MyPlayListFixedButtonsList extends PlayListFixedButtonsList {
             PlayImageRenderer.getInstance().draw(img, poseStack, x + 1, y + 1, getOneButtonHeight() - 2);
         }
 
-        drawSmartText(poseStack, new TextComponent(OERenderUtil.getWidthString(item.getName(), getOneButtonWidth() - sx - 2, "...")), x + sx, y + 2);
-        drawSmartFixedWidthText(poseStack, new TextComponent(dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 12, getOneButtonWidth() - sx - 2);
+        drawSmartText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(item.getName(), getOneButtonWidth() - sx - 2, "...")), x + sx, y + 2);
+        drawSmartFixedWidthText(poseStack, Component.literal(dateFormat.format(new Date(item.getCreateDate()))), x + sx, y + 12, getOneButtonWidth() - sx - 2);
     }
 
 

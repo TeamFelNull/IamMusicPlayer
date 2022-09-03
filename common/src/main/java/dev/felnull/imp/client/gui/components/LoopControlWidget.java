@@ -3,16 +3,16 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.utils.value.BooleanValue;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class LoopControlWidget extends AbstractWidget {
     private final BooleanValue loop;
 
     public LoopControlWidget(int x, int y, BooleanValue loop) {
-        super(x, y, 8, 7, new TranslatableComponent("imp.widget.loopControl"));
+        super(x, y, 8, 7, Component.translatable("imp.widget.loopControl"));
         this.loop = loop;
     }
 
@@ -20,7 +20,7 @@ public class LoopControlWidget extends AbstractWidget {
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
         boolean il = loop.get();
         int z = isHoveredOrFocused() ? 16 : 0;
-        OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, (il ? 8 : 0) + z, 164, 8, 7);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, (il ? 8 : 0) + z, 164, 8, 7);
     }
 
     @Override

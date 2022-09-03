@@ -20,8 +20,8 @@ import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
-import dev.felnull.otyacraftengine.client.event.FabricOBJLoaderEvent;
-import dev.felnull.otyacraftengine.client.gui.TextureSpecifyLocation;
+import dev.felnull.otyacraftengine.client.event.OBJLoaderEvent;
+import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
@@ -32,7 +32,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.SoundOptionsScreen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -46,7 +46,7 @@ public class ClientHandler {
     private static final Minecraft mc = Minecraft.getInstance();
 
     public static void init() {
-        FabricOBJLoaderEvent.LOAD.register(ClientHandler::objLoad);
+        OBJLoaderEvent.LOAD_CHECK.register(ClientHandler::objLoad);
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(ClientHandler::onClientLevelLoad);
         ClientEvent.CHANGE_HAND_HEIGHT.register(ClientHandler::changeHandHeight);
         ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
@@ -120,7 +120,7 @@ public class ClientHandler {
             int x = screen.width / 2 - 155 + i % 2 * 160;
             int y = screen.height / 6 - 12 + 22 * (i >> 1);
             screenAccess.addRenderableWidget(new MusicVolumeSlider(x, y, 150));
-            screenAccess.addRenderableWidget(new IconButton(x + 150 + 4, y, 20, 20, new TranslatableComponent("imp.button.config"), new TextureSpecifyLocation(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
+            screenAccess.addRenderableWidget(new IconButton(x + 150 + 4, y, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.create(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
         }
     }
 

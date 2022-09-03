@@ -2,7 +2,7 @@ package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +39,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
             float itx = hideText ? (width - iconWidth) / 2f : 2;
             float ity = (float) (height - iconHeight) / 2f;
             fx += itx + iconWidth;
-            OERenderUtil.drawTexture(iconTexture, poseStack, x + itx, y + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
+            OERenderUtils.drawTexture(iconTexture, poseStack, x + itx, y + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
         }
 
         if (!hideText)

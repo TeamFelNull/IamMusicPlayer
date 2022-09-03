@@ -1,9 +1,9 @@
 package dev.felnull.imp.item;
 
 import dev.felnull.imp.block.BoomboxBlock;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
-import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.handler.CommonHandler;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
@@ -265,8 +265,8 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     }
 
     @Override
-    public CompoundTag onInstruction(ItemStack itemStack, ServerPlayer player, String name, int num, CompoundTag data) {
-        return BoomboxItem.getData(itemStack).onInstruction(player, name, num, data);
+    public CompoundTag onInstruction(ItemStack itemStack, ServerPlayer player, String name, CompoundTag data) {
+        return BoomboxItem.getData(itemStack).onInstruction(player, name, data);
     }
 
     public static ItemStack createByBE(BoomboxBlockEntity blockEntity, boolean stopMusic) {

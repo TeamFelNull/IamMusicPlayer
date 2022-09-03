@@ -1,8 +1,8 @@
 package dev.felnull.imp.blockentity;
 
 import dev.felnull.imp.block.BoomboxBlock;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.server.music.ringer.IBoomboxRinger;
@@ -115,11 +115,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public boolean isRetainEmpty() {
-        return false;
-    }
-
-    @Override
     protected Component getDefaultName() {
         return IMPBlocks.BOOMBOX.get().getName();
     }
@@ -146,20 +141,24 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
         if (!level.isClientSide()) {
             blockEntity.ringerTick();
             blockEntity.setRaisedHandleState(blockEntity.boomboxData.getHandleRaisedProgress() >= blockEntity.boomboxData.getHandleRaisedMax());
-            blockEntity.sync();
+
+
             blockEntity.setChanged();
         }
+
+        blockEntity.baseAfterTick();
     }
 
+
     @Override
-    public CompoundTag getSyncData(ServerPlayer player, CompoundTag tag) {
+    public void saveToUpdateTag(CompoundTag tag) {
+        super.saveToUpdateTag(tag);
         tag.put("BoomBoxData", this.boomboxData.save(new CompoundTag(), false, true));
-        return super.getSyncData(player, tag);
     }
 
     @Override
-    public void onSync(CompoundTag tag) {
-        super.onSync(tag);
+    public void loadToUpdateTag(CompoundTag tag) {
+        super.loadToUpdateTag(tag);
         this.boomboxData.load(tag.getCompound("BoomBoxData"), false, true);
     }
 
@@ -183,11 +182,11 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public CompoundTag onInstruction(ServerPlayer player, String name, int num, CompoundTag data) {
-        var ret = boomboxData.onInstruction(player, name, num, data);
+    public CompoundTag onInstruction(ServerPlayer player, String name, CompoundTag data) {
+        var ret = boomboxData.onInstruction(player, name, data);
         if (ret != null)
             return ret;
-        return super.onInstruction(player, name, num, data);
+        return super.onInstruction(player, name, data);
     }
 
     public ItemStack getCassetteTape() {

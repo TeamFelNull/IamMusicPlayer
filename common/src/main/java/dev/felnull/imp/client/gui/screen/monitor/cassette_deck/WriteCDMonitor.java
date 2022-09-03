@@ -12,10 +12,10 @@ import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.util.IMPItemUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -38,11 +38,11 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.backButton = this.addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 44, 14, 11, new TranslatableComponent("gui.back"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.MENU)));
+        this.backButton = this.addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 44, 14, 11, Component.translatable("gui.back"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.MENU)));
         this.backButton.setHideText(true);
         this.backButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8);
 
-        this.writeButton = this.addRenderWidget(new SmartButton(getStartX() + 164, getStartY() + 44, 35, 11, new TranslatableComponent("imp.button.writeStart"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.WRITE_EXECUTION)));
+        this.writeButton = this.addRenderWidget(new SmartButton(getStartX() + 164, getStartY() + 44, 35, 11, Component.translatable("imp.button.writeStart"), n -> insMonitor(CassetteDeckBlockEntity.MonitorType.WRITE_EXECUTION)));
         this.writeButton.setHideText(true);
         this.writeButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 131, 20, 8);
         this.writeButton.active = canWriteStart();
@@ -57,41 +57,41 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        OERenderUtil.renderTextureSprite(WRITE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        OERenderUtils.renderTextureSprite(WRITE_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 44, OERenderUtil.MIN_BREADTH * 2f, 14, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8, 256, 256);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 164, 44, OERenderUtil.MIN_BREADTH * 2f, 35, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 131, 20, 8, 256, 256, !canWriteStart(blockEntity));
+        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 44, OERenderUtils.MIN_BREADTH * 2f, 14, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 123, 8, 8, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 164, 44, OERenderUtils.MIN_BREADTH * 2f, 35, 11, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 11, 131, 20, 8, 256, 256, !canWriteStart(blockEntity));
 
         if (getMusic(blockEntity) != null) {
             float sx = 3;
             var img = getMusic(blockEntity).getImage();
             if (!img.isEmpty()) {
                 sx += 11 - 2 + 1;
-                renderPlayListImage(poseStack, multiBufferSource, img, 16, 44, OERenderUtil.MIN_BREADTH * 2f, 11, i, j, onPxW, onPxH, monitorHeight);
+                renderPlayListImage(poseStack, multiBufferSource, img, 16, 44, OERenderUtils.MIN_BREADTH * 2f, 11, i, j, onPxW, onPxH, monitorHeight);
             }
-            renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(OERenderUtil.getWidthString(getMusic(blockEntity).getName(), 147 - sx - 2, "...")), 16 + sx, 44f + (11f - 6.5f) / 2f, OERenderUtil.MIN_BREADTH * 2f, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(OEClientUtils.getWidthOmitText(getMusic(blockEntity).getName(), 147 - sx - 2, "...")), 16 + sx, 44f + (11f - 6.5f) / 2f, OERenderUtils.MIN_BREADTH * 2f, onPxW, onPxH, monitorHeight, i);
         }
 
-        renderFixedListSprite(poseStack, multiBufferSource, 1, 1, OERenderUtil.MIN_BREADTH * 2f, 68, 42, i, j, onPxW, onPxH, monitorHeight, getSyncManager().getMyPlayList(), 6, (poseStack1, multiBufferSource1, x, y, z, w, h, i1, j1, entry) -> {
-            renderSmartButtonBoxSprite(poseStack1, multiBufferSource1, x, y, z + OERenderUtil.MIN_BREADTH, w, h, i1, j1, onPxW, onPxH, monitorHeight, entry.getUuid().equals(getSelectPlaylist(blockEntity)));
+        renderFixedListSprite(poseStack, multiBufferSource, 1, 1, OERenderUtils.MIN_BREADTH * 2f, 68, 42, i, j, onPxW, onPxH, monitorHeight, getSyncManager().getMyPlayList(), 6, (poseStack1, multiBufferSource1, x, y, z, w, h, i1, j1, entry) -> {
+            renderSmartButtonBoxSprite(poseStack1, multiBufferSource1, x, y, z + OERenderUtils.MIN_BREADTH, w, h, i1, j1, onPxW, onPxH, monitorHeight, entry.getUuid().equals(getSelectPlaylist(blockEntity)));
             float sx = 1;
             var img = entry.getImage();
             if (!img.isEmpty()) {
                 sx += h - 2 + 1;
-                renderPlayListImage(poseStack1, multiBufferSource1, img, x + 1f, y + 1f, z + OERenderUtil.MIN_BREADTH * 3, h - 2, i1, j1, onPxW, onPxH, monitorHeight);
+                renderPlayListImage(poseStack1, multiBufferSource1, img, x + 1f, y + 1f, z + OERenderUtils.MIN_BREADTH * 3, h - 2, i1, j1, onPxW, onPxH, monitorHeight);
             }
-            renderSmartTextSprite(poseStack1, multiBufferSource1, new TextComponent(OERenderUtil.getWidthString(entry.getName(), w - sx - 2 + 20, "...")), x + sx, y + 0.25f, z + OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0.9f, i1);
+            renderSmartTextSprite(poseStack1, multiBufferSource1, Component.literal(OEClientUtils.getWidthOmitText(entry.getName(), w - sx - 2 + 20, "...")), x + sx, y + 0.25f, z + OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0.9f, i1);
         });
 
-        renderFixedListSprite(poseStack, multiBufferSource, 70, 1, OERenderUtil.MIN_BREADTH * 2f, 129, 42, i, j, onPxW, onPxH, monitorHeight, getSyncManager().getMusics(getSelectPlaylist(blockEntity)), 6, (poseStack12, multiBufferSource12, x, y, z, w, h, i12, j12, entry) -> {
-            renderSmartButtonBoxSprite(poseStack12, multiBufferSource12, x, y, z + OERenderUtil.MIN_BREADTH, w, h, i12, j12, onPxW, onPxH, monitorHeight, getMusic(blockEntity) != null && entry.getUuid().equals(getMusic(blockEntity).getUuid()));
+        renderFixedListSprite(poseStack, multiBufferSource, 70, 1, OERenderUtils.MIN_BREADTH * 2f, 129, 42, i, j, onPxW, onPxH, monitorHeight, getSyncManager().getMusics(getSelectPlaylist(blockEntity)), 6, (poseStack12, multiBufferSource12, x, y, z, w, h, i12, j12, entry) -> {
+            renderSmartButtonBoxSprite(poseStack12, multiBufferSource12, x, y, z + OERenderUtils.MIN_BREADTH, w, h, i12, j12, onPxW, onPxH, monitorHeight, getMusic(blockEntity) != null && entry.getUuid().equals(getMusic(blockEntity).getUuid()));
             float sx = 1;
             var img = entry.getImage();
             if (!img.isEmpty()) {
                 sx += h - 2 + 1;
-                renderPlayListImage(poseStack12, multiBufferSource12, img, x + 1f, y + 1f, z + OERenderUtil.MIN_BREADTH * 3, h - 2, i12, j12, onPxW, onPxH, monitorHeight);
+                renderPlayListImage(poseStack12, multiBufferSource12, img, x + 1f, y + 1f, z + OERenderUtils.MIN_BREADTH * 3, h - 2, i12, j12, onPxW, onPxH, monitorHeight);
             }
-            renderSmartTextSprite(poseStack12, multiBufferSource12, new TextComponent(OERenderUtil.getWidthString(entry.getName(), w - sx - 2 + 20, "...")), x + sx, y + 0.25f, z + OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0.9f, i12);
+            renderSmartTextSprite(poseStack12, multiBufferSource12, Component.literal(OEClientUtils.getWidthOmitText(entry.getName(), w - sx - 2 + 20, "...")), x + sx, y + 0.25f, z + OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, 0.9f, i12);
         });
 
     }
@@ -178,7 +178,7 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(WRITE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(WRITE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (getMusic() != null) {
             float sx = 3;
             var img = getMusic().getImage();
@@ -186,7 +186,7 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
                 sx += 11 - 2 + 1;
                 PlayImageRenderer.getInstance().draw(img, poseStack, getStartX() + 16, getStartY() + 44, 11);
             }
-            drawSmartText(poseStack, new TextComponent(OERenderUtil.getWidthString(getMusic().getName(), 147 - sx - 2, "...")), getStartX() + 16 + sx, getStartY() + 44f + (11f - 6.5f) / 2f);
+            drawSmartText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(getMusic().getName(), 147 - sx - 2, "...")), getStartX() + 16 + sx, getStartY() + 44f + (11f - 6.5f) / 2f);
         }
     }
 

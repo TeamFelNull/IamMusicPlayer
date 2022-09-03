@@ -1,11 +1,11 @@
 package dev.felnull.imp.music.resource;
 
-import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Objects;
 
-public class MusicSource implements ITAGSerializable {
+public class MusicSource implements TagSerializable {
     public static final MusicSource EMPTY = new MusicSource("", "", 0);
     private String loaderType;
     private String identifier;
@@ -22,11 +22,10 @@ public class MusicSource implements ITAGSerializable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.putString("LoaderType", loaderType);
         tag.putString("Identifier", identifier);
         tag.putLong("Duration", duration);
-        return tag;
     }
 
     @Override

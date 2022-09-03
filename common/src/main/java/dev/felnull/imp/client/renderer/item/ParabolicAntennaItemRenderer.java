@@ -3,8 +3,8 @@ package dev.felnull.imp.client.renderer.item;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
-import dev.felnull.otyacraftengine.client.util.OEModelUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OEModelUtils;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -25,21 +25,21 @@ public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
         } else if (name.equalsIgnoreCase("katyou")) {
             antenaName = IMPModels.KATYOU_ANTENNA;
         }
-        var plM = OEModelUtil.getModel(antenaName);
+        var plM = OEModelUtils.getModel(antenaName);
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         poseStack.pushPose();
         if (transformType == ItemTransforms.TransformType.HEAD) {
             long time = System.currentTimeMillis();
-            OERenderUtil.poseRotateY(poseStack, (float) (time % 5000) / 5000f * 360f);
+            OERenderUtils.poseRotateY(poseStack, (float) (time % 5000) / 5000f * 360f);
             poseStack.translate(0, -5, 0);
-            OERenderUtil.poseRotateX(poseStack, -15f + Math.abs(-1f + ((float) (time % 3000) / 1500)) * 30);
+            OERenderUtils.poseRotateX(poseStack, -15f + Math.abs(-1f + ((float) (time % 3000) / 1500)) * 30);
             poseStack.translate(0, 5, 0);
 
-            OERenderUtil.poseScaleAll(poseStack, 2f);
+            OERenderUtils.poseScaleAll(poseStack, 2f);
             poseStack.translate(0, 1.45f, 0);
         }
-        OERenderUtil.renderModel(poseStack, vc, plM, i, i1);
+        OERenderUtils.renderModel(poseStack, vc, plM, i, i1);
         poseStack.popPose();
     }
 }

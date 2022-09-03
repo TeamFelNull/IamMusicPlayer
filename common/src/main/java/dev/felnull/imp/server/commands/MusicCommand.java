@@ -28,10 +28,10 @@ public class MusicCommand {
 
     private static int ringerInfo(CommandSourceStack src, ServerLevel level) {
         if (level == null) {
-            src.sendSuccess(new TranslatableComponent("commands.imp.ringer.info.all", IamMusicPlayerAPI.getRingerCount(), IamMusicPlayerAPI.getPlayingRingerCount()), false);
+            src.sendSuccess(Component.translatable("commands.imp.ringer.info.all", IamMusicPlayerAPI.getRingerCount(), IamMusicPlayerAPI.getPlayingRingerCount()), false);
         } else {
             var name = level.dimension().location();
-            src.sendSuccess(new TranslatableComponent("commands.imp.ringer.info", IamMusicPlayerAPI.getRingerCount(level), IamMusicPlayerAPI.getPlayingRingerCount(level), name), false);
+            src.sendSuccess(Component.translatable("commands.imp.ringer.info", IamMusicPlayerAPI.getRingerCount(level), IamMusicPlayerAPI.getPlayingRingerCount(level), name), false);
         }
         return 1;
     }
@@ -41,20 +41,20 @@ public class MusicCommand {
 
         if (level == null) {
             if (ringers.isEmpty()) {
-                src.sendFailure(new TranslatableComponent("commands.imp.ringer.list.all.notFound"));
+                src.sendFailure(Component.translatable("commands.imp.ringer.list.all.notFound"));
             } else {
-                src.sendSuccess(new TranslatableComponent("commands.imp.ringer.list.all"), false);
+                src.sendSuccess(Component.translatable("commands.imp.ringer.list.all"), false);
                 for (MusicRingerAccess ringer : ringers) {
-                    src.sendSuccess(new TranslatableComponent("commands.imp.ringer.list.all.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getLevel()), ringer.getLevel().dimension().location()), false);
+                    src.sendSuccess(Component.translatable("commands.imp.ringer.list.all.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getLevel()), ringer.getLevel().dimension().location()), false);
                 }
             }
         } else {
             if (ringers.isEmpty()) {
-                src.sendFailure(new TranslatableComponent("commands.imp.ringer.list.notFound", level.dimension().location()));
+                src.sendFailure(Component.translatable("commands.imp.ringer.list.notFound", level.dimension().location()));
             } else {
-                src.sendSuccess(new TranslatableComponent("commands.imp.ringer.list", level.dimension().location()), false);
+                src.sendSuccess(Component.translatable("commands.imp.ringer.list", level.dimension().location()), false);
                 for (MusicRingerAccess ringer : ringers) {
-                    src.sendSuccess(new TranslatableComponent("commands.imp.ringer.list.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getLevel())), false);
+                    src.sendSuccess(Component.translatable("commands.imp.ringer.list.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getLevel())), false);
                 }
             }
         }
@@ -63,6 +63,6 @@ public class MusicCommand {
     }
 
     private static Component createPosComponent(Vec3 pos, ServerLevel level) {
-        return ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", pos.x, pos.y, pos.z)).withStyle((style) -> style.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + level.dimension().location() + " run tp @s " + pos.x + " " + pos.y + " " + pos.z)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip"))));
+        return ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", pos.x, pos.y, pos.z)).withStyle((style) -> style.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/execute in " + level.dimension().location() + " run tp @s " + pos.x + " " + pos.y + " " + pos.z)).withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip"))));
     }
 }

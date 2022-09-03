@@ -1,12 +1,12 @@
 package dev.felnull.imp.music;
 
-import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
 
-public class MusicPlaybackInfo implements ITAGSerializable {
+public class MusicPlaybackInfo implements TagSerializable {
     public static final MusicPlaybackInfo EMPTY = new MusicPlaybackInfo(new ResourceLocation("empty"), new CompoundTag(), 0, 0);
     private ResourceLocation tracker;
     private CompoundTag trackerTag;
@@ -41,12 +41,11 @@ public class MusicPlaybackInfo implements ITAGSerializable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.putString("TrackerID", tracker.toString());
         tag.put("TrackerTag", trackerTag);
         tag.putFloat("Volume", volume);
         tag.putFloat("Range", range);
-        return tag;
     }
 
     @Override

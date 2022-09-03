@@ -1,9 +1,9 @@
 package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
-import dev.felnull.imp.data.BoomboxData;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.Button;
 
 import java.util.function.BooleanSupplier;
@@ -30,11 +30,11 @@ public class BoomboxButton extends Button {
         int r = isHoveredOrFocused() ? 1 : 0;
         if (type.getState(buttons.get()))
             r += 2;
-        OERenderUtil.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x, y, r * 19, 175, 19, 13);
+        OERenderUtils.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x, y, r * 19, 175, 19, 13);
 
         float zx = ((float) width - 9f) / 2f;
         float zy = ((float) height - 9f) / 2f;
-        OERenderUtil.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x + zx, y + zy, (type.ordinal() - 1) * 9, 188 + (downShift.getAsBoolean() ? 9 : 0), 9, 9);
+        OERenderUtils.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x + zx, y + zy, (type.ordinal() - 1) * 9, 188 + (downShift.getAsBoolean() ? 9 : 0), 9, 9);
     }
 
     public BoomboxData.ButtonType getType() {

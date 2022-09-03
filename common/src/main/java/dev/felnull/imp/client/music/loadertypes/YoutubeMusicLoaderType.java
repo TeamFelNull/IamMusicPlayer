@@ -7,14 +7,13 @@ import dev.felnull.imp.client.gui.screen.monitor.music_manager.SearchMusicMMMoni
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class YoutubeMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
-    private static final Component YT_ENTER_TEXT = new TranslatableComponent("imp.text.enterText.youtube");
+    private static final Component YT_ENTER_TEXT = Component.translatable("imp.text.enterText.youtube");
 
     public YoutubeMusicLoaderType() {
         super(IMPMusicLoaderTypes.YOUTUBE);

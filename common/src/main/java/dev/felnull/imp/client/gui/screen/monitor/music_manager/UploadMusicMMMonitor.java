@@ -12,13 +12,11 @@ import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.util.FileChooserUtil;
 import dev.felnull.imp.util.FlagThread;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
-import dev.felnull.otyacraftengine.util.OEURLUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import dev.felnull.otyacraftengine.util.OEUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,15 +34,15 @@ import java.util.List;
 public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private static final Gson GSON = new Gson();
     private static final int relayServerVersion = 1;
-    private static final Component BACK_TEXT = new TranslatableComponent("gui.back");
-    private static final Component RELAY_SERVER_TEXT = new TranslatableComponent("imp.text.relayServer");
-    private static final Component CONNECTING_CHECKING = new TranslatableComponent("imp.text.relayServer.connectingChecking");
-    private static final Component DROP_INFO_TEXT = new TranslatableComponent("imp.text.uploadDropInfo");
-    private static final Component OPEN_FILE_TEXT = new TranslatableComponent("imp.button.openFile");
-    private static final Component UPLOADING_TEXT = new TranslatableComponent("imp.text.relayServer.uploading");
-    private static final Component WARNING_TEXT = new TranslatableComponent("imp.text.relayServer.warning");
-    private static final Component RESPONSIBILITY_TEXT = new TranslatableComponent("imp.text.relayServer.responsibility");
-    private static final Component HOW_TEXT = new TranslatableComponent("imp.text.relayServer.how");
+    private static final Component BACK_TEXT = Component.translatable("gui.back");
+    private static final Component RELAY_SERVER_TEXT = Component.translatable("imp.text.relayServer");
+    private static final Component CONNECTING_CHECKING = Component.translatable("imp.text.relayServer.connectingChecking");
+    private static final Component DROP_INFO_TEXT = Component.translatable("imp.text.uploadDropInfo");
+    private static final Component OPEN_FILE_TEXT = Component.translatable("imp.button.openFile");
+    private static final Component UPLOADING_TEXT = Component.translatable("imp.text.relayServer.uploading");
+    private static final Component WARNING_TEXT = Component.translatable("imp.text.relayServer.warning");
+    private static final Component RESPONSIBILITY_TEXT = Component.translatable("imp.text.relayServer.responsibility");
+    private static final Component HOW_TEXT = Component.translatable("imp.text.relayServer.how");
     private SmartButton openFileButton;
     private Component RELAY_SERVER_NAME_TEXT;
     private Component UPLOAD_INFO_TEXT;
@@ -103,23 +101,23 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     private void uploadFile(File[] files) {
         if (!canUpload() || files == null || files.length == 0) return;
         if (files.length != 1) {
-            UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.tooManyFiles");
+            UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.tooManyFiles");
             return;
         }
         UPLOAD_ERROR_TEXT = null;
         File file = files[0];
         if (file.isDirectory()) {
-            UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.directory");
+            UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.directory");
             return;
         }
         if (file.exists()) {
             if (file.length() > maxFileSize) {
-                UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.sizeOver");
+                UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.sizeOver");
                 return;
             }
             startUploadThread(file);
         } else {
-            UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.fileNotFound");
+            UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.fileNotFound");
         }
     }
 
@@ -172,11 +170,11 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, ((float) width - 270f) / 2f, 180, OERenderUtil.MIN_BREADTH * 2, 270, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true, false);
+        renderSmartButtonSprite(poseStack, multiBufferSource, ((float) width - 270f) / 2f, 180, OERenderUtils.MIN_BREADTH * 2, 270, 15, i, j, onPxW, onPxH, monitorHeight, BACK_TEXT, true, false);
 
         float st = ((float) width - 270f) / 2f;
-        renderSmartTextSprite(poseStack, multiBufferSource, RELAY_SERVER_TEXT, st, 13, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
-        // renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TextComponent(getRelayServerURL()), st, 23, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0xFF008000, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, RELAY_SERVER_TEXT, st, 13, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        // renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, Component.literal(getRelayServerURL()), st, 23, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, 0xFF008000, i);
 
     }
 
@@ -228,11 +226,11 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 var time = res.getAsJsonObject("Time");
                 long rt = time.get("ResponseSpeed").getAsLong();
                 connected = true;
-                SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.response", (System.currentTimeMillis() - st), rt);
+                SERVER_STATUS_TEXT = Component.translatable("imp.text.relayServer.response", (System.currentTimeMillis() - st), rt);
                 maxFileSize = 1024 * 1024 * 8;
-                UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
+                UPLOAD_INFO_TEXT = Component.translatable("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
             } catch (Exception ex) {
-                SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.error", ex.getMessage()).withStyle(ChatFormatting.RED);
+                SERVER_STATUS_TEXT = Component.translatable("imp.text.relayServer.error", ex.getMessage()).withStyle(ChatFormatting.RED);
                 ex.printStackTrace();
             }
         }
@@ -281,7 +279,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 if ("Ok".equalsIgnoreCase(status)) {
                     var name = "No Name";
                     if (lastJo.has("Name")) name = lastJo.get("Name").getAsString();
-                    RELAY_SERVER_NAME_TEXT = new TextComponent(name);
+                    RELAY_SERVER_NAME_TEXT = Component.literal(name);
 
                     if (isStopped()) return;
                     JsonObject time = null;
@@ -289,21 +287,22 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                     long rt = 0;
                     if (time != null && time.has("ResponseSpeed")) rt = time.get("ResponseSpeed").getAsLong();
                     if (time != null && time.has("ResponseSpeed"))
-                        SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.response", eqTime, rt);
+                        SERVER_STATUS_TEXT = Component.translatable("imp.text.relayServer.response", eqTime, rt);
                     maxFileSize = lastJo.get("MaxFileSize").getAsLong();
-                    UPLOAD_INFO_TEXT = new TranslatableComponent("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
+                    UPLOAD_INFO_TEXT = Component.translatable("imp.text.relayServer.uploadInfo", FNStringUtil.getByteDisplay(maxFileSize, 1024));
                     String v = null;
                     if (isStopped()) return;
                     if (lastJo.has("Version")) v = lastJo.get("Version").getAsString();
-                    if (v != null) RELAY_SERVER_NAME_TEXT = ((TextComponent) RELAY_SERVER_NAME_TEXT).append(" V" + v);
+                    if (v != null)
+                        RELAY_SERVER_NAME_TEXT = Component.literal(RELAY_SERVER_NAME_TEXT.getString() + " V" + v);// ((LiteralContents) RELAY_SERVER_NAME_TEXT.getContents()).append(" V" + v);
                     uploadUrl = url;
                     connected = true;
                 } else {
-                    SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.error", status).withStyle(ChatFormatting.RED);
+                    SERVER_STATUS_TEXT = Component.translatable("imp.text.relayServer.error", status).withStyle(ChatFormatting.RED);
                     error = true;
                 }
             } catch (Exception ex) {
-                SERVER_STATUS_TEXT = new TranslatableComponent("imp.text.relayServer.error", ex.getMessage()).withStyle(ChatFormatting.RED);
+                SERVER_STATUS_TEXT = Component.translatable("imp.text.relayServer.error", ex.getMessage()).withStyle(ChatFormatting.RED);
                 error = true;
             }
         }
@@ -313,7 +312,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             long st = System.currentTimeMillis();
             JsonObject jo = null;
             try {
-                jo = OEURLUtil.getJson(new URL(url));
+                jo = OEUtils.getURLJson(new URL(url));
             } catch (IOException ignored) {
             }
            /* if (jo == null) {
@@ -349,7 +348,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 var ujo = uploadToFile(Files.readAllBytes(file.toPath()));
                 if (isStopped()) return;
                 if (ujo == null) {
-                    UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.error", "json is null");
+                    UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.error", "json is null");
                     return;
                 }
 
@@ -363,13 +362,13 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                         msg = ujo.get("Message").getAsString();
 
                     if (isStopped()) return;
-                    UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.failure", error, msg);
+                    UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.failure", error, msg);
                     return;
                 }
 
                 var url = ujo.get("url").getAsString();
                 if (url == null || url.isEmpty()) {
-                    UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.noURL");
+                    UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.noURL");
                 } else {
                     UPLOAD_ERROR_TEXT = null;
                     final byte[] img = getMusicImage(file);
@@ -382,7 +381,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
                 }
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                UPLOAD_ERROR_TEXT = new TranslatableComponent("imp.text.fileUpload.error", e.getLocalizedMessage());
+                UPLOAD_ERROR_TEXT = Component.translatable("imp.text.fileUpload.error", e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }

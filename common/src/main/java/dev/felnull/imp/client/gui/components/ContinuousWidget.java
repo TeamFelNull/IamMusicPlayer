@@ -2,17 +2,17 @@ package dev.felnull.imp.client.gui.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.utils.value.Value;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.imp.data.BoomboxData;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class ContinuousWidget extends AbstractWidget implements IIMPSmartRender {
     private final Value<BoomboxData.ContinuousType> continuousTypeValue;
 
     public ContinuousWidget(int x, int y, Value<BoomboxData.ContinuousType> continuousTypeValue) {
-        super(x, y, 40, 10, new TranslatableComponent("imp.widget.continuousControl"));
+        super(x, y, 40, 10, Component.translatable("imp.widget.continuousControl"));
         this.continuousTypeValue = continuousTypeValue;
     }
 

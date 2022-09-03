@@ -4,7 +4,8 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
 import dev.felnull.imp.blockentity.IMPBlockEntities;
 import dev.felnull.imp.item.BoomboxItem;
-import dev.felnull.otyacraftengine.util.OEVoxelShapeUtil;
+import dev.felnull.otyacraftengine.shape.bundle.DirectionVoxelShapesBundle;
+import dev.felnull.otyacraftengine.util.OEVoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -17,9 +18,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FurnaceBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -29,17 +32,18 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class BoomboxBlock extends IMPBaseEntityBlock {
-    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox"), BoomboxBlock.class));
-    private static final OEVoxelShapeUtil.DirectionVoxelShapes SHAPE_NO_RAISED = OEVoxelShapeUtil.makeAllDirection(OEVoxelShapeUtil.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_no_raised"), BoomboxBlock.class));
+    private static final DirectionVoxelShapesBundle SHAPE = OEVoxelShapeUtils.makeAllDirection(OEVoxelShapeUtils.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox"), BoomboxBlock.class));
+    private static final DirectionVoxelShapesBundle SHAPE_NO_RAISED = OEVoxelShapeUtils.makeAllDirection(OEVoxelShapeUtils.getShapeFromResource(new ResourceLocation(IamMusicPlayer.MODID, "boombox_no_raised"), BoomboxBlock.class));
     public static final BooleanProperty RAISED = IMPBlockStateProperties.RAISE;
 
-    protected BoomboxBlock(Properties properties) {
+    protected BoomboxBlock(BlockBehaviour.Properties properties) {
         super(properties);
         this.registerDefaultState(this.defaultBlockState().setValue(RAISED, true));
     }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+
         if (player.isCrouching()) {
             var be = level.getBlockEntity(blockPos);
             if (be instanceof BoomboxBlockEntity boombox) {

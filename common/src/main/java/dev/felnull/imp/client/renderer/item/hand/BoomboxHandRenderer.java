@@ -2,7 +2,7 @@ package dev.felnull.imp.client.renderer.item.hand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.item.BoomboxItem;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -27,20 +27,20 @@ public class BoomboxHandRenderer {
         float transPr = BoomboxItem.getTransferProgress(stack, partialTicks);
 
         poseStack.pushPose();
-        OERenderUtil.posePlayerArm(poseStack, arm, swingProgress, equipProgress);
+        OERenderUtils.posePlayerArm(poseStack, arm, swingProgress, equipProgress);
         poseStack.translate(lerpTriple(transPr, -0.85f, -1.5f, 0f) * uns, lerpTriple(transPr, -0.1f, -0.3f, 0.75f), lerpTriple(transPr, 0.32f, 0.6f, 0.5f));
-        OERenderUtil.poseRotateAll(poseStack, lerpTriple(transPr, -50f, -50f, -45), lerpTriple(transPr, 0f, 0f, -20) * uns, lerpTriple(transPr, -35f, -35f, 40) * uns);
+        OERenderUtils.poseRotateAll(poseStack, lerpTriple(transPr, -50f, -50f, -45), lerpTriple(transPr, 0f, 0f, -20) * uns, lerpTriple(transPr, -35f, -35f, 40) * uns);
 
-        OERenderUtil.renderPlayerArm(poseStack, multiBufferSource, arm, packedLight);
+        OERenderUtils.renderPlayerArm(poseStack, multiBufferSource, arm, packedLight);
         poseStack.popPose();
 
         poseStack.pushPose();
-        OERenderUtil.poseHandItem(poseStack, arm, swingProgress, equipProgress);
+        OERenderUtils.poseHandItem(poseStack, arm, swingProgress, equipProgress);
 
-        OERenderUtil.poseTrans16(poseStack, Mth.lerp(transPr, 0.75f, -0.75) * uns, Mth.lerp(transPr, 0.75f, 12.25), Mth.lerp(transPr, 0.75f, 7.5));
-        OERenderUtil.poseRotateAll(poseStack, Mth.lerp(transPr, 8.42f, 0), Mth.lerp(transPr, 36.24f, 75) * uns, Mth.lerp(transPr, 2.72f, 0) * uns);
+        OERenderUtils.poseTrans16(poseStack, Mth.lerp(transPr, 0.75f, -0.75) * uns, Mth.lerp(transPr, 0.75f, 12.25), Mth.lerp(transPr, 0.75f, 7.5));
+        OERenderUtils.poseRotateAll(poseStack, Mth.lerp(transPr, 8.42f, 0), Mth.lerp(transPr, 36.24f, 75) * uns, Mth.lerp(transPr, 2.72f, 0) * uns);
 
-        OERenderUtil.renderHandItem(poseStack, multiBufferSource, arm, stack, packedLight);
+        OERenderUtils.renderHandItem(poseStack, multiBufferSource, arm, stack, packedLight);
         poseStack.popPose();
     }
 
@@ -62,11 +62,11 @@ public class BoomboxHandRenderer {
             float rv = arm == HumanoidArm.RIGHT ? 1f : -1f;
             poseStack.pushPose();
             layer.getParentModel().translateToHand(arm, poseStack);
-            OERenderUtil.poseRotateZ(poseStack, -15f * rv);
-            OERenderUtil.poseRotateY(poseStack, 180f);
+            OERenderUtils.poseRotateZ(poseStack, -15f * rv);
+            OERenderUtils.poseRotateY(poseStack, 180f);
             poseStack.translate(0, 0.2f, 1.2f);
             poseStack.translate(rv / 16.0f, 0.125f, -0.625f);
-            Minecraft.getInstance().getItemInHandRenderer().renderItem(livingEntity, itemStack, transformType, bl, poseStack, multiBufferSource, i);
+            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(livingEntity, itemStack, transformType, bl, poseStack, multiBufferSource, i);
             poseStack.popPose();
         }
     }

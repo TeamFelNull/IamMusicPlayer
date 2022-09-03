@@ -12,11 +12,9 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -25,10 +23,10 @@ import java.util.List;
 
 public class AddPlayListMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation ADD_PLAY_LIST_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/add_play_list.png");
-    private static final Component CREATE_PLAYLIST_TEXT = new TranslatableComponent("imp.button.createPlaylist");
-    private static final Component ONLINE_PLAYLIST_TEXT = new TranslatableComponent("imp.button.addOnlinePlaylist");
+    private static final Component CREATE_PLAYLIST_TEXT = Component.translatable("imp.button.createPlaylist");
+    private static final Component ONLINE_PLAYLIST_TEXT = Component.translatable("imp.button.addOnlinePlaylist");
     private final List<MusicPlayList> musicPlayLists = new ArrayList<>();
-    private final Component PUBLIC_TEXT = new TranslatableComponent("imp.text.public");
+    private final Component PUBLIC_TEXT = Component.translatable("imp.text.public");
     private MusicSyncManager.PlayListInfo lastPlayListInfo;
     private Component INFO_TEXT;
     private List<MusicPlayList> musicPlayListsCash;
@@ -63,7 +61,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
     @Override
     public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
         super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtil.drawTexture(ADD_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(ADD_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (INFO_TEXT != null)
             drawSmartText(poseStack, INFO_TEXT, getStartX() + width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, getStartY() + 11);
         drawSmartText(poseStack, PUBLIC_TEXT, getStartX() + 3, getStartY() + 11);
@@ -74,46 +72,50 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        OERenderUtil.renderTextureSprite(ADD_PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtil.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
+        OERenderUtils.renderTextureSprite(ADD_PLAY_LIST_TEXTURE, poseStack, multiBufferSource, 0, 0, OERenderUtils.MIN_BREADTH * 2, 0, 0, 0, monitorWidth, monitorHeight, 0, 0, width, height, width, height, i, j);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtil.MIN_BREADTH * 2, 90, 9, i, j, onPxW, onPxH, monitorHeight, CREATE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 78, 14, 5, 5, 256, 256);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 91, 189, OERenderUtil.MIN_BREADTH * 2, 122, 9, i, j, onPxW, onPxH, monitorHeight, ONLINE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 83, 14, 5, 5, 256, 256, true);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 1, 189, OERenderUtils.MIN_BREADTH * 2, 90, 9, i, j, onPxW, onPxH, monitorHeight, CREATE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 78, 14, 5, 5, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 91, 189, OERenderUtils.MIN_BREADTH * 2, 122, 9, i, j, onPxW, onPxH, monitorHeight, ONLINE_PLAYLIST_TEXT, WIDGETS_TEXTURE, 83, 14, 5, 5, 256, 256, true);
 
-        renderSmartButtonSprite(poseStack, multiBufferSource, 213, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
-        renderSmartButtonSprite(poseStack, multiBufferSource, 222, 189, OERenderUtil.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 213, 189, OERenderUtils.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 73, 0, 7, 7, 256, 256);
+        renderSmartButtonSprite(poseStack, multiBufferSource, 222, 189, OERenderUtils.MIN_BREADTH * 2, 9, 9, i, j, onPxW, onPxH, monitorHeight, WIDGETS_TEXTURE, 80, 7, 7, 7, 256, 256);
 
         var pls = getSyncManager().getCanJoinPlayList();
         int plsc = 0;
         if (pls != null) {
             plsc = pls.size();
             for (int k = 0; k < Math.min(6, pls.size()); k++) {
-                renderSmartButtonBoxSprite(poseStack, multiBufferSource, 1, 20 + (k * 28), OERenderUtil.MIN_BREADTH * 2, 359, 28, i, j, onPxW, onPxH, monitorHeight);
+                renderSmartButtonBoxSprite(poseStack, multiBufferSource, 1, 20 + (k * 28), OERenderUtils.MIN_BREADTH * 2, 359, 28, i, j, onPxW, onPxH, monitorHeight);
                 var playList = pls.get(k);
                 float sx = 1;
                 if (!playList.getImage().isEmpty()) {
                     sx += 28 + 2;
-                    PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 28) + 2 + 26) * onPxH, OERenderUtil.MIN_BREADTH * 4, 26 * onPxH, i, j);
+                    PlayImageRenderer.getInstance().renderSprite(playList.getImage(), poseStack, multiBufferSource, 3 * onPxW, monitorHeight - (20 + (k * 28) + 2 + 26) * onPxH, OERenderUtils.MIN_BREADTH * 4, 26 * onPxH, i, j);
                 }
 
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getName()), sx + 3, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(playList.getName()), sx + 3, 20 + (k * 28) + 5, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-                OERenderUtil.renderPlayerFaceSprite(poseStack, multiBufferSource, playList.getAuthority().getOwnerName(), (sx + 101) * onPxW, monitorHeight - (20 + (k * 28) + 2 + 9) * onPxH, OERenderUtil.MIN_BREADTH * 4, 0, 0, 0, onPxH * 9, i, j);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TextComponent(playList.getAuthority().getOwnerName()), sx + 114, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.musicCount", playList.getMusicList().size()), sx + 101, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-                renderSmartTextSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                poseStack.pushPose();
+                poseStack.translate((sx + 101) * onPxW, monitorHeight - (20 + (k * 28) + 2 + 9) * onPxH, OERenderUtils.MIN_BREADTH * 4);
+                OERenderUtils.renderPlayerFaceSprite(poseStack, multiBufferSource, playList.getAuthority().getOwnerName(), onPxH * 9, i, j);
+                poseStack.popPose();
+
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(playList.getAuthority().getOwnerName()), sx + 114, 20 + (k * 28) + 5, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.translatable("imp.text.musicCount", playList.getMusicList().size()), sx + 101, 20 + (k * 28) + 18, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.translatable("imp.text.playerCount", playList.getPlayerCount()), sx + 156, 20 + (k * 28) + 18, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
                 if (playList.getAuthority().getAuthorityType(IIMPSmartRender.mc.player.getGameProfile().getId()).isInvitation()) {
-                    renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, new TranslatableComponent("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF, i);
+                    renderSmartTextSpriteColorSprite(poseStack, multiBufferSource, Component.translatable("imp.text.invitation"), sx + 208, 20 + (k * 28) + 5, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0xFF0000FF, i);
                 }
             }
         }
-        renderScrollbarSprite(poseStack, multiBufferSource, 360, 20, OERenderUtil.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 6);
+        renderScrollbarSprite(poseStack, multiBufferSource, 360, 20, OERenderUtils.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 6);
 
         updateInfoText();
         if (INFO_TEXT != null)
-            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
-        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_TEXT, 3, 11, OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, INFO_TEXT, width - IIMPSmartRender.mc.font.width(INFO_TEXT) - 3, 11, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_TEXT, 3, 11, OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
     }
 
     @Override
@@ -142,7 +144,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
         if (pls.getCanJoinPlayListInfo() != lastPlayListInfo) {
             lastPlayListInfo = pls.getCanJoinPlayListInfo();
             if (lastPlayListInfo != null) {
-                INFO_TEXT = new TranslatableComponent("imp.text.addPlaylistInfo", lastPlayListInfo.playListCount(), lastPlayListInfo.playerCount(), lastPlayListInfo.musicCount());
+                INFO_TEXT = Component.translatable("imp.text.addPlaylistInfo", lastPlayListInfo.playListCount(), lastPlayListInfo.playerCount(), lastPlayListInfo.musicCount());
             } else {
                 INFO_TEXT = null;
             }

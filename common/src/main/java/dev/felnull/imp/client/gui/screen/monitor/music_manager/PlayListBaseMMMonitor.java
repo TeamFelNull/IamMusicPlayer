@@ -3,10 +3,9 @@ package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,12 +14,12 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class PlayListBaseMMMonitor extends ImageNameBaseMMMonitor {
-    protected static final Component PUBLIC_ST_TEXT = new TranslatableComponent("imp.text.publishingSettings");
-    protected static final Component INITIAL_AUTHORITY_TEXT = new TranslatableComponent("imp.text.initialAuthority");
-    protected static final Component PUBLIC_RDO_TEXT = new TranslatableComponent("imp.radioButton.public");
-    protected static final Component PRIVATE_RDO_TEXT = new TranslatableComponent("imp.radioButton.private");
-    protected static final Component READONLY_RDO_TEXT = new TranslatableComponent("imp.radioButton.readonly");
-    protected static final Component MEMBER_RDO_TEXT = new TranslatableComponent("imp.radioButton.member");
+    protected static final Component PUBLIC_ST_TEXT = Component.translatable("imp.text.publishingSettings");
+    protected static final Component INITIAL_AUTHORITY_TEXT = Component.translatable("imp.text.initialAuthority");
+    protected static final Component PUBLIC_RDO_TEXT = Component.translatable("imp.radioButton.public");
+    protected static final Component PRIVATE_RDO_TEXT = Component.translatable("imp.radioButton.private");
+    protected static final Component READONLY_RDO_TEXT = Component.translatable("imp.radioButton.readonly");
+    protected static final Component MEMBER_RDO_TEXT = Component.translatable("imp.radioButton.member");
 
     public PlayListBaseMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -40,10 +39,10 @@ public abstract class PlayListBaseMMMonitor extends ImageNameBaseMMMonitor {
         super.renderAppearance(blockEntity, poseStack, multiBufferSource, i, j, f, monitorWidth, monitorHeight);
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
-        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_ST_TEXT, 5, 131, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
-        renderSmartTextSprite(poseStack, multiBufferSource, INITIAL_AUTHORITY_TEXT, 189, 131, OERenderUtil.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, PUBLIC_ST_TEXT, 5, 131, OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, INITIAL_AUTHORITY_TEXT, 189, 131, OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
 
-        renderSmartTextSprite(poseStack, multiBufferSource, getPlayerListName(), 189, 13, OERenderUtil.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+        renderSmartTextSprite(poseStack, multiBufferSource, getPlayerListName(), 189, 13, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
     }
 
     @Nullable

@@ -1,11 +1,9 @@
 package dev.felnull.imp.item;
 
 import dev.felnull.imp.music.resource.Music;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -45,25 +43,25 @@ public class CassetteTapeItem extends Item implements DyeableLeatherItem {
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
         var m = getMusic(itemStack);
         if (m != null)
-            list.add(new TextComponent(m.getName()).withStyle(ChatFormatting.GRAY));
+            list.add(Component.literal(m.getName()).withStyle(ChatFormatting.GRAY));
     }
 
     @Nullable
     public static Music getMusic(ItemStack stack) {
         if (stack.getTag() != null && stack.getTag().contains("Music"))
-            return OENbtUtil.readSerializable(stack.getTag(), "Music", new Music());
+            return TagSerializable.loadSavedTag(stack.getTag().getCompound("Music"), new Music());
         return null;
     }
 
     @Override
     public Component getName(ItemStack stack) {
         if (getMusic(stack) != null)
-            return new TranslatableComponent(this.getDescriptionId(stack) + ".written");
+            return Component.translatable(this.getDescriptionId(stack) + ".written");
         return super.getName(stack);
     }
 
     public static ItemStack setMusic(ItemStack stack, Music music) {
-        OENbtUtil.writeSerializable(stack.getOrCreateTag(), "Music", music);
+        stack.getOrCreateTag().put("Music", music.createSavedTag());
         return stack;
     }
 

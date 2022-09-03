@@ -1,24 +1,23 @@
 package dev.felnull.imp.client.gui.screen.monitor.boombox;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
-import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.IMPItemUtil;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PlaybackBMonitor extends PlayBackFiniteBaseBMMonitor {
-    private static final Component NO_ANTENNA_TEXT = new TranslatableComponent("imp.text.noAntenna");
-    private static final Component NO_CASSETTE_TAPE_TEXT = new TranslatableComponent("imp.text.noCassetteTape");
-    private static final Component NO_MUSIC_CASSETTE_TAPE_TEXT = new TranslatableComponent("imp.text.noMusicCassetteTape");
+    private static final Component NO_ANTENNA_TEXT = Component.translatable("imp.text.noAntenna");
+    private static final Component NO_CASSETTE_TAPE_TEXT = Component.translatable("imp.text.noCassetteTape");
+    private static final Component NO_MUSIC_CASSETTE_TAPE_TEXT = Component.translatable("imp.text.noMusicCassetteTape");
 
     public PlaybackBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
         super(monitorType, screen);
@@ -108,9 +107,9 @@ public class PlaybackBMonitor extends PlayBackFiniteBaseBMMonitor {
         if (!cassetteTape.isEmpty() && IMPItemUtil.isCassetteTape(cassetteTape)) {
             Music music = CassetteTapeItem.getMusic(cassetteTape);
             if (music == null)
-                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+                renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_MUSIC_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
         } else {
-            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtil.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
+            renderSmartCenterTextSprite(poseStack, multiBufferSource, NO_CASSETTE_TAPE_TEXT, ((float) width / 2f), (((float) height - 10f) / 2f), OERenderUtils.MIN_BREADTH * 2, onPxW, onPxH, monitorHeight, i);
         }
     }
 

@@ -4,12 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.music.resource.IIMPComparable;
-import dev.felnull.otyacraftengine.client.util.OERenderUtil;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,17 +17,17 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
 
     private SortButton(int x, int y, int w, int tx, Component component, OnPress onPress, boolean longed, Screen screen) {
         super(x, y, w, 9, component, onPress, longed ? NO_TOOLTIP : (button, poseStack, px, py) -> screen.renderTooltip(poseStack, getText(button), px, py));
-        // super(x, y, w, 9, tx, 30, 9, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, onPress, longed ? NO_TOOLTIP : (button, poseStack, px, py) -> screen.renderTooltip(poseStack, getText(button), px, py), new TranslatableComponent("imp.button.sort"));
+        // super(x, y, w, 9, tx, 30, 9, MusicManagerMonitor.WIDGETS_TEXTURE, 256, 256, onPress, longed ? NO_TOOLTIP : (button, poseStack, px, py) -> screen.renderTooltip(poseStack, getText(button), px, py), Component.translatable("imp.button.sort"));
         this.longed = longed;
     }
 
     private static Component getText(Button button) {
         if (button instanceof SortTypeButton sortButton) {
-            return new TranslatableComponent("imp.sortType." + sortButton.getSortType().getName());
+            return Component.translatable("imp.sortType." + sortButton.getSortType().getName());
         } else if (button instanceof OrderTypeButton orderButton) {
-            return new TranslatableComponent("imp.orderType." + orderButton.getOrderType().getName());
+            return Component.translatable("imp.orderType." + orderButton.getOrderType().getName());
         }
-        return new TextComponent("none");
+        return Component.literal("none");
     }
 
     @Override
@@ -96,7 +94,7 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
         private SortType type = SortType.NAME;
 
         public SortTypeButton(int x, int y, OnPress onPress, boolean longed, Screen screen) {
-            super(x, y, longed ? 97 : 9, longed ? 61 : 52, new TranslatableComponent("imp.button.sort"), onPress, longed, screen);
+            super(x, y, longed ? 97 : 9, longed ? 61 : 52, Component.translatable("imp.button.sort"), onPress, longed, screen);
         }
 
         @Override
@@ -115,7 +113,7 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
         @Override
         public void renderButton(PoseStack poseStack, int mx, int my, float f) {
             super.renderButton(poseStack, mx, my, f);
-            OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 1, y + 1, 73 + getSortType().ordinal() * 7, 0, 7, 7);
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 1, y + 1, 73 + getSortType().ordinal() * 7, 0, 7, 7);
             if (longed) {
                 drawSmartText(poseStack, SortButton.getText(this), x + 9, y + 1);
             }
@@ -126,7 +124,7 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
         private OrderType type = OrderType.DESCENDING;
 
         public OrderTypeButton(int x, int y, OnPress onPress, boolean longed, Screen screen) {
-            super(x, y, longed ? 88 : 9, longed ? 158 : 52, new TranslatableComponent("imp.button.order"), onPress, longed, screen);
+            super(x, y, longed ? 88 : 9, longed ? 158 : 52, Component.translatable("imp.button.order"), onPress, longed, screen);
         }
 
         @Override
@@ -141,7 +139,7 @@ public abstract class SortButton extends Button implements IIMPSmartRender {
         @Override
         public void renderButton(PoseStack poseStack, int mx, int my, float f) {
             super.renderButton(poseStack, mx, my, f);
-            OERenderUtil.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 1, y + 1, 73 + getOrderType().ordinal() * 7, 7, 7, 7);
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x + 1, y + 1, 73 + getOrderType().ordinal() * 7, 7, 7, 7);
             if (longed) {
                 drawSmartText(poseStack, SortButton.getText(this), x + 9, y + 1);
             }

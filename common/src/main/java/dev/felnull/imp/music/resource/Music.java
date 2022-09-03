@@ -1,13 +1,12 @@
 package dev.felnull.imp.music.resource;
 
-import dev.felnull.otyacraftengine.server.data.ITAGSerializable;
-import dev.felnull.otyacraftengine.util.OENbtUtil;
+import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class Music implements ITAGSerializable, IIMPComparable {
+public class Music implements TagSerializable, IIMPComparable {
     private UUID uuid;
     private String name;
     private String author;
@@ -31,15 +30,14 @@ public class Music implements ITAGSerializable, IIMPComparable {
     }
 
     @Override
-    public CompoundTag save(CompoundTag tag) {
+    public void save(CompoundTag tag) {
         tag.putUUID("UUID", this.uuid);
         tag.putString("Name", this.name);
         tag.putString("Author", this.author);
-        OENbtUtil.writeSerializable(tag, "Source", this.source);
-        OENbtUtil.writeSerializable(tag, "Image", this.image);
+        tag.put("Source", this.source.createSavedTag());
+        tag.put("Image", this.image.createSavedTag());
         tag.putUUID("Owner", owner);
         tag.putLong("CreateDate", createDate);
-        return tag;
     }
 
     @Override
@@ -47,8 +45,8 @@ public class Music implements ITAGSerializable, IIMPComparable {
         this.uuid = tag.getUUID("UUID");
         this.name = tag.getString("Name");
         this.author = tag.getString("Author");
-        this.source = OENbtUtil.readSerializable(tag, "Source", new MusicSource());
-        this.image = OENbtUtil.readSerializable(tag, "Image", new ImageInfo());
+        this.source = TagSerializable.loadSavedTag(tag.getCompound("Source"), new MusicSource());
+        this.image = TagSerializable.loadSavedTag(tag.getCompound("Image"), new ImageInfo());
         this.owner = tag.getUUID("Owner");
         this.createDate = tag.getLong("CreateDate");
     }

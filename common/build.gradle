@@ -1,29 +1,27 @@
-dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "dev.architectury:architectury:${rootProject.architectury_version}"
-
-    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${rootProject.rei_version}"
-    modApi "me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}"
-    modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine:${rootProject.oe_version}"
-
-    implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
-    //   implementation "com.sedmelluq:lavaplayer:${rootProject.lava_version}"
-//    implementation 'com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT'
-    implementation("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
-        exclude group: 'com.sedmelluq', module: 'lavaplayer-natives'
-    }
-
-    implementation 'com.github.sealedtx:java-youtube-downloader:3.0.2'
-    // implementation 'org.jsoup:jsoup:1.14.3'
-    implementation 'com.mpatric:mp3agic:0.9.1'
-}
-
 architectury {
-    common()
+    common(rootProject.enabled_platforms.split(","))
 }
 
 loom {
     accessWidenerPath = file("src/main/resources/iammusicplayer.accesswidener")
+}
+
+dependencies {
+    // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
+    // Do NOT use other classes from fabric loader
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    // Remove the next line if you don't want to depend on the API
+    modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+
+    modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine:${rootProject.oe_version}"
+    modApi "me.shedaniel.cloth:cloth-config:8.0.75"
+
+    implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
+    implementation("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
+        exclude group: 'com.sedmelluq', module: 'lavaplayer-natives'
+    }
+    implementation 'com.github.sealedtx:java-youtube-downloader:3.0.2'
+    implementation 'com.mpatric:mp3agic:0.9.1'
 }
 
 publishing {
@@ -31,37 +29,11 @@ publishing {
         mavenCommon(MavenPublication) {
             artifactId = rootProject.archives_base_name
             from components.java
-            pom {
-                name = 'IamMusicPlayer'
-                description = 'The ikisugi music player mod.'
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'MORIMORI0317'
-                        name = 'MORIMORI0317'
-                    }
-                    developer {
-                        id = 'FelNull'
-                        name = 'TeamFelNull'
-                        email = 'teamfelnull@m.servg.red'
-                    }
-                }
-            }
         }
     }
 
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
-            }
-        }
+        // Add repositories to publish to here.
     }
 }

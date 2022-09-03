@@ -2,21 +2,10 @@ package dev.felnull.imp.server.handler;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.server.commands.MusicCommand;
-import dev.felnull.otyacraftengine.server.event.LootTableEvent;
-import dev.felnull.otyacraftengine.server.level.LootTableAccess;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 
 import java.util.List;
 
@@ -26,15 +15,15 @@ public class ServerHandler {
 
     public static void init() {
         CommandRegistrationEvent.EVENT.register(ServerHandler::registerCommand);
-        LootTableEvent.LOOT_TABLE_LOAD.register(ServerHandler::lootTableLoading);
+        //LootTableEvent.LOOT_TABLE_LOAD.register(ServerHandler::lootTableLoading);
 
     }
 
-    private static void registerCommand(CommandDispatcher<CommandSourceStack> commandDispatcher, Commands.CommandSelection commandSelection) {
-        MusicCommand.register(commandDispatcher);
+    private static void registerCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registry, Commands.CommandSelection selectioncommandSelection) {
+        MusicCommand.register(dispatcher);
     }
 
-    private static void lootTableLoading(ResourceLocation name, LootTables manager, LootTableAccess access) {
+   /* private static void lootTableLoading(ResourceLocation name, LootTables manager, LootTableAccess access) {
         boolean normal = LOOT_NORMAL.contains(name.toString());
         boolean rare = LOOT_RARE.contains(name.toString());
         if (normal || rare) {
@@ -50,5 +39,5 @@ public class ServerHandler {
                     .add(LootItem.lootTableItem(IMPItems.CASSETTE_TAPE.get()).setWeight(rare ? 3 : 6));
             access.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "dj_kit"), djKitPoolB);
         }
-    }
+    }*/
 }
