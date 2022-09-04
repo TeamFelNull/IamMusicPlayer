@@ -23,12 +23,6 @@ public abstract class IMPBaseEntityBlockEntity extends OEBaseContainerBlockEntit
     }
 
     @Override
-    public void setChanged() {
-        super.setChanged();
-        updateMarked();
-    }
-
-    @Override
     public CompoundTag onInstruction(ServerPlayer player, String name, CompoundTag data) {
         if ("power".equals(name)) {
             setPower(data.getBoolean("power"));
