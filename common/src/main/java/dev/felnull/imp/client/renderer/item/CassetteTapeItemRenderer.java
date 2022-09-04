@@ -7,8 +7,8 @@ import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.music.resource.Music;
+import dev.felnull.otyacraftengine.client.model.ModelHolder;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
-import dev.felnull.otyacraftengine.client.util.OEModelUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,7 +31,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
 
         renderBase(poseStack, ivb, multiBufferSource, itemStack, i, i1);
 
-        BakedModel glassModel = OEModelUtils.getModel(IMPModels.CASSETTE_TAPE_GLASS_MODEL);
+        BakedModel glassModel = IMPModels.CASSETTE_TAPE_GLASS_MODEL.get();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 3, 0, 2.25d);
         OERenderUtils.renderModel(poseStack, ivb, glassModel, i, i1);
@@ -41,7 +40,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
         renderTapeRoll(poseStack, par * 10f, 1 - par, ivb, 7.25d, -0.01f, 2.5d, i, i1);
         renderTapeRoll(poseStack, par * 10f, par, ivb, 1.75d, -0.01f, 2.5d, i, i1);
 
-        BakedModel tapeModel = OEModelUtils.getModel(IMPModels.CASSETTE_TAPE_MODEL);
+        BakedModel tapeModel = IMPModels.CASSETTE_TAPE_MODEL.get();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 0.975d, 0.25d, 0.275d);
         OERenderUtils.renderModel(poseStack, ivb, tapeModel, i, i1);
@@ -60,7 +59,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
         if (music == null)
             return;
 
-        BakedModel labelModel = OEModelUtils.getModel(music.getImage().isEmpty() ? IMPModels.CASSETTE_TAPE_LABEL_NO_IMAGE_MODEL : IMPModels.CASSETTE_TAPE_LABEL_MODEL);
+        BakedModel labelModel = music.getImage().isEmpty() ? IMPModels.CASSETTE_TAPE_LABEL_NO_IMAGE_MODEL.get() : IMPModels.CASSETTE_TAPE_LABEL_MODEL.get();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 3d, 1d, 4d);
         OERenderUtils.renderModel(poseStack, ivb, labelModel, i, i1);
@@ -119,19 +118,19 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
     private static void renderBase(PoseStack poseStack, VertexConsumer ivb, MultiBufferSource multiBufferSource, ItemStack stack, int i, int i1) {
         if (stack.getItem() instanceof CassetteTapeItem) {
             CassetteTapeItem.BaseType type = ((CassetteTapeItem) stack.getItem()).getType();
-            ResourceLocation location = IMPModels.CASSETTE_TAPE_BASE_NORMAL_MODEL;
+            ModelHolder holder = IMPModels.CASSETTE_TAPE_BASE_NORMAL_MODEL;
             int color = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? ((CassetteTapeItem) stack.getItem()).getColor(stack) : 0x1a1a1a;
             if (type == CassetteTapeItem.BaseType.GLASS) {
-                location = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? IMPModels.CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL : IMPModels.CASSETTE_TAPE_BASE_GLASS_MODEL;
+                holder = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? IMPModels.CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL : IMPModels.CASSETTE_TAPE_BASE_GLASS_MODEL;
                 ivb = multiBufferSource.getBuffer(Sheets.translucentCullBlockSheet());
             }
-            BakedModel bakedModel = OEModelUtils.getModel(location);
+            BakedModel bakedModel = holder.get();
             OERenderUtils.renderModel(poseStack, ivb, bakedModel, i, i1, color);
         }
     }
 
     private static void renderTapeConecter(PoseStack poseStack, float angle, VertexConsumer ivb, double x, double y, double z, int i, int i1) {
-        BakedModel tapeConecterModel = OEModelUtils.getModel(IMPModels.CASSETTE_TAPE_CONECTER);
+        BakedModel tapeConecterModel = IMPModels.CASSETTE_TAPE_CONECTER.get();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, x, y, z);
         float f = 0.025f / 2f;
@@ -144,9 +143,9 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
 
     private static void renderTapeRoll(PoseStack poseStack, float par, float roll, VertexConsumer ivb, double x, double y, double z, int i, int i1) {
         roll = Mth.clamp(roll, 0, 1);
-        BakedModel tapeCoreModel = OEModelUtils.getModel(IMPModels.CASSETTE_TAPE_CORE_MODEL);
-        BakedModel tapeCoreAroundModel = OEModelUtils.getModel(IMPModels.CASSETTE_TAPE_CORE_AROUND_MODEL);
-        BakedModel tapeRollModel = OEModelUtils.getModel(IMPModels.CASSETTE_TAPE_ROLL_MODEL);
+        BakedModel tapeCoreModel = IMPModels.CASSETTE_TAPE_CORE_MODEL.get();
+        BakedModel tapeCoreAroundModel = IMPModels.CASSETTE_TAPE_CORE_AROUND_MODEL.get();
+        BakedModel tapeRollModel = IMPModels.CASSETTE_TAPE_ROLL_MODEL.get();
 
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, x, y, z);

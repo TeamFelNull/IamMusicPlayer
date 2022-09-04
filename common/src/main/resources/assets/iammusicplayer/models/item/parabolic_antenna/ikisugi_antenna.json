@@ -1,5 +1,7 @@
 {
   "parent": "item/generated",
   "loader": "forge:obj",
-  "model": "iammusicplayer:models/item/parabolic_antenna/ikisugi_antenna.obj"
+  "model": "iammusicplayer:models/item/parabolic_antenna/ikisugi_antenna.obj",
+  "flip_v": true,
+  "emissive_ambient": false
 }

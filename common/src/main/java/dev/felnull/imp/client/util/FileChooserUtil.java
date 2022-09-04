@@ -1,5 +1,7 @@
 package dev.felnull.imp.client.util;
 
+import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -25,7 +27,6 @@ public class FileChooserUtil {
 
     @Nullable
     private static File[] trayOpenFileChooser(String name, Path initPath, boolean multiSelect) {
-        return null;
-        //   return OEClientUtil.openFileChooser(I18n.get("imp.fileChooser.title." + name), initPath, null, multiSelect);
+        return OEClientUtils.openFileChooser(I18n.get("imp.fileChooser.title." + name), initPath, null, multiSelect);
     }
 }

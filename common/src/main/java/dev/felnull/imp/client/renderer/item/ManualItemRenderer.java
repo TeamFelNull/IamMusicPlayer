@@ -6,7 +6,6 @@ import dev.architectury.platform.Platform;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
-import dev.felnull.otyacraftengine.client.util.OEModelUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -34,7 +33,7 @@ public class ManualItemRenderer implements BEWLItemRenderer {
 
     @Override
     public void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int light, int overlay) {
-        var model = OEModelUtils.getModel(IMPModels.MANUAL);
+        var model = IMPModels.MANUAL.get();
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         float par = Mth.lerp(f, openProgressO, openProgress) / 10f;
         poseStack.pushPose();
@@ -74,7 +73,7 @@ public class ManualItemRenderer implements BEWLItemRenderer {
     }
 
     private void renderTurning(PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer vc, int light, int overlay) {
-        var model = OEModelUtils.getModel(IMPModels.MANUAL_TURNING);
+        var model = IMPModels.MANUAL_TURNING.get();
         poseStack.pushPose();
         OERenderUtils.renderModel(poseStack, vc, model, light, overlay);
         renderText(poseStack, multiBufferSource, FELNULL_DEV_TEXT, light, 9f, 15.75f, 0.4f, false, 0);

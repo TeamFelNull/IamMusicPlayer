@@ -10,7 +10,6 @@ import dev.felnull.imp.client.renderer.item.AntennaItemRenderer;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.renderer.blockentity.AbstractBlockEntityRenderer;
-import dev.felnull.otyacraftengine.client.util.OEModelUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -51,9 +50,9 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
 
         var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
-        var handleM = OEModelUtils.getModel(IMPModels.BOOMBOX_HANDLE);
-        var lidM = OEModelUtils.getModel(IMPModels.BOOMBOX_LID);
-        var buttonsM = OEModelUtils.getModel(IMPModels.BOOMBOX_BUTTONS);
+        var handleM = IMPModels.BOOMBOX_HANDLE.get();
+        var lidM = IMPModels.BOOMBOX_LID.get();
+        var buttonsM = IMPModels.BOOMBOX_BUTTONS.get();
 
         poseStack.pushPose();
         OERenderUtils.poseRotateDirection(poseStack, direction, 1);

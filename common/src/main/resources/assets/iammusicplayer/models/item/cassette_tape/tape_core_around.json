@@ -1,4 +1,6 @@
 {
   "loader": "forge:obj",
-  "model": "iammusicplayer:models/item/cassette_tape/tape_core_around.obj"
+  "model": "iammusicplayer:models/item/cassette_tape/tape_core_around.obj",
+  "flip_v": true,
+  "emissive_ambient": false
 }

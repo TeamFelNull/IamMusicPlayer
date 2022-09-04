@@ -1,4 +1,6 @@
 {
   "loader": "forge:obj",
-  "model": "iammusicplayer:models/item/antenna/antenna.obj"
+  "model": "iammusicplayer:models/item/antenna/antenna.obj",
+  "flip_v": true,
+  "emissive_ambient": false
 }
