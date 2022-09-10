@@ -2,6 +2,7 @@ package dev.felnull.imp.item;
 
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.integration.PatchouliIntegration;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -26,6 +27,9 @@ public class ManualItem extends Item {
                 PatchouliWrapper.openBookGUI((ServerPlayer) player, MANUAL_BOOK);
             }*/
             return InteractionResultHolder.success(item);
+        } else {
+            if (level.isClientSide())
+                player.sendSystemMessage(Component.literal("Patchouli must be installed"));
         }
         return super.use(level, player, interactionHand);
     }

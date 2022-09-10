@@ -1,10 +1,10 @@
 package dev.felnull.imp.data;
 
+import dev.felnull.imp.item.IMPItemTags;
+import dev.felnull.imp.item.IMPItems;
 import dev.felnull.otyacraftengine.data.CrossDataGeneratorAccess;
 import dev.felnull.otyacraftengine.data.provider.BlockTagProviderWrapper;
 import dev.felnull.otyacraftengine.data.provider.ItemTagProviderWrapper;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class IMPItemTagProviderWrapper extends ItemTagProviderWrapper {
@@ -14,6 +14,6 @@ public class IMPItemTagProviderWrapper extends ItemTagProviderWrapper {
 
     @Override
     public void generateTag(ItemTagProviderAccess providerAccess) {
-        providerAccess.tag(ItemTags.PIGLIN_LOVED).add(Items.ACACIA_BOAT);
+        providerAccess.tag(IMPItemTags.CASSETTE_TAPE).add(IMPItems.CASSETTE_TAPE.get(), IMPItems.CASSETTE_TAPE_GLASS.get());
     }
 }
