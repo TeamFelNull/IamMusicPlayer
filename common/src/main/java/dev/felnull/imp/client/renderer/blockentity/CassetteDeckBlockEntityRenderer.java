@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.felnull.imp.block.CassetteDeckBlock;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonitor;
@@ -27,11 +28,10 @@ public class CassetteDeckBlockEntityRenderer extends AbstractBlockEntityRenderer
 
     @Override
     public void render(CassetteDeckBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
-        renderCassetteDeck(blockEntity, poseStack, multiBufferSource, i, j, f);
+        renderCassetteDeck(blockEntity, poseStack, multiBufferSource, i, j, f, multiBufferSource.getBuffer(Sheets.cutoutBlockSheet()));
     }
 
-    public static void renderCassetteDeck(CassetteDeckBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f) {
-        var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+    public static void renderCassetteDeck(CassetteDeckBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float f, VertexConsumer vertexConsumer) {
         var lidM = IMPModels.CASSETTE_DECK_LID.get();
 
         float lidOpen = blockEntity.getLidOpenProgress(f) / (float) blockEntity.getLidOpenProgressAll();
@@ -62,7 +62,7 @@ public class CassetteDeckBlockEntityRenderer extends AbstractBlockEntityRenderer
         OERenderUtils.poseTrans16(poseStack, 0.125, 0.125, 0.125);
         OERenderUtils.poseRotateX(poseStack, lidOpen * -40f);
         OERenderUtils.poseTrans16(poseStack, -0.125, -0.125, -0.125);
-        OERenderUtils.renderModel(poseStack, vc, lidM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, lidM, i, j);
         poseStack.popPose();
 
         poseStack.popPose();

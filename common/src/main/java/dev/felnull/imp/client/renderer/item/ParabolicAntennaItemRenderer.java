@@ -7,6 +7,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
 
 public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
@@ -25,7 +26,7 @@ public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
             antenaModel = IMPModels.KATYOU_ANTENNA;
         }
         var plM = antenaModel.get();
-        var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+        var vc = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.solidBlockSheet(), true, itemStack.hasFoil());//multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         poseStack.pushPose();
         if (transformType == ItemTransforms.TransformType.HEAD) {

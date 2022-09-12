@@ -190,7 +190,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @NotNull
     protected String getMusicAuthor(@NotNull MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyMusicAuthor();
+        return musicManagerBlockEntity.getMusicAuthor(mc.player);
     }
 
     @NotNull
@@ -202,7 +202,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @NotNull
     protected String getMusicSourceName(@NotNull MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicSourceName();
+        return blockEntity.getMusicSourceName(mc.player);
     }
 
     @NotNull
@@ -214,7 +214,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @NotNull
     protected MusicSource getMusicSource(@NotNull MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicSource();
+        return blockEntity.getMusicSource(mc.player);
     }
 
     @Nullable
@@ -236,6 +236,6 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @NotNull
     protected String getMusicLoaderType(@NotNull MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicLoaderType().isEmpty() ? "auto" : blockEntity.getMyMusicLoaderType();
+        return blockEntity.getMusicLoaderType(mc.player).isEmpty() ? "auto" : blockEntity.getMusicLoaderType(mc.player);
     }
 }

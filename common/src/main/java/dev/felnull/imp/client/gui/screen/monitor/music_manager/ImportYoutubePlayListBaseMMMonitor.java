@@ -107,7 +107,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     }
 
     protected int getImportPlayListMusicCount(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyImportPlayListMusicCount();
+        return blockEntity.getImportPlayListMusicCount(mc.player);
     }
 
 
@@ -118,7 +118,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     }
 
     protected String getImportPlayListAuthor(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyImportPlayListAuthor();
+        return blockEntity.getImportPlayListAuthor(mc.player);
     }
 
     protected String getImportPlayList() {
@@ -128,7 +128,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     }
 
     protected String getImportPlayList(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyImportIdentifier();
+        return blockEntity.getImportIdentifier(mc.player);
     }
 
     protected String getImportPlayListName() {
@@ -138,7 +138,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     }
 
     protected String getImportPlayListName(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyImportPlayListName();
+        return blockEntity.getImportPlayListName(mc.player);
     }
 
     protected boolean canImport() {

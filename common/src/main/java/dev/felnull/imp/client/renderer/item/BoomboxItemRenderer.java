@@ -12,6 +12,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +27,7 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
 
         var state = power ? onEntity.getBlockState() : offEntity.getBlockState();
         var model = OEModelUtils.getModel(state);
-        var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+        var vc = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.cutoutBlockSheet(), true, itemStack.hasFoil());//multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         OERenderUtils.renderModel(poseStack, vc, model, i, i1);
 
         float handleRaised = 1;
@@ -35,6 +36,6 @@ public class BoomboxItemRenderer implements BEWLItemRenderer {
             handleRaised = 1f - BoomboxItem.getTransferProgress(itemStack, f);
         }
 
-        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, f, BoomboxItem.getData(itemStack), handleRaised);
+        BoomboxBlockEntityRenderer.renderBoombox(poseStack, multiBufferSource, state.getValue(BoomboxBlock.FACING), i, i1, f, BoomboxItem.getData(itemStack), handleRaised, vc);
     }
 }

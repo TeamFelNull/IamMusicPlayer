@@ -8,7 +8,6 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.server.music.MusicManager;
 import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import dev.felnull.otyacraftengine.util.OENbtUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +27,6 @@ import java.util.*;
 public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     private NonNullList<ItemStack> items = NonNullList.withSize(0, ItemStack.EMPTY);
     protected final Map<UUID, CompoundTag> playerData = new HashMap<>();
-    private CompoundTag myData = new CompoundTag();
 
     public MusicManagerBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(IMPBlockEntities.MUSIC_MANAGER.get(), blockPos, blockState);
@@ -169,19 +167,13 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     @Override
     public void saveToUpdateTag(CompoundTag tag) {
         super.saveToUpdateTag(tag);
-        //var pltag = playerData.get(player.getGameProfile().getId());
-        //if (pltag != null)
-        //    tag.put("Data", pltag);
-        var ptag = OENbtUtils.writeUUIDTagMap(tag, "SyncPlayerData", playerData);
+        OENbtUtils.writeUUIDTagMap(tag, "SyncPlayerData", playerData);
     }
 
     @Override
     public void loadToUpdateTag(CompoundTag tag) {
         super.loadToUpdateTag(tag);
-        var pls = OENbtUtils.readUUIDTagMap(tag, "SyncPlayerData", playerData);
-        this.myData = pls.get(Minecraft.getInstance().player.getGameProfile().getId());
-        if (myData == null)
-            this.myData = new CompoundTag();
+        OENbtUtils.readUUIDTagMap(tag, "SyncPlayerData", playerData);
     }
 
     @Nullable
@@ -208,7 +200,7 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         return null;
     }
 
-    public CompoundTag getPlayerData(ServerPlayer player) {
+    public CompoundTag getPlayerData(Player player) {
         var id = player.getGameProfile().getId();
         if (!playerData.containsKey(id))
             playerData.put(id, new CompoundTag());
@@ -216,28 +208,44 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     @Nullable
-    public UUID getMySelectedPlayer() {
-        if (!myData.contains("SelectedPlayer"))
+    public UUID getSelectedPlayer(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
             return null;
-        return myData.getUUID("SelectedPlayer");
+
+        if (!tag.contains("SelectedPlayer"))
+            return null;
+        return tag.getUUID("SelectedPlayer");
     }
 
     @Nullable
-    public UUID getMySelectedMusic() {
-        if (!myData.contains("SelectedMusic"))
+    public UUID getSelectedMusic(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
             return null;
-        return myData.getUUID("SelectedMusic");
+
+        if (!tag.contains("SelectedMusic"))
+            return null;
+        return tag.getUUID("SelectedMusic");
     }
 
-    public UUID getMySelectedPlayList() {
-        if (!myData.contains("SelectedPlayList"))
+    public UUID getSelectedPlayList(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
             return null;
-        return myData.getUUID("SelectedPlayList");
+
+        if (!tag.contains("SelectedPlayList"))
+            return null;
+        return tag.getUUID("SelectedPlayList");
     }
 
-    public MusicSource getMyMusicSource() {
-        if (myData.contains("MusicSource"))
-            return TagSerializable.loadSavedTag(myData.getCompound("MusicSource"), new MusicSource());
+    public MusicSource getMusicSource(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            return null;
+
+        if (tag.contains("MusicSource"))
+            return TagSerializable.loadSavedTag(tag.getCompound("MusicSource"), new MusicSource());
         return MusicSource.EMPTY;
     }
 
@@ -246,8 +254,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public int getMyImportPlayListMusicCount() {
-        return myData.getInt("ImportPlayListMusicCount");
+    public int getImportPlayListMusicCount(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getInt("ImportPlayListMusicCount");
     }
 
     public void setImportPlayListMusicCount(@NotNull ServerPlayer player, int num) {
@@ -256,8 +268,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     @NotNull
-    public String getMyImportPlayListAuthor() {
-        return myData.getString("ImportPlayListAuthor");
+    public String getImportPlayListAuthor(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("ImportPlayListAuthor");
     }
 
     public void setImportPlayListAuthor(@NotNull ServerPlayer player, @NotNull String name) {
@@ -266,8 +282,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     @NotNull
-    public String getMyImportPlayListName() {
-        return myData.getString("ImportPlayListName");
+    public String getImportPlayListName(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("ImportPlayListName");
     }
 
     public void setImportPlayListName(@NotNull ServerPlayer player, @NotNull String name) {
@@ -276,8 +296,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
     @NotNull
-    public String getMyImportIdentifier() {
-        return myData.getString("ImportIdentifier");
+    public String getImportIdentifier(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("ImportIdentifier");
     }
 
     public void setImportIdentifier(@NotNull ServerPlayer player, @NotNull String identifier) {
@@ -285,8 +309,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyMusicSourceName() {
-        return myData.getString("MusicSourceName");
+    public String getMusicSourceName(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("MusicSourceName");
     }
 
     public void setMusicSourceName(ServerPlayer player, String name) {
@@ -294,8 +322,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyMusicAuthor() {
-        return myData.getString("MusicAuthor");
+    public String getMusicAuthor(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("MusicAuthor");
     }
 
     public void setMusicAuthor(ServerPlayer player, String name) {
@@ -303,8 +335,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyMusicSearchName() {
-        return myData.getString("MusicSearchName");
+    public String getMusicSearchName(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("MusicSearchName");
     }
 
     public void setMusicSearchName(ServerPlayer player, String name) {
@@ -312,8 +348,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyMusicLoaderType() {
-        return myData.getString("MusicLoaderType");
+    public String getMusicLoaderType(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("MusicLoaderType");
     }
 
     public void setMusicLoaderType(ServerPlayer player, String name) {
@@ -365,9 +405,14 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
     }
 
 
-    public List<UUID> getMyInvitePlayers() {
+    public List<UUID> getInvitePlayers(Player player) {
         List<UUID> pls = new ArrayList<>();
-        OENbtUtils.readUUIDList(myData, "InvitePlayers", pls);
+
+        var tag = getPlayerData(player);
+        if (tag == null)
+            return pls;
+
+        OENbtUtils.readUUIDList(tag, "InvitePlayers", pls);
         return pls;
     }
 
@@ -378,8 +423,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyInvitePlayerName() {
-        return myData.getString("InvitePlayerName");
+    public String getInvitePlayerName(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("InvitePlayerName");
     }
 
     public void setInvitePlayerName(ServerPlayer player, String name) {
@@ -392,14 +441,22 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public ImageInfo getMyImage() {
-        if (myData.getCompound("Image").isEmpty())
+    public ImageInfo getImage(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        if (tag.getCompound("Image").isEmpty())
             return ImageInfo.EMPTY;
-        return TagSerializable.loadSavedTag(myData.getCompound("Image"), new ImageInfo());
+        return TagSerializable.loadSavedTag(tag.getCompound("Image"), new ImageInfo());
     }
 
-    public String getMyInitialAuthority() {
-        return myData.getString("InitialAuthority");
+    public String getInitialAuthority(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("InitialAuthority");
     }
 
     public void setInitialAuthority(ServerPlayer player, String initialAuthority) {
@@ -407,8 +464,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyPublishing() {
-        return myData.getString("Publishing");
+    public String getPublishing(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("Publishing");
     }
 
     public void setPublishing(ServerPlayer player, String publishing) {
@@ -416,8 +477,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyCreateName() {
-        return myData.getString("CreateName");
+    public String getCreateName(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("CreateName");
     }
 
     public void setCreateName(ServerPlayer player, String name) {
@@ -430,8 +495,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public String getMyImageURL() {
-        return myData.getString("ImageURL");
+    public String getImageURL(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        return tag.getString("ImageURL");
     }
 
 
@@ -447,8 +516,12 @@ public class MusicManagerBlockEntity extends IMPBaseEntityBlockEntity {
         setChanged();
     }
 
-    public MonitorType getMyMonitor(Player player) {
-        var name = myData.getString("Monitor");
+    public MonitorType getMonitor(Player player) {
+        var tag = getPlayerData(player);
+        if (tag == null)
+            tag = new CompoundTag();
+
+        var name = tag.getString("Monitor");
         return MonitorType.getByNameOrDefault(name, this, player.getGameProfile().getId());
     }
 

@@ -10,6 +10,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 
@@ -19,8 +20,8 @@ public class MusicManagerItemRenderer implements BEWLItemRenderer {
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
         var model = OEModelUtils.getModel(entity.getBlockState());
-        var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+        var vc = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.cutoutBlockSheet(), true, itemStack.hasFoil());// multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         OERenderUtils.renderModel(poseStack, vc, model, i, i1);
-        MusicManagerBlockEntityRenderer.renderMusicManager(entity, poseStack, multiBufferSource, i, i1, 0);
+        MusicManagerBlockEntityRenderer.renderMusicManager(entity, poseStack, multiBufferSource, i, i1, 0, vc);
     }
 }

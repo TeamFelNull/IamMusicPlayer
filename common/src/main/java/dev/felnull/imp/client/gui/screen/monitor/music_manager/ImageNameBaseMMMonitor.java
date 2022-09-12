@@ -292,7 +292,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     @NotNull
     protected String getName(@NotNull MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyCreateName();
+        return musicManagerBlockEntity.getCreateName(mc.player);
     }
 
     protected void setName(@NotNull String name) {
@@ -308,7 +308,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     @NotNull
     protected ImageInfo getImage(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyImage();
+        return musicManagerBlockEntity.getImage(mc.player);
     }
 
     protected void setImage(ImageInfo image) {
@@ -322,7 +322,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     }
 
     private String getImageURL(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyImageURL();
+        return musicManagerBlockEntity.getImageURL(mc.player);
     }
 
     private void setImageURL(String text) {

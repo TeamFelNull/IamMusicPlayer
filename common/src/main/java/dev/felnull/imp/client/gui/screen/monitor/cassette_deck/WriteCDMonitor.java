@@ -116,7 +116,7 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
     }
 
     private UUID getSelectPlaylist(CassetteDeckBlockEntity cassetteDeckBlockEntity) {
-        return cassetteDeckBlockEntity.getMyPlayerSelectPlaylist();
+        return cassetteDeckBlockEntity.getPlayerSelectPlayList(mc.player);
     }
 
     private void setSelectPlaylist(UUID uuid) {

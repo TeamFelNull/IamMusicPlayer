@@ -2,7 +2,7 @@ package dev.felnull.imp.server.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.api.IamMusicPlayerAPI;
+import dev.felnull.imp.api.IamMusicPlayerAPIOld;
 import dev.felnull.imp.api.music.MusicRingerAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -28,16 +28,16 @@ public class MusicCommand {
 
     private static int ringerInfo(CommandSourceStack src, ServerLevel level) {
         if (level == null) {
-            src.sendSuccess(Component.translatable("commands.imp.ringer.info.all", IamMusicPlayerAPI.getRingerCount(), IamMusicPlayerAPI.getPlayingRingerCount()), false);
+            src.sendSuccess(Component.translatable("commands.imp.ringer.info.all", IamMusicPlayerAPIOld.getRingerCount(), IamMusicPlayerAPIOld.getPlayingRingerCount()), false);
         } else {
             var name = level.dimension().location();
-            src.sendSuccess(Component.translatable("commands.imp.ringer.info", IamMusicPlayerAPI.getRingerCount(level), IamMusicPlayerAPI.getPlayingRingerCount(level), name), false);
+            src.sendSuccess(Component.translatable("commands.imp.ringer.info", IamMusicPlayerAPIOld.getRingerCount(level), IamMusicPlayerAPIOld.getPlayingRingerCount(level), name), false);
         }
         return 1;
     }
 
     private static int ringerList(CommandSourceStack src, ServerLevel level) {
-        List<MusicRingerAccess> ringers = level != null ? IamMusicPlayerAPI.getRingers(level) : IamMusicPlayerAPI.getRingers();
+        List<MusicRingerAccess> ringers = level != null ? IamMusicPlayerAPIOld.getRingers(level) : IamMusicPlayerAPIOld.getRingers();
 
         if (level == null) {
             if (ringers.isEmpty()) {

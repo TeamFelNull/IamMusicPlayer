@@ -160,8 +160,8 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     @Override
     public boolean done(ImageInfo imageInfo, String name) {
         var ms = getMusicSource();
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock && musicManagerBlock.getMySelectedPlayList() != null)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicMessage(musicManagerBlock.getMySelectedPlayList(), name, getMusicAuthor(), imageInfo, ms, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock && musicManagerBlock.getSelectedPlayList(mc.player) != null)
+            NetworkManager.sendToServer(IMPPackets.MUSIC_ADD, new IMPPackets.MusicMessage(musicManagerBlock.getSelectedPlayList(mc.player), name, getMusicAuthor(), imageInfo, ms, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
         return true;
     }
 

@@ -8,17 +8,18 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.item.ItemStack;
 
 public class AntennaItemRenderer implements BEWLItemRenderer {
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float v, int i, int i1) {
-        renderAntenna(poseStack, multiBufferSource, i, i1, 0f, 0f);
+        renderAntenna(itemStack, poseStack, multiBufferSource, i, i1, 0f, 0f);
     }
 
-    public static void renderAntenna(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float par, float rote) {
-        VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+    public static void renderAntenna(ItemStack stack, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, float par, float rote) {
+        VertexConsumer ivb = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.solidBlockSheet(), true, stack.hasFoil());//multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         BakedModel antennaModel = IMPModels.ANTENNA.get();
         BakedModel antennaTopModel = IMPModels.ANTENNA_TOP.get();

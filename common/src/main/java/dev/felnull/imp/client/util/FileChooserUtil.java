@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.util;
 
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import dev.felnull.otyacraftengine.natives.OENatives;
 import net.minecraft.client.resources.language.I18n;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,19 +11,17 @@ import java.nio.file.Path;
 public class FileChooserUtil {
 
     public static File[] openMusicFileChooser(boolean multiSelect) {
-        /*Path initPath = null;
-        if (FNJLNativesWrapper.isSupportSpecialFolder())
-            initPath = FNJLNativesWrapper.getMyMusicFolder();
-        return trayOpenFileChooser("music", initPath, multiSelect);*/
-        return null;
+        Path initPath = null;
+        if (OENatives.getInstance().isSupportSpecialFolder())
+            initPath = OENatives.getInstance().getMyMusicFolder();
+        return trayOpenFileChooser("music", initPath, multiSelect);
     }
 
     public static File[] openImageFileChooser(boolean multiSelect) {
-       /* Path initPath = null;
-        if (FNJLNativesWrapper.isSupportSpecialFolder())
-            initPath = FNJLNativesWrapper.getMyPicturesFolder();
-        return trayOpenFileChooser("image", initPath, multiSelect);*/
-        return null;
+        Path initPath = null;
+        if (OENatives.getInstance().isSupportSpecialFolder())
+            initPath = OENatives.getInstance().getMyPicturesFolder();
+        return trayOpenFileChooser("image", initPath, multiSelect);
     }
 
     @Nullable

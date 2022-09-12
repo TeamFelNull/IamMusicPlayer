@@ -12,7 +12,6 @@ import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import dev.felnull.otyacraftengine.util.OENbtUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -24,6 +23,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -40,7 +40,6 @@ import java.util.UUID;
 public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements IMusicRinger {
     private NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
     private final Map<UUID, UUID> playerSelectPlaylists = new HashMap<>();
-    private UUID myPlayerSelectPlaylist;
     private Music music = null;
     private MonitorType monitor = MonitorType.OFF;
     private ItemStack oldCassetteTape = ItemStack.EMPTY;
@@ -179,6 +178,7 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
 
         if (this.music != null)
             tag.put("Music", music.createSavedTag());
+
         tag.putInt("CassetteWriteProgress", this.cassetteWriteProgress);
         tag.putInt("Volume", this.volume);
         tag.putBoolean("Mute", this.mute);
@@ -186,6 +186,30 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         tag.putLong("Position", this.position);
         tag.putBoolean("Loop", this.loop);
         tag.putBoolean("LoadingMusic", this.loadingMusic);
+    }
+
+    @Override
+    public void loadToUpdateTag(CompoundTag tag) {
+        super.loadToUpdateTag(tag);
+        this.lidOpen = tag.getBoolean("LidOpen");
+        this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
+        this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
+        this.monitor = MonitorType.getByName(tag.getString("Monitor"));
+
+        OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylist", playerSelectPlaylists);
+
+        if (tag.contains("Music"))
+            this.music = TagSerializable.loadSavedTag(tag.getCompound("Music"), new Music());
+        else
+            this.music = null;
+
+        this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
+        this.volume = tag.getInt("Volume");
+        this.mute = tag.getBoolean("Mute");
+        this.playing = tag.getBoolean("Playing");
+        this.position = tag.getLong("Position");
+        this.loop = tag.getBoolean("Loop");
+        this.loadingMusic = tag.getBoolean("LoadingMusic");
     }
 
     @Override
@@ -203,31 +227,6 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         return loadingMusic;
     }
 
-    @Override
-    public void loadToUpdateTag(CompoundTag tag) {
-        super.loadToUpdateTag(tag);
-        this.lidOpen = tag.getBoolean("LidOpen");
-        this.oldCassetteTape = ItemStack.of(tag.getCompound("OldCassetteTape"));
-        this.changeCassetteTape = tag.getBoolean("ChangeCassetteTape");
-        this.monitor = MonitorType.getByName(tag.getString("Monitor"));
-
-        if (tag.contains("PlayerSelectPlaylist")) {
-            var map = OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylist", new HashMap<>());
-            this.myPlayerSelectPlaylist = map.get(Minecraft.getInstance().player.getGameProfile().getId());
-        }
-
-        if (tag.contains("Music"))
-            this.music = TagSerializable.loadSavedTag(tag.getCompound("Music"), new Music());
-        else
-            this.music = null;
-        this.cassetteWriteProgress = tag.getInt("CassetteWriteProgress");
-        this.volume = tag.getInt("Volume");
-        this.mute = tag.getBoolean("Mute");
-        this.playing = tag.getBoolean("Playing");
-        this.position = tag.getLong("Position");
-        this.loop = tag.getBoolean("Loop");
-        this.loadingMusic = tag.getBoolean("LoadingMusic");
-    }
 
     public boolean isLoop() {
         return loop;
@@ -276,16 +275,16 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
         setChanged();
     }
 
-    public UUID getMyPlayerSelectPlaylist() {
-        return myPlayerSelectPlaylist;
-    }
-
     public void setPlayerSelectPlayList(ServerPlayer player, UUID uuid) {
         if (uuid != null)
             this.playerSelectPlaylists.put(player.getGameProfile().getId(), uuid);
         else
             this.playerSelectPlaylists.remove(player.getGameProfile().getId());
         setChanged();
+    }
+
+    public UUID getPlayerSelectPlayList(Player player) {
+        return this.playerSelectPlaylists.get(player.getGameProfile().getId());
     }
 
     public int getCassetteWriteProgress() {

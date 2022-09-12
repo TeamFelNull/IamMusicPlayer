@@ -41,6 +41,6 @@ public class DeletePlayListMMMonitor extends DeleteBaseMMMonitor {
     }
 
     protected UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 }

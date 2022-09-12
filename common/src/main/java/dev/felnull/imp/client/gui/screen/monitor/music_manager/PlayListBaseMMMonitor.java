@@ -54,7 +54,7 @@ public abstract class PlayListBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @Nullable
     protected PublishingType getPublishingType(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return PublishingType.getTypeByName(musicManagerBlockEntity.getMyPublishing());
+        return PublishingType.getTypeByName(musicManagerBlockEntity.getPublishing(mc.player));
     }
 
     @Nullable
@@ -66,12 +66,12 @@ public abstract class PlayListBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @Nullable
     protected InitialAuthorityType getInitialAuthorityType(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return InitialAuthorityType.getTypeByName(musicManagerBlockEntity.getMyInitialAuthority());
+        return InitialAuthorityType.getTypeByName(musicManagerBlockEntity.getInitialAuthority(mc.player));
     }
 
     @NotNull
     protected String getInvitePlayerName(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyInvitePlayerName();
+        return musicManagerBlockEntity.getInvitePlayerName(mc.player);
     }
 
     @NotNull
@@ -90,7 +90,7 @@ public abstract class PlayListBaseMMMonitor extends ImageNameBaseMMMonitor {
 
     @NotNull
     protected List<UUID> getInvitePlayers(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyInvitePlayers();
+        return musicManagerBlockEntity.getInvitePlayers(mc.player);
     }
 
     abstract protected Component getPlayerListName();

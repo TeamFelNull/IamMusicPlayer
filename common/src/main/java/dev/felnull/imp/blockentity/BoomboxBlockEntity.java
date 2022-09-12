@@ -142,7 +142,6 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
             blockEntity.ringerTick();
             blockEntity.setRaisedHandleState(blockEntity.boomboxData.getHandleRaisedProgress() >= blockEntity.boomboxData.getHandleRaisedMax());
 
-
             blockEntity.setChanged();
         }
 

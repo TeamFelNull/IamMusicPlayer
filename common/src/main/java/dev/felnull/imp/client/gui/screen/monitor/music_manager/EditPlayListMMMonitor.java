@@ -25,7 +25,7 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
         var initAuthType = getInitialAuthorityType();
         var invitePlayers = getInvitePlayers();
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_EDIT, new IMPPackets.MusicPlayListMessage(musicManagerBlock.getMySelectedPlayList(), name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity()), new ArrayList<>()).toFBB());
+            NetworkManager.sendToServer(IMPPackets.MUSIC_PLAYLIST_EDIT, new IMPPackets.MusicPlayListMessage(musicManagerBlock.getSelectedPlayList(mc.player), name, imageInfo, pubType == PublishingType.PUBLIC, initAuthType == InitialAuthorityType.MEMBER, invitePlayers, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity()), new ArrayList<>()).toFBB());
         return true;
     }
 
@@ -66,7 +66,7 @@ public class EditPlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     }
 
     protected UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 
 }

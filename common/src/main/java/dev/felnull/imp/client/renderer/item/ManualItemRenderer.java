@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +35,7 @@ public class ManualItemRenderer implements BEWLItemRenderer {
     @Override
     public void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int light, int overlay) {
         var model = IMPModels.MANUAL.get();
-        var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+        var vc = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.solidBlockSheet(), true, stack.hasFoil()); //multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         float par = Mth.lerp(f, openProgressO, openProgress) / 10f;
         poseStack.pushPose();
         if (transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {

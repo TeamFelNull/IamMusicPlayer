@@ -49,11 +49,11 @@ public class DeleteMusicMMMonitor extends DeleteBaseMMMonitor {
 
     @Nullable
     private UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 
     @Nullable
     private UUID getSelectedMusicRaw(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedMusic();
+        return musicManagerBlockEntity.getSelectedMusic(mc.player);
     }
 }

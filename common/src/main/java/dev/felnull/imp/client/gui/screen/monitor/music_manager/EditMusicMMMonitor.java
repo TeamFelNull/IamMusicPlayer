@@ -26,8 +26,8 @@ public class EditMusicMMMonitor extends SavedMusicBaseMMMonitor {
     @Override
     public boolean done(ImageInfo imageInfo, String name) {
         var mid = getSelectedMusicRaw();
-        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock && mid != null && musicManagerBlock.getMySelectedPlayList() != null)
-            NetworkManager.sendToServer(IMPPackets.MUSIC_EDIT, new IMPPackets.MusicMessage(mid, musicManagerBlock.getMySelectedPlayList(), name, "", imageInfo, MusicSource.EMPTY, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
+        if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock && mid != null && musicManagerBlock.getSelectedPlayList(mc.player) != null)
+            NetworkManager.sendToServer(IMPPackets.MUSIC_EDIT, new IMPPackets.MusicMessage(mid, musicManagerBlock.getSelectedPlayList(mc.player), name, "", imageInfo, MusicSource.EMPTY, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
         return true;
     }
 
@@ -55,6 +55,6 @@ public class EditMusicMMMonitor extends SavedMusicBaseMMMonitor {
 
     @Nullable
     private UUID getSelectedMusicRaw(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedMusic();
+        return musicManagerBlockEntity.getSelectedMusic(mc.player);
     }
 }

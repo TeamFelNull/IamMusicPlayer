@@ -176,7 +176,7 @@ public class DetailMusicMMMonitor extends MusicBaseMMMonitor {
 
     @Nullable
     private UUID getSelectedMusicRaw(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedMusic();
+        return musicManagerBlockEntity.getSelectedMusic(mc.player);
     }
 
     protected MusicPlayList getSelectedMusicPlayList() {
@@ -201,6 +201,6 @@ public class DetailMusicMMMonitor extends MusicBaseMMMonitor {
 
     @Nullable
     private UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 }

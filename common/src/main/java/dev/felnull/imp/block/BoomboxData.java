@@ -359,7 +359,7 @@ public class BoomboxData {
         this.radioImage = TagSerializable.loadSavedTag(tag.getCompound("RadioImage"), new ImageInfo());
         this.radioName = tag.getString("RadioName");
         this.radioAuthor = tag.getString("RadioAuthor");
-        OENbtUtils.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
+        OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         this.continuousType = ContinuousType.getByName(tag.getString("ContinuousType"));
 
         if (tag.contains("SelectedMusic"))

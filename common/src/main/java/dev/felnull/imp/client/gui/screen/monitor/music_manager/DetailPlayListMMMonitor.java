@@ -264,7 +264,7 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     }
 
     protected UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 
     protected MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {

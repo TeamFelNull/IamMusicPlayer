@@ -13,18 +13,46 @@ import net.minecraft.world.phys.Vec2;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Pattern;
 
 public class PlayImageRenderer {
     private static final ResourceLocation MISSING_YOUTUBE_THUMBNAIL_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/image/missing_youtube_thumbnail.png");
-    private static final ResourceLocation MISSING_SOUND_CLOUD_ARTWORK_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/image/missing_sound_cloud_artwork.png");
+    private static final ResourceLocation MISSING_SOUND_CLOUD_THUMBNAIL_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/image/missing_sound_cloud_artwork.png");
     private static final PlayImageRenderer INSTANCE = new PlayImageRenderer();
     private static final String YOUTUBE_THUMBNAIL_URL = "https://i.ytimg.com/vi/%s/hqdefault.jpg";
-    private final Map<String, String> soundCloudArtworkURLs = new HashMap<>();
+    private static final Pattern YOUTUBE_THUMBNAIL_URL_REGEX = Pattern.compile("https://i.ytimg.com/vi/.+/hqdefault.jpg");
+    private static final Pattern SOUND_CLOUD_URL_REGEX = Pattern.compile("https://soundcloud.com/.+");
+    private static final String SCT_IMG_ST = "<img ";
+    private static final String SCT_IMG_END = ">";
+    private static final String SCT_SRC_ST = "src=\"";
+    private static final String SCT_SRC_END = "\"";
 
     public static PlayImageRenderer getInstance() {
         return INSTANCE;
+    }
+
+    public String getSwapURL(String url) {
+        if (url.startsWith("imp_sct_")) {
+            var scurl = url.substring("imp_sct_".length());
+            if (SOUND_CLOUD_URL_REGEX.matcher(scurl).matches()) {
+                String ret = null;
+                try {
+                    ret = extractSoundCloudImage(FNURLUtil.getResponse(new URL(scurl)));
+                } catch (Exception ignored) {
+                }
+                return ret;
+            }
+        }
+        return null;
+    }
+
+    public boolean isAllowURL(String url) {
+        if (YOUTUBE_THUMBNAIL_URL_REGEX.matcher(url).matches()) return true;
+        if (url.startsWith("imp_sct_")) {
+            var scurl = url.substring("imp_sct_".length());
+            return SOUND_CLOUD_URL_REGEX.matcher(scurl).matches();
+        }
+        return false;
     }
 
     public void draw(ImageInfo imageInfo, PoseStack poseStack, float x, float y, int size) {
@@ -112,66 +140,29 @@ public class PlayImageRenderer {
             return Pair.of(loc, new Vec2(w, h));
         } else if (imageInfo.getImageType() == ImageInfo.ImageType.SOUND_CLOUD_ARTWORK) {
             var idf = imageInfo.getIdentifier();
-            synchronized (soundCloudArtworkURLs) {
-                if (soundCloudArtworkURLs.containsKey(idf)) {
-                    var url = soundCloudArtworkURLs.get(idf);
-                    if (url != null) {
-                        var loc = OETextureUtils.getAndLoadURLTextureAsync(url, cash).of(MISSING_SOUND_CLOUD_ARTWORK_TEXTURE);
-                        var scale = OETextureUtils.getTextureScale(loc);
-                        float w = 1;
-                        float h = 1;
-                        if (scale != null) {
-                            w = (float) scale.w();
-                            h = (float) scale.h();
-                        }
-                        return Pair.of(loc, new Vec2(w, h));
-                    }
-                    return Pair.of(MISSING_SOUND_CLOUD_ARTWORK_TEXTURE, new Vec2(1, 1));
-                }
-                soundCloudArtworkURLs.put(idf, null);
-                var lt = new SoundCloudImageLoadThread(idf);
-                lt.start();
-                return Pair.of(MISSING_SOUND_CLOUD_ARTWORK_TEXTURE, new Vec2(1, 1));
+            var loc = OETextureUtils.getAndLoadURLTextureAsync("imp_sct_" + idf, cash).of(MISSING_SOUND_CLOUD_THUMBNAIL_TEXTURE);
+            var scale = OETextureUtils.getTextureScale(loc);
+            float w = 1;
+            float h = 1;
+            if (loc == MISSING_SOUND_CLOUD_THUMBNAIL_TEXTURE) {
+                var st = FNMath.scale(1, 1);
+                w = (float) st.getX();
+                h = (float) st.getY();
+            } else if (scale != null) {
+                w = (float) scale.w();
+                h = (float) scale.h();
             }
+            return Pair.of(loc, new Vec2(w, h));
         }
         return null;
     }
 
-    private class SoundCloudImageLoadThread extends Thread {
-        private static final String IMG_ST = "<img ";
-        private static final String IMG_END = ">";
-        private static final String SRC_ST = "src=\"";
-        private static final String SRC_END = "\"";
 
-        private final String url;
-
-        public SoundCloudImageLoadThread(String url) {
-            this.url = url;
-        }
-
-        @Override
-        public void run() {
-            String src;
-            try {
-             /*   var doc = Jsoup.connect(url).get();
-                var img = doc.select("img").attr("itemprop", "image").first();
-                src = img.attr("src");*/
-                src = extractImage(FNURLUtil.getResponse(new URL(url)));
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
-            synchronized (soundCloudArtworkURLs) {
-                soundCloudArtworkURLs.put(url, src);
-            }
-        }
-
-        private static String extractImage(String src) {
-            var ts = src.substring(src.indexOf(IMG_ST) + IMG_ST.length());
-            ts = ts.substring(0, ts.indexOf(IMG_END));
-            ts = ts.substring(ts.indexOf(SRC_ST) + SRC_ST.length());
-            ts = ts.substring(0, ts.indexOf(SRC_END));
-            return ts;
-        }
+    private static String extractSoundCloudImage(String html) {
+        var ts = html.substring(html.indexOf(SCT_IMG_ST) + SCT_IMG_ST.length());
+        ts = ts.substring(0, ts.indexOf(SCT_IMG_END));
+        ts = ts.substring(ts.indexOf(SCT_SRC_ST) + SCT_SRC_ST.length());
+        ts = ts.substring(0, ts.indexOf(SCT_SRC_END));
+        return ts;
     }
 }

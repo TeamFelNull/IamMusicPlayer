@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -27,7 +28,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
     @Override
     public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float v, int i, int i1) {
         float par = CassetteTapeItem.getTapePercentage(itemStack);
-        VertexConsumer ivb = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
+        VertexConsumer ivb = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.cutoutBlockSheet(), true, itemStack.hasFoil());//multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         renderBase(poseStack, ivb, multiBufferSource, itemStack, i, i1);
 
@@ -122,7 +123,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
             int color = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? ((CassetteTapeItem) stack.getItem()).getColor(stack) : 0x1a1a1a;
             if (type == CassetteTapeItem.BaseType.GLASS) {
                 holder = ((CassetteTapeItem) stack.getItem()).hasCustomColor(stack) ? IMPModels.CASSETTE_TAPE_BASE_GLASS_COLOR_MODEL : IMPModels.CASSETTE_TAPE_BASE_GLASS_MODEL;
-                ivb = multiBufferSource.getBuffer(Sheets.translucentCullBlockSheet());
+                ivb = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.translucentCullBlockSheet(), true, stack.hasFoil());//multiBufferSource.getBuffer(Sheets.translucentCullBlockSheet());
             }
             BakedModel bakedModel = holder.get();
             OERenderUtils.renderModel(poseStack, ivb, bakedModel, i, i1, color);

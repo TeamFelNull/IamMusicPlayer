@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.block.MusicManagerBlock;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
@@ -35,10 +36,10 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
     public void render(BoomboxBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         var state = blockEntity.getBlockState();
         var data = blockEntity.getBoomboxData();
-        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, data, data.getHandleRaisedProgress(f) / (float) data.getHandleRaisedMax());
+        renderBoombox(poseStack, multiBufferSource, state.getValue(MusicManagerBlock.FACING), i, j, f, data, data.getHandleRaisedProgress(f) / (float) data.getHandleRaisedMax(), multiBufferSource.getBuffer(Sheets.cutoutBlockSheet()));
     }
 
-    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, BoomboxData data, float handleRaised) {
+    public static void renderBoombox(PoseStack poseStack, MultiBufferSource multiBufferSource, Direction direction, int i, int j, float f, BoomboxData data, float handleRaised, VertexConsumer vertexConsumer) {
         float lidOpen = data.getLidOpenProgress(f) / (float) data.getLidOpenProgressMax();
         var buttons = data.getButtons();
         var cassetteTape = data.getCassetteTape();
@@ -47,8 +48,6 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         float antennaPar = data.getAntennaProgress(f) / 30f;
         boolean changeCassetteTape = data.isChangeCassetteTape();
         var oldCassetteTape = data.getOldCassetteTape();
-
-        var vc = multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
 
         var handleM = IMPModels.BOOMBOX_HANDLE.get();
         var lidM = IMPModels.BOOMBOX_LID.get();
@@ -72,7 +71,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         OERenderUtils.poseTrans16(poseStack, 0.5, 0.5, 0.5);
         OERenderUtils.poseRotateX(poseStack, (1f - handleRaised) * 90f);
         OERenderUtils.poseTrans16(poseStack, -0.5, -0.5, -0.5);
-        OERenderUtils.renderModel(poseStack, vc, handleM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, handleM, i, j);
         poseStack.popPose();
 
         poseStack.pushPose();
@@ -80,49 +79,49 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         OERenderUtils.poseTrans16(poseStack, 0.125, 0.125, 0.125);
         OERenderUtils.poseRotateX(poseStack, lidOpen * -40f);
         OERenderUtils.poseTrans16(poseStack, -0.125, -0.125, -0.125);
-        OERenderUtils.renderModel(poseStack, vc, lidM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, lidM, i, j);
         poseStack.popPose();
 
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 12.25, 9, 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 11.25, 9 - (buttons.radio() ? 0.5 : 0), 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 10.25, 9 - (buttons.start() ? 0.5 : 0), 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 9.25, 9 - (buttons.pause() ? 0.5 : 0), 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 8.25, 9, 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 7.25, 9 - (buttons.loop() ? 0.5 : 0), 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
 
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 5.55, 9, 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 4.55, 9, 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 3.55, 9 - (buttons.volMute() ? 0.5 : 0), 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 2.55, 9 - (buttons.volMax() ? 0.5 : 0), 5.75);
-        OERenderUtils.renderModel(poseStack, vc, buttonsM, i, j);
+        OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
 
 
@@ -148,7 +147,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
             OERenderUtils.poseRotateZ(poseStack, 90);
             poseStack.translate(-ws, -ws, -ws);
             OERenderUtils.poseScaleAll(poseStack, 0.75f);
-            AntennaItemRenderer.renderAntenna(poseStack, multiBufferSource, i, j, (-0.5f + Math.max(antennaPar, 0.5f)) * 2f, -90 + 30 * Math.min(antennaPar, 0.5f) * 2f);
+            AntennaItemRenderer.renderAntenna(antenna, poseStack, multiBufferSource, i, j, (-0.5f + Math.max(antennaPar, 0.5f)) * 2f, -90 + 30 * Math.min(antennaPar, 0.5f) * 2f);
             poseStack.popPose();
         } else {
             poseStack.pushPose();

@@ -23,6 +23,7 @@ import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.OBJLoaderEvent;
 import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
+import dev.felnull.otyacraftengine.client.renderer.texture.URLTextureManager;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -95,7 +96,8 @@ public class ClientHandler {
 
     private static InteractionResult onConfigSave(ConfigHolder<IMPConfig> configHolder, IMPConfig impConfig) {
         MusicEngine.getInstance().reload();
-        return InteractionResult.SUCCESS;
+        URLTextureManager.getInstance().reload();
+        return InteractionResult.PASS;
     }
 
     private static EventResult objLoad(ResourceLocation resourceLocation) {

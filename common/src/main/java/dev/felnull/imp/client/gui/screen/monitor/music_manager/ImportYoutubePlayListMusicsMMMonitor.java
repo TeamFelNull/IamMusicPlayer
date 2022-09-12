@@ -102,7 +102,7 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
                 if (isStopped()) return;
                 mc.submit(() -> {
                     if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlock)
-                        NetworkManager.sendToServer(IMPPackets.MULTIPLE_MUSIC_ADD, new IMPPackets.MultipleMusicAddMessage(musicManagerBlock.getMySelectedPlayList(), musics, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
+                        NetworkManager.sendToServer(IMPPackets.MULTIPLE_MUSIC_ADD, new IMPPackets.MultipleMusicAddMessage(musicManagerBlock.getSelectedPlayList(mc.player), musics, BlockEntityExistence.getByBlockEntity(getScreen().getBlockEntity())).toFBB());
                     insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
                 });
             } catch (Exception ex) {

@@ -121,11 +121,11 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     }
 
     private String getImportPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyImportIdentifier();
+        return musicManagerBlockEntity.getImportIdentifier(mc.player);
     }
 
     private int getImportMusicsCount(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMyImportPlayListMusicCount();
+        return musicManagerBlockEntity.getImportPlayListMusicCount(mc.player);
     }
 
     private boolean isImporting() {

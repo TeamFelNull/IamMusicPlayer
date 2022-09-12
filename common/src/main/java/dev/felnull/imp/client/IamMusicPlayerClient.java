@@ -6,6 +6,7 @@ import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonit
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.handler.ClientHandler;
 import dev.felnull.imp.client.handler.RenderHandler;
+import dev.felnull.imp.client.handler.TextureHandler;
 import dev.felnull.imp.client.lava.LavaPlayerLoader;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
@@ -23,6 +24,7 @@ public class IamMusicPlayerClient {
         IMPMusicLoaders.init();
         ClientHandler.init();
         RenderHandler.init();
+        TextureHandler.init();
         IMPBlockEntityRenderers.init();
         IMPItemRenderers.init();
         IMPScreenFactorys.init();

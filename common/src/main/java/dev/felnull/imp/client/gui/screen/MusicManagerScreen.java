@@ -93,7 +93,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
     private MusicManagerBlockEntity.MonitorType getBEMonitorType() {
         if (getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
-            return musicManagerBlockEntity.getMyMonitor(mc.player);
+            return musicManagerBlockEntity.getMonitor(mc.player);
         return MusicManagerBlockEntity.MonitorType.OFF;
     }
 

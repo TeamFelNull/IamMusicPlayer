@@ -260,7 +260,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
 
     @Nullable
     public UUID getSelectedMusicRaw(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedMusic();
+        return musicManagerBlockEntity.getSelectedMusic(mc.player);
     }
 
     public MusicPlayList getSelectedMusicPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
@@ -280,7 +280,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     }
 
     public UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 
     private void setSelectedPlayList(UUID selectedPlayList) {

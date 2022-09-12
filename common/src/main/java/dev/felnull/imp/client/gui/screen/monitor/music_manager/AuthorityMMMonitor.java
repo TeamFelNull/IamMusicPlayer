@@ -241,7 +241,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
     }
 
     protected UUID getSelectedPlayList(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayList();
+        return musicManagerBlockEntity.getSelectedPlayList(mc.player);
     }
 
     protected UUID getSelectedPlayer() {
@@ -251,7 +251,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
     }
 
     protected UUID getSelectedPlayer(MusicManagerBlockEntity musicManagerBlockEntity) {
-        return musicManagerBlockEntity.getMySelectedPlayer();
+        return musicManagerBlockEntity.getSelectedPlayer(mc.player);
     }
 
     protected void setSelectedPlayer(UUID playerId) {

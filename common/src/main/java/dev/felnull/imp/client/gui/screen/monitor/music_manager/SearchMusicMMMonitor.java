@@ -96,7 +96,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     }
 
     public String getMusicSearchName(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicSearchName();
+        return blockEntity.getMusicSearchName(mc.player);
     }
 
     private void setMusicSearchName(String name) {
@@ -120,7 +120,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     }
 
     public String getMusicLoaderType(MusicManagerBlockEntity blockEntity) {
-        return blockEntity.getMyMusicLoaderType().isEmpty() ? "auto" : blockEntity.getMyMusicLoaderType();
+        return blockEntity.getMusicLoaderType(mc.player).isEmpty() ? "auto" : blockEntity.getMusicLoaderType(mc.player);
     }
 
     @Override
