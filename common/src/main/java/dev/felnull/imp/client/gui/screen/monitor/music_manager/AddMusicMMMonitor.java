@@ -211,7 +211,8 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
 
 
     private void setMusicLoaderType(String name) {
-        musicSourceNameEditBox.setValue("");
+        if (!"auto".equals(getMusicLoaderType()))
+            musicSourceNameEditBox.setValue("");
         getScreen().insMusicLoaderType(name);
     }
 

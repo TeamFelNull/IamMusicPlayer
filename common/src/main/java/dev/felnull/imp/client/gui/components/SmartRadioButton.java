@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class SmartRadioButton extends RadioButton implements IIMPSmartRender {
-    private static final TextureSpecify SRDIO_TEXTURE = TextureSpecify.create(MusicManagerMonitor.WIDGETS_TEXTURE, 18, 65, 20, 20);
+    private static final TextureSpecify SRDIO_TEXTURE = TextureSpecify.createRelative(MusicManagerMonitor.WIDGETS_TEXTURE, 18, 65, 20, 20);
 
     public SmartRadioButton(int x, int y, @NotNull Component title, @Nullable Consumer<RadioButton> onPress, @NotNull Supplier<Set<RadioButton>> group) {
         super(x, y, 20, 20, title, onPress, group, true, SRDIO_TEXTURE);

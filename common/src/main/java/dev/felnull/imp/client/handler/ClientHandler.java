@@ -23,7 +23,6 @@ import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.event.OBJLoaderEvent;
 import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
-import dev.felnull.otyacraftengine.client.renderer.texture.URLTextureManager;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -96,7 +95,6 @@ public class ClientHandler {
 
     private static InteractionResult onConfigSave(ConfigHolder<IMPConfig> configHolder, IMPConfig impConfig) {
         MusicEngine.getInstance().reload();
-        URLTextureManager.getInstance().reload();
         return InteractionResult.PASS;
     }
 
@@ -122,7 +120,7 @@ public class ClientHandler {
             int x = screen.width / 2 - 155 + i % 2 * 160;
             int y = screen.height / 6 - 12 + 22 * (i >> 1);
             screenAccess.addRenderableWidget(new MusicVolumeSlider(x, y, 150));
-            screenAccess.addRenderableWidget(new IconButton(x + 150 + 4, y, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.create(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
+            screenAccess.addRenderableWidget(new IconButton(x + 150 + 4, y, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.createRelative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
         }
     }
 
