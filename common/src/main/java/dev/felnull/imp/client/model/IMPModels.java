@@ -2,12 +2,12 @@ package dev.felnull.imp.client.model;
 
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.otyacraftengine.client.callpoint.ModelRegister;
-import dev.felnull.otyacraftengine.client.model.ModelDeferredRegister;
+import dev.felnull.otyacraftengine.client.model.ModelCollectiveRegister;
 import dev.felnull.otyacraftengine.client.model.ModelHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public class IMPModels {
-    private static final ModelDeferredRegister REGISTER = ModelDeferredRegister.create();
+    private static final ModelCollectiveRegister REGISTER = ModelCollectiveRegister.create();
 
     public static final ModelHolder MUSIC_MANAGER_ACCESS_LAMP = REGISTER.register(new ResourceLocation(IamMusicPlayer.MODID, "block/music_manager/music_manager_access_lamp"));
     public static final ModelHolder MUSIC_MANAGER_OFF_ACCESS_LAMP = REGISTER.register(new ResourceLocation(IamMusicPlayer.MODID, "block/music_manager/music_manager_off_access_lamp"));

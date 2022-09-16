@@ -8,5 +8,6 @@ public class IamMusicPlayerDataGen {
         var btp = new IMPBlockTagProviderWrapper(access);
         access.addProvider(btp);
         access.addProvider(new IMPItemTagProviderWrapper(access, btp));
+        access.addProvider(new IMPPoiTypeTagProviderWrapper(access));
     }
 }
