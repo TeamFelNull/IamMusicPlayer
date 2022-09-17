@@ -100,10 +100,17 @@ shadowJar {
     relocate('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.include.com.sedmelluq.discord.lavaplayer') {
         exclude 'com.sedmelluq.discord.lavaplayer.natives.**'
     }
+
     mergeServiceFiles {
         relocate 'javax.ws.rs.ext', 'dev.felnull.imp.include.javax.ws.rs.ext'
+     //   relocate 'javax.script.ScriptEngineFactory', 'dev.felnull.imp.include.javax.script.ScriptEngineFactory'
         relocate 'org.glassfish.jersey.internal.spi', 'dev.felnull.imp.include.org.glassfish.jersey.internal.spi'
     }
+
+    relocate 'ibxm', 'dev.felnull.imp.include.ibxm'
+    relocate 'net.sourceforge.jaad.aac', 'dev.felnull.imp.include.net.sourceforge.jaad.aac'
+    relocate 'org.mozilla.javascript', 'dev.felnull.imp.include.org.mozilla.javascript'
+    relocate 'org.mozilla.classfile', 'dev.felnull.imp.include.org.mozilla.classfile'
 }
 shadowJar {
     exclude "architectury.common.json"

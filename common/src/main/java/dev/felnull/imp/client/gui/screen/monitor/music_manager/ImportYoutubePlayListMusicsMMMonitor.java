@@ -10,8 +10,8 @@ import dev.felnull.imp.client.music.loadertypes.YoutubeMusicLoaderType;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
-import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
+import dev.felnull.otyacraftengine.util.FlagThread;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
