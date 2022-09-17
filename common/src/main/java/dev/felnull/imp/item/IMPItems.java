@@ -3,6 +3,7 @@ package dev.felnull.imp.item;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.integration.PatchouliIntegration;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
 
@@ -15,7 +16,12 @@ public class IMPItems {
     public static final RegistrySupplier<Item> PARABOLIC_ANTENNA = register("parabolic_antenna", () -> new ParabolicAntennaItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB).stacksTo(1)));
     public static final RegistrySupplier<Item> CASSETTE_TAPE = register("cassette_tape", () -> new CassetteTapeItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB).stacksTo(1), CassetteTapeItem.BaseType.NORMAL));
     public static final RegistrySupplier<Item> CASSETTE_TAPE_GLASS = register("cassette_tape_glass", () -> new CassetteTapeItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB).stacksTo(1), CassetteTapeItem.BaseType.GLASS));
-    public static final RegistrySupplier<Item> MANUAL = register("manual", () -> new ManualItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB).stacksTo(1)));
+    public static final RegistrySupplier<Item> MANUAL = register("manual", () -> {
+        var pr = new Item.Properties().stacksTo(1);
+        if (PatchouliIntegration.INSTANCE.isEnableElement())
+            pr.tab(IMPCreativeModeTab.MOD_TAB);
+        return new ManualItem(pr);
+    });
 
     private static RegistrySupplier<Item> register(String name) {
         return register(name, () -> new Item(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));

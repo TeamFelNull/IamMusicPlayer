@@ -1,0 +1,27 @@
+{
+  "name": "Cassette Tape",
+  "icon": "iammusicplayer:cassette_tape",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Write your favorite music!$(br)Please refer to $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)Writing to cassette tape$(/l) for the writing method."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape",
+      "text": "It is possible to play music on a boombox after writing music on a cassette deck.$(br)Can be colored by crafting with dyes."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape_glass",
+      "text": "Cassette tape that allows you to see the contents.$(br)It has the same function and compatibility as a normal cassette tape."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_tape",
+      "recipe2": "iammusicplayer:cassette_tape_glass"
+    }
+  ]
+}

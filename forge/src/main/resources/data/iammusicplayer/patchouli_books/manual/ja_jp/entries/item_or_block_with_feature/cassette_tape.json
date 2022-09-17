@@ -1,0 +1,27 @@
+{
+  "name": "カセットテープ",
+  "icon": "iammusicplayer:cassette_tape",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "あなたの好きな曲を書き込みましょう！$(br)書き込み方については $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)カセットテープに書き込む$(/l) を参照してください。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape",
+      "text": "カセットデッキで音楽を書き込んだ後、ラジカセで再生することができます。$(br)染料とクラフトすることで着色可能。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape_glass",
+      "text": "中身が透けて見えるカセットテープ。$(br)普通のカセットテープと同じ機能で互換性があります。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_tape",
+      "recipe2": "iammusicplayer:cassette_tape_glass"
+    }
+  ]
+}

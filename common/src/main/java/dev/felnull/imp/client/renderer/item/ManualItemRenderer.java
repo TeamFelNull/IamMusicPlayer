@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.architectury.platform.Platform;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.model.IMPModels;
+import dev.felnull.imp.integration.PatchouliIntegration;
+import dev.felnull.imp.item.ManualItem;
 import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
@@ -66,11 +68,11 @@ public class ManualItemRenderer implements BEWLItemRenderer {
         }
         if (mc.isPaused()) return;
         openProgressO = openProgress;
-      /*  if (PatchouliIntegration.isEnableIntegration() && ManualItem.MANUAL_BOOK.equals(PatchouliWrapper.getOpenBookGui())) {
+        if (PatchouliIntegration.INSTANCE.isEnable() && ManualItem.MANUAL_BOOK.equals(PatchouliIntegration.INSTANCE.getOpenBookGui())) {
             openProgress = Math.min(openProgress + 1, 10);
         } else {
             openProgress = Math.max(openProgress - 1, 0);
-        }*/
+        }
     }
 
     private void renderTurning(PoseStack poseStack, MultiBufferSource multiBufferSource, VertexConsumer vc, int light, int overlay) {

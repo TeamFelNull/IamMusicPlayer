@@ -1,0 +1,21 @@
+{
+  "name": "Music Manager",
+  "icon": "iammusicplayer:music_manager",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Let's craft it first!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:music_manager",
+      "text": "Devices for managing playlists and music in the world.$(br)You need to craft this device first to listen to music."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:music_manager"
+    }
+  ]
+}

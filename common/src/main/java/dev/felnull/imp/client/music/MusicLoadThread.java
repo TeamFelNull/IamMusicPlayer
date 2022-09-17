@@ -29,6 +29,9 @@ public class MusicLoadThread extends Thread {
     @Override
     public void run() {
         long time = System.currentTimeMillis();
+
+        var me = MusicEngine.getInstance();
+
         IMusicLoader loader = null;
         for (IMusicLoader ldr : IMPMusicLoaders.getLoaders()) {
             try {

@@ -312,7 +312,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             long st = System.currentTimeMillis();
             JsonObject jo = null;
             try {
-                jo = OEUtils.getURLJson(new URL(url));
+                jo = OEUtils.readJson(new URL(url), JsonObject.class);
             } catch (IOException ignored) {
             }
            /* if (jo == null) {

@@ -1,0 +1,21 @@
+{
+  "name": "Boombox",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Device for playing music."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:boombox",
+      "text": "You can play music from $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Cassette Tapes$(/l), play radio streams using the $(l:iammusicplayer:item_or_block_with_feature/antenna)Antenna$(/l), and play music directly from playlists using the $(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)Parabolic Antenna$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:boombox"
+    }
+  ]
+}

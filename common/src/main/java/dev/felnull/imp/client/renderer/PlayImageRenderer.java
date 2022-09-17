@@ -115,7 +115,7 @@ public class PlayImageRenderer {
 
     private Pair<ResourceLocation, Vec2> getImageTexture(ImageInfo imageInfo, boolean cash) {
         if (imageInfo.getImageType() == ImageInfo.ImageType.URL) {
-            var loc = OETextureUtils.getAndLoadURLTextureAsync(imageInfo.getIdentifier(), cash).getLocation();
+            var loc = OETextureUtils.getAndLoadURLTextureAsync(imageInfo.getIdentifier(), cash).of();
             var scale = OETextureUtils.getTextureScale(loc);
             float w = 1;
             float h = 1;

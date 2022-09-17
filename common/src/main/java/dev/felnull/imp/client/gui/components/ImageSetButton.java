@@ -19,8 +19,8 @@ public class ImageSetButton extends Button implements IIMPSmartRender {
     public static enum ImageSetType {
         FILE_OPEN("file_open"),
         PLAYER_FACE("player_face"),
-        DELETE("delete"),
-        URL("url");
+        DELETE("delete");
+        //        URL("url");
         private final Component name;
 
         private ImageSetType(String name) {
@@ -38,7 +38,7 @@ public class ImageSetButton extends Button implements IIMPSmartRender {
         if (type == ImageSetType.PLAYER_FACE) {
             OERenderUtils.drawPlayerFace(poseStack, mc.player.getGameProfile().getId(), (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 11);
         } else {
-            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.URL ? 22 : type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, (float) x + ((float) width - 11f) / 2f, (float) y + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
         }
         if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);

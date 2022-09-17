@@ -48,7 +48,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     private boolean locked;
     private Component NOT_ENTERED_TEXT;
     private Component IMAGE_SET_ERROR_TEXT;
-    private EditBox imageUrlEditBox;
+    //  private EditBox imageUrlEditBox;
     protected EditBox nameEditBox;
     private SmartButton doneButton;
     private ImageUrlLoader imageUrlLoader;
@@ -76,19 +76,19 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
             addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 22, ImageSetButton.ImageSetType.PLAYER_FACE, n -> setImage(new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, IIMPSmartRender.mc.player.getGameProfile().getName())), getScreen()));
 
-            this.imageUrlEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 112, getStartY() + 42, 69, 12, Component.translatable("imp.editBox.imageUrl"));
+            /*this.imageUrlEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 112, getStartY() + 42, 69, 12, Component.translatable("imp.editBox.imageUrl"));
             this.imageUrlEditBox.setMaxLength(300);
             this.imageUrlEditBox.setValue(getImageURL());
             this.imageUrlEditBox.setResponder(this::setImageURL);
-            addRenderWidget(this.imageUrlEditBox);
+            addRenderWidget(this.imageUrlEditBox);*/
 
-            addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 41, ImageSetButton.ImageSetType.URL, n -> {
+            /*addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 41, ImageSetButton.ImageSetType.URL, n -> {
                 if (this.imageUrlEditBox.getValue().isEmpty()) {
                     IMAGE_SET_ERROR_TEXT = Component.translatable("imp.text.imageLoad.empty");
                     return;
                 }
                 startImageUrlLoad(this.imageUrlEditBox.getValue());
-            }, getScreen()));
+            }, getScreen()));*/
         }
 
         this.nameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 5, getStartY() + 112, 177, 12, Component.translatable("imp.editBox.name"));
@@ -144,6 +144,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         } else {
             drawSmartCenterText(poseStack, NO_IMAGE_TEXT, getStartX() + 38, getStartY() + 51);
         }
+
         if (!isLocked()) {
             drawSmartText(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 90);
 
@@ -158,6 +159,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
                 drawSmartFixedWidthText(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
         }
         drawSmartText(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 102);
+
 
     }
 
@@ -231,9 +233,9 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
             OERenderUtils.renderPlayerFaceSprite(poseStack, multiBufferSource, IIMPSmartRender.mc.player.getGameProfile().getId(), 11 * onPxW, i, j);
             poseStack.popPose();
 
-            renderSmartButtonSprite(poseStack, multiBufferSource, 75, 41, OERenderUtils.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 22, 19, 11, 11, 256, 256);
+            //   renderSmartButtonSprite(poseStack, multiBufferSource, 75, 41, OERenderUtils.MIN_BREADTH * 4, 33, 15, i, j, onPxW, onPxH, monitorHeight, MusicManagerMonitor.WIDGETS_TEXTURE, 73 + 22, 19, 11, 11, 256, 256);
 
-            renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 42, OERenderUtils.MIN_BREADTH * 4, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
+            //   renderSmartEditBoxSprite(poseStack, multiBufferSource, 112, 42, OERenderUtils.MIN_BREADTH * 4, 69, 12, i, j, onPxW, onPxH, monitorHeight, getImageURL(blockEntity));
 
             renderSmartTextSprite(poseStack, multiBufferSource, DROP_INFO_TEXT, 5, 90, OERenderUtils.MIN_BREADTH * 3, onPxW, onPxH, monitorHeight, i);
 
@@ -315,7 +317,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
         getScreen().insImage(image);
     }
 
-    private String getImageURL() {
+    /*private String getImageURL() {
         if (getScreen().getBlockEntity() instanceof MusicManagerBlockEntity musicManagerBlockEntity)
             return getImageURL(musicManagerBlockEntity);
         return "";
@@ -327,7 +329,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
     private void setImageURL(String text) {
         getScreen().insImageURL(text);
-    }
+    }*/
 
     private void startImageUrlLoad(String url) {
         stopImageUrlLoad();

@@ -1,0 +1,21 @@
+{
+  "name": "音楽管理装置",
+  "icon": "iammusicplayer:music_manager",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "最初に作りましょう！"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:music_manager",
+      "text": "ワールドのプレイリストや、音楽を管理するための装置。$(br)音楽を聴くためにはまずこの装置を作る必要があります。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:music_manager"
+    }
+  ]
+}

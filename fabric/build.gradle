@@ -8,7 +8,7 @@ architectury {
 }
 
 sourceSets {
-    main{
+    main {
         resources {
             srcDirs += [
                     'src/main/generated'
@@ -59,6 +59,7 @@ dependencies {
     modApi "com.terraformersmc:modmenu:4.0.6"
     modApi "me.shedaniel.cloth:cloth-config-fabric:8.0.75"
     modApi "me.shedaniel:RoughlyEnoughItems-fabric:9.1.528"
+    modApi "vazkii.patchouli:Patchouli:1.19.2-76-FABRIC"
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.sedmelluq', module: 'lavaplayer-natives'
@@ -66,6 +67,7 @@ dependencies {
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
+
 }
 
 processResources {

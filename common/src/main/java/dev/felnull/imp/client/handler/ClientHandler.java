@@ -16,6 +16,7 @@ import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.entity.IRingerPartyParrot;
+import dev.felnull.imp.integration.PatchouliIntegration;
 import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
@@ -134,7 +135,7 @@ public class ClientHandler {
     }
 
     private static void ontClientTick(Minecraft instance) {
-        if (IMPItemRenderers.manualItemRenderer != null)
+        if (PatchouliIntegration.INSTANCE.isEnable())
             IMPItemRenderers.manualItemRenderer.tick();
     }
 }

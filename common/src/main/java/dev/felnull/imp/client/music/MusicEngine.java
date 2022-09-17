@@ -15,11 +15,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MusicEngine {
     private static final Minecraft mc = Minecraft.getInstance();
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
     private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
     private final Map<UUID, MusicLoadThread> MUSIC_LOADS = new HashMap<>();
     private final List<UUID> REMOVES_PLAYERS = new ArrayList<>();
@@ -36,6 +39,10 @@ public class MusicEngine {
 
     public static MusicEngine getInstance() {
         return INSTANCE;
+    }
+
+    public ExecutorService getExecutor() {
+        return executor;
     }
 
     public int getCurrentMusicPlayed() {

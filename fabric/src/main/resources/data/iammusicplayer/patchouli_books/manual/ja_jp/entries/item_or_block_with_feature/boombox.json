@@ -1,0 +1,21 @@
+{
+  "name": "ラジカセ",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "音楽を再生するための装置"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:boombox",
+      "text": "$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)カセットテープ$(/l)から音楽を再生、$(l:iammusicplayer:item_or_block_with_feature/antenna)アンテナ$(/l)を利用しラジオストリームを再生、$(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)パラボラアンテナ$(/l)を利用してプレイリストから直接音楽を再生できます。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:boombox"
+    }
+  ]
+}
