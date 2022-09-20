@@ -1,6 +1,6 @@
 {
   "_comment.i": "物品",
-  "item.iammusicplayer.antenna": "广播天线",
+  "item.iammusicplayer.radio_antenna": "广播天线",
   "item.iammusicplayer.parabolic_antenna": "卫星天线",
   "item.iammusicplayer.cassette_tape": "磁带",
   "item.iammusicplayer.cassette_tape_glass": "透明磁带",

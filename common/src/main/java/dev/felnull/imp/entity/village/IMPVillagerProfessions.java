@@ -40,7 +40,7 @@ public class IMPVillagerProfessions {
         registerBuying(DJ.get(), 2, IMPBlocks.MUSIC_MANAGER.get(), 18, 1, 1, 12);
         registerBuying(DJ.get(), 3, IMPBlocks.CASSETTE_DECK.get(), 13, 1, 1, 12);
         registerBuying(DJ.get(), 4, IMPBlocks.BOOMBOX.get(), 15, 1, 3, 12);
-        registerBuying(DJ.get(), 5, IMPItems.ANTENNA.get(), 15, 1, 1, 23);
+        registerBuying(DJ.get(), 5, IMPItems.RADIO_ANTENNA.get(), 15, 1, 1, 23);
         registerBuying(DJ.get(), 5, IMPItems.PARABOLIC_ANTENNA.get(), 33, 1, 1, 23);
 
         registerSelling(DJ.get(), 1, Items.DRIED_KELP, 12, 15, 2);

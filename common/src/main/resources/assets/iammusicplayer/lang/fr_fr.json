@@ -1,6 +1,6 @@
 {
   "_comment.i": "Item",
-  "item.iammusicplayer.antenna": "Antenne radio",
+  "item.iammusicplayer.radio_antenna": "Antenne radio",
   "item.iammusicplayer.parabolic_antenna": "Antenne Parabolique",
   "item.iammusicplayer.cassette_tape": "Cassette",
   "item.iammusicplayer.cassette_tape_glass": "Cassette en verre",

@@ -11,9 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -78,11 +80,11 @@ public class MusicEngine {
             if (!player.isPlaying())
                 player.play(delay);
         }
-        notifyNearbyEntities(id, playEntry);
+        // notifyNearbyEntities(id, playEntry);
         return true;
     }
 
-    private void notifyNearbyEntities(UUID uuid, MusicPlayEntry playEntry) {
+    private void notifyNearbyEntities(UUID uuid, @NotNull MusicPlayEntry playEntry) {
         var v3 = playEntry.player().getCoordinatePosition();
         float rp = playEntry.playbackInfo().getRange() / 90f;
         for (LivingEntity livingentity : mc.level.getEntitiesOfClass(LivingEntity.class, (new AABB(new BlockPos(v3))).inflate(9.0d * rp))) {
@@ -254,7 +256,12 @@ public class MusicEngine {
                 var tracker = IMPMusicTrackers.createTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
                 if (tracker != null) {
                     var ps = tracker.getPosition().get();
+                    var prp = m.player().getCoordinatePosition();
+                    boolean flg = ps != null && ps != Vec3.ZERO && prp == Vec3.ZERO;
                     m.player().setCoordinatePosition(ps);
+                    if (flg)
+                        notifyNearbyEntities(n, m);
+
                     m.player().setFixedSound(ps == null);
                 }
                 m.player().update(m.playbackInfo());

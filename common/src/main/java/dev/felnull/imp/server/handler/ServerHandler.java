@@ -37,7 +37,7 @@ public class ServerHandler {
             var antennaPoolB = LootPool.lootPool().setRolls(ConstantValue.exactly(1))
                     .when(LootItemRandomChanceCondition.randomChance(rare ? 0.364364f : 0.1919810f))
                     .add(LootItem.lootTableItem(IMPItems.PARABOLIC_ANTENNA.get()).setWeight(1))
-                    .add(LootItem.lootTableItem(IMPItems.ANTENNA.get()).setWeight(rare ? 1 : 4));
+                    .add(LootItem.lootTableItem(IMPItems.RADIO_ANTENNA.get()).setWeight(rare ? 1 : 4));
             modifyAccess.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "antenna"), antennaPoolB);
 
             var djKitPoolB = LootPool.lootPool().setRolls(UniformGenerator.between(1, 3))

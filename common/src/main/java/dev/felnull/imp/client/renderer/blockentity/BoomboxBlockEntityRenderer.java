@@ -139,7 +139,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
 
     private static void renderAntenna(PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j, ItemStack antenna, float roted, float antennaPar) {
         if (!IMPItemUtil.isAntenna(antenna)) return;
-        if (antenna.is(IMPItems.ANTENNA.get())) {
+        if (antenna.is(IMPItems.RADIO_ANTENNA.get())) {
             poseStack.pushPose();
             float ws = 0.025f / 2f;
             OERenderUtils.poseTrans16(poseStack, 0.25, 9, 10.25);

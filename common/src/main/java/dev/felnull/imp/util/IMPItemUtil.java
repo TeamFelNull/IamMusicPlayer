@@ -1,6 +1,6 @@
 package dev.felnull.imp.util;
 
-import dev.felnull.imp.item.AntennaItem;
+import dev.felnull.imp.item.RadioAntennaItem;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.item.IMPItems;
 import net.minecraft.ChatFormatting;
@@ -14,7 +14,7 @@ public class IMPItemUtil {
     }
 
     public static boolean isAntenna(ItemStack itemStack) {
-        return itemStack.getItem() instanceof AntennaItem;
+        return itemStack.getItem() instanceof RadioAntennaItem;
     }
 
     public static boolean isRemotePlayBackAntenna(ItemStack stack) {
@@ -22,7 +22,7 @@ public class IMPItemUtil {
     }
 
     public static boolean isRadioAntenna(ItemStack stack) {
-        return isAntenna(stack) && stack.is(IMPItems.ANTENNA.get());
+        return isAntenna(stack) && stack.is(IMPItems.RADIO_ANTENNA.get());
     }
 
     public static ItemStack createKamesutaAntenna() {

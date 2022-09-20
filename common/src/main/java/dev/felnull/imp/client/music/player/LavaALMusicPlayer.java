@@ -193,11 +193,12 @@ public class LavaALMusicPlayer implements IMusicPlayer {
 
     @Override
     public void setCoordinatePosition(Vec3 vec3) {
-        if (vec3 == null) if (mc.player != null) {
-            vec3 = mc.player.position();
-        } else {
-            vec3 = Vec3.ZERO;
-        }
+        if (vec3 == null)
+            if (mc.player != null) {
+                vec3 = mc.player.position();
+            } else {
+                vec3 = Vec3.ZERO;
+            }
         this.pos = vec3;
         AL11.alSource3f(source, AL11.AL_POSITION, (float) vec3.x, (float) vec3.y, (float) vec3.z);
     }

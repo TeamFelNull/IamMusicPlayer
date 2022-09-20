@@ -1,9 +1,8 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.otyacraftengine.item.IEquipmentItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -11,16 +10,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ParabolicAntennaItem extends RadioAntennaItem implements IEquipmentItem {
-    private static final Component DESC = Component.translatable("item.iammusicplayer.parabolic_antenna.desc").withStyle(ChatFormatting.GRAY);
+public class RadioAntennaItem extends Item {
+    private static final Component DESC = Component.translatable("item.iammusicplayer.radio_antenna.desc").withStyle(ChatFormatting.GRAY);
 
-    public ParabolicAntennaItem(Properties properties) {
+    public RadioAntennaItem(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public EquipmentSlot getEquipmentSlotType(ItemStack stack) {
-        return EquipmentSlot.HEAD;
     }
 
     @Override
