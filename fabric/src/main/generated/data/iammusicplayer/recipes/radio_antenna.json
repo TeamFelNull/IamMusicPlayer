@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "group": "antenna",
+  "key": {
+    "E": {
+      "tag": "c:ender_pearls"
+    },
+    "I": {
+      "tag": "c:iron_ingots"
+    }
+  },
+  "pattern": [
+    "E",
+    "I",
+    "I"
+  ],
+  "result": {
+    "item": "iammusicplayer:radio_antenna"
+  }
+}

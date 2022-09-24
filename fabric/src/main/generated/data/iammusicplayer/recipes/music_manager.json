@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "c:diamonds"
+    },
+    "D": {
+      "tag": "c:diamonds"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "I": {
+      "tag": "c:iron_ingots"
+    },
+    "R": {
+      "tag": "c:redstone_blocks"
+    }
+  },
+  "pattern": [
+    "III",
+    "DGR",
+    "BII"
+  ],
+  "result": {
+    "item": "iammusicplayer:music_manager"
+  }
+}

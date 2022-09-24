@@ -2,6 +2,7 @@ package dev.felnull.imp.data;
 
 import dev.felnull.otyacraftengine.data.CrossDataGeneratorAccess;
 import dev.felnull.otyacraftengine.data.provider.BlockTagProviderWrapper;
+import dev.felnull.otyacraftengine.data.provider.InputCopyProviderWrapper;
 import dev.felnull.otyacraftengine.data.provider.PoiTypeTagProviderWrapper;
 import net.minecraft.world.level.block.Block;
 

@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "tag": "minecraft:buttons"
+    },
+    "I": {
+      "tag": "c:iron_ingots"
+    },
+    "J": {
+      "item": "minecraft:jukebox"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    },
+    "T": {
+      "tag": "c:iron_nuggets"
+    }
+  },
+  "pattern": [
+    "TBT",
+    "NJN",
+    "III"
+  ],
+  "result": {
+    "item": "iammusicplayer:boombox"
+  }
+}
