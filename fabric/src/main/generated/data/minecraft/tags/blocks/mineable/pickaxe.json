@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "iammusicplayer:boombox",
+    "iammusicplayer:cassette_deck",
+    "iammusicplayer:music_manager"
+  ]
+}

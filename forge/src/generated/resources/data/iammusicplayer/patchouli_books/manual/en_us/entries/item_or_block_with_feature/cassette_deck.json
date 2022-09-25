@@ -1,0 +1,21 @@
+{
+  "name": "Cassette Deck",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Devices needed to write music to $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Cassette Tapes$(/l).$(br)Please refer to $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)Writing to cassette tape$(/l) for the writing method."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_deck",
+      "text": "Besides writing music, you can also play music from $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Cassette Tapes$(/l)"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_deck"
+    }
+  ]
+}

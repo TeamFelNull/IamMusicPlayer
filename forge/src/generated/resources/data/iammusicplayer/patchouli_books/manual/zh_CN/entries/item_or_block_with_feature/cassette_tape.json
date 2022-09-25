@@ -1,0 +1,27 @@
+{
+  "name": "盒式磁带",
+  "icon": "iammusicplayer:cassette_tape",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "刻录你最喜欢的音乐!$(br)请参考$(l:iammusicplayer:how_to_listen/write_to_cassette_tape)刻录盒式磁带$(/l)刻录方法。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape",
+      "text": "在盒式磁带上刻录音乐后，在便携式录音机上播放音乐是可以的。$(br)可以用染料染色。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape_glass",
+      "text": "可以让你看到内容的盒式磁带。$(br)它具有与普通盒式磁带相同的功能和兼容性。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_tape",
+      "recipe2": "iammusicplayer:cassette_tape_glass"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "カセットデッキ",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)カセットテープ$(/l)に音楽を書き込むために必要な装置.$(br)書き込み方については $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)カセットテープに書き込む$(/l) を参照してください。"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_deck",
+      "text": "音楽を書き込む以外にも$(l:iammusicplayer:item_or_block_with_feature/cassette_tape)カセットテープ$(/l)から音楽を再生する事も出来ます。"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_deck"
+    }
+  ]
+}
