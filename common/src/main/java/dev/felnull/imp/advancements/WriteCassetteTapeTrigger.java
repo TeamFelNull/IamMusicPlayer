@@ -40,8 +40,13 @@ public class WriteCassetteTapeTrigger extends SimpleCriterionTrigger<WriteCasset
         @Override
         public JsonObject serializeToJson(SerializationContext serializationContext) {
             JsonObject jsonObject = super.serializeToJson(serializationContext);
-            jsonObject.add("item", this.item.serializeToJson());
+            if (this.item != null)
+                jsonObject.add("item", this.item.serializeToJson());
             return jsonObject;
+        }
+
+        public static TriggerInstance writeCassetteTape() {
+            return new TriggerInstance(EntityPredicate.Composite.ANY, null);
         }
     }
 }

@@ -54,5 +54,9 @@ public class ListenToMusicTrigger extends SimpleCriterionTrigger<ListenToMusicTr
             jo.addProperty("kamesuta", this.kamesuta);
             return jo;
         }
+
+        public static TriggerInstance listen(boolean radio, boolean remote, boolean kamesuta) {
+            return new TriggerInstance(EntityPredicate.Composite.ANY, radio, remote, kamesuta);
+        }
     }
 }

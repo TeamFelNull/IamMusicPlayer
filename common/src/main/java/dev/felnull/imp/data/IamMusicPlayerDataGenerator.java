@@ -1,5 +1,6 @@
 package dev.felnull.imp.data;
 
+import dev.felnull.imp.data.advancements.IMPAdvancementProviderWrapper;
 import dev.felnull.otyacraftengine.data.CrossDataGeneratorAccess;
 
 import java.nio.file.Paths;
@@ -15,5 +16,6 @@ public class IamMusicPlayerDataGenerator {
         access.addProvider(new IMPPoiTypeTagProviderWrapper(access));
         access.addProvider(new IMPInputCopyProviderWrapper(access));
         access.addProvider(new IMPBlockLootTableProviderWrapper(access));
+        access.addProvider(new IMPAdvancementProviderWrapper(access));
     }
 }

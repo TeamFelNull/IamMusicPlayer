@@ -6,9 +6,6 @@ import dev.felnull.otyacraftengine.data.provider.BlockLootTableProviderWrapper;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.level.block.Block;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class IMPBlockLootTableProviderWrapper extends BlockLootTableProviderWrapper {
     public IMPBlockLootTableProviderWrapper(CrossDataGeneratorAccess crossDataGeneratorAccess) {
         super(crossDataGeneratorAccess);
@@ -23,10 +20,6 @@ public class IMPBlockLootTableProviderWrapper extends BlockLootTableProviderWrap
 
     @Override
     public Iterable<Block> getKnownBlocks() {
-        List<Block> blocks = new ArrayList<>();
-        IMPBlocks.BLOCKS.iterator().forEachRemaining(r -> {
-            blocks.add(r.get());
-        });
-        return blocks;
+        return extract(IMPBlocks.BLOCKS);
     }
 }

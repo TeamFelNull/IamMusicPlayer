@@ -30,5 +30,9 @@ public class AddMusicTrigger extends SimpleCriterionTrigger<AddMusicTrigger.Trig
         public TriggerInstance(EntityPredicate.Composite composite) {
             super(ID, composite);
         }
+
+        public static TriggerInstance addMusic() {
+            return new TriggerInstance(EntityPredicate.Composite.ANY);
+        }
     }
 }

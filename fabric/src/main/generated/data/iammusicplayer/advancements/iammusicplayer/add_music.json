@@ -1,0 +1,29 @@
+{
+  "parent": "iammusicplayer:iammusicplayer/root",
+  "criteria": {
+    "add_music": {
+      "conditions": {},
+      "trigger": "iammusicplayer:add_music"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.iammusicplayer.add_music.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "iammusicplayer:music_manager"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.iammusicplayer.add_music.title"
+    }
+  },
+  "requirements": [
+    [
+      "add_music"
+    ]
+  ]
+}

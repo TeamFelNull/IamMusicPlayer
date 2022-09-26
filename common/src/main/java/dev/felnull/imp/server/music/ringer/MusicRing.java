@@ -5,6 +5,7 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.networking.IMPPackets;
+import dev.felnull.otyacraftengine.advancement.ModInvolvementTrigger;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -36,12 +37,12 @@ public class MusicRing {
             var uuid = ringer.getRingerUUID();
             if (!ringer.exists()) {
                 stopRingers.add(uuid);
-            }else {
+            } else {
                 var ms = ringer.getRingerMusicSource();
                 if (ms == null || !ringer.isRingerPlaying()) {
                     ringer.setRingerPlaying(false);
                     stopRingingPlayer(uuid);
-                }else {
+                } else {
                     var rpi = playerInfos.get(uuid);
                     if (rpi == null) {
                         rpi = new RingedPlayerInfos(uuid, getTime());
@@ -318,6 +319,7 @@ public class MusicRing {
 
         private void advancement(ServerPlayer player) {
             IMPCriteriaTriggers.LISTEN_TO_MUSIC.trigger(player, getRinger().isRingerStream(), getRinger().isRingerRemote(), isKamesuta());
+            ModInvolvementTrigger.trigger(player, IamMusicPlayer.MODID);
         }
 
         private boolean isKamesuta() {

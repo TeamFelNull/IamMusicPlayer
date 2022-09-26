@@ -1,0 +1,29 @@
+{
+  "parent": "iammusicplayer:iammusicplayer/add_music",
+  "criteria": {
+    "write_cassette_tape": {
+      "conditions": {},
+      "trigger": "iammusicplayer:write_cassette_tape"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.iammusicplayer.write_cassette_tape.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "iammusicplayer:cassette_deck"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.iammusicplayer.write_cassette_tape.title"
+    }
+  },
+  "requirements": [
+    [
+      "write_cassette_tape"
+    ]
+  ]
+}
