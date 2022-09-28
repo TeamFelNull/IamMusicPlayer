@@ -3,7 +3,7 @@
   "id": "iammusicplayer",
   "version": "${version}",
   "name": "Iam Music Player",
-  "description": "Add a boombox that can play music.\nThe ikisugi music player mod...",
+  "description": "Add a music player that you can listen to with multiple players.\nThe ikisugi music player mod...",
   "authors": [
     "MORIMORI0317",
     "nin8995"
@@ -40,6 +40,8 @@
   "depends": {
     "fabric": "*",
     "minecraft": ">=1.19.2",
-    "architectury": ">=6.2.43"
+    "architectury": ">=6.2.43",
+    "cloth-config2": ">=8.0.75",
+    "otyacraftengine": ">=3.0"
   }
 }

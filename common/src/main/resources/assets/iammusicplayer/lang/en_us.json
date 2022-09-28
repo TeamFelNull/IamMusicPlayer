@@ -269,5 +269,8 @@
   "_comment.bo": "Book",
   "book.imp.landing_text": "This book describes how to use IamMusicPlayer.$(br2)Please note that the English translation may be incorrect because the creator of this mod is Japanese.$(br2)If you find any bugs in this mod or conflicts with other mods, please let us know in the $(l:https://github.com/TeamFelnull/IamMusicPlayer/issues)GitHub issues$(/l).",
   "_comment.cr": "CreativeTab",
-  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
+  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
+  "_comment.other": "Other",
+  "modmenu.descriptionTranslation.iammusicplayer": "Add a music player that you can listen to with multiple players.\nThe ikisugi music player mod...",
+  "_comment.la": "Last"
 }

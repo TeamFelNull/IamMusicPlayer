@@ -1,8 +1,8 @@
 package dev.felnull.imp.util;
 
-import dev.felnull.imp.item.RadioAntennaItem;
 import dev.felnull.imp.item.CassetteTapeItem;
 import dev.felnull.imp.item.IMPItems;
+import dev.felnull.imp.item.RadioAntennaItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;

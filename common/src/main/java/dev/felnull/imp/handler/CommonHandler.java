@@ -1,6 +1,5 @@
 package dev.felnull.imp.handler;
 
-import dev.architectury.event.EventFactory;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.common.TickEvent;
 import dev.felnull.imp.IamMusicPlayer;

@@ -1,44 +1,36 @@
 package dev.felnull.imp.api.music;
 
-import dev.felnull.imp.server.music.ringer.IMusicRinger;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 
-public record MusicRingerAccess(IMusicRinger ringer) {
+public interface MusicRingerAccess {
     /**
      * 音源の名前を取得
      *
      * @return 音源名
      */
-    public Component getName() {
-        return ringer.getRingerName();
-    }
+    Component getName();
+
 
     /**
      * 音源の空間位置を取得
      *
      * @return 座標
      */
-    public Vec3 getSpatialPosition() {
-        return ringer.getRingerSpatialPosition();
-    }
+    Vec3 getSpatialPosition();
 
     /**
      * 音源が再生中かどうか
      *
      * @return 再生中かどうか
      */
-    public boolean isPlaying() {
-        return ringer.isRingerPlaying();
-    }
+    boolean isPlaying();
 
     /**
-     * 音源のレベルを取得
+     * 音源のサーバーレベルを取得
      *
      * @return レベル
      */
-    public ServerLevel getLevel() {
-        return ringer.getRingerLevel();
-    }
+    ServerLevel getServerLevel();
 }

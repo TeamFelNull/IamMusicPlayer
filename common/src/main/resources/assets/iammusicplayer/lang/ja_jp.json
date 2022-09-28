@@ -269,5 +269,8 @@
   "_comment.bo": "Book",
   "book.imp.landing_text": "この本はIamMusicPlayerについて解説しています。$(br2)もしバグや他MODとの競合を発見した場合は$(l:https://github.com/TeamFelnull/IamMusicPlayer/issues)GitHub issues$(/l)にてお知らせください。",
   "_comment.cr": "CreativeTab",
-  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player"
+  "itemGroup.iammusicplayer.iammusicplayer": "Iam Music Player",
+  "_comment.other": "Other",
+  "modmenu.descriptionTranslation.iammusicplayer": "複数のプレイヤーと聞ける音楽プレイヤーを追加する\nイキスギ音楽プレイヤーMOD...",
+  "_comment.la": "Last"
 }

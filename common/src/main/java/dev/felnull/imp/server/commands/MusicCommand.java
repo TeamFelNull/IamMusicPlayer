@@ -2,17 +2,18 @@ package dev.felnull.imp.server.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.api.IamMusicPlayerAPIOld;
+import dev.felnull.imp.api.IamMusicPlayerAPI;
 import dev.felnull.imp.api.music.MusicRingerAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.List;
 
 public class MusicCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -28,16 +29,20 @@ public class MusicCommand {
 
     private static int ringerInfo(CommandSourceStack src, ServerLevel level) {
         if (level == null) {
-            src.sendSuccess(Component.translatable("commands.imp.ringer.info.all", IamMusicPlayerAPIOld.getRingerCount(), IamMusicPlayerAPIOld.getPlayingRingerCount()), false);
+            var rngs = IamMusicPlayerAPI.getInstance().getRingers();
+
+            src.sendSuccess(Component.translatable("commands.imp.ringer.info.all", rngs.size(), rngs.stream().filter(MusicRingerAccess::isPlaying).count()), false);
         } else {
             var name = level.dimension().location();
-            src.sendSuccess(Component.translatable("commands.imp.ringer.info", IamMusicPlayerAPIOld.getRingerCount(level), IamMusicPlayerAPIOld.getPlayingRingerCount(level), name), false);
+            var rngs = IamMusicPlayerAPI.getInstance().getRingers(level);
+
+            src.sendSuccess(Component.translatable("commands.imp.ringer.info", rngs.size(), rngs.stream().filter(MusicRingerAccess::isPlaying).count()), false);
         }
         return 1;
     }
 
     private static int ringerList(CommandSourceStack src, ServerLevel level) {
-        List<MusicRingerAccess> ringers = level != null ? IamMusicPlayerAPIOld.getRingers(level) : IamMusicPlayerAPIOld.getRingers();
+        var ringers = level != null ? IamMusicPlayerAPI.getInstance().getRingers(level) : IamMusicPlayerAPI.getInstance().getRingers();
 
         if (level == null) {
             if (ringers.isEmpty()) {
@@ -45,7 +50,7 @@ public class MusicCommand {
             } else {
                 src.sendSuccess(Component.translatable("commands.imp.ringer.list.all"), false);
                 for (MusicRingerAccess ringer : ringers) {
-                    src.sendSuccess(Component.translatable("commands.imp.ringer.list.all.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getLevel()), ringer.getLevel().dimension().location()), false);
+                    src.sendSuccess(Component.translatable("commands.imp.ringer.list.all.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getServerLevel()), ringer.getServerLevel().dimension().location()), false);
                 }
             }
         } else {
@@ -54,7 +59,7 @@ public class MusicCommand {
             } else {
                 src.sendSuccess(Component.translatable("commands.imp.ringer.list", level.dimension().location()), false);
                 for (MusicRingerAccess ringer : ringers) {
-                    src.sendSuccess(Component.translatable("commands.imp.ringer.list.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getLevel())), false);
+                    src.sendSuccess(Component.translatable("commands.imp.ringer.list.entry" + (ringer.isPlaying() ? ".playing" : ""), ringer.getName(), createPosComponent(ringer.getSpatialPosition(), ringer.getServerLevel())), false);
                 }
             }
         }

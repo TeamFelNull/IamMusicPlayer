@@ -1,5 +1,6 @@
 package dev.felnull.imp.server.music.ringer;
 
+import dev.felnull.imp.api.music.MusicRingerAccess;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -13,79 +14,98 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public interface IMusicRinger {
-    public Component getRingerName();
+public interface IMusicRinger extends MusicRingerAccess {
+    Component getRingerName();
 
-    public ServerLevel getRingerLevel();
+    ServerLevel getRingerLevel();
 
-    public UUID getRingerUUID();
+    UUID getRingerUUID();
 
-    public boolean exists();
+    boolean exists();
 
-    public boolean isRingerPlaying();
+    boolean isRingerPlaying();
 
-    public void setRingerPlaying(boolean playing);
+    void setRingerPlaying(boolean playing);
 
-    public @Nullable MusicSource getRingerMusicSource();
+    @Nullable MusicSource getRingerMusicSource();
 
-    public boolean isRingerLoop();
+    boolean isRingerLoop();
 
-    public long getRingerPosition();
+    long getRingerPosition();
 
-    public void setRingerPosition(long position);
+    void setRingerPosition(long position);
 
-    public Pair<ResourceLocation, CompoundTag> getRingerTracker();
+    Pair<ResourceLocation, CompoundTag> getRingerTracker();
 
-    public @NotNull Vec3 getRingerSpatialPosition();
+    @NotNull Vec3 getRingerSpatialPosition();
 
-    public float getRingerVolume();
+    float getRingerVolume();
 
-    public float getRingerRange();
+    float getRingerRange();
 
-    public boolean isRingerStream();
+    boolean isRingerStream();
 
-    default public boolean isRingerWait() {
+    default boolean isRingerWait() {
         return getMusicRing().isWaitRinger(getRingerUUID());
     }
 
-    default public MusicRing getMusicRing() {
+    default MusicRing getMusicRing() {
         return MusicRingManager.getInstance().getMusicRing(getRingerLevel());
     }
 
-    default public boolean alreadyAdded() {
+    default boolean alreadyAdded() {
         return getMusicRing().hasRinger(getRingerUUID());
     }
 
-    default public void ringerTick() {
+    default void ringerTick() {
         if (!alreadyAdded())
             addRingerInRingManager();
     }
 
-    default public void addRingerInRingManager() {
+    default void addRingerInRingManager() {
         getMusicRing().addRinger(this);
     }
 
-    default public void ringerRestart() {
+    default void ringerRestart() {
         getMusicRing().restart(getRingerUUID());
     }
 
-    default public void ringerEnd() {
-
+    default void ringerEnd() {
     }
 
-    public boolean isRingerMute();
+    boolean isRingerMute();
 
-    default public boolean isRingerRemote() {
+    default boolean isRingerRemote() {
         return false;
     }
 
     @Nullable
-    default public String getRingerMusicAuthor() {
+    default String getRingerMusicAuthor() {
         return null;
     }
 
     @NotNull
-    default public ItemStack getRingerAntenna() {
+    default ItemStack getRingerAntenna() {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    default Component getName() {
+        return getRingerName();
+    }
+
+    @Override
+    default Vec3 getSpatialPosition() {
+        return getRingerSpatialPosition();
+    }
+
+    @Override
+    default boolean isPlaying() {
+        return isRingerPlaying();
+    }
+
+    @Override
+    default ServerLevel getServerLevel() {
+        return getRingerLevel();
     }
 }
