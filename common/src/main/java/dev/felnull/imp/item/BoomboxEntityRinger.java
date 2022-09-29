@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class    BoomboxEntityRinger implements IBoomboxRinger {
+public class BoomboxEntityRinger implements IBoomboxRinger {
     private final Entity entity;
     private final UUID uuid;
     private int lastInventory;

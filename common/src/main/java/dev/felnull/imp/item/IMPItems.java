@@ -6,7 +6,6 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.integration.PatchouliIntegration;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 
 import java.util.function.Supplier;

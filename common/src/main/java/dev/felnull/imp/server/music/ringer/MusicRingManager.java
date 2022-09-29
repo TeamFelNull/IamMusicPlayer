@@ -69,7 +69,7 @@ public class MusicRingManager {
             ring.addReadyPlayer(player, uuid, waitUUID, result, retry, elapsed);
     }
 
-    public MusicRing getMusicRing(ServerLevel level){
+    public MusicRing getMusicRing(ServerLevel level) {
         return getMusicRingers().get(level);
     }
 

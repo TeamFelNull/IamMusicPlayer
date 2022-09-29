@@ -29,11 +29,37 @@ publishing {
         mavenCommon(MavenPublication) {
             artifactId = rootProject.archives_base_name
             from components.java
+            pom {
+                name = 'IamMusicPlayer'
+                description = 'The ikisugi music player mod.'
+                licenses {
+                    license {
+                        name = 'GNU Lesser General Public License v3.0'
+                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'MORIMORI0317'
+                        name = 'MORIMORI0317'
+                    }
+                    developer {
+                        id = 'FelNull'
+                        name = 'TeamFelNull'
+                        email = 'teamfelnull@felnull.dev'
+                    }
+                }
+            }
         }
     }
 
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+        maven {
+            url "https://maven.felnull.dev/"
+            credentials {
+                username = "felnull"
+                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
+            }
+        }
     }
 }
