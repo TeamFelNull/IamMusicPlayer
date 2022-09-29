@@ -6,17 +6,20 @@ import dev.felnull.imp.client.music.loader.IMusicLoader;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.util.FlagThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MusicLoadThread extends Thread {
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+public class MusicLoadThread extends FlagThread {
     private static final Logger LOGGER = LogManager.getLogger(MusicLoadThread.class);
     private final MusicSource source;
     private final MusicPlaybackInfo playbackInfo;
     private final long position;
     private final MusicLoadResultListener listener;
-    private LoadTimer timer;
-    private boolean timeOut;
 
     protected MusicLoadThread(MusicSource source, MusicPlaybackInfo playbackInfo, long position, MusicLoadResultListener listener) {
         this.setName("Music Loader Thread: " + source.getIdentifier());
@@ -29,53 +32,72 @@ public class MusicLoadThread extends Thread {
     @Override
     public void run() {
         long time = System.currentTimeMillis();
+
+        var executor = MusicEngine.getInstance().getExecutor();
+
         IMusicLoader loader = null;
         for (IMusicLoader ldr : IMPMusicLoaders.getLoaders()) {
+            var cf = CompletableFuture.supplyAsync(() -> {
+                try {
+                    return ldr.canLoad(source);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }, executor);
+
             try {
-                timer = new LoadTimer();
-                timer.start();
-                boolean lod = ldr.canLoad(source);
-                timer.interrupt();
-                timer = null;
-                if (lod) {
+                Boolean ret = cf.get(10, TimeUnit.SECONDS);
+                if (ret != null && ret) {
                     loader = ldr;
                     break;
                 }
-            } catch (InterruptedException ex) {
-                if (!timeOut) return;
+            } catch (TimeoutException ex) {
                 if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Load check time out: " + source.getIdentifier());
-                timeOut = false;
             } catch (Exception ignored) {
             }
         }
+        if (isStopped()) return;
+
         if (loader == null) {
             if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Non existent music loader: " + source.getLoaderType());
             listener.onResult(false, System.currentTimeMillis() - time, null, false);
             return;
         }
+
+        if (isStopped()) return;
+
         IMusicPlayer player = null;
+
         try {
             player = loader.createMusicPlayer(source);
-            timer = new LoadTimer();
-            timer.start();
-            player.load(position);
-            timer.interrupt();
-            timer = null;
+
+            IMusicPlayer finalPlayer = player;
+            var cf = CompletableFuture.runAsync(() -> {
+                try {
+                    finalPlayer.load(position);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }, executor);
+            cf.get(10, TimeUnit.SECONDS);
+            if (isStopped()) return;
+
             if (!player.isLoadSuccess()) throw new IllegalStateException("Load failed");
-        } catch (InterruptedException ignored) {
-            if (timeOut) {
-                if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Load time out: " + source.getIdentifier());
-                listener.onResult(false, System.currentTimeMillis() - time, null, false);
-            }
+        } catch (TimeoutException ignored) {
+            if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Load time out: " + source.getIdentifier());
             player.destroy();
+            if (isStopped()) return;
+            listener.onResult(false, System.currentTimeMillis() - time, null, false);
             return;
         } catch (Exception ex) {
             if (player != null) player.destroy();
             if (IamMusicPlayer.CONFIG.errorLog) LOGGER.error("Failed to load music: " + source.getIdentifier(), ex);
+            if (isStopped()) return;
             listener.onResult(false, System.currentTimeMillis() - time, null, true);
             return;
         }
 
+        if (isStopped()) return;
         listener.onResult(true, System.currentTimeMillis() - time, player, false);
     }
 
@@ -97,17 +119,5 @@ public class MusicLoadThread extends Thread {
 
     public static interface MusicLoadResultListener {
         void onResult(boolean result, long time, IMusicPlayer player, boolean retry);
-    }
-
-    private class LoadTimer extends Thread {
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(15000);
-                timeOut = true;
-                MusicLoadThread.this.interrupt();
-            } catch (InterruptedException ignored) {
-            }
-        }
     }
 }
