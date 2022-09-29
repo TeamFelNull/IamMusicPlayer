@@ -16,7 +16,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: |
-          ./gradlew fabric:runDatagen forge:runData build publish curseforge modrinth --stacktrace --no-daemon
+          ./gradlew check fabric:runDatagen forge:runData build publish curseforge modrinth --stacktrace --no-daemon
         env:
           curesforgeapikey: ${{secrets.CURESFORGEAPIKEY}}
           modrinthapikey: ${{secrets.MODRINTH}}
