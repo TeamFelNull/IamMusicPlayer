@@ -182,6 +182,7 @@ curseforge {
             releaseType = "${rootProject.release_type}"
             addGameVersion "${rootProject.minecraft_version}"
             addGameVersion 'Java 17'
+            addGameVersion 'Forge'
 
             relations {
                 requiredDependency "cloth-config"
