@@ -16,7 +16,7 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: |
-          mkdir /home/runner/.gradle/caches/fabric-loom/assets
+          mkdir -p /home/runner/.gradle/caches/fabric-loom/assets
           ./gradlew check fabric:runDatagen forge:runData build publish curseforge modrinth --stacktrace --no-daemon
         env:
           curesforgeapikey: ${{secrets.CURESFORGEAPIKEY}}
