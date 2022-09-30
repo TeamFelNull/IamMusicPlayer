@@ -22,19 +22,19 @@
   },
   "2": {
     "darwin": {
-      "url": "",
+      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/darwin.zip",
       "hash": "6ebf03e06cd52c2087a92d7767a24970"
     },
     "linux-aarch64": {
-      "url": "",
+      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/linux-aarch64.zip",
       "hash": "7d9fcc180152aee9a8da30dab9469bb8"
     },
     "linux-x86-64": {
-      "url": "",
+      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/linux-x86-64.zip",
       "hash": "567e388694da212f6b89b24aeb5e7c8b"
     },
     "win-x86-64": {
-      "url": "",
+      "url": "https://github.com/TeamFelnull/IamMusicPlayer/raw/master/lavaplayer/natives/win-x86-64.zip",
       "hash": {
         "libmpg123-0.dll": "562855db38398cf2cd001b99f88095d1",
         "connector.dll": "c88db339344ac8614dcb1476eef4c219"
