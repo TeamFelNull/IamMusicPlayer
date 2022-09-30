@@ -64,7 +64,7 @@ dependencies {
     modApi "vazkii.patchouli:Patchouli:1.19.2-76-FABRIC"
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
-        exclude group: 'com.sedmelluq', module: 'lavaplayer-natives'
+        exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
     }
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"

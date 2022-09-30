@@ -1,5 +1,8 @@
 {
   "homepage": "https://www.curseforge.com/minecraft/mc-mods/iammusicplayer",
+  "1.19.2": {
+    "3.17": "First 1.19.2"
+  },
   "1.18.2": {
     "3.5": "First 1.18.2"
   },
@@ -25,6 +28,8 @@
     "1.0": "The Frist Release."
   },
   "promos": {
+    "1.19.2-latest": "3.17",
+    "1.19.2-recommended": "3.17",
     "1.18.2-latest": "3.16.1",
     "1.18.2-recommended": "3.16.1",
     "1.18.1-latest": "3.4",
