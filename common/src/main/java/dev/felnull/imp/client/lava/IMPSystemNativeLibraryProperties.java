@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.lava;
 
 import com.sedmelluq.lava.common.natives.NativeLibraryProperties;
+import com.sedmelluq.lava.common.natives.architecture.DefaultOperatingSystemTypes;
 import com.sedmelluq.lava.common.natives.architecture.SystemType;
 
 import java.util.function.Predicate;
@@ -24,7 +25,12 @@ public class IMPSystemNativeLibraryProperties implements NativeLibraryProperties
         var sys = detectMatchingSystemType(this, systemFilter);
         if (sys == null)
             throw new IllegalStateException("System type is null");
-        var natName = sys.osType.identifier() + "-" + sys.architectureType.identifier();
+        //   var natName = sys.osType.identifier() + "-" + sys.architectureType.identifier();
+
+        var natName = sys.osType.identifier();
+        if (sys.osType != DefaultOperatingSystemTypes.DARWIN)
+            natName += "-" + sys.architectureType.identifier();
+
         boolean ret = LavaNativeManager.getInstance().load(natName, sys.formatLibraryName(libraryName));
         if (!ret)
             throw new UnsatisfiedLinkError("Failed to load the library");

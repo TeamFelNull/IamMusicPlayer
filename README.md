@@ -4,11 +4,23 @@ The Ikisugi Music Player MOD (Minecraft Forge MOD)
 
 <img alt="GitHub" src="https://img.shields.io/github/license/teamfelnull/iammusicplayer?style=for-the-badge"> <img alt="Minecraft 1.17.1" src="https://img.shields.io/badge/Minecraft-1.17.1-green.svg?style=for-the-badge"><br> <img alt="CurseForge" src="https://cf.way2muchnoise.eu/versions/386380.svg">
 
-# Transration
+# Contributor
+
+``
+fabric/src/main/generated
+``  
+``
+forge/src/generated
+``  
+Do not edit these generated directories directly.  
+If you want to change the contents, please change the IamMusicPlayerDataGenerator or change the resources folder.
+
+## Transration
 
 If a kind person translates it, please open an [ Issue or Pull requests ] !
 
-[Templates used for translation](https://github.com/TeamFelnull/IamMusicPlayer/tree/master/common/src/main/resources/assets/iammusicplayer/lang)
+[Templates used for translation](https://github.com/TeamFelnull/IamMusicPlayer/tree/master/common/src/main/resources/assets/iammusicplayer/lang)  
+[Template used for translating patchouli](https://github.com/TeamFelnull/IamMusicPlayer/tree/master/resources/data/iammusicplayer/patchouli_books/manual)
 
 # Using libraries
 

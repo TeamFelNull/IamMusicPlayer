@@ -27,7 +27,8 @@ public interface IMusicRinger extends MusicRingerAccess {
 
     void setRingerPlaying(boolean playing);
 
-    @Nullable MusicSource getRingerMusicSource();
+    @Nullable
+    MusicSource getRingerMusicSource();
 
     boolean isRingerLoop();
 
@@ -37,7 +38,8 @@ public interface IMusicRinger extends MusicRingerAccess {
 
     Pair<ResourceLocation, CompoundTag> getRingerTracker();
 
-    @NotNull Vec3 getRingerSpatialPosition();
+    @NotNull
+    Vec3 getRingerSpatialPosition();
 
     float getRingerVolume();
 

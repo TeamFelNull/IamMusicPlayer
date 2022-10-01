@@ -20,7 +20,7 @@ public class LavaNativeManager {
     private static final Logger LOGGER = LogManager.getLogger(LavaNativeManager.class);
     private static final Gson GSON = new Gson();
     private static final LavaNativeManager INSTANCE = new LavaNativeManager();
-    private static final String nativesVersion = "1";
+    private static final String nativesVersion = "2";
 
     public static LavaNativeManager getInstance() {
         return INSTANCE;
