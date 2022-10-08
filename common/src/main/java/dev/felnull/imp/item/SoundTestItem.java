@@ -1,6 +1,5 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.imp.client.nmusic.MusicEngine;
 import dev.felnull.imp.client.nmusic.MusicTest;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -23,9 +22,6 @@ public class SoundTestItem extends Item {
         ItemStack itemStack = player.getItemInHand(interactionHand);
         if (level.isClientSide()) {
             System.out.println("Sound test");
-
-
-            var nm = MusicEngine.getInstance();
 
             if (!player.isCrouching()) {
                 try {

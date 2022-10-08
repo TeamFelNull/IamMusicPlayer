@@ -9,11 +9,11 @@ public class DirectMusicBuffer implements MusicBuffer<DirectMusicBuffer.DirectDa
 
     @Override
     public DirectData asyncConvertBuffer(byte[] data, int sampleRate, int channel, int bit) {
-        return new DirectData(data);
+        return new DirectData(data.clone());
     }
 
     @Override
-    public void putBuffer(DirectData data) {
+    public void putBuffer(DirectData data, MusicBufferSpeakerData bufferSpeakerData) {
         this.data = data.data;
     }
 

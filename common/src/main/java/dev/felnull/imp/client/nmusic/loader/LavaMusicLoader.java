@@ -21,7 +21,7 @@ public class LavaMusicLoader implements MusicLoader {
         if (track.isEmpty())
             throw new RuntimeException("Failed to load track");
 
-        if (source.isLive() == track.get().getInfo().isStream)
+        if (source.isLive() != track.get().getInfo().isStream)
             throw new RuntimeException("Discrepancies in live information");
 
         this.audioTrack = track.get();

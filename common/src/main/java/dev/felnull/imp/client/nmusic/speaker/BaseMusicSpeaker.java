@@ -14,4 +14,8 @@ public abstract class BaseMusicSpeaker<T extends MusicBuffer<?>> implements Musi
     public void update(MusicTracker tracker) {
         this.tracker = tracker;
     }
+
+    public MusicTracker getTracker() {
+        return tracker;
+    }
 }

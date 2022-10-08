@@ -21,7 +21,7 @@ public interface MusicBuffer<T> {
      *
      * @param data 変換済みデータ
      */
-    void putBuffer(T data);
+    void putBuffer(T data, MusicBufferSpeakerData bufferSpeakerData);
 
     /**
      * データ解放

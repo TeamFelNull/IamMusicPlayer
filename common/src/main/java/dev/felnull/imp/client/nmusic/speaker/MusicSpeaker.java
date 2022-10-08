@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.nmusic.speaker;
 
 import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBuffer;
+import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBufferSpeakerData;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
 
 import java.util.List;
@@ -43,6 +44,7 @@ public interface MusicSpeaker<T extends MusicBuffer<?>> {
      */
     T createBuffer();
 
+
     /**
      * 再生開始
      */
@@ -78,4 +80,11 @@ public interface MusicSpeaker<T extends MusicBuffer<?>> {
      * @return 使用済みバッファーデータ
      */
     List<T> pollBuffers();
+
+    /**
+     * スピーカー生成時に渡す変数データ
+     *
+     * @return データ
+     */
+    MusicBufferSpeakerData getBufferSpeakerData();
 }

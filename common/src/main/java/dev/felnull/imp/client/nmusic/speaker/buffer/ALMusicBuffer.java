@@ -18,12 +18,12 @@ public class ALMusicBuffer implements MusicBuffer<ALMusicBuffer.ConvertedData> {
 
     @Override
     public ConvertedData asyncConvertBuffer(byte[] data, int sampleRate, int channel, int bit) {
-        return new ConvertedData(getBuffer(data), getFormat(channel, bit), sampleRate * channel);
+        return new ConvertedData(getBuffer(data), sampleRate, channel, bit);
     }
 
     @Override
-    public void putBuffer(ConvertedData data) {
-        AL11.alBufferData(this.buffer, data.format, data.buffer, data.frequency);
+    public void putBuffer(ConvertedData data, MusicBufferSpeakerData bufferSpeakerData) {
+        AL11.alBufferData(this.buffer, getFormat(bufferSpeakerData.relative() ? 1 : data.channel, data.bit), data.buffer, data.sampleRate * (bufferSpeakerData.relative() ? data.channel : 1));
     }
 
     @Override
@@ -58,6 +58,6 @@ public class ALMusicBuffer implements MusicBuffer<ALMusicBuffer.ConvertedData> {
         return AL11.AL_FORMAT_MONO16;
     }
 
-    public static record ConvertedData(ByteBuffer buffer, int format, int frequency) {
+    public static record ConvertedData(ByteBuffer buffer, int sampleRate, int channel, int bit) {
     }
 }

@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.nmusic.speaker;
 
 import dev.felnull.imp.client.nmusic.speaker.buffer.DirectMusicBuffer;
+import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBufferSpeakerData;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class JavaSoundAPIMusicSpeaker extends BaseMusicSpeaker<DirectMusicBuffer
 
     @Override
     public DirectMusicBuffer createBuffer() {
-        return null;
+        return new DirectMusicBuffer();
     }
 
     @Override
@@ -53,5 +54,10 @@ public class JavaSoundAPIMusicSpeaker extends BaseMusicSpeaker<DirectMusicBuffer
     @Override
     public List<DirectMusicBuffer> pollBuffers() {
         return null;
+    }
+
+    @Override
+    public MusicBufferSpeakerData getBufferSpeakerData() {
+        return new MusicBufferSpeakerData(true);
     }
 }

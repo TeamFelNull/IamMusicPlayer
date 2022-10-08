@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.nmusic.speaker;
 
 import dev.felnull.imp.client.nmusic.speaker.buffer.ALMusicBuffer;
+import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBufferSpeakerData;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.openal.AL11;
@@ -37,6 +38,7 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
     public ALMusicBuffer createBuffer() {
         return new ALMusicBuffer();
     }
+
 
     @Override
     public void play() {
@@ -86,6 +88,11 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
     }
 
     @Override
+    public MusicBufferSpeakerData getBufferSpeakerData() {
+        return new MusicBufferSpeakerData(getTracker().getSpeakerInfo().relative());
+    }
+
+    @Override
     public void update(MusicTracker tracker) {
         super.update(tracker);
         alSourceUpdate();
@@ -93,12 +100,11 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
 
     private void alSourceUpdate() {
         alSourcei(source, AL_LOOPING, AL_FALSE);
+        alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE);
+        // alSourcef(source, AL_PITCH, 1f);
     }
 
     private void alSourceTick() {
-        /*int ret = alGetSourcei(source, AL11.AL_BUFFERS_PROCESSED);
-        if (ret >= 1) {
-            alSourceUnqueueBuffers(source);
-        }*/
+
     }
 }

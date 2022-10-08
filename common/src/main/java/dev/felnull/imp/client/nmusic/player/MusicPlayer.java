@@ -10,6 +10,7 @@ import java.util.UUID;
 public interface MusicPlayer {
     /**
      * 音楽を読み込む
+     * 非同期で呼び出し
      *
      * @param position 再生開始秒
      * @throws Exception 読み込み失敗

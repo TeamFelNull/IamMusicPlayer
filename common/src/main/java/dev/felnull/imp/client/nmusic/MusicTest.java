@@ -2,7 +2,6 @@ package dev.felnull.imp.client.nmusic;
 
 import dev.felnull.imp.client.nmusic.loader.LavaMusicLoader;
 import dev.felnull.imp.client.nmusic.speaker.ALMusicSpeaker;
-import dev.felnull.imp.client.nmusic.speaker.JavaSoundAPIMusicSpeaker;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
 import net.minecraft.world.entity.player.Player;
@@ -31,13 +30,11 @@ public class MusicTest {
     }
 
     public static void test2(Player player) throws Exception {
-        var ms = new MusicSource("http", "", 0);
+        var ms = new MusicSource("http", "", 114514);
         var ml = new LavaMusicLoader();
         ml.tryLoad(ms);
         var mp = ml.createMusicPlayer();
-        mp.addSpeaker(UUID.randomUUID(), new ALMusicSpeaker(IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), false, 1, 10))));
-        mp.addSpeaker(UUID.randomUUID(), new ALMusicSpeaker(IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), false, 1, 10))));
-        mp.addSpeaker(UUID.randomUUID(), new JavaSoundAPIMusicSpeaker(IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), false, 1, 10))));
+        mp.addSpeaker(UUID.randomUUID(), new ALMusicSpeaker(IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), true, 1, 10))));
         mp.load(0);
         mp.play(0);
     }
