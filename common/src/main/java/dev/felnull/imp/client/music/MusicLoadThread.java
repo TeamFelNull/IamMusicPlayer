@@ -33,7 +33,7 @@ public class MusicLoadThread extends FlagThread {
     public void run() {
         long time = System.currentTimeMillis();
 
-        var executor = MusicEngine.getInstance().getExecutor();
+        var executor = MusicEngineOld.getInstance().getExecutor();
 
         IMusicLoader loader = null;
         for (IMusicLoader ldr : IMPMusicLoaders.getLoaders()) {

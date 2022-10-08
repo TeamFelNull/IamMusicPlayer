@@ -11,8 +11,10 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.client.gui.components.MusicVolumeSlider;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.MusicEngineOld;
 import dev.felnull.imp.client.music.MusicSyncManager;
+import dev.felnull.imp.client.nmusic.MusicEngine;
 import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.entity.IRingerPartyParrot;
@@ -73,7 +75,7 @@ public class ClientHandler {
 
     private static EventResult onEntityTick(Entity entity) {
         if (!entity.level.isClientSide()) return EventResult.pass();
-        var mm = MusicEngine.getInstance();
+        var mm = MusicEngineOld.getInstance();
         if (entity instanceof IRingerPartyParrot ringerPartyParrot) {
             var id = ringerPartyParrot.getRingerUUID();
             if (id == null || !mm.isPlaying(id))
@@ -84,18 +86,23 @@ public class ClientHandler {
 
     private static void onPauseChange(boolean paused) {
         var rm = MusicRingManager.getInstance();
-        var mm = MusicEngine.getInstance();
+        var mm = MusicEngineOld.getInstance();
+        var nmm = MusicEngine.getInstance();
         if (paused) {
             rm.pause();
             mm.pause();
+            nmm.pause();
         } else {
             rm.resume();
             mm.resume();
+            nmm.resume();
         }
     }
 
     private static InteractionResult onConfigSave(ConfigHolder<IMPConfig> configHolder, IMPConfig impConfig) {
-        MusicEngine.getInstance().reload();
+        MusicEngineOld.getInstance().reload();
+        MusicEngine.getInstance().destroy();
+
         return InteractionResult.PASS;
     }
 

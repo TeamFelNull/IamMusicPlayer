@@ -3,7 +3,6 @@ package dev.felnull.imp.client.music.loadertypes;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.client.music.loader.LavaPlayerMusicLoader;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -24,7 +23,6 @@ public abstract class AbstractLavaPlayerMusicLoaderType implements IMusicLoaderT
         this.name = Component.translatable("imp.loaderType." + name);
         this.icon = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/loader_types/" + name + ".png");
         this.audioPlayerManager = LavaPlayerUtil.createAudioPlayerManager();
-        audioPlayerManager.getConfiguration().setOutputFormat(LavaPlayerMusicLoader.COMMON_PCM_S16_LE_C2);
         registerSourceManager(this.audioPlayerManager);
     }
 

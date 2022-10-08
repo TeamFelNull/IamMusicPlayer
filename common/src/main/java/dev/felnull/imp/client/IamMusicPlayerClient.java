@@ -11,9 +11,12 @@ import dev.felnull.imp.client.handler.ClientHandler;
 import dev.felnull.imp.client.handler.RenderHandler;
 import dev.felnull.imp.client.handler.TextureHandler;
 import dev.felnull.imp.client.lava.LavaPlayerLoader;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
+import dev.felnull.imp.client.music.trackerold.IMPMusicTrackersOld;
+import dev.felnull.imp.client.nmusic.IMPMusicTrackerFactory;
+import dev.felnull.imp.client.nmusic.media.IMPMusicMedias;
 import dev.felnull.imp.client.renderer.blockentity.IMPBlockEntityRenderers;
 import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.networking.IMPPackets;
@@ -24,7 +27,7 @@ public class IamMusicPlayerClient {
         configInit();
         LavaPlayerLoader.init();
         IMPPackets.clientInit();
-        IMPMusicTrackers.init();
+        IMPMusicTrackersOld.init();
         IMPMusicLoaderTypes.init();
         IMPMusicLoaders.init();
         ClientHandler.init();
@@ -36,6 +39,10 @@ public class IamMusicPlayerClient {
         MusicManagerMonitor.firstInit();
         CassetteDeckMonitor.firstInit();
         BoomboxMonitor.firstInit();
+
+        IMPMusicMedias.init();
+        IMPMusicTrackerFactory.init();
+        LavaPlayerManager.getInstance().reload();
     }
 
     private static void configInit() {

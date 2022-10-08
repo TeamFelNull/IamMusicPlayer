@@ -1,5 +1,7 @@
 package dev.felnull.imp.client.util;
 
+import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
+import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -78,12 +80,20 @@ public class LavaPlayerUtil {
         return Optional.ofNullable(audioTrack.get());
     }
 
+    public static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
+
     public static AudioPlayerManager createAudioPlayerManager() {
         AudioPlayerManager audioPlayerManager = new DefaultAudioPlayerManager();
         audioPlayerManager.setFrameBufferDuration(1000);
         audioPlayerManager.setPlayerCleanupThreshold(Long.MAX_VALUE);
-        audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
+
+        audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.LOW);
+        audioPlayerManager.getConfiguration().setOpusEncodingQuality(0);
+        audioPlayerManager.getConfiguration().setOutputFormat(COMMON_PCM_S16_LE_C2);
+
+        /*audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
+        audioPlayerManager.getConfiguration().setOutputFormat(LavaPlayerMusicLoader.COMMON_PCM_S16_LE_C2);*/
         return audioPlayerManager;
     }
 

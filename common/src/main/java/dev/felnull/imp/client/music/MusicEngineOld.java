@@ -2,7 +2,7 @@ package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
-import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
+import dev.felnull.imp.client.music.trackerold.IMPMusicTrackersOld;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.entity.IRingerPartyParrot;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -21,10 +21,10 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MusicEngine {
+public class MusicEngineOld {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
-    private static final MusicEngine INSTANCE = new MusicEngine();
+    private static final Logger LOGGER = LogManager.getLogger(MusicEngineOld.class);
+    private static final MusicEngineOld INSTANCE = new MusicEngineOld();
     private final ExecutorService executor = Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern(IamMusicPlayer.MODID + "-music-loader-%d").daemon(true).build());
     private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
     private final Map<UUID, MusicLoadThread> MUSIC_LOADS = new HashMap<>();
@@ -40,7 +40,7 @@ public class MusicEngine {
     private boolean reloading;
     public boolean reloadFlag;
 
-    public static MusicEngine getInstance() {
+    public static MusicEngineOld getInstance() {
         return INSTANCE;
     }
 
@@ -253,7 +253,7 @@ public class MusicEngine {
                     REMOVES_PLAYERS.add(n);
                     return;
                 }
-                var tracker = IMPMusicTrackers.createTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
+                var tracker = IMPMusicTrackersOld.createTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
                 if (tracker != null) {
                     var ps = tracker.getPosition().get();
                     var prp = m.player().getCoordinatePosition();

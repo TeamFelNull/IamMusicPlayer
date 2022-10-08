@@ -180,7 +180,7 @@ public class MusicRing {
 
         private void sendStopPackets(UUID player) {
             if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
-                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, 1).toFBB());
+                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.STOP).toFBB());
         }
 
         private void sendMiddleStartPacket(UUID player) {
@@ -201,7 +201,7 @@ public class MusicRing {
             if (notWait) {
                 if (middleLoadPlayers.contains(id)) {
                     if (result) {
-                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, 0, elapsed, MusicPlaybackInfo.EMPTY).toFBB());
+                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY, elapsed, MusicPlaybackInfo.EMPTY).toFBB());
                         listenPlayers.add(id);
                     } else {
                         failurePlayers.put(id, System.currentTimeMillis());
@@ -222,7 +222,7 @@ public class MusicRing {
         private void startReadyWaitPlayers() {
             for (UUID pl : firstReadyPlayers) {
                 if (getLevel().getPlayerByUUID(pl) instanceof ServerPlayer serverPlayer) {
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, 0).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY).toFBB());
                     advancement(serverPlayer);
                 }
             }
@@ -244,11 +244,11 @@ public class MusicRing {
         private void sendUpdate() {
             for (UUID player : listenPlayers) {
                 if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, 2, 0, getPlaybackInfo(getRinger())).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.UPDATE, 0, getPlaybackInfo(getRinger())).toFBB());
             }
             for (UUID player : middleLoadPlayers) {
                 if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, 2, 0, getPlaybackInfo(getRinger())).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.UPDATE, 0, getPlaybackInfo(getRinger())).toFBB());
             }
         }
 

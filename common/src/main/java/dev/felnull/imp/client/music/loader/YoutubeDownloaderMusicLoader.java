@@ -1,15 +1,6 @@
 package dev.felnull.imp.client.music.loader;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.player.IMusicPlayer;
-import dev.felnull.imp.client.music.player.YoutubeDownloaderMusicPlayer;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
-import dev.felnull.imp.client.util.YoutubeUtil;
-import dev.felnull.imp.music.resource.MusicSource;
-
-import java.util.Optional;
-
+/*
 public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {
     public YoutubeDownloaderMusicLoader() {
         super(IMPMusicLoaderTypes.HTTP);
@@ -33,3 +24,4 @@ public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {
         return track.isPresent() && !track.get().getInfo().isStream;
     }
 }
+*/

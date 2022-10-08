@@ -194,38 +194,22 @@ public class IMPPackets {
         }
     }
 
-    public static class MusicRingStateMessage implements PacketMessage {
-        public final UUID uuid;
-        public final UUID waitId;
-        public final int num;
-        public final long elapsed;
-        public final MusicPlaybackInfo playbackInfo;
+    public static record MusicRingStateMessage(UUID uuid, UUID waitId,
+                                               MusicRingStateType stateType, long elapsed,
+                                               MusicPlaybackInfo playbackInfo) implements PacketMessage {
+        public MusicRingStateMessage(UUID uuid, UUID waitId, MusicRingStateType stateType) {
+            this(uuid, waitId, stateType, 0, MusicPlaybackInfo.EMPTY);
+        }
 
         public MusicRingStateMessage(FriendlyByteBuf bf) {
-            this.uuid = bf.readUUID();
-            this.waitId = bf.readUUID();
-            this.num = bf.readInt();
-            this.elapsed = bf.readLong();
-            this.playbackInfo = TagSerializable.loadSavedTag(bf.readNbt().getCompound("pbi"), new MusicPlaybackInfo());
-        }
-
-        public MusicRingStateMessage(UUID uuid, UUID waitId, int num) {
-            this(uuid, waitId, num, 0, MusicPlaybackInfo.EMPTY);
-        }
-
-        public MusicRingStateMessage(UUID uuid, UUID waitId, int num, long elapsed, MusicPlaybackInfo playbackInfo) {
-            this.uuid = uuid;
-            this.waitId = waitId;
-            this.num = num;
-            this.elapsed = elapsed;
-            this.playbackInfo = playbackInfo;
+            this(bf.readUUID(), bf.readUUID(), bf.readEnum(MusicRingStateType.class), bf.readLong(), TagSerializable.loadSavedTag(bf.readNbt().getCompound("pbi"), new MusicPlaybackInfo()));
         }
 
         @Override
         public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             buf.writeUUID(uuid);
             buf.writeUUID(waitId);
-            buf.writeInt(num);
+            buf.writeEnum(stateType);
             buf.writeLong(elapsed);
             var tag = new CompoundTag();
             tag.put("pbi", this.playbackInfo.createSavedTag());
@@ -481,5 +465,12 @@ public class IMPPackets {
                 return values()[id];
             return NONE;
         }
+    }
+
+    public static enum MusicRingStateType {
+        NONE,
+        PLAY,
+        STOP,
+        UPDATE
     }
 }

@@ -6,6 +6,7 @@ import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.felnull.imp.client.nmusic.MusicTest;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -85,6 +86,10 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         AL11.alSourcef(source, AL11.AL_PITCH, 1f);
         AL11.alSourcei(source, AL11.AL_SOURCE_RELATIVE, AL11.AL_FALSE);
         AL11.alSourcei(source, AL11.AL_LOOPING, AL11.AL_FALSE);
+
+
+       // MusicTest.test(source);
+
         checkError();
 
         AudioFormat format = AudioDataFormatTools.toAudioFormat(audioFormat);
@@ -240,7 +245,6 @@ public class LavaALMusicPlayer implements IMusicPlayer {
             loadThread = new LavaLoadThread();
             loadThread.start();
         }
-
     }
 
     @Override

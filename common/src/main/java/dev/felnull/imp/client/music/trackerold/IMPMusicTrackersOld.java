@@ -1,0 +1,34 @@
+package dev.felnull.imp.client.music.trackerold;
+
+import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.server.music.ringer.MusicRingManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+
+public class IMPMusicTrackersOld {
+    private static final Map<ResourceLocation, Function<CompoundTag, IMusicTrackerOld>> TRACKERS = new HashMap<>();
+
+    public static void init() {
+        registerTracker(MusicRingManager.FIXED_TRACKER, FixedMusicTrackerOld::new);
+        registerTracker(MusicRingManager.ENTITY_TRACKER, EntityMusicTrackerOld::new);
+        registerTracker(MusicRingManager.PLAYER_TRACKER, PlayerMusicTrackerOld::new);
+    }
+
+    public static void registerTracker(ResourceLocation location, Function<CompoundTag, IMusicTrackerOld> tracker) {
+        TRACKERS.put(location, tracker);
+    }
+
+    public static IMusicTrackerOld createTracker(MusicPlaybackInfo playbackInfo) {
+        return createTracker(playbackInfo.getTracker(), playbackInfo.getTrackerTag());
+    }
+
+    public static IMusicTrackerOld createTracker(ResourceLocation location, CompoundTag tag) {
+        if (TRACKERS.containsKey(location))
+            return TRACKERS.get(location).apply(tag);
+        return null;
+    }
+}

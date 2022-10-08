@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.handler;
 
 import dev.architectury.networking.NetworkManager;
-import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.MusicEngineOld;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
@@ -17,21 +17,23 @@ public class ClientMessageHandler {
 
     public static void onMusicRingStateResponseMessage(IMPPackets.MusicRingStateMessage message, NetworkManager.PacketContext packetContext) {
         if (mc.getConnection() == null) return;
-        var mm = MusicEngine.getInstance();
-        if (message.num == 0) {
-            mm.playMusicPlayer(message.uuid, message.elapsed);
-        } else if (message.num == 1) {
-            mm.stopMusicPlayer(message.uuid);
-            mm.stopLoadMusicPlayer(message.uuid);
-        } else if (message.num == 2) {
-            int plFlg = 0;
-            if (mm.isPlaying(message.uuid)) {
-                mm.updateMusicPlaybackInfo(message.uuid, message.playbackInfo);
-                plFlg = 1;
-            } else if (mm.isLoad(message.uuid)) {
-                plFlg = 2;
+        var mm = MusicEngineOld.getInstance();
+        switch (message.stateType()) {
+            case PLAY -> mm.playMusicPlayer(message.uuid(), message.elapsed());
+            case STOP -> {
+                mm.stopMusicPlayer(message.uuid());
+                mm.stopLoadMusicPlayer(message.uuid());
             }
-            NetworkManager.sendToServer(IMPPackets.MUSIC_RING_UPDATE_RESULT, new IMPPackets.MusicRingUpdateResultMessage(message.uuid, message.waitId, plFlg).toFBB());
+            case UPDATE -> {
+                int plFlg = 0;
+                if (mm.isPlaying(message.uuid())) {
+                    mm.updateMusicPlaybackInfo(message.uuid(), message.playbackInfo());
+                    plFlg = 1;
+                } else if (mm.isLoad(message.uuid())) {
+                    plFlg = 2;
+                }
+                NetworkManager.sendToServer(IMPPackets.MUSIC_RING_UPDATE_RESULT, new IMPPackets.MusicRingUpdateResultMessage(message.uuid(), message.waitId(), plFlg).toFBB());
+            }
         }
     }
 
@@ -41,7 +43,7 @@ public class ClientMessageHandler {
 
     private static void loadMusic(UUID waitID, UUID uuid, MusicPlaybackInfo playbackInfo, MusicSource source, long position, int tryCont, boolean autoPlay) {
         if (mc.getConnection() == null) return;
-        var mm = MusicEngine.getInstance();
+        var mm = MusicEngineOld.getInstance();
         if (tryCont >= 3 || mm.getCurrentMusicPlayed() >= mm.getMaxMusicPlayed()) {
             if (!autoPlay) {
                 NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, false, false, 0).toFBB());

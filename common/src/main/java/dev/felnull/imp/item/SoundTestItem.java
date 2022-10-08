@@ -1,0 +1,43 @@
+package dev.felnull.imp.item;
+
+import dev.felnull.imp.client.nmusic.MusicEngine;
+import dev.felnull.imp.client.nmusic.MusicTest;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
+import java.util.UUID;
+
+public class SoundTestItem extends Item {
+    private static final UUID ID = UUID.randomUUID();
+
+    public SoundTestItem(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+        ItemStack itemStack = player.getItemInHand(interactionHand);
+        if (level.isClientSide()) {
+            System.out.println("Sound test");
+
+
+            var nm = MusicEngine.getInstance();
+
+            if (!player.isCrouching()) {
+                try {
+                    MusicTest.test2(player);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+
+            }
+
+        }
+        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
+    }
+}

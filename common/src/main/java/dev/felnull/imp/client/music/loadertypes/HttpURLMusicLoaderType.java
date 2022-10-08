@@ -11,7 +11,6 @@ public class HttpURLMusicLoaderType extends AbstractLavaPlayerMusicLoaderType {
 
     public HttpURLMusicLoaderType() {
         super(IMPMusicLoaderTypes.HTTP);
-
     }
 
     @Override
