@@ -87,4 +87,12 @@ public interface MusicSpeaker<T extends MusicBuffer<?>> {
      * @return データ
      */
     MusicBufferSpeakerData getBufferSpeakerData();
+
+    /**
+     * 現在のスピーカーの再生済み時間
+     * ポーズ時の時間はカウントされない
+     *
+     * @return 再生時間(ms)
+     */
+    long getPlayTime();
 }

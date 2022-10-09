@@ -1,8 +1,8 @@
 package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
-import dev.felnull.imp.client.music.loader.IMusicLoader;
+import dev.felnull.imp.client.music.loaderold.IMPMusicLoadersOld;
+import dev.felnull.imp.client.music.loaderold.IMusicLoaderOld;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -35,8 +35,8 @@ public class MusicLoadThread extends FlagThread {
 
         var executor = MusicEngineOld.getInstance().getExecutor();
 
-        IMusicLoader loader = null;
-        for (IMusicLoader ldr : IMPMusicLoaders.getLoaders()) {
+        IMusicLoaderOld loader = null;
+        for (IMusicLoaderOld ldr : IMPMusicLoadersOld.getLoaders()) {
             var cf = CompletableFuture.supplyAsync(() -> {
                 try {
                     return ldr.canLoad(source);

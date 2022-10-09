@@ -2,8 +2,11 @@ package dev.felnull.imp.client.nmusic;
 
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.util.ALUtils;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class MusicEngine {
     private static final MusicEngine INSTANCE = new MusicEngine();
-    private final Map<UUID, MusicPlayerEntry> musicPlayers = new HashMap<>();
+    private final Map<UUID, MusicEntry> musicPlayers = new HashMap<>();
     private ExecutorService musicLoaderExecutor = createMusicLoadExecutor();
     private long lastProsesTime;
     private long lastTime;
@@ -25,7 +28,7 @@ public class MusicEngine {
     }
 
     public String getDebugString() {
-        return String.format("IMP Musics: %d/%d - %d/%d (%d loaders) %d ms", getCurrentMusicPlayer(), getMaxMusicPlayer(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), lastProsesTime);
+        return String.format("IMP Musics: %d/%d - %d/%d (%d loaders) %d ms", getCurrentMusicSpeaker(), getMaxMusicSpeaker(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), lastProsesTime);
     }
 
     /**
@@ -38,11 +41,11 @@ public class MusicEngine {
     }
 
     /**
-     * 最大再生可能音楽数
+     * 最大スピーカー数
      *
      * @return 数
      */
-    public int getMaxMusicPlayer() {
+    public int getMaxMusicSpeaker() {
         return 256;
     }
 
@@ -56,12 +59,18 @@ public class MusicEngine {
     }
 
     /**
-     * 現在の再生音楽数
+     * 現在のスピーカーの数
      *
      * @return 数
      */
-    public int getCurrentMusicPlayer() {
-        return 0;
+    public int getCurrentMusicSpeaker() {
+        int ct = 0;
+        synchronized (musicPlayers) {
+            for (MusicEntry value : musicPlayers.values()) {
+                ct += value.getSpeakerCount();
+            }
+        }
+        return ct;
     }
 
     /**
@@ -81,6 +90,11 @@ public class MusicEngine {
     public void tick() {
         lastTime = System.currentTimeMillis();
 
+        synchronized (musicPlayers) {
+            for (MusicEntry value : musicPlayers.values()) {
+                value.tick();
+            }
+        }
 
         lastProsesTime = System.currentTimeMillis() - lastTime;
     }
@@ -111,14 +125,22 @@ public class MusicEngine {
      * ESCなどを押してポーズされたときに停止するときに呼ばれる
      */
     public void pause() {
-
+        synchronized (musicPlayers) {
+            for (MusicEntry value : musicPlayers.values()) {
+                value.pause();
+            }
+        }
     }
 
     /**
      * ESCなどのポーズが解除されたときに呼ばれる
      */
     public void resume() {
-
+        synchronized (musicPlayers) {
+            for (MusicEntry value : musicPlayers.values()) {
+                value.resume();
+            }
+        }
     }
 
     /**
@@ -140,25 +162,90 @@ public class MusicEngine {
      *
      * @param musicPlayerId 音楽プレイヤーID
      * @param source        音楽情報
+     * @param position      再生開始位置
      * @param listener      完了リスナー
      * @return 読み込み開始したかどうか、読み込み拒否(読み込み数が限界、すでに読み込み中、読み込み済み)などの時はfalse
      */
-    public boolean load(UUID musicPlayerId, MusicSource source, LoadCompleteListener listener) {
-        if (getCurrentMusicLoad() >= getMaxMusicLoad())
-            return false;
+    public boolean load(@NotNull UUID musicPlayerId, @NotNull MusicSource source, long position, @NotNull LoadCompleteListener listener) {
+        if (getCurrentMusicLoad() >= getMaxMusicLoad()) return false;
+
+        if (isLoad(musicPlayerId)) return false;
+
         synchronized (musicPlayers) {
-            if (musicPlayers.containsKey(musicPlayerId))
-                return false;
+            var mpe = new MusicEntry();
+            musicPlayers.put(musicPlayerId, mpe);
+
+            mpe.loadStart(source, position, listener);
         }
 
         return true;
     }
 
-    public static interface LoadCompleteListener {
-        void onComplete(boolean success, long time);
+    /**
+     * 読み込み済み音楽の再生を開始する
+     * 事前に {@link #load(UUID, MusicSource, long, LoadCompleteListener)}で読み込んでください
+     * 読み込まれてない場合はfalse
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param delay         読み込んだ時間からの遅れ (最大10秒程)
+     * @return 再生開始できたかどうか
+     */
+    public boolean play(@NotNull UUID musicPlayerId, long delay) {
+        MusicEntry mpe;
+        synchronized (musicPlayers) {
+            mpe = musicPlayers.get(musicPlayerId);
+        }
+        if (mpe == null || !mpe.isLoaded())
+            return false;
+
+        ALUtils.runOnSoundThread(() -> mpe.playStart(delay));
+
+        return true;
     }
 
-    private static class MusicPlayerEntry {
+    /**
+     * スピーカーを追加
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param speakerId     スピーカーID
+     * @param tracker       スピーカーのトラッカー
+     * @return 追加できたかどうか
+     */
+    public boolean addSpeaker(@NotNull UUID musicPlayerId, @NotNull UUID speakerId, MusicTracker tracker) {
+        if (getCurrentMusicSpeaker() >= getMaxMusicSpeaker()) return false;
 
+        MusicEntry mpe;
+        synchronized (musicPlayers) {
+            mpe = musicPlayers.get(musicPlayerId);
+        }
+
+        if (mpe == null)
+            return false;
+
+        return mpe.addSpeaker(speakerId, tracker);
+    }
+
+    /**
+     * 音楽が読み込まれてるかどうか
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 読み込まれてるならtrue
+     */
+    public boolean isLoad(UUID musicPlayerId) {
+        synchronized (musicPlayers) {
+            if (musicPlayers.containsKey(musicPlayerId)) return true;
+        }
+        return false;
+    }
+
+    public static interface LoadCompleteListener {
+        /**
+         * 完了時の呼び出し
+         *
+         * @param success 読み込み成功したかどうか
+         * @param time    読み込みにかかった時間
+         * @param error   読み込み失敗時のエラー
+         */
+        void onComplete(boolean success, long time, Throwable error);
     }
 }

@@ -7,6 +7,7 @@ import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import java.util.List;
 
 public class JavaSoundAPIMusicSpeaker extends BaseMusicSpeaker<DirectMusicBuffer> {
+
     public JavaSoundAPIMusicSpeaker(MusicTracker tracker) {
         super(tracker);
     }
@@ -27,24 +28,10 @@ public class JavaSoundAPIMusicSpeaker extends BaseMusicSpeaker<DirectMusicBuffer
     }
 
     @Override
-    public void play() {
-
-    }
-
-    @Override
     public boolean isDead() {
         return false;
     }
 
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
 
     @Override
     public void destroy() throws Exception {

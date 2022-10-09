@@ -6,7 +6,6 @@ import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.nmusic.MusicTest;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
@@ -88,7 +87,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         AL11.alSourcei(source, AL11.AL_LOOPING, AL11.AL_FALSE);
 
 
-       // MusicTest.test(source);
+        // MusicTest.test(source);
 
         checkError();
 
@@ -262,11 +261,12 @@ public class LavaALMusicPlayer implements IMusicPlayer {
     public void setFixedSound(boolean enable) {
         boolean flg = fixed != enable;
         this.fixed = enable;
-        if (flg) if (enable) {
-            AL11.alSourcei(this.source, AL11.AL_DISTANCE_MODEL, AL11.AL_FALSE);
-        } else {
-            linearAttenuation(range);
-        }
+        if (flg)
+            if (enable) {
+                AL11.alSourcei(this.source, AL11.AL_DISTANCE_MODEL, AL11.AL_FALSE);
+            } else {
+                linearAttenuation(range);
+            }
     }
 
     private void linearAttenuation(float r) {

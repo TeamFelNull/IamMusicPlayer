@@ -1,5 +1,6 @@
 package dev.felnull.imp.client.nmusic.speaker.buffer;
 
+import dev.felnull.imp.client.util.ALUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL11;
 
@@ -9,7 +10,11 @@ public class ALMusicBuffer implements MusicBuffer<ALMusicBuffer.ConvertedData> {
     private final int buffer;
 
     public ALMusicBuffer() {
+        ALUtils.assertOnSoundThread();
+
         this.buffer = AL11.alGenBuffers();
+
+        ALUtils.checkError();
     }
 
     public int getBuffer() {
@@ -23,12 +28,20 @@ public class ALMusicBuffer implements MusicBuffer<ALMusicBuffer.ConvertedData> {
 
     @Override
     public void putBuffer(ConvertedData data, MusicBufferSpeakerData bufferSpeakerData) {
+        ALUtils.assertOnSoundThread();
+
         AL11.alBufferData(this.buffer, getFormat(bufferSpeakerData.relative() ? 1 : data.channel, data.bit), data.buffer, data.sampleRate * (bufferSpeakerData.relative() ? data.channel : 1));
+
+        ALUtils.checkError();
     }
 
     @Override
     public void release() {
+        ALUtils.assertOnSoundThread();
+
         AL11.alDeleteBuffers(buffer);
+
+        ALUtils.checkError();
     }
 
     private ByteBuffer getBuffer(byte[] array) {

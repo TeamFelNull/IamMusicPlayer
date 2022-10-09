@@ -25,7 +25,7 @@ public class SoundTestItem extends Item {
 
             if (!player.isCrouching()) {
                 try {
-                    MusicTest.test2(player);
+                    MusicTest.test3(player);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

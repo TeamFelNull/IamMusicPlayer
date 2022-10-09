@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.music.loader;
+package dev.felnull.imp.client.music.loaderold;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.format.Pcm16AudioDataFormat;
@@ -14,12 +14,12 @@ import dev.felnull.imp.music.resource.MusicSource;
 
 import java.util.Optional;
 
-public class LavaPlayerMusicLoader implements IMusicLoader {
+public class LavaPlayerMusicLoaderOld implements IMusicLoaderOld {
     public static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
     protected final String loaderType;
     protected final AudioPlayerManager audioPlayerManager;
 
-    public LavaPlayerMusicLoader(String loaderTypeName) {
+    public LavaPlayerMusicLoaderOld(String loaderTypeName) {
         if (!(IMPMusicLoaderTypes.getLoaderType(loaderTypeName) instanceof AbstractLavaPlayerMusicLoaderType lloader))
             throw new IllegalArgumentException("Not a non-existent loader type or Lava Player: " + loaderTypeName);
         this.loaderType = lloader.getRawName();

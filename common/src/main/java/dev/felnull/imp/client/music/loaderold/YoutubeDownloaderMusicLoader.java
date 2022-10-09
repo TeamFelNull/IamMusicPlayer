@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.music.loader;
+package dev.felnull.imp.client.music.loaderold;
 
 /*
 public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {

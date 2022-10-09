@@ -14,7 +14,7 @@ public class LavaMusicPlayer extends BaseMusicPlayer {
     private AudioPlayer audioPlayer;
 
     public LavaMusicPlayer(@NotNull AudioTrack audioTrack) {
-        super(LavaPlayerManager.getInstance().getChannel(), LavaPlayerManager.getInstance().getSampleRate(), LavaPlayerManager.getInstance().getBit());
+        super(LavaPlayerManager.getInstance().getChannel(), LavaPlayerManager.getInstance().getSampleRate(), LavaPlayerManager.getInstance().getBit(), audioTrack.getInfo().isStream ? 5 : 15);
         this.audioTrack = audioTrack;
     }
 
@@ -34,10 +34,5 @@ public class LavaMusicPlayer extends BaseMusicPlayer {
         super.destroy();
         this.audioPlayer.destroy();
         this.audioTrack.stop();
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
     }
 }

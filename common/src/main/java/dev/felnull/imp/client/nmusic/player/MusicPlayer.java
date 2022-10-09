@@ -31,6 +31,13 @@ public interface MusicPlayer {
     void destroy() throws Exception;
 
     /**
+     * 終了済みか確認
+     *
+     * @return 終了済みかどうか
+     */
+    boolean isDestroy();
+
+    /**
      * ESCなどで一時停止時に呼び出し
      */
     void pause();
@@ -60,4 +67,32 @@ public interface MusicPlayer {
      * @return 存在しない場合はnull
      */
     MusicSpeaker<?> getSpeaker(UUID uuid);
+
+    /**
+     * 読み込み中か確認
+     *
+     * @return 読み込み中かどうか
+     */
+    boolean isLoading();
+
+    /**
+     * 再生の用意が完了したか確認
+     *
+     * @return 用意が完了したかどうか
+     */
+    boolean isReady();
+
+    /**
+     * 再生中か確認
+     *
+     * @return 再生中かどうか
+     */
+    boolean isPlaying();
+
+    /**
+     * 現在存在するスピーカーの数
+     *
+     * @return スピーカーの数
+     */
+    int getSpeakerCount();
 }
