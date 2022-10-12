@@ -1,13 +1,14 @@
 package dev.felnull.imp.client.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.felnull.imp.client.nmusic.MusicEngine;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.openal.AL10;
 
-public class ALUtils {
-    private static final Minecraft mc = Minecraft.getInstance();
+import java.util.concurrent.CompletableFuture;
 
-    public static void checkError() {
+public class MusicUtils {
+    public static void checkALError() {
         int e = AL10.alGetError();
         switch (e) {
             case AL10.AL_INVALID_NAME -> throw new RuntimeException("Invalid name parameter");
@@ -20,20 +21,20 @@ public class ALUtils {
             throw new RuntimeException("Unknown error");
     }
 
-    public static boolean isOnSoundThread() {
+    public static boolean isOnMusicTick() {
         return RenderSystem.isOnRenderThread();
     }
 
-    public static void assertOnSoundThread() {
-        if (!isOnSoundThread())
+    public static void assertOnMusicTick() {
+        if (!isOnMusicTick())
             throw new RuntimeException("Call from wrong thread");
     }
 
-    public static void runOnSoundThread(Runnable runnable) {
-        if (isOnSoundThread()) {
+    public static void runOnMusicTick(Runnable runnable) {
+        if (isOnMusicTick()) {
             runnable.run();
         } else {
-            mc.submit(runnable).join();
+            CompletableFuture.runAsync(runnable, MusicEngine.getInstance().getMusicTickExecutor()).join();
         }
     }
 }

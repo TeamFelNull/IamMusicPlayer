@@ -2,7 +2,7 @@ package dev.felnull.imp.client.nmusic.speaker;
 
 import dev.felnull.imp.client.nmusic.speaker.buffer.ALMusicBuffer;
 import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBufferSpeakerData;
-import dev.felnull.imp.client.util.ALUtils;
+import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import org.apache.commons.lang3.ArrayUtils;
@@ -21,22 +21,22 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
 
     public ALMusicSpeaker(MusicTracker tracker) {
         super(tracker);
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         this.source = alGenSources();
         alSourceInit();
         alSourceUpdate();
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     @Override
     public void tick() {
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         alSourceUpdate();
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     @Override
@@ -59,12 +59,12 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
 
     @Override
     public void insertAudio(ALMusicBuffer data) {
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         buffers.add(data);
         alSourceQueueBuffers(source, data.getBuffer());
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     @Override
@@ -74,13 +74,14 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
 
 
     @Override
-    public void play() {
-        super.play();
-        ALUtils.assertOnSoundThread();
+    public void play(long delay) {
+        super.play(delay);
 
+        MusicUtils.assertOnMusicTick();
+        float secdelay = (float) delay / 1000f;
+        AL11.alSourcef(source, AL11.AL_SEC_OFFSET, secdelay);
         alSourcePlay(source);
-
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     @Override
@@ -90,16 +91,16 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
 
     @Override
     public void destroy() throws Exception {
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         alDeleteSources(source);
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     @Override
     public List<ALMusicBuffer> pollBuffers() {
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         //使用済みバッファーデータの数を取得
         int proBuffs = alGetSourcei(source, AL11.AL_BUFFERS_PROCESSED);
@@ -116,11 +117,11 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
             if (bufIds != null)
                 alSourceUnqueueBuffers(source, bufIds);
 
-            ALUtils.checkError();
+            MusicUtils.checkALError();
             return proBuffers;
         }
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
         return new ArrayList<>();
     }
 
@@ -136,15 +137,15 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
     }
 
     private void alSourceInit() {
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         alSourcei(source, AL_LOOPING, AL_FALSE);
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     private void alSourceUpdate() {
-        ALUtils.assertOnSoundThread();
+        MusicUtils.assertOnMusicTick();
 
         var spi = getTracker().getSpeakerInfo();
 
@@ -157,7 +158,7 @@ public class ALMusicSpeaker extends BaseMusicSpeaker<ALMusicBuffer> {
             alSourcef(source, AL11.AL_GAIN, (float) SoundMath.calculatePseudoAttenuation(spi.position(), spi.range(), spi.volume()));
         }
 
-        ALUtils.checkError();
+        MusicUtils.checkALError();
     }
 
     private void linearAttenuation(float r) {

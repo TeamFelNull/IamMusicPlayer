@@ -48,7 +48,7 @@ public interface MusicSpeaker<T extends MusicBuffer<?>> {
     /**
      * 再生開始
      */
-    void play();
+    void play(long delay);
 
     /**
      * すでに再生し終わって利用不可かどうか

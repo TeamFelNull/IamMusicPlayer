@@ -31,4 +31,9 @@ public class LavaMusicLoader implements MusicLoader {
     public int priority() {
         return 0;
     }
+
+    @Override
+    public void cansel() {
+        this.audioTrack.stop();
+    }
 }

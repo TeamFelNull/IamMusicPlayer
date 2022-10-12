@@ -3,28 +3,43 @@ package dev.felnull.imp.client.gui.overlay;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.imp.client.nmusic.MusicEngine;
-import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.client.nmusic.MusicEntry;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 
+import java.util.*;
+
 public class MusicLinesOverlay extends GuiComponent {
     private static final Minecraft mc = Minecraft.getInstance();
+    private final Map<UUID, WaveRecord> waveRecords = new HashMap<>();
 
     public void render(PoseStack poseStack, float tickDelta) {
-        var mm = MusicEngine.getInstance();
+        var me = MusicEngine.getInstance();
         int fh = mc.font.lineHeight;
 
-        drawText(poseStack, mm.getDebugString(), 2, 2);
+        drawText(poseStack, me.getDebugString(), 2, 2);
 
-        drawMusicLine(poseStack, 1, fh + 3);
+        List<UUID> dels = new ArrayList<>();
+        for (UUID uuid : waveRecords.keySet()) {
+            if (!me.getMusicEntries().containsKey(uuid))
+                dels.add(uuid);
+        }
+        for (UUID del : dels) {
+            waveRecords.remove(del);
+        }
 
+        int ct = 0;
+        for (Map.Entry<UUID, MusicEntry> entry : me.getMusicEntries().entrySet()) {
+            drawMusicLine(poseStack, 1, fh + 3 + (ct * (65 + mc.font.lineHeight)), entry.getKey(), entry.getValue());
+            ct++;
+        }
     }
 
-    private void drawMusicLine(PoseStack poseStack, int x, int y) {
-        var ms = new MusicSource("youtube", "fcohtest", 11451419);
-        String duStr = ms.isLive() ? "Live" : FNStringUtil.getTimeFormat(ms.getDuration());
-        drawText(poseStack, String.format("%s:%s %s", ms.getLoaderType(), ms.getIdentifier(), duStr), x + 1, y);
+    private void drawMusicLine(PoseStack poseStack, int x, int y, UUID uuid, MusicEntry entry) {
+        var source = entry.getSource();
+        String duStr = source.isLive() ? ("Live(" + FNStringUtil.getTimeFormat(entry.getCurrentPosition()) + ")") : FNStringUtil.getTimeProgress(entry.getCurrentPosition(), source.getDuration());
+        drawText(poseStack, String.format("%s:%s %s", source.getLoaderType(), source.getIdentifier(), duStr) + (!entry.isLoaded() ? " Loading..." : ""), x + 1, y);
 
         int sw = mc.getWindow().getGuiScaledWidth();
         int fh = mc.font.lineHeight;
@@ -37,6 +52,32 @@ public class MusicLinesOverlay extends GuiComponent {
             float ow = (((float) sw - 4f) - ((float) x + 2f)) / ((float) ssc - 1f);
             OERenderUtils.drawFill(poseStack, x + 2 + (ow * i), y + fh - 1 + 60, x + 2 + (ow * i) + 1, y + fh - 1 + 60 + 3, 0XFFDCDCDC);
         }
+
+        drawPositionLine(poseStack, x, y, (float) entry.getStartPosition() / (float) source.getDuration(), 0XFF0000FF);
+
+        int all = (sw - 4) - (x + 2);
+        int len = all / 10;
+        float crunt = (float) entry.getCurrentPosition() / (float) source.getDuration();
+        float ol = 1f / 60f / (float) source.getDuration();
+
+        for (int i = 0; i < len; i++) {
+            drawPositionLine(poseStack, x, y, ol * i, ol, 1f, 0xFFFF00FF);
+        }
+
+
+        drawPositionLine(poseStack, x, y, crunt, 1, entry.getCurrentAudioWave(0), 0XFFFFFF00);
+    }
+
+    private void drawPositionLine(PoseStack poseStack, float x, float y, float position, int color) {
+        drawPositionLine(poseStack, x, y, position, 1f, 1f, color);
+    }
+
+    private void drawPositionLine(PoseStack poseStack, float x, float y, float position, float w, float h, int color) {
+        int fh = mc.font.lineHeight;
+        int sw = mc.getWindow().getGuiScaledWidth();
+        float p = (((float) sw - 4f) - (x + 2f)) * position;
+        h *= 60f;
+        OERenderUtils.drawFill(poseStack, x + 2 + p, y + fh - 1 + 1 + ((60f - h) / 2f), x + 2 + p + w, y + fh - 1 + 1 + ((60f - h) / 2f) + h, color);
     }
 
     private void drawText(PoseStack poseStack, String text, int x, int y) {
@@ -44,5 +85,11 @@ public class MusicLinesOverlay extends GuiComponent {
         int k = mc.font.width(text);
         fill(poseStack, 1, y - 1, 2 + k + 1, y + j - 1, -1873784752);
         mc.font.draw(poseStack, text, x, y, 14737632);
+    }
+
+    private static record WaveRecord(List<WaveChannelRecord> channelRecords) {
+    }
+
+    private static record WaveChannelRecord(float[] waves) {
     }
 }

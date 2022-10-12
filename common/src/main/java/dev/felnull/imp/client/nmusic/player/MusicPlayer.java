@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.nmusic.player;
 
 import dev.felnull.imp.client.nmusic.speaker.MusicSpeaker;
+import dev.felnull.imp.client.nmusic.task.MusicTaskRunner;
 
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public interface MusicPlayer {
      * @param position 再生開始秒
      * @throws Exception 読み込み失敗
      */
-    void load(long position) throws Exception;
+    void load(MusicTaskRunner runner, long position) throws Exception;
 
     /**
      * 音楽を再生開始する
@@ -95,4 +96,25 @@ public interface MusicPlayer {
      * @return スピーカーの数
      */
     int getSpeakerCount();
+
+    /**
+     * 現在の再生位置
+     *
+     * @return 再生位置
+     */
+    long getPosition();
+
+    /**
+     * チャンネル数を取得
+     *
+     * @return チャンネル数
+     */
+    int getChannels();
+
+    /**
+     * 現在の波形の大きさを取得
+     *
+     * @return 波形情報(0 ~ 1)
+     */
+    float getCurrentAudioWave(int channel);
 }

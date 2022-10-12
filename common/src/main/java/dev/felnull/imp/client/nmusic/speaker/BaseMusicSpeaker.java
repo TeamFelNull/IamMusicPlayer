@@ -23,8 +23,9 @@ public abstract class BaseMusicSpeaker<T extends MusicBuffer<?>> implements Musi
     }
 
     @Override
-    public void play() {
+    public void play(long delay) {
         this.startTime = System.currentTimeMillis();
+
     }
 
     @Override

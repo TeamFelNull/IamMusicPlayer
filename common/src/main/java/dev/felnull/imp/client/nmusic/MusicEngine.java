@@ -1,26 +1,32 @@
 package dev.felnull.imp.client.nmusic;
 
+import com.google.common.collect.ImmutableMap;
+import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.util.ALUtils;
+import dev.felnull.imp.client.nmusic.task.MusicEngineTaskRunner;
+import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class MusicEngine {
+    private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
-    private final Map<UUID, MusicEntry> musicPlayers = new HashMap<>();
+    private final Map<UUID, MusicEntry> musicEntries = new HashMap<>();
+    private final InvokeExecutor musicTickExecutor = new InvokeExecutor();
     private ExecutorService musicLoaderExecutor = createMusicLoadExecutor();
+    private MusicEngineTaskRunner musicTaskRunner = new MusicEngineTaskRunner();
     private long lastProsesTime;
-    private long lastTime;
     public boolean reloadFlag;
 
     public static MusicEngine getInstance() {
@@ -55,7 +61,7 @@ public class MusicEngine {
      * @return 数
      */
     public int getCurrentMusicLoad() {
-        return musicPlayers.size();
+        return musicEntries.size();
     }
 
     /**
@@ -65,8 +71,8 @@ public class MusicEngine {
      */
     public int getCurrentMusicSpeaker() {
         int ct = 0;
-        synchronized (musicPlayers) {
-            for (MusicEntry value : musicPlayers.values()) {
+        synchronized (musicEntries) {
+            for (MusicEntry value : musicEntries.values()) {
                 ct += value.getSpeakerCount();
             }
         }
@@ -88,33 +94,52 @@ public class MusicEngine {
      * ポーズされてない間毎Tick呼ばれる
      */
     public void tick() {
-        lastTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
 
-        synchronized (musicPlayers) {
-            for (MusicEntry value : musicPlayers.values()) {
-                value.tick();
+        musicTickExecutor.runTasks();
+
+        synchronized (musicEntries) {
+            List<UUID> destroys = new ArrayList<>();
+            musicEntries.forEach((uuid, musicEntry) -> {
+                if (!musicEntry.tick())
+                    destroys.add(uuid);
+            });
+            for (UUID destroy : destroys) {
+                musicEntries.remove(destroy);
             }
         }
 
-        lastProsesTime = System.currentTimeMillis() - lastTime;
+        lastProsesTime = System.currentTimeMillis() - startTime;
     }
 
     /**
      * ワールドから退出、再読み込み時に呼び出し
      * 再読み後すぐにも呼び出されてしまうので再読み時は無視
      */
-    public void stop() {
+    public void stopAll() {
         if (reloadFlag) {
             reloadFlag = false;
             return;
         }
+        List<UUID> musicPlayerIds;
+        synchronized (musicEntries) {
+            musicPlayerIds = new ArrayList<>(musicEntries.keySet());
+        }
+        for (UUID musicPlayerId : musicPlayerIds) {
+            stop(musicPlayerId);
+        }
     }
+
 
     /**
      * MusicEngine壊れる～
      * 再読み込みなどされたときに呼び出し
      */
     public void destroy() {
+
+        musicTaskRunner.destroy();
+        musicTaskRunner = new MusicEngineTaskRunner();
+
         if (musicLoaderExecutor != null) musicLoaderExecutor.shutdown();
         musicLoaderExecutor = createMusicLoadExecutor();
 
@@ -125,8 +150,8 @@ public class MusicEngine {
      * ESCなどを押してポーズされたときに停止するときに呼ばれる
      */
     public void pause() {
-        synchronized (musicPlayers) {
-            for (MusicEntry value : musicPlayers.values()) {
+        synchronized (musicEntries) {
+            for (MusicEntry value : musicEntries.values()) {
                 value.pause();
             }
         }
@@ -136,8 +161,8 @@ public class MusicEngine {
      * ESCなどのポーズが解除されたときに呼ばれる
      */
     public void resume() {
-        synchronized (musicPlayers) {
-            for (MusicEntry value : musicPlayers.values()) {
+        synchronized (musicEntries) {
+            for (MusicEntry value : musicEntries.values()) {
                 value.resume();
             }
         }
@@ -152,8 +177,27 @@ public class MusicEngine {
         return Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("imp-music-loader-%d").daemon(true).build());
     }
 
+    /**
+     * 非同期読み込み用Executor
+     *
+     * @return ExecutorService
+     */
     public ExecutorService getMusicLoaderExecutor() {
         return musicLoaderExecutor;
+    }
+
+
+    public MusicEngineTaskRunner getMusicTaskRunner() {
+        return musicTaskRunner;
+    }
+
+    /**
+     * Tick上での読み込み用Executor
+     *
+     * @return Executor
+     */
+    public Executor getMusicTickExecutor() {
+        return musicTickExecutor;
     }
 
     /**
@@ -171,11 +215,11 @@ public class MusicEngine {
 
         if (isLoad(musicPlayerId)) return false;
 
-        synchronized (musicPlayers) {
-            var mpe = new MusicEntry();
-            musicPlayers.put(musicPlayerId, mpe);
+        synchronized (musicEntries) {
+            var mpe = new MusicEntry(source, position);
+            musicEntries.put(musicPlayerId, mpe);
 
-            mpe.loadStart(source, position, listener);
+            mpe.loadStart(listener);
         }
 
         return true;
@@ -192,13 +236,35 @@ public class MusicEngine {
      */
     public boolean play(@NotNull UUID musicPlayerId, long delay) {
         MusicEntry mpe;
-        synchronized (musicPlayers) {
-            mpe = musicPlayers.get(musicPlayerId);
+        synchronized (musicEntries) {
+            mpe = musicEntries.get(musicPlayerId);
         }
         if (mpe == null || !mpe.isLoaded())
             return false;
 
-        ALUtils.runOnSoundThread(() -> mpe.playStart(delay));
+        MusicUtils.runOnMusicTick(() -> {
+            mpe.playStart(delay);
+        });
+
+        return true;
+    }
+
+    /**
+     * 指定の音楽プレイヤーの再生を停止
+     * 読み込み中であっても中止される
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 停止できたかどうか
+     */
+    public boolean stop(UUID musicPlayerId) {
+        MusicEntry mpe;
+        synchronized (musicEntries) {
+            mpe = musicEntries.remove(musicPlayerId);
+        }
+        if (mpe == null)
+            return false;
+
+        MusicUtils.runOnMusicTick(mpe::stop);
 
         return true;
     }
@@ -215,8 +281,8 @@ public class MusicEngine {
         if (getCurrentMusicSpeaker() >= getMaxMusicSpeaker()) return false;
 
         MusicEntry mpe;
-        synchronized (musicPlayers) {
-            mpe = musicPlayers.get(musicPlayerId);
+        synchronized (musicEntries) {
+            mpe = musicEntries.get(musicPlayerId);
         }
 
         if (mpe == null)
@@ -232,10 +298,20 @@ public class MusicEngine {
      * @return 読み込まれてるならtrue
      */
     public boolean isLoad(UUID musicPlayerId) {
-        synchronized (musicPlayers) {
-            if (musicPlayers.containsKey(musicPlayerId)) return true;
+        synchronized (musicEntries) {
+            if (musicEntries.containsKey(musicPlayerId)) return true;
         }
         return false;
+    }
+
+    public Logger getLogger() {
+        return LOGGER;
+    }
+
+    public Map<UUID, MusicEntry> getMusicEntries() {
+        synchronized (musicEntries) {
+            return ImmutableMap.copyOf(musicEntries);
+        }
     }
 
     public static interface LoadCompleteListener {

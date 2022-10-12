@@ -1,12 +1,12 @@
 package dev.felnull.imp.client.nmusic.player;
 
+import com.google.common.collect.ImmutableMap;
 import dev.felnull.imp.client.nmusic.MusicEngine;
-import dev.felnull.imp.client.nmusic.MusicInstantaneous;
 import dev.felnull.imp.client.nmusic.speaker.MusicSpeaker;
 import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBuffer;
 import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBufferSpeakerData;
-import dev.felnull.imp.client.util.ALUtils;
-import net.minecraft.client.Minecraft;
+import dev.felnull.imp.client.nmusic.task.MusicTaskRunner;
+import dev.felnull.imp.client.util.MusicUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -15,14 +15,24 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public abstract class BaseMusicPlayer implements MusicPlayer {
-    private static final Minecraft mc = Minecraft.getInstance();
     private final Queue<BufferEntry> buffers = new LinkedList<>();
     private final List<BufferEntry> bufferInserted = new ArrayList<>();
     private final Map<UUID, MusicSpeaker<? extends MusicBuffer<?>>> speakers = new HashMap<>();
+    private final Object SLIDE_LOCK = new Object();
+    private final Object NEXT_LOCK = new Object();
+    private final Object READ_LOCK = new Object();
     private final byte[] buffer;
+    private long totalSampleTime;
+    private long sampleTime;
+    private long delay;
+    private long startPosition;
+    private long startTime = -1;
+    private long pauseTime = -1;
+    private long totalPauseTime;
     private final int channel;
     private final int sampleRate;
     private final int bit;
@@ -32,8 +42,9 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
     private boolean playing;
     private boolean initSpeakerLoad;
     private boolean destroy;
+    private boolean streamDead;
+    private boolean streamReading;
     private AudioInputStream stream;
-    private MusicInstantaneous lastInstantaneous;
 
     protected BaseMusicPlayer(int channel, int sampleRate, int bit, int aheadLoad) {
         this.buffer = new byte[sampleRate * channel * (bit / 8)];
@@ -67,17 +78,35 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
             var pl = spk.pollBuffers();
             int r = pollBufferCheck(spk, pl);
 
-            CompletableFuture.runAsync(() -> {
-                for (int i = 0; i < r; i++) {
-                    try {
-                        if (!nextBuffer())
-                            break;
-                    } catch (IOException | ExecutionException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, MusicEngine.getInstance().getMusicLoaderExecutor());
+            for (int i = 0; i < r; i++)
+                slideBuffer();
         });
+
+        if (!streamReading && !streamDead) {
+            int bs;
+            synchronized (buffers) {
+                bs = buffers.size();
+            }
+
+            if (bs <= (aheadLoad / 2)) {
+                streamReading = true;
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        for (int i = 0; i < bs; i++) {
+                            if (!nextBuffer()) {
+                                streamDead = true;
+                                break;
+                            }
+                        }
+                    } catch (IOException | ExecutionException | InterruptedException e) {
+                        streamDead = true;
+                        MusicEngine.getInstance().getLogger().error("failed to get stream", e);
+                    }
+                    streamReading = false;
+                }, MusicEngine.getInstance().getMusicLoaderExecutor());
+            }
+
+        }
     }
 
     private int pollBufferCheck(MusicSpeaker<? extends MusicBuffer<?>> speaker, List<? extends MusicBuffer<?>> buffers) {
@@ -96,8 +125,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
                             }
                         }
 
-                        if (fl)
-                            bufferEntry.insertedSpeakers.remove(speaker);
+                        if (fl) bufferEntry.insertedSpeakers.remove(speaker);
 
                         if (bufferEntry.insertedSpeakers.isEmpty()) {
                             dels.add(bufferEntry);
@@ -119,11 +147,14 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
 
     @Override
     public void pause() {
+        this.pauseTime = System.currentTimeMillis();
         forEachAvailableSpeakers(MusicSpeaker::pause);
     }
 
     @Override
     public void resume() {
+        this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
+        this.pauseTime = -1;
         forEachAvailableSpeakers(MusicSpeaker::resume);
     }
 
@@ -132,13 +163,17 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
         destroy = true;
         playing = false;
 
+        Map<UUID, MusicSpeaker<? extends MusicBuffer<?>>> copySpeakers;
         synchronized (speakers) {
-            for (MusicSpeaker<? extends MusicBuffer<?>> value : speakers.values()) {
-                value.destroy();
-            }
+            copySpeakers = ImmutableMap.copyOf(speakers);
         }
 
-        this.stream.close();
+        for (MusicSpeaker<? extends MusicBuffer<?>> value : copySpeakers.values()) {
+            value.destroy();
+        }
+
+        if (this.stream != null)
+            this.stream.close();
     }
 
     @Override
@@ -147,62 +182,85 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
     }
 
     @Override
-    public void load(long position) throws Exception {
+    public void load(MusicTaskRunner runner, long position) throws Exception {
+        this.startPosition = position;
         this.loading = true;
 
         this.stream = loadAudioStream(position);
         initSpeakerLoad = true;
 
+        streamReading = true;
         for (int i = 0; i < aheadLoad; i++) {
-            if (!readAudioStream())
-                break;
-            buffers.add(new BufferEntry(buffer.clone(), convertSpeakerBuffer(buffer), new ArrayList<>()));
+            if (!nextBuffer()) break;
         }
+        streamReading = false;
 
         for (int i = 0; i < 3; i++) {
-            if (!slideBuffer())
-                break;
+            if (!slideBuffer()) break;
         }
 
         this.loading = false;
         this.ready = true;
     }
 
-    private synchronized boolean nextBuffer() throws IOException, ExecutionException, InterruptedException {
-        if (isDestroy())
-            return false;
+    private boolean nextBuffer() throws IOException, ExecutionException, InterruptedException {
+        synchronized (NEXT_LOCK) {
+            if (isDestroy()) return false;
 
-        if (!readAudioStream())
-            return false;
+            int len;
+            if ((len = readAudioStream()) < 0) return false;
 
-        synchronized (buffers) {
-            buffers.add(new BufferEntry(buffer.clone(), convertSpeakerBuffer(buffer), new ArrayList<>()));
+            var cdata = buffer.clone();
+
+            var cp = convertSpeakerBuffer(cdata);
+            MusicInstantaneous mi = MusicInstantaneous.create(sampleTime + startPosition, len, cdata, channel, sampleRate, bit);
+
+            synchronized (buffers) {
+                buffers.add(new BufferEntry(cdata, cp, new ArrayList<>(), mi));
+            }
+
+            return true;
         }
-
-        return slideBuffer();
     }
 
-    private synchronized boolean slideBuffer() {
-        BufferEntry br;
-        synchronized (buffers) {
-            br = buffers.poll();
-        }
-        if (br == null)
-            return false;
-
+    @Override
+    public float getCurrentAudioWave(int channel) {
         synchronized (bufferInserted) {
-            bufferInserted.add(br);
-        }
-
-        ALUtils.runOnSoundThread(() -> {
-            br.data().forEach((k, e) -> {
-                var r = insetBuffer(k, e);
-                synchronized (br.insertedSpeakers) {
-                    br.insertedSpeakers.addAll(r);
+            for (BufferEntry bufferEntry : bufferInserted) {
+                long ed = bufferEntry.musicInstantaneous.sampleTime();
+                long st = ed - 1000;
+                if (getPosition() >= st && getPosition() < ed) {
+                    long rp = getPosition() - st;
+                    int fp = (int) (rp / 1000f * 60f);
+                    return bufferEntry.musicInstantaneous.getWaves(channel)[fp];
                 }
+            }
+        }
+        return 0;
+    }
+
+    private boolean slideBuffer() {
+        synchronized (SLIDE_LOCK) {
+            BufferEntry br;
+            synchronized (buffers) {
+                br = buffers.poll();
+            }
+            if (br == null) return false;
+
+            synchronized (bufferInserted) {
+                bufferInserted.add(br);
+            }
+
+            MusicUtils.runOnMusicTick(() -> {
+                br.data().forEach((k, e) -> {
+                    var r = insetBuffer(k, e);
+                    synchronized (br.insertedSpeakers) {
+                        br.insertedSpeakers.addAll(r);
+                    }
+                });
             });
-        });
-        return true;
+            return true;
+        }
     }
 
     abstract protected AudioInputStream loadAudioStream(long position) throws Exception;
@@ -213,14 +271,15 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
 
         forEachAvailableSpeakers(sp -> {
             var cs = (Class<E>) sp.getClass();
-            if (!scs.containsKey(scs))
-                scs.put(Pair.of(cs, sp.getBufferSpeakerData()), (E) sp);
+            if (!scs.containsKey(scs)) scs.put(Pair.of(cs, sp.getBufferSpeakerData()), (E) sp);
         });
 
         Map<Pair<Class<E>, MusicBufferSpeakerData>, MusicBuffer<T>> ret = new HashMap<>();
-        scs.forEach((c, s) -> mc.submit(() -> {
-            ret.put(Pair.of(c.getLeft(), c.getRight()), s.createBuffer());
-        }).join());
+        scs.forEach((c, s) -> {
+            AtomicReference<MusicBuffer<T>> b = new AtomicReference<>();
+            MusicUtils.runOnMusicTick(() -> b.set(s.createBuffer()));
+            ret.put(Pair.of(c.getLeft(), c.getRight()), b.get());
+        });
 
         List<CompletableFuture<Triple<MusicBuffer<T>, T, MusicBufferSpeakerData>>> cfs = new ArrayList<>();
         ret.forEach((c, s) -> {
@@ -228,7 +287,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
             cfs.add(cf);
         });
 
-        ALUtils.runOnSoundThread(() -> {
+        MusicUtils.runOnMusicTick(() -> {
             for (CompletableFuture<Triple<MusicBuffer<T>, T, MusicBufferSpeakerData>> cf : cfs) {
                 Triple<MusicBuffer<T>, T, MusicBufferSpeakerData> r;
                 try {
@@ -249,8 +308,12 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
      * @return 端まで読み込み終ってないかどうか
      * @throws IOException 例外
      */
-    private synchronized boolean readAudioStream() throws IOException {
-        return stream.read(buffer) >= 0;
+    private int readAudioStream() throws IOException {
+        synchronized (READ_LOCK) {
+            totalSampleTime += 1000;
+            sampleTime = totalSampleTime;
+            return stream.read(buffer);
+        }
     }
 
     private <T extends MusicBuffer<?>> List<MusicSpeaker<T>> insetBuffer(Pair<Class<MusicSpeaker<T>>, MusicBufferSpeakerData> speakerDataPair, T buffer) {
@@ -267,8 +330,10 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
 
     @Override
     public void play(long delay) {
+        this.delay = delay;
+        this.startTime = System.currentTimeMillis();
         this.playing = true;
-        forEachAvailableSpeakers(MusicSpeaker::play);
+        forEachAvailableSpeakers(speaker -> speaker.play(delay));
     }
 
     @Override
@@ -288,21 +353,39 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
 
     @Override
     public int getSpeakerCount() {
-        return speakers.size();
+        synchronized (speakers) {
+            return speakers.size();
+        }
     }
 
     private void forEachAvailableSpeakers(Consumer<MusicSpeaker<? extends MusicBuffer<?>>> speakerConsumer) {
+        Map<UUID, MusicSpeaker<? extends MusicBuffer<?>>> copySpeakers;
         synchronized (speakers) {
-            for (MusicSpeaker<? extends MusicBuffer<?>> value : speakers.values()) {
-                if (!value.isDead())
-                    speakerConsumer.accept(value);
-            }
+            copySpeakers = ImmutableMap.copyOf(speakers);
         }
+        for (MusicSpeaker<? extends MusicBuffer<?>> value : copySpeakers.values()) {
+            if (!value.isDead()) speakerConsumer.accept(value);
+        }
+    }
+
+    @Override
+    public long getPosition() {
+        if (this.startTime < 0) return this.startPosition + delay;
+
+        long pt = this.totalPauseTime;
+        if (this.pauseTime >= 0) pt += System.currentTimeMillis() - this.pauseTime;
+        return System.currentTimeMillis() - this.startTime - pt + this.startPosition + this.delay;
+    }
+
+    @Override
+    public int getChannels() {
+        return channel;
     }
 
     private static record BufferEntry(byte[] rawData,
                                       Map<Pair<Class<MusicSpeaker<MusicBuffer<Object>>>, MusicBufferSpeakerData>, MusicBuffer<Object>> data,
-                                      List<MusicSpeaker<? extends MusicBuffer<?>>> insertedSpeakers) {
+                                      List<MusicSpeaker<? extends MusicBuffer<?>>> insertedSpeakers,
+                                      MusicInstantaneous musicInstantaneous) {
 
     }
 }

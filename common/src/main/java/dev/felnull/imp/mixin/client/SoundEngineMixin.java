@@ -31,6 +31,6 @@ public class SoundEngineMixin {
     @Inject(method = "stopAll", at = @At("HEAD"))
     private void stopAll(CallbackInfo ci) {
         MusicEngineOld.getInstance().stop();
-        MusicEngine.getInstance().stop();
+        MusicEngine.getInstance().stopAll();
     }
 }

@@ -1,7 +1,6 @@
 package dev.felnull.imp.client.nmusic;
 
-import dev.felnull.imp.client.nmusic.loader.LavaMusicLoader;
-import dev.felnull.imp.client.nmusic.speaker.ALMusicSpeaker;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
 import net.minecraft.world.entity.Entity;
@@ -28,18 +27,11 @@ public class MusicTest {
         AL11.alSourcef(src, AL11.AL_CONE_OUTER_GAIN, 0f);
     }
 
-    public static void test2(Player player) throws Exception {
-        var ms = new MusicSource("http", "https://cdn.discordapp.com/attachments/358878159615164416/1026808752898322472/Atari_800_XL_ST-NICCC_2000.mp3", 114514);
-        var ml = new LavaMusicLoader();
-        ml.tryLoad(ms);
-        var mp = ml.createMusicPlayer();
-        mp.addSpeaker(UUID.randomUUID(), new ALMusicSpeaker(IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), false, 1, 10))));
-        mp.load(0);
-        mp.play(0);
-    }
+    public static void test3(Player player, String name) throws Exception {
 
-    public static void test3(Player player) throws Exception {
-        var ms = new MusicSource("youtube", "", 114514);
+        var track = LavaPlayerManager.getInstance().loadTrack(name).get();
+
+        var ms = new MusicSource("youtube", name, track.getDuration());
         var me = MusicEngine.getInstance();
         var id = UUID.randomUUID();
 
@@ -50,17 +42,15 @@ public class MusicTest {
             boolean r = me.play(id, 0);
             System.out.println(r);
 
-            /*
             new Thread(() -> {
                 try {
                     Thread.sleep(1000 * 3);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                me.addSpeaker(id, UUID.randomUUID(), tracker);
+//                me.addSpeaker(id, UUID.randomUUID(), tracker);
+                //  me.stop(id);
             }).start();
-             */
-
         });
 
         /*for (int i = 0; i < 5; i++) {
