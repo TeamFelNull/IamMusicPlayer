@@ -1,8 +1,6 @@
 package dev.felnull.imp.client.nmusic.task;
 
-import dev.felnull.imp.client.nmusic.MusicEngine;
-
-import java.util.concurrent.CompletableFuture;
+import dev.felnull.imp.client.util.MusicUtils;
 
 public interface MusicTaskRunner {
     default void addTaskThrow(Runnable runnable, Runnable destroy, Runnable destroyOnTick) {
@@ -30,13 +28,12 @@ public interface MusicTaskRunner {
     }
 
     default boolean addTask(MusicTask task) {
-        var mex = MusicEngine.getInstance().getMusicTickExecutor();
         if (isDestroy()) {
             task.destroy();
-            CompletableFuture.runAsync(task::destroyOnTick, mex).join();
+            MusicUtils.runOnMusicTick(task::destroyOnTick);
             return true;
         }
-        CompletableFuture.runAsync(task::execute, mex).join();
+        MusicUtils.runOnMusicTick(task::execute);
         return false;
     }
 

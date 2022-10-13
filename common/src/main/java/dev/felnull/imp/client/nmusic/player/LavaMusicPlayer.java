@@ -19,20 +19,25 @@ public class LavaMusicPlayer extends BaseMusicPlayer {
     }
 
     @Override
-    protected AudioInputStream loadAudioStream(long position) throws Exception {
+    protected AudioInputStream openAudioStream(long position) throws Exception {
         var lm = LavaPlayerManager.getInstance();
 
         this.audioPlayer = lm.getAudioPlayerManager().createPlayer();
         this.audioTrack.setPosition(position);
-        var stream = AudioPlayerInputStream.createStream(audioPlayer, lm.getAudioDataFormat(), lm.getAudioDataFormat().frameDuration(), false);
+        var stream = AudioPlayerInputStream.createStream(audioPlayer, lm.getAudioDataFormat(), 1000 * 15, false);
         this.audioPlayer.startTrack(this.audioTrack, false);
         return stream;
     }
 
     @Override
-    public void destroy() throws Exception {
-        super.destroy();
-        this.audioPlayer.destroy();
+    protected void closeAudioStream(AudioInputStream stream) throws Exception {
+        if (audioPlayer != null) {
+            this.audioPlayer.stopTrack();
+            this.audioPlayer.destroy();
+        }
+
         this.audioTrack.stop();
+
+        stream.close();
     }
 }

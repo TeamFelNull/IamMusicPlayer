@@ -158,10 +158,27 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
         forEachAvailableSpeakers(MusicSpeaker::resume);
     }
 
+    private void destroyNonThrow() {
+        try {
+            destroy();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public void destroy() throws Exception {
+        if (destroy)
+            return;
+
         destroy = true;
         playing = false;
+
+        try {
+            closeAudioStream(this.stream);
+        } catch (Exception ex) {
+            MusicEngine.getInstance().getLogger().error("Failed to close audio stream", ex);
+        }
 
         Map<UUID, MusicSpeaker<? extends MusicBuffer<?>>> copySpeakers;
         synchronized (speakers) {
@@ -172,8 +189,25 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
             value.destroy();
         }
 
-        if (this.stream != null)
-            this.stream.close();
+        synchronized (buffers) {
+            for (BufferEntry bufferEntry : buffers) {
+                synchronized (bufferEntry.data) {
+                    for (MusicBuffer<Object> value : bufferEntry.data.values()) {
+                        value.release();
+                    }
+                }
+            }
+        }
+
+        synchronized (bufferInserted) {
+            for (BufferEntry bufferEntry : bufferInserted) {
+                synchronized (bufferEntry.data) {
+                    for (MusicBuffer<Object> value : bufferEntry.data.values()) {
+                        value.release();
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -186,18 +220,25 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
         this.startPosition = position;
         this.loading = true;
 
-        this.stream = loadAudioStream(position);
-        initSpeakerLoad = true;
+        this.stream = openAudioStream(position);
 
+        runner.addTaskThrow(null, null, this::destroyNonThrow);
+
+        initSpeakerLoad = true;
         streamReading = true;
+
         for (int i = 0; i < aheadLoad; i++) {
             if (!nextBuffer()) break;
         }
         streamReading = false;
 
+        runner.addTaskThrow(null, null, this::destroyNonThrow);
+
         for (int i = 0; i < 3; i++) {
             if (!slideBuffer()) break;
         }
+
+        runner.addTaskThrow(null, null, this::destroyNonThrow);
 
         this.loading = false;
         this.ready = true;
@@ -263,7 +304,9 @@ public abstract class BaseMusicPlayer implements MusicPlayer {
         }
     }
 
-    abstract protected AudioInputStream loadAudioStream(long position) throws Exception;
+    abstract protected AudioInputStream openAudioStream(long position) throws Exception;
+
+    abstract protected void closeAudioStream(AudioInputStream stream) throws Exception;
 
     private <T, E extends MusicSpeaker<MusicBuffer<T>>> Map<Pair<Class<E>, MusicBufferSpeakerData>, MusicBuffer<T>> convertSpeakerBuffer(byte[] data) throws ExecutionException, InterruptedException {
         var me = MusicEngine.getInstance();

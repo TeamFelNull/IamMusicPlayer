@@ -1,5 +1,6 @@
 package dev.felnull.imp.client.nmusic;
 
+import com.sedmelluq.discord.lavaplayer.track.playback.AllocatingAudioFrameBuffer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
@@ -42,6 +43,7 @@ public class MusicTest {
             boolean r = me.play(id, 0);
             System.out.println(r);
 
+
             new Thread(() -> {
                 try {
                     Thread.sleep(1000 * 3);
@@ -52,6 +54,15 @@ public class MusicTest {
                 //  me.stop(id);
             }).start();
         });
+
+        /*new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            me.stop(id);
+        }).start();*/
 
         /*for (int i = 0; i < 5; i++) {
             var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, i, 0), false, 1, 10));
