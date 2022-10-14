@@ -16,7 +16,7 @@ public interface MusicLoader {
      * @return MusicPlayer
      */
     @NotNull
-    MusicPlayer createMusicPlayer();
+    MusicPlayer<?, ?> createMusicPlayer();
 
     /**
      * 試行時に読み込む

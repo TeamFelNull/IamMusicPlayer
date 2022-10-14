@@ -1,98 +1,280 @@
 package dev.felnull.imp.client.nmusic.speaker;
 
-import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBuffer;
-import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBufferSpeakerData;
+import com.google.common.collect.ImmutableList;
+import dev.felnull.imp.client.util.MusicUtils;
+import dev.felnull.imp.client.util.SoundMath;
+import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
+import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
-/**
- * 音楽を実際に再生するスピーカー
- * {@link #insertAudio(MusicBuffer)}でデータを挿入<br>
- * ↓<br>
- * {@link #play()}で再生開始<br>
- * ↓<br>
- * {@link #insertAudio(MusicBuffer)}でデータを挿入し続けてください<br>
- * <p>
- * {@link #isDead()}がTrueになってしまったら新しくスピーカーを生成してください
- */
-public interface MusicSpeaker<T extends MusicBuffer<?>> {
-    /**
-     * 音楽トラッカーを更新
-     *
-     * @param tracker トラッカー
-     */
-    void update(MusicTracker tracker);
+import static org.lwjgl.openal.AL11.*;
+
+public class MusicSpeaker {
+    private final Queue<MusicBuffer> buffers = new ArrayDeque<>();
+    private final int source;
+    private final MusicSpeakerFixedInfo fixedInfo;
+    private MusicTracker tracker;
+    private long startTime = -1;
+    private long pauseTime = -1;
+    private long stopTime = -1;
+    private long totalPauseTime;
+    private long scheduledStartTime;
+    private long liveTime = System.currentTimeMillis();
+    private boolean playStarted;
+
+    public MusicSpeaker(MusicTracker tracker) {
+        this.tracker = tracker;
+        this.fixedInfo = tracker.getSpeakerInfo().fixedInfo();
+
+        MusicUtils.assertOnMusicTick();
+
+        this.source = alGenSources();
+        alSourceInit();
+        alSourceUpdate();
+
+        MusicUtils.checkALError();
+    }
+
+    public boolean canPlay() {
+        return !isDead() && !buffers.isEmpty() && getLiveTime() >= scheduledStartTime;
+    }
+
+    public boolean isPlaying() {
+        return getPlayState() == AL_PLAYING || getPlayState() == AL_PAUSED;
+    }
+
+    public void setScheduledStartTime(long scheduledStartTime) {
+        this.scheduledStartTime = getLiveTime() + scheduledStartTime;
+    }
 
     /**
      * 毎Tick呼び出し
      */
-    void tick();
+    public void tick() {
+        MusicUtils.assertOnMusicTick();
+
+        alSourceUpdate();
+
+        MusicUtils.checkALError();
+    }
+
+    public MusicTracker getTracker() {
+        return tracker;
+    }
 
     /**
-     * 曲データを挿入
-     * Little Endianの16bitのPCM波形
+     * 音声バッファーデータを挿入
      *
-     * @param data LittleEndianの16bitのPCM波形データ
+     * @param buffer 音声バッファーデータ
      */
-    void insertAudio(T data);
+    public void insertBuffer(MusicBuffer buffer) {
+        buffer.addSpeaker(this);
+        buffers.add(buffer);
 
-    /**
-     * バッファーを作成(空)
-     *
-     * @return バッファー
-     */
-    T createBuffer();
+        MusicUtils.assertOnMusicTick();
 
+        alSourceQueueBuffers(source, buffer.getBufferId());
+
+        MusicUtils.checkALError();
+    }
 
     /**
      * 再生開始
-     */
-    void play(long delay);
-
-    /**
-     * すでに再生し終わって利用不可かどうか
      *
-     * @return 枯れてるかどうか
+     * @param delay 遅れ
      */
-    boolean isDead();
+    public void play(long delay) {
+        this.playStarted = true;
+        this.startTime = System.currentTimeMillis();
+
+        MusicUtils.assertOnMusicTick();
+
+        float secdelay = (float) delay / 1000f;
+        alSourcef(source, AL_SEC_OFFSET, secdelay);
+        alSourcePlay(source);
+
+        MusicUtils.checkALError();
+    }
 
     /**
-     * ESCなどで一時停止時に呼び出し
+     * 一時停止
      */
-    void pause();
+    public void pause() {
+        this.pauseTime = System.currentTimeMillis();
+
+        if (getPlayState() == AL_PLAYING) alSourcePause(this.source);
+    }
 
     /**
-     * ESCなどの一時停止の解除時に呼び出し
+     * 一時停止を解除
      */
-    void resume();
+    public void resume() {
+        this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
+        this.pauseTime = -1;
+
+        if (getPlayState() == AL_PAUSED) alSourcePlay(this.source);
+    }
+
+    private int getPlayState() {
+        return alGetSourcei(this.source, AL_SOURCE_STATE);
+    }
 
     /**
-     * リソース破棄
+     * スピーカーを破棄
      *
-     * @throws Exception 失敗
+     * @return 挿入済みバッファーデータ
+     * @throws Exception 例外
      */
-    void destroy() throws Exception;
+    public List<MusicBuffer> destroy() throws Exception {
+        if (getPlayState() != AL_STOPPED)
+            stop();
+
+        MusicUtils.assertOnMusicTick();
+
+        alDeleteSources(source);
+
+        MusicUtils.checkALError();
+
+        var r = ImmutableList.copyOf(buffers);
+        for (MusicBuffer musicBuffer : buffers) {
+            musicBuffer.removeSpeaker(this);
+        }
+        return r;
+    }
 
     /**
-     * 使用済みバッファーデータを取得
-     *
-     * @return 使用済みバッファーデータ
+     * 停止、停止後は再開不可
+     * {@link #destroy()}を呼び出し後に新しくスピーカーを生成してください
      */
-    List<T> pollBuffers();
+    public void stop() {
+        MusicUtils.assertOnMusicTick();
+
+        if (getPlayState() != AL_STOPPED)
+            stopTime = System.currentTimeMillis();
+
+        alSourceStop(source);
+
+        MusicUtils.checkALError();
+    }
 
     /**
-     * スピーカー生成時に渡す変数データ
+     * 音楽トラッカーを更新
      *
-     * @return データ
+     * @param tracker 音楽トラッカー
      */
-    MusicBufferSpeakerData getBufferSpeakerData();
+    public void setTracker(MusicTracker tracker) {
+        this.tracker = tracker;
+        if (!this.fixedInfo.equals(this.tracker.getSpeakerInfo().fixedInfo())) {
+            stop();
+            return;
+        }
+
+        alSourceUpdate();
+    }
+
+    private void alSourceInit() {
+        MusicUtils.assertOnMusicTick();
+
+        alSourcei(source, AL_LOOPING, AL_FALSE);
+
+        MusicUtils.checkALError();
+    }
+
+    private void alSourceUpdate() {
+        MusicUtils.assertOnMusicTick();
+
+        var spi = tracker.getSpeakerInfo();
+
+        alSourcei(source, AL_SOURCE_RELATIVE, fixedInfo.relative() ? AL_TRUE : AL_FALSE);
+        if (!fixedInfo.relative()) {
+            alSource3f(source, AL_POSITION, (float) spi.position().x(), (float) spi.position().y(), (float) spi.position().z());
+            alSourcef(source, AL_GAIN, spi.volume());
+            linearAttenuation(spi.range());
+        } else {
+            alSourcef(source, AL_GAIN, (float) SoundMath.calculatePseudoAttenuation(spi.position(), spi.range(), spi.volume()));
+        }
+
+        MusicUtils.checkALError();
+    }
+
+    private void linearAttenuation(float r) {
+        alSourcei(source, AL_DISTANCE_MODEL, 53251);
+        alSourcef(source, AL_MAX_DISTANCE, r);
+        alSourcef(source, AL_ROLLOFF_FACTOR, 1.0F);
+        alSourcef(source, AL_REFERENCE_DISTANCE, 0.0F);
+    }
+
+    public List<MusicBuffer> pollBuffers() {
+        MusicUtils.assertOnMusicTick();
+
+        //使用済みバッファーデータの数を取得
+        int proBuffs = alGetSourcei(source, AL_BUFFERS_PROCESSED);
+        List<MusicBuffer> proBuffers = new ArrayList<>();
+        int[] bufIds = null;
+
+        for (int i = 0; i < proBuffs; i++) {
+            var buf = buffers.poll();
+            if (buf != null) {
+                proBuffers.add(buf);
+                buf.removeSpeaker(this);
+                bufIds = ArrayUtils.add(bufIds, buf.getBufferId());
+            } else {
+                break;
+            }
+        }
+
+        if (bufIds != null) alSourceUnqueueBuffers(source, bufIds);
+
+        MusicUtils.checkALError();
+        return proBuffers;
+    }
 
     /**
-     * 現在のスピーカーの再生済み時間
-     * ポーズ時の時間はカウントされない
+     * 再生時間を取得
      *
-     * @return 再生時間(ms)
+     * @return 再生時間
      */
-    long getPlayTime();
+    public long getPlayTime() {
+        if (this.startTime < 0) return 0;
+
+        long pt = this.totalPauseTime;
+        if (this.pauseTime >= 0)
+            pt += System.currentTimeMillis() - this.pauseTime;
+
+        long ct = System.currentTimeMillis();
+        if (stopTime >= 0) ct = stopTime;
+
+        return ct - this.startTime - pt;
+    }
+
+    private long getLiveTime() {
+        long pt = this.totalPauseTime;
+        if (this.pauseTime >= 0)
+            pt += System.currentTimeMillis() - this.pauseTime;
+
+        return System.currentTimeMillis() - liveTime - pt;
+    }
+
+    /**
+     * 再生が終わり利用不可かどうか
+     *
+     * @return 利用不可かどうか
+     */
+    public boolean isDead() {
+        return playStarted && getPlayState() == AL_STOPPED;
+    }
+
+    /**
+     * 固定情報を取得
+     *
+     * @return 固定情報
+     */
+    public MusicSpeakerFixedInfo getFixedInfo() {
+        return fixedInfo;
+    }
 }

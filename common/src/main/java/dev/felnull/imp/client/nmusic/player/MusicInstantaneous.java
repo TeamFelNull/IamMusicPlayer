@@ -12,7 +12,7 @@ import java.util.List;
  * @param channelInstantaneous
  */
 public record MusicInstantaneous(long sampleTime, List<ChannelInstantaneous> channelInstantaneous) {
-    public static MusicInstantaneous create(long time, int len, byte[] rawData, int channel, int sampleRate, int bit) {
+    public static MusicInstantaneous create(long time, byte[] data, int channel, int bit) {
         List<ChannelInstantaneous> cis = new ArrayList<>();
 
         for (int i = 0; i < channel; i++)
@@ -21,7 +21,7 @@ public record MusicInstantaneous(long sampleTime, List<ChannelInstantaneous> cha
         if (bit != 16)
             throw new RuntimeException("Unsupported bit");
 
-        int ovs = rawData.length / 2;
+        int ovs = data.length / 2;
         int oct = ovs / 60 / channel;
 
         for (int i = 0; i < 60; i++) {
@@ -32,7 +32,7 @@ public record MusicInstantaneous(long sampleTime, List<ChannelInstantaneous> cha
                     int l1 = l + 2 * k;
                     int l2 = l1 + 1;
 
-                    byte[] d = {rawData[l1], rawData[l2]};
+                    byte[] d = {data[l1], data[l2]};
                     short r = ByteBuffer.wrap(d).order(ByteOrder.LITTLE_ENDIAN).getShort();
                     float val = Math.abs((float) r / (float) Short.MAX_VALUE);
                     totals[k] += val;

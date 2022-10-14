@@ -1,12 +1,9 @@
 package dev.felnull.imp.client.nmusic;
 
-import com.sedmelluq.discord.lavaplayer.track.playback.AllocatingAudioFrameBuffer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import org.lwjgl.openal.AL11;
 
 import java.util.UUID;
@@ -29,10 +26,13 @@ public class MusicTest {
     }
 
     public static void test3(Player player, String name) throws Exception {
-
         var track = LavaPlayerManager.getInstance().loadTrack(name).get();
 
-        var ms = new MusicSource("youtube", name, track.getDuration());
+        long duration = track.getDuration();
+        if (track.getInfo().isStream)
+            duration = -1;
+
+        var ms = new MusicSource("youtube", name, duration);
         var me = MusicEngine.getInstance();
         var id = UUID.randomUUID();
 
@@ -50,8 +50,9 @@ public class MusicTest {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-//                me.addSpeaker(id, UUID.randomUUID(), tracker);
-                //  me.stop(id);
+                //   var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, false));
+                //MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
+                // me.stop(id);
             }).start();
         });
 
@@ -64,13 +65,16 @@ public class MusicTest {
             me.stop(id);
         }).start();*/
 
-        /*for (int i = 0; i < 5; i++) {
-            var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, i, 0), false, 1, 10));
-            boolean ret = me.addSpeaker(id, UUID.randomUUID(), tracker);
-            System.out.println(ret);
-        }*/
+        //for (int i = 0; i < 5; i++) {
+        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, 2), 0.5f, 10, 0, false));
+        me.addSpeaker(id, UUID.randomUUID(), tracker1);
 
-        try {
+        var tracker2 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, -2), 0.5f, 10, 1, false));
+        me.addSpeaker(id, UUID.randomUUID(), tracker2);
+        //     System.out.println(ret);
+        // }
+
+        /*try {
             double x = player.position().x();
             double y = player.position().y();
             double z = player.position().z();
@@ -84,6 +88,6 @@ public class MusicTest {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 }

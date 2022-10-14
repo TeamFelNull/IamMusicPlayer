@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.nmusic.task.MusicEngineTaskRunner;
+import dev.felnull.imp.client.nmusic.task.MusicEngineDestroyRunner;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
@@ -25,7 +25,7 @@ public class MusicEngine {
     private final Map<UUID, MusicEntry> musicEntries = new HashMap<>();
     private final InvokeExecutor musicTickExecutor = new InvokeExecutor();
     private ExecutorService musicLoaderExecutor = createMusicLoadExecutor();
-    private MusicEngineTaskRunner musicTaskRunner = new MusicEngineTaskRunner();
+    private MusicEngineDestroyRunner musicDestroyRunner = new MusicEngineDestroyRunner();
     private long lastProsesTime;
     public boolean reloadFlag;
 
@@ -136,9 +136,10 @@ public class MusicEngine {
      * 再読み込みなどされたときに呼び出し
      */
     public void destroy() {
+        stopAll();
 
-        musicTaskRunner.destroy();
-        musicTaskRunner = new MusicEngineTaskRunner();
+        musicDestroyRunner.destroy();
+        musicDestroyRunner = new MusicEngineDestroyRunner();
 
         if (musicLoaderExecutor != null) musicLoaderExecutor.shutdown();
         musicLoaderExecutor = createMusicLoadExecutor();
@@ -182,13 +183,13 @@ public class MusicEngine {
      *
      * @return ExecutorService
      */
-    public ExecutorService getMusicLoaderExecutor() {
+    public ExecutorService getMusicAsyncExecutor() {
         return musicLoaderExecutor;
     }
 
 
-    public MusicEngineTaskRunner getMusicTaskRunner() {
-        return musicTaskRunner;
+    public MusicEngineDestroyRunner getMusicDestroyRunner() {
+        return musicDestroyRunner;
     }
 
     /**
@@ -264,7 +265,7 @@ public class MusicEngine {
         if (mpe == null)
             return false;
 
-        MusicUtils.runOnMusicTick(mpe::stop);
+        MusicUtils.runOnMusicTick(mpe::destroy);
 
         return true;
     }

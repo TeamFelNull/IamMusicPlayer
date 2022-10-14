@@ -1,5 +1,6 @@
 package dev.felnull.imp.nmusic.tracker;
 
+import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import dev.felnull.imp.nmusic.MusicSpeakerInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
@@ -14,7 +15,7 @@ public class EntityMusicTracker extends FixedMusicTracker {
     }
 
     public EntityMusicTracker(Entity entity, float volume, float range) {
-        super(new MusicSpeakerInfo(entity.position(), false, volume, range));
+        super(new MusicSpeakerInfo(entity.position(), volume, range, new MusicSpeakerFixedInfo(-1, false)));
         this.level = null;
         this.entityID = entity.getId();
     }
@@ -25,7 +26,7 @@ public class EntityMusicTracker extends FixedMusicTracker {
         if (level != null && entityID >= 0) {
             var en = level.getEntity(entityID);
             if (en != null)
-                return new MusicSpeakerInfo(en.position(), false, sp.volume(), sp.range());
+                return new MusicSpeakerInfo(en.position(), sp.volume(), sp.range(), new MusicSpeakerFixedInfo(-1, false));
         }
         return sp;
     }

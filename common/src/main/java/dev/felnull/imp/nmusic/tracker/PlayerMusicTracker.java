@@ -1,5 +1,6 @@
 package dev.felnull.imp.nmusic.tracker;
 
+import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import dev.felnull.imp.nmusic.MusicSpeakerInfo;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -18,7 +19,7 @@ public class PlayerMusicTracker extends FixedMusicTracker {
     }
 
     public PlayerMusicTracker(Player player, float volume, float range) {
-        super(new MusicSpeakerInfo(player.position(), false, volume, range));
+        super(new MusicSpeakerInfo(player.position(), volume, range, new MusicSpeakerFixedInfo(-1, false)));
         this.playerId = player.getGameProfile().getId();
         this.myPlayer = null;
         this.entityGetter = null;
@@ -30,7 +31,7 @@ public class PlayerMusicTracker extends FixedMusicTracker {
         if (myPlayer != null && entityGetter != null && playerId != null) {
             var pl = entityGetter.getPlayerByUUID(playerId);
             if (pl != null)
-                return new MusicSpeakerInfo(pl.position(), myPlayer.getGameProfile().getId().equals(playerId), sp.volume(), sp.range());
+                return new MusicSpeakerInfo(pl.position(), sp.volume(), sp.range(), new MusicSpeakerFixedInfo(-1, myPlayer.getGameProfile().getId().equals(playerId)));
         }
         return sp;
     }

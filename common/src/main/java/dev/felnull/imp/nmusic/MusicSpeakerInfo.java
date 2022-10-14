@@ -6,14 +6,14 @@ import net.minecraft.world.phys.Vec3;
 /**
  * 音楽が流れるスピーカー情報
  *
- * @param position スピーカーの場所
- * @param relative 相対的な音源かどうか
- * @param volume   ボリューム
- * @param range    範囲
+ * @param position  スピーカーの場所
+ * @param volume    ボリューム
+ * @param range     範囲
+ * @param fixedInfo 固定情報
  */
-public record MusicSpeakerInfo(Vec3 position, boolean relative, float volume, float range) {
+public record MusicSpeakerInfo(Vec3 position, float volume, float range, MusicSpeakerFixedInfo fixedInfo) {
     public MusicSpeakerInfo() {
-        this(Vec3.ZERO, false, 0, 0);
+        this(Vec3.ZERO, 0, 0, new MusicSpeakerFixedInfo());
     }
 
     public CompoundTag toTag() {
@@ -26,7 +26,7 @@ public record MusicSpeakerInfo(Vec3 position, boolean relative, float volume, fl
         tag.putFloat("volume", volume);
         tag.putFloat("range", range);
 
-        tag.putBoolean("relative", relative);
+        tag.put("fixed_info", fixedInfo.toTag());
 
         return tag;
     }
@@ -37,8 +37,8 @@ public record MusicSpeakerInfo(Vec3 position, boolean relative, float volume, fl
         float volume = tag.getFloat("volume");
         float range = tag.getFloat("range");
 
-        boolean absolute = tag.getBoolean("relative");
+        var fixedInfo = MusicSpeakerFixedInfo.loadByTag(tag.getCompound("fixed_info"));
 
-        return new MusicSpeakerInfo(position, absolute, volume, range);
+        return new MusicSpeakerInfo(position, volume, range, fixedInfo);
     }
 }

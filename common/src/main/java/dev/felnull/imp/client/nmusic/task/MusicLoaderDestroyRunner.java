@@ -2,11 +2,11 @@ package dev.felnull.imp.client.nmusic.task;
 
 import java.util.function.BooleanSupplier;
 
-public class MusicLoaderTaskRunner implements MusicTaskRunner {
-    private final MusicEngineTaskRunner engineTaskRunner;
+public class MusicLoaderDestroyRunner implements MusicDestroyRunner {
+    private final MusicEngineDestroyRunner engineTaskRunner;
     private final BooleanSupplier stopped;
 
-    public MusicLoaderTaskRunner(MusicEngineTaskRunner engineTaskRunner, BooleanSupplier stopped) {
+    public MusicLoaderDestroyRunner(MusicEngineDestroyRunner engineTaskRunner, BooleanSupplier stopped) {
         this.engineTaskRunner = engineTaskRunner;
         this.stopped = stopped;
     }

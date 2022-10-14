@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerManager {
     private static final LavaPlayerManager INSTANCE = new LavaPlayerManager();
-    private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(1, 48000, 960, false);
+    private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
     private AudioPlayerManager audioPlayerManager;
 
     public static LavaPlayerManager getInstance() {

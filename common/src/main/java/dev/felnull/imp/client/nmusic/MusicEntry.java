@@ -3,13 +3,12 @@ package dev.felnull.imp.client.nmusic;
 import dev.felnull.imp.client.nmusic.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.nmusic.loader.MusicLoader;
 import dev.felnull.imp.client.nmusic.player.MusicPlayer;
-import dev.felnull.imp.client.nmusic.speaker.ALMusicSpeaker;
 import dev.felnull.imp.client.nmusic.speaker.MusicSpeaker;
-import dev.felnull.imp.client.nmusic.speaker.buffer.MusicBuffer;
-import dev.felnull.imp.client.nmusic.task.MusicLoaderTaskRunner;
-import dev.felnull.imp.client.util.MusicUtils;
+import dev.felnull.imp.client.nmusic.task.MusicDestroyRunner;
+import dev.felnull.imp.client.nmusic.task.MusicLoaderDestroyRunner;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
 
 public class MusicEntry {
     private final Map<UUID, MusicTracker> reserveTrackers = new HashMap<>();
-    private final AtomicReference<MusicPlayer> musicPlayer = new AtomicReference<>();
+    private final AtomicReference<MusicPlayer<?, ?>> musicPlayer = new AtomicReference<>();
     private final MusicSource source;
     private final long startPosition;
     private boolean loaded;
@@ -39,7 +38,7 @@ public class MusicEntry {
 
     public int getChannels() {
         if (musicPlayer.get() != null)
-            return musicPlayer.get().getChannels();
+            return musicPlayer.get().getAudioInfo().channel();
         return 0;
     }
 
@@ -55,23 +54,17 @@ public class MusicEntry {
         return 0;
     }
 
-    protected void stop() {
-        stopped = true;
-        if (musicPlayer.get() != null) {
-            try {
-                musicPlayer.get().destroy();
-            } catch (Exception e) {
-                MusicEngine.getInstance().getLogger().error("Failed to destroy music player", e);
-            }
-        }
-    }
-
     protected void playStart(long delay) {
         musicPlayer.get().play(delay);
     }
 
     protected boolean tick() {
         if (musicPlayer.get() != null) {
+            if (musicPlayer.get().waitDestroy()) {
+                destroy();
+                return false;
+            }
+
             if (musicPlayer.get().isDestroy())
                 return false;
             musicPlayer.get().tick();
@@ -91,10 +84,10 @@ public class MusicEntry {
         }
     }
 
-    protected void destroy() throws Exception {
-        if (musicPlayer.get() != null) {
-            musicPlayer.get().destroy();
-        }
+    protected void destroy() {
+        stopped = true;
+        if (musicPlayer.get() != null)
+            musicPlayer.get().destroyNonThrow();
     }
 
     public boolean isLoaded() {
@@ -122,71 +115,68 @@ public class MusicEntry {
         if (spk != null)
             return false;
 
-        AtomicReference<MusicSpeaker<? extends MusicBuffer<?>>> spker = new AtomicReference<>();
-        MusicUtils.runOnMusicTick(() -> spker.set(new ALMusicSpeaker(tracker)));
-
-        musicPlayer.get().addSpeaker(speakerId, spker.get());
+        musicPlayer.get().addSpeaker(speakerId, new MusicSpeaker(tracker));
         return true;
     }
 
-    protected void loadStart(MusicEngine.LoadCompleteListener listener) {
+    private MusicDestroyRunner createDestroyRunner() {
         var me = MusicEngine.getInstance();
-        var runner = new MusicLoaderTaskRunner(me.getMusicTaskRunner(), () -> stopped);
+        return new MusicLoaderDestroyRunner(me.getMusicDestroyRunner(), () -> stopped);
+    }
+
+    protected void loadStart(MusicEngine.LoadCompleteListener listener) {
+        final long startTime = System.currentTimeMillis();
+        var me = MusicEngine.getInstance();
+        var runner = createDestroyRunner();
 
         var cf = CompletableFuture.supplyAsync(() -> {
             var loader = selectLoader(source);
             if (loader == null)
                 throw new RuntimeException("No available loaders found");
-            runner.addTaskThrow(null, loader::cansel, null);
+            runner.run(loader::cansel);
             return loader;
-        }, me.getMusicLoaderExecutor()).thenApplyAsync(ret -> {
-            MusicPlayer player = ret.createMusicPlayer();
-            runner.addTaskThrow(() -> musicPlayer.set(player), null, () -> {
-                try {
-                    player.destroy();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            return player;
-        }, me.getMusicLoaderExecutor()).thenApplyAsync(ret -> {
-            runner.addTaskThrow(() -> {
-                synchronized (reserveTrackers) {
-                    reserveTrackers.forEach(this::addSpeaker);
-                    reserveTrackers.clear();
-                }
-            }, null, null);
+        }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
+            return ret.createMusicPlayer();
+        }, me.getMusicTickExecutor()).thenApplyAsync(ret -> {
+            musicPlayer.set(ret);
+            runner.run(ret::destroyNonThrow);
             return ret;
-        }, me.getMusicLoaderExecutor()).thenApplyAsync(ret -> {
-            long time = System.currentTimeMillis();
-            try {
-                ret.load(runner, startPosition);
-                runner.addTaskThrow(null, null, () -> {
-                    try {
-                        ret.destroy();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-                return new LoadResult(true, System.currentTimeMillis() - time, null);
-            } catch (Exception e) {
-                return new LoadResult(false, System.currentTimeMillis() - time, e);
+        }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
+            synchronized (reserveTrackers) {
+                reserveTrackers.forEach(this::addSpeaker);
+                reserveTrackers.clear();
             }
-        }, me.getMusicLoaderExecutor());
+            runner.run(ret::destroyNonThrow);
+            return ret;
+        }, me.getMusicTickExecutor()).thenApplyAsync(ret -> {
+            return new MusicLoadStartResult(ret, ret.loadStart(startPosition));
+        }, me.getMusicTickExecutor()).thenApplyAsync(ret -> {
+            try {
+                var aret = ret.loadAsync();
+                runner.run(() -> ret.musicPlayer().destroyNonThrow());
+                return Pair.of(new LoadResult(true, null), aret);
+            } catch (Exception e) {
+                return Pair.of(new LoadResult(false, e), (MusicLoadEndResult) null);
+            }
+        }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
+            if (ret.getRight() != null) {
+                ret.getRight().apply();
+                runner.run(() -> ret.getRight().musicPlayer().destroyNonThrow());
+            }
+            return ret.getLeft();
+        }, me.getMusicTickExecutor());
 
         cf.whenCompleteAsync((ret, throwable) -> {
-            runner.addTaskThrow(() -> {
-                loaded = ret != null && ret.success;
+            loaded = ret != null && ret.success;
 
-                if (throwable != null) {
-                    listener.onComplete(false, 0, throwable);
-                    return;
-                }
+            if (throwable != null) {
+                listener.onComplete(false, 0, throwable);
+                return;
+            }
 
-                if (ret != null)
-                    listener.onComplete(ret.success, ret.time, ret.error);
-            }, null, null);
-        }, me.getMusicLoaderExecutor());
+            if (ret != null)
+                listener.onComplete(ret.success, System.currentTimeMillis() - startTime, ret.error);
+        }, me.getMusicTickExecutor());
     }
 
     private MusicLoader selectLoader(MusicSource source) {
@@ -211,6 +201,18 @@ public class MusicEntry {
         return rldr;
     }
 
-    private static record LoadResult(boolean success, long time, Throwable error) {
+    private static record LoadResult(boolean success, Throwable error) {
+    }
+
+    private static record MusicLoadStartResult<T, E>(MusicPlayer<T, E> musicPlayer, T input) {
+        private MusicLoadEndResult<E> loadAsync() throws Exception {
+            return new MusicLoadEndResult<>(musicPlayer, musicPlayer.loadAsync(input));
+        }
+    }
+
+    private static record MusicLoadEndResult<T>(MusicPlayer<?, T> musicPlayer, T result) {
+        private void apply() {
+            musicPlayer.loadApply(result);
+        }
     }
 }

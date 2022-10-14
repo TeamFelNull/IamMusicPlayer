@@ -1,6 +1,6 @@
 package dev.felnull.imp.client.nmusic.task;
 
-public class MusicEngineTaskRunner implements MusicTaskRunner {
+public class MusicEngineDestroyRunner implements MusicDestroyRunner {
     private boolean destroy;
 
     @Override

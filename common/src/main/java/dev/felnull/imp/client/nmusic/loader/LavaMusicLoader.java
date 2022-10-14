@@ -8,11 +8,12 @@ import dev.felnull.imp.music.resource.MusicSource;
 import org.jetbrains.annotations.NotNull;
 
 public class LavaMusicLoader implements MusicLoader {
+    private MusicSource musicSource;
     private AudioTrack audioTrack;
 
     @Override
-    public @NotNull MusicPlayer createMusicPlayer() {
-        return new LavaMusicPlayer(audioTrack);
+    public @NotNull MusicPlayer<?, ?> createMusicPlayer() {
+        return new LavaMusicPlayer(audioTrack, musicSource);
     }
 
     @Override
@@ -25,6 +26,7 @@ public class LavaMusicLoader implements MusicLoader {
             throw new RuntimeException("Discrepancies in live information");
 
         this.audioTrack = track.get();
+        this.musicSource = source;
     }
 
     @Override
