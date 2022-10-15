@@ -11,6 +11,8 @@ import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import org.lwjgl.BufferUtils;
 
 import javax.sound.sampled.AudioInputStream;
+import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
@@ -60,14 +62,13 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
     }
 
+
     @Override
     public void destroy() throws Exception {
         this.destroy = true;
         this.playing = false;
 
-        //Forgeで不具合が出る可能性があるけど多少はね？
-        if (readThread.get() != null)
-            readThread.get().interrupt();
+        stopReadStream();
 
         synchronized (readLock) {
             if (stream != null)
@@ -163,10 +164,23 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
         readEntries.removeAll(delREs);
 
-        int lc;
-        if (!finished && !loadEnd && !reading && (lc = readEntries.size()) <= (aheadLoad / 2)) {
+        readTick();
+    }
+
+
+    private void readTick() {
+        int lc = readEntries.size();
+        int nc;
+
+        if (musicSource.isLive()) {
+            nc = aheadLoad;
+        } else {
+            nc = (int) ((float) (musicSource.getDuration() - getPosition()) / 1000f + 0.5f);
+        }
+
+        if (!finished && !loadEnd && !reading && (lc <= (aheadLoad / 2) || (nc - aheadLoad) <= aheadLoad)) {
             var cf = CompletableFuture.supplyAsync(() -> {
-                return readStart(aheadLoad - lc);
+                return readStart(aheadLoad);
             }, tickExecutor).thenApplyAsync(ret -> {
                 try {
                     return readAsync(ret);
@@ -180,20 +194,9 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
                     readApply(ret);
                     return;
                 }
-                MusicEngine.getInstance().getLogger().error("Failed to load audio data", error);
+                MusicEngine.getInstance().getLogger().error("Failed to read audio data", error);
             }, tickExecutor);
         }
-
-
-        /*for (MusicSpeaker value : preSpeakers.values()) {
-            readEntries.stream().sorted(null);
-            for (ReadEntry readEntry : readEntries) {
-                if (readEntry.buffers.containsKey(value.getFixedInfo())) {
-
-                }
-            }
-
-        }*/
     }
 
     private void updatePreSpeaker(UUID uuid) {
@@ -352,8 +355,30 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         return new ReadInput(this.stream, this.totalReadTime, loadCount, infos.stream().distinct().toList(), getAudioInfo());
     }
 
+    protected void stopReadStream() {
+        //Forgeで不具合が出る可能性があるけど多少はね？
+        if (readThread.get() != null)
+            readThread.get().interrupt();
+    }
+
+    private boolean readStream(AudioInputStream stream, byte[] buffer) throws IOException {
+        synchronized (readLock) {
+            readThread.set(Thread.currentThread());
+            try {
+                if (stream.read(buffer) < 0)
+                    return false;
+            } catch (InterruptedIOException ex) {
+                return false;
+            } finally {
+                readThread.set(null);
+            }
+        }
+        return true;
+    }
+
     private ReadResult readAsync(ReadInput input) throws Exception {
-        byte[] buffer = new byte[input.audioInfo().sampleRate() * input.audioInfo().channel() * (input.audioInfo().bit() / 8)];
+        int ol = input.audioInfo().sampleRate() * input.audioInfo().channel() * (input.audioInfo().bit() / 8);
+        byte[] buffer = new byte[ol];
         List<ReadResultEntry> entries = new ArrayList<>();
         long st = input.readStartPosition();
         boolean end = false;
@@ -362,15 +387,11 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             if (isDestroy())
                 break;
 
-
-            synchronized (readLock) {
-                readThread.set(Thread.currentThread());
-                if (input.stream.read(buffer) < 0) {
-                    end = true;
-                    break;
-                }
-                readThread.set(null);
+            if (!musicSource.isLive() && (st + 1000) > musicSource.getDuration()) {
+                Arrays.fill(buffer, (byte) 0);
             }
+
+            end = !readStream(input.stream, buffer);
 
             byte[] data = buffer.clone();
             MusicInstantaneous mi = MusicInstantaneous.create(st, data, input.audioInfo().channel(), input.audioInfo.bit());
@@ -383,6 +404,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
             st += 1000;
 
+            if (end)
+                break;
         }
 
         return new ReadResult(entries, end);
@@ -398,11 +421,11 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             readEntries.add(re);
             re.buffers().forEach(this::insertBuffer);
         }
+
         this.reading = false;
     }
 
     private void insertBuffer(MusicSpeakerFixedInfo info, MusicBuffer buffer) {
-
         for (MusicSpeaker value : speakers.values()) {
             if (!value.isDead() && value.getFixedInfo().equals(info))
                 value.insertBuffer(buffer);

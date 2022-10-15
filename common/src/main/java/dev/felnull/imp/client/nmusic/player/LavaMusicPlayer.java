@@ -2,7 +2,9 @@ package dev.felnull.imp.client.nmusic.player;
 
 import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.nmusic.AudioInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -24,8 +26,15 @@ public class LavaMusicPlayer extends BaseMusicPlayer {
 
         this.audioPlayer = lm.getAudioPlayerManager().createPlayer();
         this.audioTrack.setPosition(position);
+        this.audioPlayer.addListener(new AudioEventAdapter() {
+            @Override
+            public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+                stopReadStream();
+            }
+        });
+
         var stream = AudioPlayerInputStream.createStream(audioPlayer, lm.getAudioDataFormat(), 1000 * 15, false);
-        this.audioPlayer.startTrack(this.audioTrack, false);
+        this.audioPlayer.playTrack(this.audioTrack);
         return stream;
     }
 

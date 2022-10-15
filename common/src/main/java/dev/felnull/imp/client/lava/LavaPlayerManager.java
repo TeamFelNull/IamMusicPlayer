@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.lava.player.extras.stream.StreamAudioPlayerManager;
 import dev.felnull.imp.client.nmusic.media.IMPMusicMedias;
 import dev.felnull.imp.client.nmusic.media.LavaPlayerBaseMusicMedia;
 import dev.felnull.imp.client.nmusic.media.MusicMedia;

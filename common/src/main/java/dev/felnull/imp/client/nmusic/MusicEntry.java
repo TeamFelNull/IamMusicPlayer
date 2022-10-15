@@ -8,7 +8,6 @@ import dev.felnull.imp.client.nmusic.task.MusicDestroyRunner;
 import dev.felnull.imp.client.nmusic.task.MusicLoaderDestroyRunner;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -154,16 +153,21 @@ public class MusicEntry {
             try {
                 var aret = ret.loadAsync();
                 runner.run(() -> ret.musicPlayer().destroyNonThrow());
-                return Pair.of(new LoadResult(true, null), aret);
+                return new MusicLoadAsyncResult(new LoadResult(true, null), aret, ret.musicPlayer());
             } catch (Exception e) {
-                return Pair.of(new LoadResult(false, e), (MusicLoadEndResult) null);
+                return new MusicLoadAsyncResult(new LoadResult(false, e), null, null);
             }
         }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
-            if (ret.getRight() != null) {
-                ret.getRight().apply();
-                runner.run(() -> ret.getRight().musicPlayer().destroyNonThrow());
+            runner.run(() -> {
+                if (ret.musicPlayer() != null)
+                    ret.musicPlayer().destroyNonThrow();
+            });
+
+            if (ret.musicLoadEndResult() != null) {
+                ret.musicLoadEndResult().apply();
+                runner.run(() -> ret.musicLoadEndResult().musicPlayer().destroyNonThrow());
             }
-            return ret.getLeft();
+            return ret.loadResult();
         }, me.getMusicTickExecutor());
 
         cf.whenCompleteAsync((ret, throwable) -> {
@@ -214,5 +218,10 @@ public class MusicEntry {
         private void apply() {
             musicPlayer.loadApply(result);
         }
+    }
+
+    private static record MusicLoadAsyncResult(LoadResult loadResult, MusicLoadEndResult<?> musicLoadEndResult,
+                                               MusicPlayer<?, ?> musicPlayer) {
+
     }
 }

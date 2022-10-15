@@ -131,7 +131,7 @@ public class MusicSpeaker {
      * @throws Exception 例外
      */
     public List<MusicBuffer> destroy() throws Exception {
-        if (getPlayState() != AL_STOPPED)
+        if (isPlaying())
             stop();
 
         MusicUtils.assertOnMusicTick();
