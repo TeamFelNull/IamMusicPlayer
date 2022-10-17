@@ -2,6 +2,7 @@ package dev.felnull.imp.client.nmusic.player;
 
 import com.google.common.collect.ImmutableMap;
 import dev.felnull.fnjl.concurrent.InvokeExecutor;
+import dev.felnull.imp.api.client.MusicSpeakerAccess;
 import dev.felnull.imp.client.nmusic.AudioInfo;
 import dev.felnull.imp.client.nmusic.MusicEngine;
 import dev.felnull.imp.client.nmusic.speaker.MusicBuffer;
@@ -202,15 +203,13 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private void updatePreSpeaker(UUID uuid) {
         var sp = preSpeakers.get(uuid);
         if (sp == null) return;
-        var r = readEntries.stream().sorted((o1, o2) -> (int) (o1.position() - o2.position())).toList();
+        var r = readEntries.stream().filter(readEntry -> readEntry.position() >= getPosition()).sorted((o1, o2) -> (int) (o1.position() - o2.position())).toList();
 
         if (r.stream().allMatch(n -> n.buffers.containsKey(sp.getFixedInfo()))) {
             long min = Long.MAX_VALUE;
             for (ReadEntry readEntry : r) {
-                if (readEntry.position() >= getPosition()) {
-                    min = Math.min(min, readEntry.position());
-                    sp.insertBuffer(readEntry.buffers.get(sp.getFixedInfo()));
-                }
+                min = Math.min(min, readEntry.position());
+                sp.insertBuffer(readEntry.buffers.get(sp.getFixedInfo()));
             }
 
             sp.setScheduledStartTime(min - getPosition());
@@ -344,6 +343,29 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     @Override
     public boolean waitDestroy() {
         return finished || (!musicSource.isLive() && getPosition() >= musicSource.getDuration());
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return playing;
+    }
+
+    @Override
+    public boolean isLoading() {
+        return !loaded;
+    }
+
+    @Override
+    public boolean isPause() {
+        return pause;
+    }
+
+    @Override
+    public Map<UUID, MusicSpeakerAccess> getSpeakers() {
+        ImmutableMap.Builder<UUID, MusicSpeakerAccess> speakersBuilder = ImmutableMap.builder();
+        speakersBuilder.putAll(speakers);
+        speakersBuilder.putAll(preSpeakers);
+        return speakersBuilder.build();
     }
 
     private ReadInput readStart(int loadCount) {

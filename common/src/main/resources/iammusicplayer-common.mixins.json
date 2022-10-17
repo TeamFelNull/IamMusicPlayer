@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "client": [
     "client.DebugScreenOverlayMixin",
+    "client.LevelRendererMixin",
     "client.LibraryMixin",
     "client.SoundEngineMixin"
   ],

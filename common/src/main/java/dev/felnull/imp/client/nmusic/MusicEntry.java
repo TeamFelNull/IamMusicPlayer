@@ -22,6 +22,10 @@ public class MusicEntry {
     private boolean loaded;
     private boolean stopped;
 
+    protected MusicPlayer<?, ?> getMusicPlayer() {
+        return musicPlayer.get();
+    }
+
     protected MusicEntry(MusicSource source, long position) {
         this.source = source;
         this.startPosition = position;

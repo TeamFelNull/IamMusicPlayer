@@ -1,5 +1,6 @@
 package dev.felnull.imp.nmusic;
 
+import dev.felnull.imp.api.MusicSpeakerInfoAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 
@@ -11,7 +12,8 @@ import net.minecraft.world.phys.Vec3;
  * @param range     範囲
  * @param fixedInfo 固定情報
  */
-public record MusicSpeakerInfo(Vec3 position, float volume, float range, MusicSpeakerFixedInfo fixedInfo) {
+public record MusicSpeakerInfo(Vec3 position, float volume, float range,
+                               MusicSpeakerFixedInfo fixedInfo) implements MusicSpeakerInfoAccess {
     public MusicSpeakerInfo() {
         this(Vec3.ZERO, 0, 0, new MusicSpeakerFixedInfo());
     }
@@ -40,5 +42,30 @@ public record MusicSpeakerInfo(Vec3 position, float volume, float range, MusicSp
         var fixedInfo = MusicSpeakerFixedInfo.loadByTag(tag.getCompound("fixed_info"));
 
         return new MusicSpeakerInfo(position, volume, range, fixedInfo);
+    }
+
+    @Override
+    public Vec3 getPosition() {
+        return position;
+    }
+
+    @Override
+    public float getVolume() {
+        return volume;
+    }
+
+    @Override
+    public float getRange() {
+        return range;
+    }
+
+    @Override
+    public int getChannel() {
+        return fixedInfo().channel();
+    }
+
+    @Override
+    public boolean isSpatial() {
+        return !fixedInfo().relative();
     }
 }

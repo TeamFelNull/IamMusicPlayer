@@ -1,12 +1,13 @@
 package dev.felnull.imp.client.nmusic.player;
 
+import dev.felnull.imp.api.client.MusicPlayerAccess;
 import dev.felnull.imp.client.nmusic.AudioInfo;
 import dev.felnull.imp.client.nmusic.MusicEngine;
 import dev.felnull.imp.client.nmusic.speaker.MusicSpeaker;
 
 import java.util.UUID;
 
-public interface MusicPlayer<T, E> {
+public interface MusicPlayer<T, E> extends MusicPlayerAccess {
     /**
      * 音楽を再生開始する
      * Tick上で実行される
@@ -29,13 +30,6 @@ public interface MusicPlayer<T, E> {
             MusicEngine.getInstance().getLogger().error("Failed to destroy music player", ex);
         }
     }
-
-    /**
-     * 終了済みか確認
-     *
-     * @return 終了済みかどうか
-     */
-    boolean isDestroy();
 
     /**
      * ESCなどで一時停止時に呼び出し
@@ -100,13 +94,6 @@ public interface MusicPlayer<T, E> {
      * Tick上で呼び出されるので重い処理はNG
      */
     void loadApply(E loadedData);
-
-    /**
-     * 現在の再生位置
-     *
-     * @return 再生位置
-     */
-    long getPosition();
 
     /**
      * 音声情報を取得

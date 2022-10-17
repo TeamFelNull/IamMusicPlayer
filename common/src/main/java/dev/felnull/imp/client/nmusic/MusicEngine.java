@@ -3,6 +3,8 @@ package dev.felnull.imp.client.nmusic;
 import com.google.common.collect.ImmutableMap;
 import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.api.client.MusicEngineAccess;
+import dev.felnull.imp.api.client.MusicPlayerAccess;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.nmusic.task.MusicEngineDestroyRunner;
 import dev.felnull.imp.client.util.MusicUtils;
@@ -19,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class MusicEngine {
+public class MusicEngine implements MusicEngineAccess {
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
     private final Map<UUID, MusicEntry> musicEntries = new HashMap<>();
@@ -313,6 +315,19 @@ public class MusicEngine {
         synchronized (musicEntries) {
             return ImmutableMap.copyOf(musicEntries);
         }
+    }
+
+    @Override
+    public Map<UUID, MusicPlayerAccess> getMusicPlayers() {
+        ImmutableMap.Builder<UUID, MusicPlayerAccess> musicPlayersBuilder = ImmutableMap.builder();
+        synchronized (musicEntries) {
+            for (Map.Entry<UUID, MusicEntry> entry : musicEntries.entrySet()) {
+                var player = entry.getValue().getMusicPlayer();
+                if (player != null)
+                    musicPlayersBuilder.put(entry.getKey(), player);
+            }
+        }
+        return musicPlayersBuilder.build();
     }
 
     public static interface LoadCompleteListener {

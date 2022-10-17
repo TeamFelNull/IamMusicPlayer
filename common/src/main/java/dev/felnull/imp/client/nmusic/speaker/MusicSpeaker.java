@@ -1,6 +1,8 @@
 package dev.felnull.imp.client.nmusic.speaker;
 
 import com.google.common.collect.ImmutableList;
+import dev.felnull.imp.api.client.MusicSpeakerAccess;
+import dev.felnull.imp.api.MusicSpeakerInfoAccess;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
@@ -14,7 +16,7 @@ import java.util.Queue;
 
 import static org.lwjgl.openal.AL11.*;
 
-public class MusicSpeaker {
+public class MusicSpeaker implements MusicSpeakerAccess {
     private final Queue<MusicBuffer> buffers = new ArrayDeque<>();
     private final int source;
     private final MusicSpeakerFixedInfo fixedInfo;
@@ -276,5 +278,10 @@ public class MusicSpeaker {
      */
     public MusicSpeakerFixedInfo getFixedInfo() {
         return fixedInfo;
+    }
+
+    @Override
+    public MusicSpeakerInfoAccess getInfo() {
+        return tracker.getSpeakerInfo();
     }
 }
