@@ -1,7 +1,6 @@
 package dev.felnull.imp.client.nmusic;
 
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
 import net.minecraft.world.entity.player.Player;
@@ -54,7 +53,7 @@ public class MusicTest {
                     throw new RuntimeException(e);
                 }
                 var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, 0, false));
-               // MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
+                // MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
                 // me.stop(id);
             }).start();
         });
@@ -69,13 +68,12 @@ public class MusicTest {
         }).start();*/
 
 
-
         //for (int i = 0; i < 5; i++) {
         var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, -2), 1f, 10, 0, false));
         me.addSpeaker(id, UUID.randomUUID(), tracker1);
 
-      //  var tracker2 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, 2), 0.5f, 10, 1, false));
-     //   me.addSpeaker(id, UUID.randomUUID(), tracker2);
+        var tracker2 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, 2), 1f, 10, 1, false));
+        me.addSpeaker(id, UUID.randomUUID(), tracker2);
         //     System.out.println(ret);
         // }
 

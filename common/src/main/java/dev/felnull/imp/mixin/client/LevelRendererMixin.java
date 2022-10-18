@@ -2,7 +2,8 @@ package dev.felnull.imp.mixin.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
-import dev.felnull.imp.client.renderer.DebugOutline;
+import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.renderer.DebugSpeakerRangeRenderer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -23,8 +24,10 @@ public class LevelRendererMixin {
 
     @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;getModelViewStack()Lcom/mojang/blaze3d/vertex/PoseStack;"))
     private void renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo ci) {
-        var bs = this.renderBuffers.bufferSource();
-        var camVec = camera.getPosition();
-        DebugOutline.render(poseStack, bs, camVec.x(), camVec.y(), camVec.z());
+        if (IamMusicPlayer.CONFIG.showSpeakerRange) {
+            var bs = this.renderBuffers.bufferSource();
+            var camVec = camera.getPosition();
+            DebugSpeakerRangeRenderer.render(poseStack, bs, camVec.x(), camVec.y(), camVec.z());
+        }
     }
 }

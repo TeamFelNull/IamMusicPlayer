@@ -41,4 +41,7 @@ public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("debug")
     public boolean showMusicLines = false;
+
+    @ConfigEntry.Category("debug")
+    public boolean showSpeakerRange = false;
 }
