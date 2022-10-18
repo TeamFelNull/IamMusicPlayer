@@ -25,7 +25,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private final Map<UUID, MusicSpeaker> speakers = new HashMap<>();
     private final Map<UUID, MusicSpeaker> preSpeakers = new HashMap<>();
     private final List<ReadEntry> readEntries = new ArrayList<>();
-    private final List<ReadWait> waits = new ArrayList<>();
+    private final Map<Long, ReadWait> waits = new HashMap<>();
     private final AudioInfo audioInfo;
     private final MusicSource musicSource;
     private final int aheadLoad;
@@ -61,6 +61,10 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         for (MusicSpeaker value : speakers.values()) {
             speakerUpdate(value);
         }
+
+        for (UUID uuid : preSpeakers.keySet()) {
+            updatePreSpeaker(uuid);
+        }
     }
 
 
@@ -72,8 +76,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         stopReadStream();
 
         synchronized (readLock) {
-            if (stream != null)
-                stream.close();
+            if (stream != null) stream.close();
         }
 
         closeAudioStream();
@@ -88,8 +91,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
         for (ReadEntry readEntry : readEntries) {
             for (MusicBuffer value : readEntry.buffers.values()) {
-                if (value.canRelease())
-                    value.release();
+                if (value.canRelease()) value.release();
             }
         }
     }
@@ -111,8 +113,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             value.pause();
         }
 
-        if (musicSource.isLive())
-            finished = true;
+        if (musicSource.isLive()) finished = true;
     }
 
     @Override
@@ -133,15 +134,14 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     public void tick() {
         tickExecutor.runTasks();
 
-        if (!this.loaded)
-            return;
+        if (!this.loaded) return;
 
         List<UUID> delSpeakers = new ArrayList<>();
 
         speakers.forEach((id, speaker) -> {
             if (speaker.isDead()) {
                 try {
-                    pollBufferEntries(speaker.destroy());
+                    speaker.destroy();
                 } catch (Exception e) {
                     MusicEngine.getInstance().getLogger().error("Failed to destroy speaker", e);
                 }
@@ -150,8 +150,24 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             }
             speaker.tick();
             speakerUpdate(speaker);
-            pollBufferEntries(speaker.pollBuffers());
+            speaker.releaseBuffers();
         });
+
+        for (ReadEntry readEntry : readEntries) {
+            if (readEntry.position() >= getPosition()) continue;
+
+            List<MusicSpeakerFixedInfo> dels = new ArrayList<>();
+            for (Map.Entry<MusicSpeakerFixedInfo, MusicBuffer> entry : readEntry.buffers.entrySet()) {
+                if (entry.getValue().canRelease()) {
+                    entry.getValue().release();
+                    dels.add(entry.getKey());
+                }
+            }
+            for (MusicSpeakerFixedInfo del : dels) {
+                readEntry.buffers.remove(del);
+            }
+        }
+
 
         for (UUID delSpeaker : delSpeakers) {
             preSpeakers.put(delSpeaker, new MusicSpeaker(speakers.get(delSpeaker).getTracker()));
@@ -160,8 +176,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
         List<ReadEntry> delREs = new ArrayList<>();
         for (ReadEntry readEntry : readEntries) {
-            if (readEntry.buffers.isEmpty())
-                delREs.add(readEntry);
+            if (readEntry.buffers.isEmpty()) delREs.add(readEntry);
         }
         readEntries.removeAll(delREs);
 
@@ -215,10 +230,31 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             sp.setScheduledStartTime(min - getPosition());
             preSpeakers.remove(uuid);
             speakers.put(uuid, sp);
+        } else {
+
+            List<ReadEntry> noLoaded = r.stream().filter(n -> !n.buffers.containsKey(sp.getFixedInfo())).toList();
+            for (ReadEntry readEntry : noLoaded) {
+                var rw = new ReadWait(readEntry, sp.getFixedInfo());
+                if (waits.containsKey(readEntry.position)) continue;
+
+                var mli = middleLoadStart(rw);
+
+                var cf = CompletableFuture.supplyAsync(() -> {
+                    return middleLoadAsync(mli);
+                }, MusicEngine.getInstance().getMusicAsyncExecutor());
+
+                cf.whenCompleteAsync((ret, error) -> {
+                    if (ret != null && error == null) {
+                        middleLoadApply(ret);
+                        return;
+                    }
+                    MusicEngine.getInstance().getLogger().error("Failed to middle load audio data", error);
+                }, tickExecutor);
+            }
         }
     }
 
-    private void pollBufferEntries(List<MusicBuffer> buffers) {
+    /*private void pollBufferEntries(List<MusicBuffer> buffers) {
         for (MusicBuffer buffer : buffers) {
             if (buffer.canRelease()) {
                 buffer.release();
@@ -234,29 +270,26 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
                 }
             }
         }
-    }
+    }*/
 
     private void speakerUpdate(MusicSpeaker speaker) {
-        if (!this.pause && playing && !speaker.isPlaying() && speaker.canPlay())
-            speaker.play(0);
+        if (!this.pause && playing && !speaker.isPlaying() && speaker.canPlay()) speaker.play(0);
     }
 
     @Override
     public void addSpeaker(UUID speakerId, MusicSpeaker speaker) {
         preSpeakers.put(speakerId, speaker);
-        if (loaded)
-            updatePreSpeaker(speakerId);
+        if (loaded) updatePreSpeaker(speakerId);
     }
 
     @Override
     public void removeSpeaker(UUID uuid) {
         var sp = speakers.remove(uuid);
-        if (sp == null)
-            sp = preSpeakers.remove(uuid);
+        if (sp == null) sp = preSpeakers.remove(uuid);
 
         if (sp != null) {
             try {
-                pollBufferEntries(sp.destroy());
+                sp.destroy();
             } catch (Exception e) {
                 MusicEngine.getInstance().getLogger().error("Failed to destroy speaker", e);
             }
@@ -266,8 +299,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     @Override
     public MusicSpeaker getSpeaker(UUID uuid) {
         var sp = speakers.get(uuid);
-        if (sp == null)
-            sp = preSpeakers.get(uuid);
+        if (sp == null) sp = preSpeakers.get(uuid);
         return sp;
     }
 
@@ -304,8 +336,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         var spks = loadedData.speakers;
         for (UUID spk : spks) {
             var sp = preSpeakers.remove(spk);
-            if (sp != null)
-                speakers.put(spk, sp);
+            if (sp != null) speakers.put(spk, sp);
         }
 
         var rd = loadedData.readResults;
@@ -379,16 +410,14 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     protected void stopReadStream() {
         //Forgeで不具合が出る可能性があるけど多少はね？
-        if (readThread.get() != null)
-            readThread.get().interrupt();
+        if (readThread.get() != null) readThread.get().interrupt();
     }
 
     private boolean readStream(AudioInputStream stream, byte[] buffer) throws IOException {
         synchronized (readLock) {
             readThread.set(Thread.currentThread());
             try {
-                if (stream.read(buffer) < 0)
-                    return false;
+                if (stream.read(buffer) < 0) return false;
             } catch (InterruptedIOException ex) {
                 return false;
             } finally {
@@ -406,8 +435,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         boolean end = false;
 
         for (int i = 0; i < input.aheadLoad(); i++) {
-            if (isDestroy())
-                break;
+            if (isDestroy()) break;
 
             if (!musicSource.isLive() && (st + 1000) > musicSource.getDuration()) {
                 Arrays.fill(buffer, (byte) 0);
@@ -426,16 +454,14 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
             st += 1000;
 
-            if (end)
-                break;
+            if (end) break;
         }
 
         return new ReadResult(entries, end);
     }
 
     private void readApply(ReadResult readResult) {
-        if (readResult.end())
-            loadEnd = true;
+        if (readResult.end()) loadEnd = true;
 
         totalReadTime += readResult.readEntries().size() * 1000L;
         for (ReadResultEntry readEntry : readResult.readEntries()) {
@@ -445,19 +471,22 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
 
         this.reading = false;
+
+        for (UUID uuid : preSpeakers.keySet()) {
+            updatePreSpeaker(uuid);
+        }
     }
 
     private void insertBuffer(MusicSpeakerFixedInfo info, MusicBuffer buffer) {
         for (MusicSpeaker value : speakers.values()) {
-            if (!value.isDead() && value.getFixedInfo().equals(info))
-                value.insertBuffer(buffer);
+            if (!value.isDead() && value.getFixedInfo().equals(info)) value.insertBuffer(buffer);
 
             speakerUpdate(value);
         }
     }
 
     private MiddleLoadInput middleLoadStart(ReadWait readWait) {
-        waits.add(readWait);
+        waits.put(readWait.readEntry.position, readWait);
         return new MiddleLoadInput(readWait, getAudioInfo());
     }
 
@@ -467,8 +496,15 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     private void middleLoadApply(MiddleLoadResult result) {
+        if (result.readWaiter.readEntry.position() < getPosition()) return;
+
         result.readWaiter.readEntry().buffers.put(result.readWaiter.fixedInfo, result.bufferFactory().create());
-        waits.remove(result.readWaiter);
+
+        waits.remove(result.readWaiter.readEntry.position);
+
+        for (UUID uuid : preSpeakers.keySet()) {
+            updatePreSpeaker(uuid);
+        }
     }
 
     public static record LoadInput(long position, Map<UUID, MusicSpeaker> speakers, int aheadLoad) {
@@ -517,8 +553,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
 
         private static byte[] synthesisChannel(byte[] data, AudioInfo audioInfo) {
-            if (audioInfo.bit() != 16)
-                throw new RuntimeException("Unsupported bit");
+            if (audioInfo.bit() != 16) throw new RuntimeException("Unsupported bit");
 
             byte[] ndata = new byte[data.length / audioInfo.channel()];
 
@@ -552,8 +587,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
 
         private static byte[] extractChannel(byte[] data, int channel, AudioInfo audioInfo) {
-            if (audioInfo.bit() != 16)
-                throw new RuntimeException("Unsupported bit");
+            if (audioInfo.bit() != 16) throw new RuntimeException("Unsupported bit");
 
             byte[] ndata = new byte[data.length / audioInfo.channel()];
 

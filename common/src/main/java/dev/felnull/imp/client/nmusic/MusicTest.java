@@ -1,11 +1,13 @@
 package dev.felnull.imp.client.nmusic;
 
 import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.openal.AL11;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class MusicTest {
@@ -47,13 +49,17 @@ public class MusicTest {
 
 
             new Thread(() -> {
-                try {
-                    Thread.sleep(1000 * 3);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                while (true) {
+
+                    try {
+                        Thread.sleep(1000 * 3);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, new Random().nextInt(2 - 1), false));
+                    MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
                 }
-                var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, 0, false));
-                // MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
                 // me.stop(id);
             }).start();
         });
@@ -72,8 +78,8 @@ public class MusicTest {
         var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, -2), 1f, 10, 0, false));
         me.addSpeaker(id, UUID.randomUUID(), tracker1);
 
-        var tracker2 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, 2), 1f, 10, 1, false));
-        me.addSpeaker(id, UUID.randomUUID(), tracker2);
+        //var tracker2 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, 2), 1f, 10, 1, false));
+        //me.addSpeaker(id, UUID.randomUUID(), tracker2);
         //     System.out.println(ret);
         // }
 

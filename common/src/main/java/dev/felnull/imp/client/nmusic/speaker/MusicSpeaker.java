@@ -1,8 +1,7 @@
 package dev.felnull.imp.client.nmusic.speaker;
 
-import com.google.common.collect.ImmutableList;
-import dev.felnull.imp.api.client.MusicSpeakerAccess;
 import dev.felnull.imp.api.MusicSpeakerInfoAccess;
+import dev.felnull.imp.api.client.MusicSpeakerAccess;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
@@ -10,8 +9,6 @@ import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 
 import static org.lwjgl.openal.AL11.*;
@@ -129,10 +126,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
     /**
      * スピーカーを破棄
      *
-     * @return 挿入済みバッファーデータ
      * @throws Exception 例外
      */
-    public List<MusicBuffer> destroy() throws Exception {
+    public void destroy() throws Exception {
         if (isPlaying())
             stop();
 
@@ -142,11 +138,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
 
         MusicUtils.checkALError();
 
-        var r = ImmutableList.copyOf(buffers);
         for (MusicBuffer musicBuffer : buffers) {
             musicBuffer.removeSpeaker(this);
         }
-        return r;
     }
 
     /**
@@ -211,18 +205,16 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         alSourcef(source, AL_REFERENCE_DISTANCE, 0.0F);
     }
 
-    public List<MusicBuffer> pollBuffers() {
+    public void releaseBuffers() {
         MusicUtils.assertOnMusicTick();
 
         //使用済みバッファーデータの数を取得
         int proBuffs = alGetSourcei(source, AL_BUFFERS_PROCESSED);
-        List<MusicBuffer> proBuffers = new ArrayList<>();
         int[] bufIds = null;
 
         for (int i = 0; i < proBuffs; i++) {
             var buf = buffers.poll();
             if (buf != null) {
-                proBuffers.add(buf);
                 buf.removeSpeaker(this);
                 bufIds = ArrayUtils.add(bufIds, buf.getBufferId());
             } else {
@@ -233,7 +225,6 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         if (bufIds != null) alSourceUnqueueBuffers(source, bufIds);
 
         MusicUtils.checkALError();
-        return proBuffers;
     }
 
     /**
