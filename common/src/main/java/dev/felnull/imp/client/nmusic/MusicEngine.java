@@ -93,18 +93,17 @@ public class MusicEngine implements MusicEngineAccess {
     }
 
     /**
-     * ポーズされてない間毎Tick呼ばれる
+     * 毎Tick呼ばれる
      */
     public void tick() {
         long startTime = System.currentTimeMillis();
 
-        musicTickExecutor.runTasks();
+        MusicUtils.runInvokeTasks(musicTickExecutor, "Music Engine");
 
         synchronized (musicEntries) {
             List<UUID> destroys = new ArrayList<>();
             musicEntries.forEach((uuid, musicEntry) -> {
-                if (!musicEntry.tick())
-                    destroys.add(uuid);
+                if (!musicEntry.tick()) destroys.add(uuid);
             });
             for (UUID destroy : destroys) {
                 musicEntries.remove(destroy);
@@ -177,7 +176,7 @@ public class MusicEngine implements MusicEngineAccess {
      * @return Executor
      */
     private ExecutorService createMusicLoadExecutor() {
-        return Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("imp-music-loader-%d").daemon(true).build());
+        return Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("IMP-Music-Loader-%d").daemon(true).build());
     }
 
     /**
@@ -228,6 +227,13 @@ public class MusicEngine implements MusicEngineAccess {
         return true;
     }
 
+
+    public boolean loadAndPlay(@NotNull UUID musicPlayerId, @NotNull MusicSource source, long position, boolean delayed) {
+        return load(musicPlayerId, source, position, (success, time, error) -> {
+            if (success) play(musicPlayerId, delayed ? time : 0);
+        });
+    }
+
     /**
      * 読み込み済み音楽の再生を開始する
      * 事前に {@link #load(UUID, MusicSource, long, LoadCompleteListener)}で読み込んでください
@@ -242,8 +248,7 @@ public class MusicEngine implements MusicEngineAccess {
         synchronized (musicEntries) {
             mpe = musicEntries.get(musicPlayerId);
         }
-        if (mpe == null || !mpe.isLoaded())
-            return false;
+        if (mpe == null || !mpe.isLoaded()) return false;
 
         MusicUtils.runOnMusicTick(() -> {
             mpe.playStart(delay);
@@ -288,10 +293,20 @@ public class MusicEngine implements MusicEngineAccess {
             mpe = musicEntries.get(musicPlayerId);
         }
 
-        if (mpe == null)
-            return false;
+        if (mpe == null) return false;
 
         return mpe.addSpeaker(speakerId, tracker);
+    }
+
+    public boolean removeSpeaker(@NotNull UUID musicPlayerId, @NotNull UUID speakerId) {
+        MusicEntry mpe;
+        synchronized (musicEntries) {
+            mpe = musicEntries.get(musicPlayerId);
+        }
+
+        if (mpe == null) return false;
+
+        return mpe.removeSpeaker(speakerId);
     }
 
     /**
@@ -323,11 +338,19 @@ public class MusicEngine implements MusicEngineAccess {
         synchronized (musicEntries) {
             for (Map.Entry<UUID, MusicEntry> entry : musicEntries.entrySet()) {
                 var player = entry.getValue().getMusicPlayer();
-                if (player != null)
-                    musicPlayersBuilder.put(entry.getKey(), player);
+                if (player != null) musicPlayersBuilder.put(entry.getKey(), player);
             }
         }
         return musicPlayersBuilder.build();
+    }
+
+    public boolean loadAndPlaySimple(@NotNull UUID musicPlayerId, @NotNull MusicTracker musicTracker, @NotNull MusicSource source, long position, boolean delayed) {
+        return load(musicPlayerId, source, position, (success, time, error) -> {
+            if (success) {
+                addSpeaker(musicPlayerId, UUID.randomUUID(), musicTracker);
+                play(musicPlayerId, delayed ? time : 0);
+            }
+        });
     }
 
     public static interface LoadCompleteListener {

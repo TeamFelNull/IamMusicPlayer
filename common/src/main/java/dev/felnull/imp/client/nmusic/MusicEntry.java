@@ -103,6 +103,21 @@ public class MusicEntry {
         return 0;
     }
 
+    protected boolean removeSpeaker(UUID speakerId) {
+        var player = musicPlayer.get();
+
+        if (player == null) {
+            synchronized (reserveTrackers) {
+                return reserveTrackers.remove(speakerId) != null;
+            }
+        }
+        if (!player.existSpeaker(speakerId))
+            return false;
+
+        player.removeSpeaker(speakerId);
+        return true;
+    }
+
     protected boolean addSpeaker(UUID speakerId, MusicTracker tracker) {
         if (musicPlayer.get() == null) {
             synchronized (reserveTrackers) {

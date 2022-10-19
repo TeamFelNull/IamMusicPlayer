@@ -18,7 +18,12 @@ public class LavaMusicLoader implements MusicLoader {
 
     @Override
     public void tryLoad(@NotNull MusicSource source) throws Exception {
-        var track = LavaPlayerManager.getInstance().loadTrack(source.getIdentifier());
+        var lm = LavaPlayerManager.getInstance();
+
+        if (!lm.getMedias().containsKey(source.getLoaderType()))
+            throw new RuntimeException("Unsupported media");
+
+        var track = lm.loadTrack(source.getIdentifier());
         if (track.isEmpty())
             throw new RuntimeException("Failed to load track");
 

@@ -28,15 +28,13 @@ public class MusicTest {
     }
 
     public static void test3(Player player, String name) throws Exception {
-        //name = "https://cdn.discordapp.com/attachments/358878159615164416/1027679281586913352/bigyj.mp3";
-
         var track = LavaPlayerManager.getInstance().loadTrack(name).get();
 
         long duration = track.getDuration();
         if (track.getInfo().isStream)
             duration = -1;
 
-        var ms = new MusicSource("http", name, duration);//new MusicSource("youtube", name, duration);
+        var ms = new MusicSource("youtube", name, duration);//new MusicSource("youtube", name, duration);
         var me = MusicEngine.getInstance();
         var id = UUID.randomUUID();
 
@@ -98,5 +96,52 @@ public class MusicTest {
         } catch (Exception ex) {
             ex.printStackTrace();
         }*/
+    }
+
+    public static void test4(Player player, String name) throws Exception {
+        var track = LavaPlayerManager.getInstance().loadTrack(name).get();
+
+        long duration = track.getDuration();
+        if (track.getInfo().isStream)
+            duration = -1;
+
+        var ms = new MusicSource("youtube", name, duration);//new MusicSource("youtube", name, duration);
+        var me = MusicEngine.getInstance();
+        var id = UUID.randomUUID();
+
+        me.loadAndPlay(id, ms, 0, false);
+
+        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, false));
+        me.addSpeaker(id, UUID.randomUUID(), tracker1);
+    }
+
+    public static void test5(Player player, String name) throws Exception {
+        var track = LavaPlayerManager.getInstance().loadTrack(name).get();
+
+        long duration = track.getDuration();
+        if (track.getInfo().isStream)
+            duration = -1;
+
+        var ms = new MusicSource("youtube", name, duration);//new MusicSource("youtube", name, duration);
+        var me = MusicEngine.getInstance();
+        var id = UUID.randomUUID();
+
+        me.loadAndPlay(id, ms, 0, false);
+
+        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, false));
+        me.addSpeaker(id, UUID.randomUUID(), tracker1);
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(1000 * 3);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, new Random().nextInt(2 - 1), false));
+                MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
+            }
+        }).start();
     }
 }

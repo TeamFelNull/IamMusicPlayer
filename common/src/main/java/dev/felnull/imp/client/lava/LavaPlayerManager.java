@@ -9,18 +9,20 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.lava.player.extras.stream.StreamAudioPlayerManager;
 import dev.felnull.imp.client.nmusic.media.IMPMusicMedias;
 import dev.felnull.imp.client.nmusic.media.LavaPlayerBaseMusicMedia;
 import dev.felnull.imp.client.nmusic.media.MusicMedia;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerManager {
     private static final LavaPlayerManager INSTANCE = new LavaPlayerManager();
-    private static final AudioDataFormat COMMON_PCM_S16_LE_C2 = new Pcm16AudioDataFormat(2, 48000, 960, false);
+    private final Map<String, MusicMedia> medias = new HashMap<>();
+    private AudioDataFormat audioDataFormat;
     private AudioPlayerManager audioPlayerManager;
 
     public static LavaPlayerManager getInstance() {
@@ -28,17 +30,21 @@ public class LavaPlayerManager {
     }
 
     public void reload() {
+        medias.clear();
         if (audioPlayerManager != null)
             audioPlayerManager.shutdown();
+
+        audioDataFormat = new Pcm16AudioDataFormat(2, 48000, 960, false);
+
         audioPlayerManager = createAudioPlayerManager();
     }
 
     public int getChannel() {
-        return COMMON_PCM_S16_LE_C2.channelCount;
+        return getAudioDataFormat().channelCount;
     }
 
     public int getSampleRate() {
-        return COMMON_PCM_S16_LE_C2.sampleRate;
+        return getAudioDataFormat().sampleRate;
     }
 
     public int getBit() {
@@ -66,10 +72,17 @@ public class LavaPlayerManager {
 
 
     private void registerSourceManager(AudioPlayerManager audioPlayerManager) {
-        for (MusicMedia value : IMPMusicMedias.getAllMedia().values()) {
-            if (value instanceof LavaPlayerBaseMusicMedia lavaPlayerBaseMusicMedia)
+        for (Map.Entry<String, MusicMedia> entry : IMPMusicMedias.getAllMedia().entrySet()) {
+            var media = entry.getValue();
+            if (media instanceof LavaPlayerBaseMusicMedia lavaPlayerBaseMusicMedia) {
                 lavaPlayerBaseMusicMedia.registerSourceManager(audioPlayerManager);
+                medias.put(entry.getKey(), media);
+            }
         }
+    }
+
+    public Map<String, MusicMedia> getMedias() {
+        return medias;
     }
 
     public Optional<AudioTrack> loadTrack(String identifier) throws ExecutionException, InterruptedException {
@@ -103,6 +116,6 @@ public class LavaPlayerManager {
     }
 
     public AudioDataFormat getAudioDataFormat() {
-        return COMMON_PCM_S16_LE_C2;
+        return audioDataFormat;
     }
 }

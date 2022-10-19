@@ -25,12 +25,16 @@ public class SoundTestItem extends Item {
 
             if (!player.isCrouching()) {
                 try {
-                    MusicTest.test3(player,itemStack.getHoverName().getString());
+                    MusicTest.test4(player, itemStack.getHoverName().getString());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             } else {
-
+                try {
+                    MusicTest.test5(player, itemStack.getHoverName().getString());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
 
         }

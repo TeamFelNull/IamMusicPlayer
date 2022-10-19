@@ -73,6 +73,14 @@ public interface MusicPlayer<T, E> extends MusicPlayerAccess {
     void removeSpeaker(UUID uuid);
 
     /**
+     * スピーカーが存在するかどうか確認
+     *
+     * @param uuid スピーカーID
+     * @return 存在するかどうか
+     */
+    boolean existSpeaker(UUID uuid);
+
+    /**
      * 読み込み開始時に呼び出し
      * Tick上で呼び出されるので重い処理はNG
      *

@@ -7,6 +7,7 @@ import dev.felnull.imp.client.nmusic.AudioInfo;
 import dev.felnull.imp.client.nmusic.MusicEngine;
 import dev.felnull.imp.client.nmusic.speaker.MusicBuffer;
 import dev.felnull.imp.client.nmusic.speaker.MusicSpeaker;
+import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import org.lwjgl.BufferUtils;
@@ -58,6 +59,9 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         this.startTime = System.currentTimeMillis();
         this.playing = true;
 
+        if (pause)
+            this.pauseTime = System.currentTimeMillis();
+
         for (MusicSpeaker value : speakers.values()) {
             speakerUpdate(value);
         }
@@ -103,7 +107,9 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     @Override
     public void pause() {
-        this.pauseTime = System.currentTimeMillis();
+        if (playing)
+            this.pauseTime = System.currentTimeMillis();
+
         this.pause = true;
 
         for (MusicSpeaker value : speakers.values()) {
@@ -132,7 +138,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     @Override
     public void tick() {
-        tickExecutor.runTasks();
+        MusicUtils.runInvokeTasks(tickExecutor, "Music Player");
 
         if (!this.loaded) return;
 
@@ -216,6 +222,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     private void updatePreSpeaker(UUID uuid) {
+        if (pause) return;
+
         var sp = preSpeakers.get(uuid);
         if (sp == null) return;
         var r = readEntries.stream().filter(readEntry -> readEntry.position() >= getPosition()).sorted((o1, o2) -> (int) (o1.position() - o2.position())).toList();
@@ -297,6 +305,13 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     @Override
+    public boolean existSpeaker(UUID uuid) {
+        if (speakers.containsKey(uuid))
+            return true;
+        return preSpeakers.containsKey(uuid);
+    }
+
+    @Override
     public MusicSpeaker getSpeaker(UUID uuid) {
         var sp = speakers.get(uuid);
         if (sp == null) sp = preSpeakers.get(uuid);
@@ -365,6 +380,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         if (this.pauseTime >= 0) pt += System.currentTimeMillis() - this.pauseTime;
         return System.currentTimeMillis() - this.startTime - pt + this.startPosition + this.delay;
     }
+
+
 
     @Override
     public AudioInfo getAudioInfo() {

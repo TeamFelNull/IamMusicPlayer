@@ -1,8 +1,8 @@
 package dev.felnull.imp.client.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.client.nmusic.MusicEngine;
-import net.minecraft.client.Minecraft;
 import org.lwjgl.openal.AL10;
 
 import java.util.concurrent.CompletableFuture;
@@ -36,5 +36,9 @@ public class MusicUtils {
         } else {
             CompletableFuture.runAsync(runnable, MusicEngine.getInstance().getMusicTickExecutor()).join();
         }
+    }
+
+    public static void runInvokeTasks(InvokeExecutor executor, String name) {
+        executor.runTasks();
     }
 }
