@@ -7,13 +7,15 @@ import dev.felnull.imp.client.nmusic.player.MusicPlayer;
 import dev.felnull.imp.music.resource.MusicSource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class LavaMusicLoader implements MusicLoader {
     private MusicSource musicSource;
     private AudioTrack audioTrack;
 
     @Override
-    public @NotNull MusicPlayer<?, ?> createMusicPlayer() {
-        return new LavaMusicPlayer(audioTrack, musicSource);
+    public @NotNull MusicPlayer<?, ?> createMusicPlayer(UUID musicPlayerId) {
+        return new LavaMusicPlayer(musicPlayerId, audioTrack, musicSource);
     }
 
     @Override

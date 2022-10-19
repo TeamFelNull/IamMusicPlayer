@@ -10,13 +10,14 @@ import dev.felnull.imp.client.nmusic.AudioInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 
 import javax.sound.sampled.AudioInputStream;
+import java.util.UUID;
 
 public class LavaMusicPlayer extends BaseMusicPlayer {
     private final AudioTrack audioTrack;
     private AudioPlayer audioPlayer;
 
-    public LavaMusicPlayer(AudioTrack audioTrack, MusicSource musicSource) {
-        super(new AudioInfo(LavaPlayerManager.getInstance().getChannel(), LavaPlayerManager.getInstance().getSampleRate(), LavaPlayerManager.getInstance().getBit()), musicSource, audioTrack.getInfo().isStream ? 5 : 15);
+    public LavaMusicPlayer(UUID musicPlayerId, AudioTrack audioTrack, MusicSource musicSource) {
+        super(musicPlayerId, new AudioInfo(LavaPlayerManager.getInstance().getChannel(), LavaPlayerManager.getInstance().getSampleRate(), LavaPlayerManager.getInstance().getBit()), musicSource, audioTrack.getInfo().isStream ? 5 : 15);
         this.audioTrack = audioTrack;
     }
 

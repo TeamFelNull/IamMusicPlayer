@@ -4,6 +4,8 @@ import dev.felnull.imp.client.nmusic.player.MusicPlayer;
 import dev.felnull.imp.music.resource.MusicSource;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 /**
  * 音楽ローダー
  * 音楽プレイヤーを作成する前に読み込みが利用可能か試行する
@@ -16,7 +18,7 @@ public interface MusicLoader {
      * @return MusicPlayer
      */
     @NotNull
-    MusicPlayer<?, ?> createMusicPlayer();
+    MusicPlayer<?, ?> createMusicPlayer(UUID musicPlayerId);
 
     /**
      * 試行時に読み込む

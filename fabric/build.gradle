@@ -62,7 +62,7 @@ dependencies {
     modApi "me.shedaniel.cloth:cloth-config-fabric:8.0.75"
     modApi "me.shedaniel:RoughlyEnoughItems-fabric:9.1.528"
     modApi "vazkii.patchouli:Patchouli:1.19.2-76-FABRIC"
-
+    modApi "curse.maven:ctm-535489:3949790"
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'

@@ -32,6 +32,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private final int aheadLoad;
     private final Object readLock = new Object();
     private final AtomicReference<Thread> readThread = new AtomicReference<>();
+    private final UUID musicPlayerId;
     private boolean destroy;
     private boolean loaded;
     private boolean playing;
@@ -47,10 +48,11 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private long totalReadTime;
     private AudioInputStream stream;
 
-    protected BaseMusicPlayer(AudioInfo audioInfo, MusicSource musicSource, int aheadLoad) {
+    protected BaseMusicPlayer(UUID musicPlayerId, AudioInfo audioInfo, MusicSource musicSource, int aheadLoad) {
         this.audioInfo = audioInfo;
         this.musicSource = musicSource;
         this.aheadLoad = aheadLoad;
+        this.musicPlayerId = musicPlayerId;
     }
 
     @Override
@@ -176,7 +178,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
 
         for (UUID delSpeaker : delSpeakers) {
-            preSpeakers.put(delSpeaker, new MusicSpeaker(speakers.get(delSpeaker).getTracker()));
+            preSpeakers.put(delSpeaker, new MusicSpeaker(musicPlayerId, delSpeaker, speakers.get(delSpeaker).getTracker()));
             speakers.remove(delSpeaker);
         }
 
@@ -380,7 +382,6 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         if (this.pauseTime >= 0) pt += System.currentTimeMillis() - this.pauseTime;
         return System.currentTimeMillis() - this.startTime - pt + this.startPosition + this.delay;
     }
-
 
 
     @Override

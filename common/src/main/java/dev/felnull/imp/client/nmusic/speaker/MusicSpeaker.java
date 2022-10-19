@@ -2,6 +2,7 @@ package dev.felnull.imp.client.nmusic.speaker;
 
 import dev.felnull.imp.api.MusicSpeakerInfoAccess;
 import dev.felnull.imp.api.client.MusicSpeakerAccess;
+import dev.felnull.imp.client.integration.SoundPhysicsRemasteredIntegration;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.client.util.SoundMath;
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.UUID;
 
 import static org.lwjgl.openal.AL11.*;
 
@@ -17,6 +19,8 @@ public class MusicSpeaker implements MusicSpeakerAccess {
     private final Queue<MusicBuffer> buffers = new ArrayDeque<>();
     private final int source;
     private final MusicSpeakerFixedInfo fixedInfo;
+    private final UUID musicPlayerId;
+    private final UUID speakerId;
     private MusicTracker tracker;
     private long startTime = -1;
     private long pauseTime = -1;
@@ -26,7 +30,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
     private long liveTime = System.currentTimeMillis();
     private boolean playStarted;
 
-    public MusicSpeaker(MusicTracker tracker) {
+    public MusicSpeaker(UUID musicPlayerId, UUID speakerId, MusicTracker tracker) {
+        this.musicPlayerId = musicPlayerId;
+        this.speakerId = speakerId;
         this.tracker = tracker;
         this.fixedInfo = tracker.getSpeakerInfo().fixedInfo();
 
@@ -58,6 +64,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         MusicUtils.assertOnMusicTick();
 
         alSourceUpdate();
+
+        if (isPlaying() && SoundPhysicsRemasteredIntegration.INSTANCE.isEnable())
+            SoundPhysicsRemasteredIntegration.INSTANCE.onSound(musicPlayerId, speakerId, source, fixedInfo.relative() ? null : tracker.getSpeakerInfo().getPosition());
 
         MusicUtils.checkALError();
     }
@@ -141,6 +150,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         for (MusicBuffer musicBuffer : buffers) {
             musicBuffer.removeSpeaker(this);
         }
+
+        if (SoundPhysicsRemasteredIntegration.INSTANCE.isEnable())
+            SoundPhysicsRemasteredIntegration.INSTANCE.onDestroy(musicPlayerId, speakerId);
     }
 
     /**

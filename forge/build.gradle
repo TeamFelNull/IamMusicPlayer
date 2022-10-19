@@ -51,6 +51,7 @@ dependencies {
     modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
     modApi "me.shedaniel.cloth:cloth-config-forge:8.0.75"
     modApi "me.shedaniel:RoughlyEnoughItems-forge:9.1.528"
+    modApi "curse.maven:ctm-535489:3949786"
 
     modCompileOnly "vazkii.patchouli:Patchouli:1.19.2-76:api"
     modRuntimeOnly "vazkii.patchouli:Patchouli:1.19.2-76"

@@ -19,6 +19,7 @@ public class MusicEntry {
     private final AtomicReference<MusicPlayer<?, ?>> musicPlayer = new AtomicReference<>();
     private final MusicSource source;
     private final long startPosition;
+    private final UUID musicPlayerId;
     private boolean loaded;
     private boolean stopped;
 
@@ -26,9 +27,10 @@ public class MusicEntry {
         return musicPlayer.get();
     }
 
-    protected MusicEntry(MusicSource source, long position) {
+    protected MusicEntry(MusicSource source, long position, UUID musicPlayerId) {
         this.source = source;
         this.startPosition = position;
+        this.musicPlayerId = musicPlayerId;
     }
 
     public MusicSource getSource() {
@@ -133,7 +135,7 @@ public class MusicEntry {
         if (spk != null)
             return false;
 
-        musicPlayer.get().addSpeaker(speakerId, new MusicSpeaker(tracker));
+        musicPlayer.get().addSpeaker(speakerId, new MusicSpeaker(musicPlayerId, speakerId, tracker));
         return true;
     }
 
@@ -154,7 +156,7 @@ public class MusicEntry {
             runner.run(loader::cansel);
             return loader;
         }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
-            return ret.createMusicPlayer();
+            return ret.createMusicPlayer(musicPlayerId);
         }, me.getMusicTickExecutor()).thenApplyAsync(ret -> {
             musicPlayer.set(ret);
             runner.run(ret::destroyNonThrow);

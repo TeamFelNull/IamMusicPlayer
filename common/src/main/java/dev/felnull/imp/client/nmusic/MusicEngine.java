@@ -218,7 +218,7 @@ public class MusicEngine implements MusicEngineAccess {
         if (isLoad(musicPlayerId)) return false;
 
         synchronized (musicEntries) {
-            var mpe = new MusicEntry(source, position);
+            var mpe = new MusicEntry(source, position, musicPlayerId);
             musicEntries.put(musicPlayerId, mpe);
 
             mpe.loadStart(listener);
