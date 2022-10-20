@@ -1,6 +1,7 @@
 package dev.felnull.imp.nmusic;
 
 import dev.felnull.imp.api.MusicSpeakerInfoAccess;
+import dev.felnull.imp.client.util.MusicUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.Vec3;
 
@@ -66,6 +67,6 @@ public record MusicSpeakerInfo(Vec3 position, float volume, float range,
 
     @Override
     public boolean isSpatial() {
-        return !fixedInfo().relative();
+        return MusicUtils.isSpatial(fixedInfo.spatialType());
     }
 }

@@ -3,6 +3,7 @@ package dev.felnull.imp.nmusic.tracker;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import dev.felnull.imp.nmusic.MusicSpeakerInfo;
+import dev.felnull.imp.nmusic.SpatialType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -15,12 +16,12 @@ public class IMPMusicTrackers {
     public static final ResourceLocation ENTITY_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "entity");
     public static final ResourceLocation PLAYER_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "player");
 
-    public static Pair<ResourceLocation, FixedMusicTracker> createFixedTracker(Vec3 position, float volume, float range, int channel, boolean relative) {
-        return Pair.of(FIXED_TRACKER, new FixedMusicTracker(new MusicSpeakerInfo(position, volume, range, new MusicSpeakerFixedInfo(channel, relative))));
+    public static Pair<ResourceLocation, FixedMusicTracker> createFixedTracker(Vec3 position, float volume, float range, int channel, SpatialType spatialType) {
+        return Pair.of(FIXED_TRACKER, new FixedMusicTracker(new MusicSpeakerInfo(position, volume, range, new MusicSpeakerFixedInfo(channel, spatialType))));
     }
 
     public static Pair<ResourceLocation, FixedMusicTracker> createFixedTracker(Vec3 position, float volume, float range) {
-        return Pair.of(FIXED_TRACKER, new FixedMusicTracker(new MusicSpeakerInfo(position, volume, range, new MusicSpeakerFixedInfo(-1, false))));
+        return Pair.of(FIXED_TRACKER, new FixedMusicTracker(new MusicSpeakerInfo(position, volume, range, new MusicSpeakerFixedInfo(-1, SpatialType.ENTRUST))));
     }
 
     public static Pair<ResourceLocation, EntityMusicTracker> createEntityTracker(Entity entity, float volume, float range) {

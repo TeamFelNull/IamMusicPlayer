@@ -560,14 +560,14 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
 
         private static BufferFactory create(byte[] data, MusicSpeakerFixedInfo fixedInfo, AudioInfo audioInfo) {
-            if (!fixedInfo.relative() && fixedInfo.channel() <= -1 && audioInfo.channel() >= 2) {
+            if (MusicUtils.isSpatial(fixedInfo.spatialType()) && fixedInfo.channel() <= -1 && audioInfo.channel() >= 2) {
                 data = synthesisChannel(data, audioInfo);
                 audioInfo = new AudioInfo(1, audioInfo.sampleRate(), audioInfo.bit());
             } else if (fixedInfo.channel() >= 0 && audioInfo.channel() >= 2) {
                 data = extractChannel(data, fixedInfo.channel(), audioInfo);
                 audioInfo = new AudioInfo(1, audioInfo.sampleRate(), audioInfo.bit());
             }
-            return new BufferFactory(data, fixedInfo.relative(), audioInfo);
+            return new BufferFactory(data, !MusicUtils.isSpatial(fixedInfo.spatialType()), audioInfo);
         }
 
         private static byte[] synthesisChannel(byte[] data, AudioInfo audioInfo) {

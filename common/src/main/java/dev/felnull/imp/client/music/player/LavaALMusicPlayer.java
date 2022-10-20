@@ -7,7 +7,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
-import dev.felnull.imp.client.util.SoundMath;
+import dev.felnull.imp.client.util.MusicMath;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.util.FlagThread;
@@ -236,7 +236,7 @@ public class LavaALMusicPlayer implements IMusicPlayer {
         }
 
         if (!spatial)
-            AL11.alSourcef(source, AL11.AL_GAIN, (float) SoundMath.calculatePseudoAttenuation(pos, range, noSpatialVolume));
+            AL11.alSourcef(source, AL11.AL_GAIN, (float) MusicMath.calculatePseudoAttenuation(pos, range, noSpatialVolume));
 
 
         if (getPosition() - lastLavaLoad >= 20000 && loadThread == null) {

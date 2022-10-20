@@ -7,7 +7,6 @@ import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,13 +16,13 @@ public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
     private static final Component ENTER_TEXT = Component.translatable("imp.text.enterText.default");
     private final String name;
     private final Component componentName;
-    private final TextureSpecify icon;
+    private final ResourceLocation icon;
 
     protected LavaPlayerBaseMusicMedia(String name) {
         this.name = name;
         this.componentName = Component.translatable("imp.loaderType." + name);
         var il = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/loader_types/" + name + ".png");
-        this.icon = TextureSpecify.create(il, 0, 0, 1, 1);
+        this.icon = il;
     }
 
     abstract public void registerSourceManager(AudioPlayerManager audioPlayerManager);
@@ -39,7 +38,7 @@ public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
     }
 
     @Override
-    public TextureSpecify getIcon() {
+    public ResourceLocation getIcon() {
         return icon;
     }
 
@@ -56,7 +55,7 @@ public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
         return null;
     }
 
-    protected MusicMediaResult createResult(AudioTrack track) {
+    public MusicMediaResult createResult(AudioTrack track) {
         var ms = new MusicSource(name, getIdentifier(track), track.getDuration());
         return new MusicMediaResult(ms, createThumbnail(track), track.getInfo().title, track.getInfo().author);
     }

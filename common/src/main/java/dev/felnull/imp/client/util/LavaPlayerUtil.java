@@ -34,15 +34,6 @@ public class LavaPlayerUtil {
         return lt;
     }
 
-    public static Optional<AudioTrack> loadTrackNonThrow(AudioPlayerManager audioPlayerManager, String identifier) {
-        try {
-            return loadTrack(audioPlayerManager, identifier);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return Optional.empty();
-    }
-
     public static void test() {
         Thread th = new Thread(() -> {
             try {

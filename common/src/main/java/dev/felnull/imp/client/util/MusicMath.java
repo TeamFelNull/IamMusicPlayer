@@ -5,8 +5,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.lwjgl.openal.AL11;
 
-public class SoundMath {
-    public static double calculateVolume(float playerVolume) {
+public class MusicMath {
+    public static double calculateVolume(double playerVolume) {
         return Mth.clamp(playerVolume * IamMusicPlayer.CONFIG.volume, 0.0, 1.0);
     }
 

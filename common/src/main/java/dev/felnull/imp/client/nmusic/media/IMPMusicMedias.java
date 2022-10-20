@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IMPMusicMedias {
-    private static final Map<String, MusicMedia> MEDIAS = new HashMap<>();
+    protected static final Map<String, MusicMedia> MEDIAS = new HashMap<>();
     public static final MusicMedia YOUTUBE = new YoutubeMusicMedia("youtube");
     public static final MusicMedia SOUNDCLOUD = new SoundCloudMusicMedia("soundcloud");
     public static final MusicMedia HTTP = new HttpMusicMedia("http");

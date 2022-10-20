@@ -12,16 +12,19 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.client.nmusic.media.IMPMusicMedias;
 import dev.felnull.imp.client.nmusic.media.LavaPlayerBaseMusicMedia;
 import dev.felnull.imp.client.nmusic.media.MusicMedia;
+import dev.felnull.imp.client.nmusic.media.MusicMediaResult;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerManager {
     private static final LavaPlayerManager INSTANCE = new LavaPlayerManager();
-    private final Map<String, MusicMedia> medias = new HashMap<>();
+    private final Map<String, LavaPlayerBaseMusicMedia> medias = new ConcurrentHashMap<>();
     private AudioDataFormat audioDataFormat;
     private AudioPlayerManager audioPlayerManager;
 
@@ -76,12 +79,12 @@ public class LavaPlayerManager {
             var media = entry.getValue();
             if (media instanceof LavaPlayerBaseMusicMedia lavaPlayerBaseMusicMedia) {
                 lavaPlayerBaseMusicMedia.registerSourceManager(audioPlayerManager);
-                medias.put(entry.getKey(), media);
+                medias.put(entry.getKey(), lavaPlayerBaseMusicMedia);
             }
         }
     }
 
-    public Map<String, MusicMedia> getMedias() {
+    public Map<String, LavaPlayerBaseMusicMedia> getMedias() {
         return medias;
     }
 
@@ -117,5 +120,19 @@ public class LavaPlayerManager {
 
     public AudioDataFormat getAudioDataFormat() {
         return audioDataFormat;
+    }
+
+    @Nullable
+    public Pair<MusicMedia, MusicMediaResult> autoLoad(String sourceName) throws ExecutionException, InterruptedException {
+        var lpm = LavaPlayerManager.getInstance();
+        var track = lpm.loadTrack(sourceName);
+        if (track.isEmpty() || track.get().getInfo().isStream)
+            return null;
+
+        for (LavaPlayerBaseMusicMedia value : medias.values()) {
+            if (value.match(track.get()))
+                return Pair.of(value, value.createResult(track.get()));
+        }
+        return null;
     }
 }

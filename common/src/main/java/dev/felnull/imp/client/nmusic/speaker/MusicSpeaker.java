@@ -4,7 +4,7 @@ import dev.felnull.imp.api.MusicSpeakerInfoAccess;
 import dev.felnull.imp.api.client.MusicSpeakerAccess;
 import dev.felnull.imp.client.integration.SoundPhysicsRemasteredIntegration;
 import dev.felnull.imp.client.util.MusicUtils;
-import dev.felnull.imp.client.util.SoundMath;
+import dev.felnull.imp.client.util.MusicMath;
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import dev.felnull.imp.nmusic.tracker.MusicTracker;
 import org.apache.commons.lang3.ArrayUtils;
@@ -66,7 +66,7 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         alSourceUpdate();
 
         if (isPlaying() && SoundPhysicsRemasteredIntegration.INSTANCE.isEnable())
-            SoundPhysicsRemasteredIntegration.INSTANCE.onSound(musicPlayerId, speakerId, source, fixedInfo.relative() ? null : tracker.getSpeakerInfo().getPosition());
+            SoundPhysicsRemasteredIntegration.INSTANCE.onSound(musicPlayerId, speakerId, source, MusicUtils.isSpatial(fixedInfo.spatialType()) ? tracker.getSpeakerInfo().getPosition() : null);
 
         MusicUtils.checkALError();
     }
@@ -197,14 +197,15 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         MusicUtils.assertOnMusicTick();
 
         var spi = tracker.getSpeakerInfo();
+        boolean sp = MusicUtils.isSpatial(fixedInfo.spatialType());
 
-        alSourcei(source, AL_SOURCE_RELATIVE, fixedInfo.relative() ? AL_TRUE : AL_FALSE);
-        if (!fixedInfo.relative()) {
+        alSourcei(source, AL_SOURCE_RELATIVE, sp ? AL_FALSE : AL_TRUE);
+        if (sp) {
             alSource3f(source, AL_POSITION, (float) spi.position().x(), (float) spi.position().y(), (float) spi.position().z());
-            alSourcef(source, AL_GAIN, spi.volume());
+            alSourcef(source, AL_GAIN, (float) MusicMath.calculateVolume(spi.volume()));
             linearAttenuation(spi.range());
         } else {
-            alSourcef(source, AL_GAIN, (float) SoundMath.calculatePseudoAttenuation(spi.position(), spi.range(), spi.volume()));
+            alSourcef(source, AL_GAIN, (float) MusicMath.calculateVolume(MusicMath.calculatePseudoAttenuation(spi.position(), spi.range(), spi.volume())));
         }
 
         MusicUtils.checkALError();

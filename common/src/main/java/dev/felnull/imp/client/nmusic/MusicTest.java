@@ -3,6 +3,7 @@ package dev.felnull.imp.client.nmusic;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.nmusic.SpatialType;
 import dev.felnull.imp.nmusic.tracker.IMPMusicTrackers;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.openal.AL11;
@@ -55,7 +56,7 @@ public class MusicTest {
                         throw new RuntimeException(e);
                     }
 
-                    var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, new Random().nextInt(2 - 1), false));
+                    var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, new Random().nextInt(2 - 1), SpatialType.ENTRUST));
                     MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
                 }
                 // me.stop(id);
@@ -73,7 +74,7 @@ public class MusicTest {
 
 
         //for (int i = 0; i < 5; i++) {
-        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, -2), 1f, 10, 0, false));
+        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, -2), 1f, 10, 0, SpatialType.ENTRUST));
         me.addSpeaker(id, UUID.randomUUID(), tracker1);
 
         //var tracker2 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position().add(0, 0, 2), 1f, 10, 1, false));
@@ -111,7 +112,7 @@ public class MusicTest {
 
         me.loadAndPlay(id, ms, 0, false);
 
-        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, false));
+        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, SpatialType.ENTRUST));
         me.addSpeaker(id, UUID.randomUUID(), tracker1);
     }
 
@@ -128,7 +129,7 @@ public class MusicTest {
 
         me.loadAndPlay(id, ms, 0, false);
 
-        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, false));
+        var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, SpatialType.ENTRUST));
         me.addSpeaker(id, UUID.randomUUID(), tracker1);
 
         new Thread(() -> {
@@ -139,7 +140,7 @@ public class MusicTest {
                     throw new RuntimeException(e);
                 }
 
-                var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, new Random().nextInt(2 - 1), false));
+                var tracker = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, new Random().nextInt(2 - 1), SpatialType.ENTRUST));
                 MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
             }
         }).start();

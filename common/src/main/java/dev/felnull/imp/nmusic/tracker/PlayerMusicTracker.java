@@ -2,6 +2,7 @@ package dev.felnull.imp.nmusic.tracker;
 
 import dev.felnull.imp.nmusic.MusicSpeakerFixedInfo;
 import dev.felnull.imp.nmusic.MusicSpeakerInfo;
+import dev.felnull.imp.nmusic.SpatialType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.EntityGetter;
@@ -19,7 +20,7 @@ public class PlayerMusicTracker extends FixedMusicTracker {
     }
 
     public PlayerMusicTracker(Player player, float volume, float range) {
-        super(new MusicSpeakerInfo(player.position(), volume, range, new MusicSpeakerFixedInfo(-1, false)));
+        super(new MusicSpeakerInfo(player.position(), volume, range, new MusicSpeakerFixedInfo(-1, SpatialType.ENTRUST)));
         this.playerId = player.getGameProfile().getId();
         this.myPlayer = null;
         this.entityGetter = null;
@@ -30,8 +31,10 @@ public class PlayerMusicTracker extends FixedMusicTracker {
         var sp = super.getSpeakerInfo();
         if (myPlayer != null && entityGetter != null && playerId != null) {
             var pl = entityGetter.getPlayerByUUID(playerId);
-            if (pl != null)
-                return new MusicSpeakerInfo(pl.position(), sp.volume(), sp.range(), new MusicSpeakerFixedInfo(-1, myPlayer.getGameProfile().getId().equals(playerId)));
+            if (pl != null) {
+                SpatialType spt = myPlayer.getGameProfile().getId().equals(playerId) ? SpatialType.DISABLE : sp.fixedInfo().spatialType();
+                return new MusicSpeakerInfo(pl.position(), sp.volume(), sp.range(), new MusicSpeakerFixedInfo(-1, spt));
+            }
         }
         return sp;
     }

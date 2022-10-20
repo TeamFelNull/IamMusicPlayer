@@ -2,7 +2,9 @@ package dev.felnull.imp.client.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.felnull.fnjl.concurrent.InvokeExecutor;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.nmusic.MusicEngine;
+import dev.felnull.imp.nmusic.SpatialType;
 import org.lwjgl.openal.AL10;
 
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +41,14 @@ public class MusicUtils {
     }
 
     public static void runInvokeTasks(InvokeExecutor executor, String name) {
-        executor.runTasks();
+        executor.runTasks(100);
+        if (executor.getTaskCount() != 0)
+            MusicEngine.getInstance().getLogger().warn("A lot of music processing tasks are running,Execute separately to reduce the load - Remaining " + name + " Tasks:" + executor.getTaskCount());
+    }
+
+    public static boolean isSpatial(SpatialType spatialType) {
+        if (spatialType == SpatialType.ENTRUST)
+            return IamMusicPlayer.CONFIG.spatial;
+        return spatialType == SpatialType.ENABLE;
     }
 }

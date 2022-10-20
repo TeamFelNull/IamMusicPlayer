@@ -1,22 +1,16 @@
 package dev.felnull.imp.client.integration;
 
-import com.sonicether.soundphysics.SoundPhysics;
+import dev.felnull.imp.explatform.client.IMPSoundPhysicsRemasteredExpectPlatform;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 
 public class SoundPhysicsRemasteredAudio {
-    private final String hashCode;
     private long lastUpdate;
     private Vec3 lastPos;
 
-    public SoundPhysicsRemasteredAudio(String hashCode) {
-        this.hashCode = hashCode;
-        System.out.println(hashCode);
-    }
-
     public void onSound(int source, Vec3 soundPos) {
         if (soundPos == null) {
-            SoundPhysics.setDefaultEnvironment(source);
+            IMPSoundPhysicsRemasteredExpectPlatform.setDefaultEnvironment(source);
             return;
         }
 
@@ -25,8 +19,8 @@ public class SoundPhysicsRemasteredAudio {
         if (time - lastUpdate < 100 && (lastPos != null && lastPos.distanceTo(soundPos) < 1D))
             return;
 
-        SoundPhysics.setLastSoundCategoryAndName(SoundSource.MASTER, "iammusicplayer_" + hashCode);
-        SoundPhysics.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
+        IMPSoundPhysicsRemasteredExpectPlatform.setLastSoundCategoryAndName(SoundSource.MASTER, "iammusicplayer");
+        IMPSoundPhysicsRemasteredExpectPlatform.onPlaySound(soundPos.x(), soundPos.y(), soundPos.z(), source);
 
         lastUpdate = time;
         lastPos = soundPos;

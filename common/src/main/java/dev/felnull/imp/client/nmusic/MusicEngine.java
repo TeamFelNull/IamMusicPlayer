@@ -137,6 +137,8 @@ public class MusicEngine implements MusicEngineAccess {
      * 再読み込みなどされたときに呼び出し
      */
     public void destroy() {
+        getLogger().info("Music engine reloaded");
+
         stopAll();
 
         musicDestroyRunner.destroy();

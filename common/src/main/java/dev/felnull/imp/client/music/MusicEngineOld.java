@@ -3,7 +3,7 @@ package dev.felnull.imp.client.music;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.player.IMusicPlayer;
 import dev.felnull.imp.client.music.trackerold.IMPMusicTrackersOld;
-import dev.felnull.imp.client.util.SoundMath;
+import dev.felnull.imp.client.util.MusicMath;
 import dev.felnull.imp.entity.IRingerPartyParrot;
 import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -126,7 +126,7 @@ public class MusicEngineOld {
                 return false;
             MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, musicPlayer));
 
-            musicPlayer.setVolume(SoundMath.calculateVolume(playbackInfo.getVolume()));
+            musicPlayer.setVolume(MusicMath.calculateVolume(playbackInfo.getVolume()));
             musicPlayer.setRange(playbackInfo.getRange());
         }
         return true;
@@ -139,7 +139,7 @@ public class MusicEngineOld {
             MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, MUSIC_PLAYERS.get(id).player()));
 
             var player = MUSIC_PLAYERS.get(id).player();
-            player.setVolume(SoundMath.calculateVolume(playbackInfo.getVolume()));
+            player.setVolume(MusicMath.calculateVolume(playbackInfo.getVolume()));
             player.setRange(playbackInfo.getRange());
         }
         return true;

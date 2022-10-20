@@ -1,10 +1,11 @@
 package dev.felnull.imp.client.nmusic.media;
 
-import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 音楽の再生メディア
@@ -14,7 +15,7 @@ public interface MusicMedia {
 
     Component getEnterText();
 
-    TextureSpecify getIcon();
+    ResourceLocation getIcon();
 
     boolean isSearchable();
 
@@ -22,5 +23,13 @@ public interface MusicMedia {
 
     default List<MusicMediaResult> search(String searchText) {
         return new ArrayList<>();
+    }
+
+    default String getName() {
+        for (Map.Entry<String, MusicMedia> entry : IMPMusicMedias.MEDIAS.entrySet()) {
+            if (entry.getValue().equals(this))
+                return entry.getKey();
+        }
+        return null;
     }
 }

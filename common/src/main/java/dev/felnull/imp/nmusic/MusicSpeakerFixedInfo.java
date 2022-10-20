@@ -1,28 +1,29 @@
 package dev.felnull.imp.nmusic;
 
+import dev.felnull.otyacraftengine.util.OENbtUtils;
 import net.minecraft.nbt.CompoundTag;
 
 /**
  * スピーカー固定情報
  *
- * @param channel  チャンネル数(-1で全チャンネル) 0=L 1=R
- * @param relative 相対的に再生
+ * @param channel     チャンネル数(-1で全チャンネル) 0=L 1=R
+ * @param spatialType 空間的な再生かどうか
  */
-public record MusicSpeakerFixedInfo(int channel, boolean relative) {
+public record MusicSpeakerFixedInfo(int channel, SpatialType spatialType) {
     public MusicSpeakerFixedInfo() {
-        this(-1, false);
+        this(-1, SpatialType.ENTRUST);
     }
 
     public CompoundTag toTag() {
         var tag = new CompoundTag();
         tag.putInt("channel", channel);
-        tag.putBoolean("relative", relative);
+        OENbtUtils.writeEnumByOrdinal(tag, "spatial_type", spatialType);
         return tag;
     }
 
     public static MusicSpeakerFixedInfo loadByTag(CompoundTag tag) {
         int channel = tag.getInt("channel");
-        boolean relative = tag.getBoolean("relative");
-        return new MusicSpeakerFixedInfo(channel, relative);
+        var spatialType = OENbtUtils.readEnumByOrdinal(tag, "spatial_type", SpatialType.class, SpatialType.ENTRUST);
+        return new MusicSpeakerFixedInfo(channel, spatialType);
     }
 }
