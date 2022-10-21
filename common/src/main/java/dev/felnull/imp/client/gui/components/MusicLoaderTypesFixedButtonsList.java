@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.network.chat.Component;
@@ -19,8 +19,8 @@ public class MusicLoaderTypesFixedButtonsList extends FixedButtonsList<String> i
 
     public MusicLoaderTypesFixedButtonsList(int x, int y, int w, int h, int num, Component name, List<String> list, PressEntry<String> onPressEntry, Function<String, Boolean> selected) {
         super(x, y, w, h, MusicManagerMonitor.WIDGETS_TEXTURE, 0, 20, 256, 256, num, name, list, n -> {
-            var lt = IMPMusicLoaderTypes.getMusicLoaderTypes().get(n);
-            return lt == null ? Component.translatable("imp.loaderType." + n) : lt.getName();
+            var lt = IMPMusicMedias.getAllMedia().get(n);
+            return lt == null ? Component.translatable("imp.loaderType." + n) : lt.getMediaName();
         }, onPressEntry);
         this.selected = selected;
     }
@@ -28,7 +28,7 @@ public class MusicLoaderTypesFixedButtonsList extends FixedButtonsList<String> i
     @Override
     protected void renderOneButton(PoseStack poseStack, String item, int lnum, int bnum, int x, int y, int mx, int my, float parTick) {
         drawSmartButtonBox(poseStack, x, y, getOneButtonWidth(), getOneButtonHeight(), selected.apply(item) ? 0 : this.getYImage(this.isHoveredOrFocused(bnum)));
-        var type = IMPMusicLoaderTypes.getMusicLoaderTypes().get(item);
+        var type = IMPMusicMedias.getAllMedia().get(item);
         int tx = x + 2;
         if ((type != null && type.getIcon() != null) || "upload".equals(item)) {
             var icon = type != null ? type.getIcon() : UPLOAD_ICON;

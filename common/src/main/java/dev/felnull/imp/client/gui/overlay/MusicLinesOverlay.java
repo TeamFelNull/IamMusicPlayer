@@ -2,8 +2,8 @@ package dev.felnull.imp.client.gui.overlay;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNStringUtil;
-import dev.felnull.imp.client.nmusic.MusicEngine;
-import dev.felnull.imp.client.nmusic.MusicEntry;
+import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.MusicEntry;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -52,27 +52,33 @@ public class MusicLinesOverlay extends GuiComponent {
             float ow = (((float) sw - 4f) - ((float) x + 2f)) / ((float) ssc - 1f);
             OERenderUtils.drawFill(poseStack, x + 2 + (ow * i), y + fh - 1 + 60, x + 2 + (ow * i) + 1, y + fh - 1 + 60 + 3, 0XFFDCDCDC);
         }
+        int all = (sw - 4) - (x + 2);
+
+        var range = entry.getLoadRange();
+
+        if (!source.isLive() && range != null)
+            drawLine(poseStack, x, y, (float) range.first() / (float) source.getDuration(), ((float) range.last() / (float) source.getDuration()) * (float) all, 1f, 0x7000C900);
 
         drawPositionLine(poseStack, x, y, (float) entry.getStartPosition() / (float) source.getDuration(), 0XFF0000FF);
 
-        int all = (sw - 4) - (x + 2);
+
         int len = all / 10;
         float crunt = (float) entry.getCurrentPosition() / (float) source.getDuration();
         float ol = 1f / 60f / (float) source.getDuration();
 
         for (int i = 0; i < len; i++) {
-            drawPositionLine(poseStack, x, y, ol * i, ol, 1f, 0xFFFF00FF);
+            drawLine(poseStack, x, y, ol * i, ol, 1f, 0xFFFF00FF);
         }
 
 
-        drawPositionLine(poseStack, x, y, crunt, 1, entry.getCurrentAudioWave(0), 0XFFFFFF00);
+        drawLine(poseStack, x, y, crunt, 1, entry.getCurrentAudioWave(0), 0XFFFFFF00);
     }
 
     private void drawPositionLine(PoseStack poseStack, float x, float y, float position, int color) {
-        drawPositionLine(poseStack, x, y, position, 1f, 1f, color);
+        drawLine(poseStack, x, y, position, 1f, 1f, color);
     }
 
-    private void drawPositionLine(PoseStack poseStack, float x, float y, float position, float w, float h, int color) {
+    private void drawLine(PoseStack poseStack, float x, float y, float position, float w, float h, int color) {
         int fh = mc.font.lineHeight;
         int sw = mc.getWindow().getGuiScaledWidth();
         float p = (((float) sw - 4f) - (x + 2f)) * position;

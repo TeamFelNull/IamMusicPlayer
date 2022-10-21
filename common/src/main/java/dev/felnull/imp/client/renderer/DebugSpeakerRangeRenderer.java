@@ -42,7 +42,7 @@ public class DebugSpeakerRangeRenderer {
         renderLine(poseStack, lineVC, x, y, z, 0, 0, -range, 0, 0, range, 0xFF0000FF);
 
 
-        renderLineSphere(poseStack, lineVC, x, y, z, range, Mth.clamp((int) range, 3, 50), playerAccess.isLoading() ? 0xFFFFFF00 : (inRange ? 0xFF00FF00 : 0xFFFF0000));
+        renderLineSphere(poseStack, lineVC, x, y, z, range, Mth.clamp((int) range, 3, 50), !playerAccess.isLoaded() ? 0xFFFFFF00 : (inRange ? 0xFF00FF00 : 0xFFFF0000));
     }
 
     private static void renderLineSphere(PoseStack poseStack, VertexConsumer vertexConsumer, float x, float y, float z, float range, int corner, int color) {

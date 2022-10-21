@@ -1,6 +1,6 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.imp.client.nmusic.MusicTest;
+import dev.felnull.imp.client.music.MusicTest;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;

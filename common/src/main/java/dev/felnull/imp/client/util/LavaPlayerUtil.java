@@ -9,8 +9,6 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.YoutubeMusicLoaderType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,16 +30,6 @@ public class LavaPlayerUtil {
         var lt = loadTrack(audioPlayerManager, identifier);
         lt.ifPresent(n -> TRACK_CASH.put(ce, n));
         return lt;
-    }
-
-    public static void test() {
-        Thread th = new Thread(() -> {
-            try {
-                LavaPlayerUtil.searchYoutube(((YoutubeMusicLoaderType) IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.YOUTUBE)).getAudioPlayerManager(), "TEST");
-            } catch (Exception ignored) {
-            }
-        });
-        th.start();
     }
 
     public static Optional<AudioTrack> loadTrack(AudioPlayerManager audioPlayerManager, String identifier) throws ExecutionException, InterruptedException {

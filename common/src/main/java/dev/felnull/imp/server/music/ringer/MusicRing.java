@@ -3,7 +3,7 @@ package dev.felnull.imp.server.music.ringer;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.advancements.IMPCriteriaTriggers;
-import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.music.tracker.MusicTrackerEntry;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.advancement.ModInvolvementTrigger;
 import net.minecraft.server.level.ServerLevel;
@@ -79,8 +79,7 @@ public class MusicRing {
     }
 
     protected void addRinger(IMusicRinger ringer) {
-        if (!ringers.containsKey(ringer.getRingerUUID()))
-            ringers.put(ringer.getRingerUUID(), ringer);
+        if (!ringers.containsKey(ringer.getRingerUUID())) ringers.put(ringer.getRingerUUID(), ringer);
         //System.out.println("add: " + ringer.getRingerUUID() + ", " + ringer);
     }
 
@@ -137,21 +136,20 @@ public class MusicRing {
         }
     }
 
-    private MusicPlaybackInfo getPlaybackInfo(IMusicRinger ringer) {
+    private MusicTrackerEntry getMusicTracker(IMusicRinger ringer) {
         var tr = ringer.getRingerTracker();
-        return new MusicPlaybackInfo(tr.getKey(), tr.getValue(), ringer.isRingerMute() ? 0 : ringer.getRingerVolume(), ringer.isRingerMute() ? 0 : ringer.getRingerRange());
+        return new MusicTrackerEntry(tr.location(), tr.tracker());
+//        return new MusicPlaybackInfo(tr.getKey(), tr.getValue(), ringer.isRingerMute() ? 0 : ringer.getRingerVolume(), ringer.isRingerMute() ? 0 : ringer.getRingerRange());
     }
 
     protected void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, int state) {
         var pr = playerInfos.get(uuid);
-        if (pr != null && pr.infoUUID.equals(waitUUID))
-            pr.responseUpdate(player, state);
+        if (pr != null && pr.infoUUID.equals(waitUUID)) pr.responseUpdate(player, state);
     }
 
     protected void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry, long elapsed) {
         var pr = playerInfos.get(uuid);
-        if (pr != null && pr.infoUUID.equals(waitUUID))
-            pr.addReadyPlayer(player, result, retry, elapsed);
+        if (pr != null && pr.infoUUID.equals(waitUUID)) pr.addReadyPlayer(player, result, retry, elapsed);
     }
 
     private class RingedPlayerInfos {
@@ -174,7 +172,7 @@ public class MusicRing {
         private void sendFirstPackets() {
             for (UUID firstWaitPlayer : firstWaitPlayers) {
                 if (getLevel().getPlayerByUUID(firstWaitPlayer) instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(infoUUID, ringerUUID, getRinger().getRingerMusicSource(), getPlaybackInfo(getRinger()), getRingerPosition()).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(infoUUID, ringerUUID, getRinger().getRingerMusicSource(), getMusicTracker(getRinger()).saveToTag(), getRingerPosition()).toFBB());
             }
         }
 
@@ -185,7 +183,7 @@ public class MusicRing {
 
         private void sendMiddleStartPacket(UUID player) {
             if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer) {
-                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(infoUUID, ringerUUID, getRinger().getRingerMusicSource(), getPlaybackInfo(getRinger()), getRingerPosition()).toFBB());
+                NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_READY, new IMPPackets.MusicReadyMessage(infoUUID, ringerUUID, getRinger().getRingerMusicSource(), getMusicTracker(getRinger()).saveToTag(), getRingerPosition()).toFBB());
                 advancement(serverPlayer);
             }
         }
@@ -201,7 +199,7 @@ public class MusicRing {
             if (notWait) {
                 if (middleLoadPlayers.contains(id)) {
                     if (result) {
-                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY, elapsed, MusicPlaybackInfo.EMPTY).toFBB());
+                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY, elapsed, getMusicTracker(getRinger()).saveToTag()).toFBB());
                         listenPlayers.add(id);
                     } else {
                         failurePlayers.put(id, System.currentTimeMillis());
@@ -222,7 +220,7 @@ public class MusicRing {
         private void startReadyWaitPlayers() {
             for (UUID pl : firstReadyPlayers) {
                 if (getLevel().getPlayerByUUID(pl) instanceof ServerPlayer serverPlayer) {
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY, 0, getMusicTracker(getRinger()).saveToTag()).toFBB());
                     advancement(serverPlayer);
                 }
             }
@@ -231,24 +229,22 @@ public class MusicRing {
         private void responseUpdate(ServerPlayer player, int state) {
             var id = player.getGameProfile().getId();
             if (listenPlayers.contains(id)) {
-                if (state != 1)
-                    listenPlayers.remove(id);
+                if (state != 1) listenPlayers.remove(id);
             }
 
             if (middleLoadPlayers.contains(id)) {
-                if (state != 2)
-                    middleLoadPlayers.remove(id);
+                if (state != 2) middleLoadPlayers.remove(id);
             }
         }
 
         private void sendUpdate() {
             for (UUID player : listenPlayers) {
                 if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.UPDATE, 0, getPlaybackInfo(getRinger())).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.UPDATE, 0, getMusicTracker(getRinger()).saveToTag()).toFBB());
             }
             for (UUID player : middleLoadPlayers) {
                 if (getLevel().getPlayerByUUID(player) instanceof ServerPlayer serverPlayer)
-                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.UPDATE, 0, getPlaybackInfo(getRinger())).toFBB());
+                    NetworkManager.sendToPlayer(serverPlayer, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.UPDATE, 0, getMusicTracker(getRinger()).saveToTag()).toFBB());
             }
         }
 
@@ -269,13 +265,11 @@ public class MusicRing {
                 }
 
                 for (UUID listenPlayer : listenPlayers) {
-                    if (!nl.contains(listenPlayer))
-                        sendStopPackets(listenPlayer);
+                    if (!nl.contains(listenPlayer)) sendStopPackets(listenPlayer);
                 }
 
                 for (UUID middleLoadPlayer : middleLoadPlayers) {
-                    if (!nl.contains(middleLoadPlayer))
-                        sendStopPackets(middleLoadPlayer);
+                    if (!nl.contains(middleLoadPlayer)) sendStopPackets(middleLoadPlayer);
                 }
 
                 listenPlayers.clear();
@@ -297,21 +291,18 @@ public class MusicRing {
 
         private boolean isFailureCoolDown(UUID player) {
             Long fr = failurePlayers.get(player);
-            if (fr != null)
-                return (System.currentTimeMillis() - fr) <= getRetryTime();
+            if (fr != null) return (System.currentTimeMillis() - fr) <= getRetryTime();
             return false;
         }
 
         private boolean canPlayPlayersCheck(long currentTime) {
             long eq = currentTime - startTime;
-            if (eq > getMaxWaitTime())
-                return true;
+            if (eq > getMaxWaitTime()) return true;
 
             List<UUID> removes = new ArrayList<>();
             for (UUID waiter : firstWaitPlayers) {
                 var pl = getLevel().getPlayerByUUID(waiter);
-                if (pl == null || !canListen(pl))
-                    removes.add(waiter);
+                if (pl == null || !canListen(pl)) removes.add(waiter);
             }
             firstWaitPlayers.removeAll(removes);
             return firstWaitPlayers.isEmpty();

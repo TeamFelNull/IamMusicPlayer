@@ -1,6 +1,6 @@
 package dev.felnull.imp.mixin.client;
 
-import dev.felnull.imp.client.nmusic.MusicEngine;
+import dev.felnull.imp.client.music.MusicEngine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Final;

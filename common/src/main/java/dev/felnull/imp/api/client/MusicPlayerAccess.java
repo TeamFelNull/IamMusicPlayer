@@ -5,11 +5,11 @@ import java.util.UUID;
 
 public interface MusicPlayerAccess {
     /**
-     * 読み込み中かどうか確認
+     * 読み込み完了したかどうか確認
      *
-     * @return 読み込み中かどうか
+     * @return 読み込み完了したかどうか
      */
-    boolean isLoading();
+    boolean isLoaded();
 
     /**
      * 再生中かどうか確認

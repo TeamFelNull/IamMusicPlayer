@@ -2,7 +2,7 @@ package dev.felnull.imp.impl.client;
 
 import dev.felnull.imp.api.client.IamMusicPlayerClientAPI;
 import dev.felnull.imp.api.client.MusicEngineAccess;
-import dev.felnull.imp.client.nmusic.MusicEngine;
+import dev.felnull.imp.client.music.MusicEngine;
 
 public class IamMusicPlayerClientAPIImpl implements IamMusicPlayerClientAPI {
     public static final IamMusicPlayerClientAPIImpl INSTANCE = new IamMusicPlayerClientAPIImpl();

@@ -3,7 +3,6 @@ package dev.felnull.imp.networking;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.handler.ClientMessageHandler;
-import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.*;
 import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.util.IMPNbtUtil;
@@ -13,7 +12,6 @@ import dev.felnull.otyacraftengine.networking.PacketMessage;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import dev.felnull.otyacraftengine.util.OENbtUtils;
-import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -194,15 +192,14 @@ public class IMPPackets {
         }
     }
 
-    public static record MusicRingStateMessage(UUID uuid, UUID waitId,
-                                               MusicRingStateType stateType, long elapsed,
-                                               MusicPlaybackInfo playbackInfo) implements PacketMessage {
+    public static record MusicRingStateMessage(UUID uuid, UUID waitId, MusicRingStateType stateType, long elapsed,
+                                               CompoundTag tracker) implements PacketMessage {
         public MusicRingStateMessage(UUID uuid, UUID waitId, MusicRingStateType stateType) {
-            this(uuid, waitId, stateType, 0, MusicPlaybackInfo.EMPTY);
+            this(uuid, waitId, stateType, 0, new CompoundTag());
         }
 
         public MusicRingStateMessage(FriendlyByteBuf bf) {
-            this(bf.readUUID(), bf.readUUID(), bf.readEnum(MusicRingStateType.class), bf.readLong(), TagSerializable.loadSavedTag(bf.readNbt().getCompound("pbi"), new MusicPlaybackInfo()));
+            this(bf.readUUID(), bf.readUUID(), bf.readEnum(MusicRingStateType.class), bf.readLong(), bf.readNbt());
         }
 
         @Override
@@ -211,9 +208,7 @@ public class IMPPackets {
             buf.writeUUID(waitId);
             buf.writeEnum(stateType);
             buf.writeLong(elapsed);
-            var tag = new CompoundTag();
-            tag.put("pbi", this.playbackInfo.createSavedTag());
-            buf.writeNbt(tag);
+            buf.writeNbt(tracker);
             return buf;
         }
     }
@@ -252,11 +247,28 @@ public class IMPPackets {
         }
     }
 
-    public static class MusicReadyMessage implements PacketMessage {
+    public static record MusicReadyMessage(UUID waitId, UUID uuid, MusicSource source, CompoundTag tracker,
+                                           long position) implements PacketMessage {
+        public MusicReadyMessage(FriendlyByteBuf bf) {
+            this(bf.readUUID(), bf.readUUID(), TagSerializable.loadSavedTag(bf.readNbt(), new MusicSource()), bf.readNbt(), bf.readLong());
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
+            buf.writeUUID(this.waitId);
+            buf.writeUUID(this.uuid);
+            buf.writeNbt(this.source.createSavedTag());
+            buf.writeNbt(this.tracker);
+            buf.writeLong(this.position);
+            return buf;
+        }
+    }
+
+    /*public static class MusicReadyMessage implements PacketMessage {
         public final UUID waitId;
         public final UUID uuid;
         public final MusicSource source;
-        public final MusicPlaybackInfo playbackInfo;
+        public final MusicTrackerEntry trackerEntry;
         public final long position;
 
         public MusicReadyMessage(FriendlyByteBuf bf) {
@@ -294,7 +306,7 @@ public class IMPPackets {
         public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
             return null;
         }
-    }
+    }*/
 
     public static class MusicMessage implements PacketMessage {
         public final UUID uuid;

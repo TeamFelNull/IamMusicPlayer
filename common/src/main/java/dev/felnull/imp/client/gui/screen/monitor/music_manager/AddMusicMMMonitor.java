@@ -7,8 +7,9 @@ import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.MusicLoaderTypesFixedButtonsList;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.MusicLoadResult;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
+import dev.felnull.imp.client.music.media.MusicMediaResult;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.networking.IMPPackets;
@@ -21,6 +22,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     private static final Component MUSIC_CHECKING_TEXT = Component.translatable("imp.text.musicChecking");
@@ -51,7 +53,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         this.musicLoaderTypes.clear();
         this.musicLoaderTypes.add("auto");
         this.musicLoaderTypes.add("upload");
-        this.musicLoaderTypes.addAll(IMPMusicLoaderTypes.getMusicLoaderTypes().keySet());
+        this.musicLoaderTypes.addAll(IMPMusicMedias.getAllMedia().keySet());
 
         this.addRenderWidget(new MusicLoaderTypesFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 65, 5, Component.translatable("imp.fixedList.musicLoaderTypes"), musicLoaderTypes, (fixedButtonsList, s, i, i1) -> {
             setMusicLoaderType(s);
@@ -115,7 +117,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         this.musicLoaderTypes.clear();
         this.musicLoaderTypes.add("auto");
         this.musicLoaderTypes.add("upload");
-        this.musicLoaderTypes.addAll(IMPMusicLoaderTypes.getMusicLoaderTypes().keySet());
+        this.musicLoaderTypes.addAll(IMPMusicMedias.getAllMedia().keySet());
 
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
@@ -144,14 +146,14 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         for (int k = 0; k < Math.min(5, musicLoaderTypes.size()); k++) {
             var lt = musicLoaderTypes.get(k);
             renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 23 + (k * 13), OERenderUtils.MIN_BREADTH * 3, 165, 13, i, j, onPxW, onPxH, monitorHeight, lt.equals(getMusicLoaderType(blockEntity)));
-            var type = IMPMusicLoaderTypes.getMusicLoaderTypes().get(lt);
+            var type = IMPMusicMedias.getAllMedia().get(lt);
             int tx = 189 + 2;
             if ((type != null && type.getIcon() != null) || "upload".equals(lt)) {
                 var icon = type != null ? type.getIcon() : MusicLoaderTypesFixedButtonsList.UPLOAD_ICON;
                 OERenderUtils.renderTextureSprite(icon, poseStack, multiBufferSource, (189f + 1f) * onPxW, monitorHeight - (23f + ((float) k * 13f) + 1f + 11f) * onPxH, OERenderUtils.MIN_BREADTH * 5, 0, 0, 0, 11f * onPxW, 11f * onPxH, 0, 0, 11f * onPxW, 11f * onPxH, 11f * onPxW, 11f * onPxH, i, j);
                 tx += 13 - 1;
             }
-            renderSmartTextSprite(poseStack, multiBufferSource, type == null ? Component.translatable("imp.loaderType." + lt) : type.getName(), tx, 23 + (k * 13) + (13f - 6.5f) / 2f + 1f, OERenderUtils.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
+            renderSmartTextSprite(poseStack, multiBufferSource, type == null ? Component.translatable("imp.loaderType." + lt) : type.getMediaName(), tx, 23 + (k * 13) + (13f - 6.5f) / 2f + 1f, OERenderUtils.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
         }
 
         renderSmartButtonSprite(poseStack, multiBufferSource, width - 95 - 87, 180, OERenderUtils.MIN_BREADTH * 4, 87, 15, i, j, onPxW, onPxH, monitorHeight, IMPORT_TEXT, true);
@@ -191,7 +193,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         this.searchButton.visible = isMSNVisible() && isMSNShortWidth();
         this.uploadButton.visible = "upload".equals(getMusicLoaderType());
 
-        if ((getScreen().isMusicPlaying() && !getMusicSource().equals(getScreen().getMusicPlayer().getMusicSource())) || (getScreen().isMusicLoading() && !getMusicSource().equals(getScreen().getLoadingMusic().getSource())))
+        if ((getScreen().isMusicPlaying() && !getMusicSource().equals(getScreen().getMusicPlayer().getSource())) || (getScreen().isMusicLoading()))
             getScreen().stopMusic();
     }
 
@@ -223,7 +225,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     }
 
 
-    private void setLoadResult(MusicLoadResult result, boolean autoIn) {
+    private void setLoadResult(MusicMediaResult result, boolean autoIn) {
         if (result != null) {
             setMusicSource(result.source(), result.author());
             if (autoIn) {
@@ -269,9 +271,9 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         public void run() {
             try {
                 if (isStopped()) return;
-                var loader = IMPMusicLoaderTypes.getMusicLoaderTypes().get(loaderType);
+                var loader = IMPMusicMedias.getAllMedia().get(loaderType);
                 if ("upload".equals(loaderType))
-                    loader = IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.HTTP);
+                    loader = IMPMusicMedias.HTTP;
                 if (isStopped()) return;
 
                 if (loader != null) {
@@ -284,10 +286,10 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
                     if (isStopped()) return;
                 } else if ("auto".equals(loaderType)) {
                     if (isStopped()) return;
-                    var ar = IMPMusicLoaderTypes.loadAuto(name);
+                    var ar = LavaPlayerManager.getInstance().autoLoad(name);
                     if (isStopped()) return;
                     if (ar != null) {
-                        setMusicLoaderType(ar.getKey());
+                        setMusicLoaderType(ar.getKey().getName());
                         if (isStopped()) return;
                         IIMPSmartRender.mc.submit(() -> {
                             musicSourceNameEditBox.setValue(ar.getValue().source().getIdentifier());
@@ -300,6 +302,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
                     if (isStopped()) return;
                 }
             } catch (InterruptedException ignored) {
+            } catch (ExecutionException e) {
             }
             musicLoadThread = null;
         }

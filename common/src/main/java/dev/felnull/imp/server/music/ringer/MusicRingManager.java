@@ -1,13 +1,7 @@
 package dev.felnull.imp.server.music.ringer;
 
-import dev.felnull.imp.IamMusicPlayer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -16,9 +10,6 @@ import java.util.UUID;
 
 public class MusicRingManager {
     private static final MusicRingManager INSTANCE = new MusicRingManager();
-    public static final ResourceLocation FIXED_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "fixed");
-    public static final ResourceLocation ENTITY_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "entity");
-    public static final ResourceLocation PLAYER_TRACKER = new ResourceLocation(IamMusicPlayer.MODID, "player");
     private final Map<ServerLevel, MusicRing> MUSIC_RINGS = new HashMap<>();
 
     public static MusicRingManager getInstance() {
@@ -118,33 +109,5 @@ public class MusicRingManager {
     public void clear() {
         MUSIC_RINGS.forEach((n, m) -> m.depose());
         MUSIC_RINGS.clear();
-    }
-
-    public static CompoundTag createFixedTracker(Vec3 vec3) {
-        var tag = new CompoundTag();
-        tag.putDouble("x", vec3.x);
-        tag.putDouble("y", vec3.y);
-        tag.putDouble("z", vec3.z);
-        return tag;
-    }
-
-    public static CompoundTag createEntityTracker(Entity entity) {
-        var tag = new CompoundTag();
-        var p = entity.position();
-        tag.putDouble("x", p.x);
-        tag.putDouble("y", p.y);
-        tag.putDouble("z", p.z);
-        tag.putInt("id", entity.getId());
-        return tag;
-    }
-
-    public static CompoundTag createPlayerTracker(Player player) {
-        var tag = new CompoundTag();
-        var p = player.position();
-        tag.putDouble("x", p.x);
-        tag.putDouble("y", p.y);
-        tag.putDouble("z", p.z);
-        tag.putUUID("id", player.getGameProfile().getId());
-        return tag;
     }
 }

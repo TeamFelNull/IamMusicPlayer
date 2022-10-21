@@ -9,10 +9,10 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.nmusic.media.IMPMusicMedias;
-import dev.felnull.imp.client.nmusic.media.LavaPlayerBaseMusicMedia;
-import dev.felnull.imp.client.nmusic.media.MusicMedia;
-import dev.felnull.imp.client.nmusic.media.MusicMediaResult;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
+import dev.felnull.imp.client.music.media.LavaPlayerBaseMusicMedia;
+import dev.felnull.imp.client.music.media.MusicMedia;
+import dev.felnull.imp.client.music.media.MusicMediaResult;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 

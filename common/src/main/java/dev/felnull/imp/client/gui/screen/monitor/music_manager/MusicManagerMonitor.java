@@ -5,7 +5,7 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.gui.screen.monitor.Monitor;
-import dev.felnull.imp.client.music.MusicEngineOld;
+import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -112,8 +112,8 @@ public abstract class MusicManagerMonitor extends Monitor<MusicManagerBlockEntit
         MusicManagerMonitor create(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen);
     }
 
-    public MusicEngineOld getMusicEngine() {
-        return MusicEngineOld.getInstance();
+    public MusicEngine getMusicEngine() {
+        return MusicEngine.getInstance();
     }
 
     public MusicManagerBlockEntity.MonitorType getType() {

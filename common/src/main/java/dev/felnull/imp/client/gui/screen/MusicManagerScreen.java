@@ -5,14 +5,13 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.imp.client.music.MusicEngineOld;
-import dev.felnull.imp.client.music.MusicLoadThread;
-import dev.felnull.imp.client.music.player.IMusicPlayer;
+import dev.felnull.imp.client.music.IMPMusicTrackerFactory;
+import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.MusicEntry;
 import dev.felnull.imp.inventory.MusicManagerMenu;
-import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
-import dev.felnull.imp.server.music.ringer.MusicRingManager;
+import dev.felnull.imp.music.tracker.IMPMusicTrackers;
 import dev.felnull.otyacraftengine.util.OENbtUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -276,12 +275,16 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
     public void playMusic(MusicSource source, long postion) {
         stopMusic();
-        getMusicEngine().loadAddMusicPlayer(musicPlayerId, new MusicPlaybackInfo(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(mc.player), 1, 10), source, postion, (result, time, player, retry) -> getMusicEngine().playMusicPlayer(musicPlayerId, 0));
+        getMusicEngine().load(musicPlayerId, source, postion, (success, time, error, retry) -> {
+            getMusicEngine().play(musicPlayerId, 0);
+        });
+        getMusicEngine().addSpeaker(musicPlayerId, musicPlayerId, IMPMusicTrackerFactory.linked(IMPMusicTrackers.createPlayerTracker(mc.player, 1, 10)));
+
+        //getMusicEngine().loadAddMusicPlayer(musicPlayerId, new MusicPlaybackInfo(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(mc.player), 1, 10), source, postion, (result, time, player, retry) -> getMusicEngine().playMusicPlayer(musicPlayerId, 0));
     }
 
     public void stopMusic() {
-        getMusicEngine().stopMusicPlayer(musicPlayerId);
-        getMusicEngine().stopLoadMusicPlayer(musicPlayerId);
+        getMusicEngine().stop(musicPlayerId);
     }
 
     public boolean isMusicPlaying() {
@@ -292,15 +295,11 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         return getMusicEngine().isLoad(musicPlayerId);
     }
 
-    private MusicEngineOld getMusicEngine() {
-        return MusicEngineOld.getInstance();
+    private MusicEngine getMusicEngine() {
+        return MusicEngine.getInstance();
     }
 
-    public IMusicPlayer getMusicPlayer() {
-        return getMusicEngine().getMusicPlayer(musicPlayerId);
-    }
-
-    public MusicLoadThread getLoadingMusic() {
-        return getMusicEngine().getLoadingMusic(musicPlayerId);
+    public MusicEntry getMusicPlayer() {
+        return getMusicEngine().getMusicEntry(musicPlayerId);
     }
 }

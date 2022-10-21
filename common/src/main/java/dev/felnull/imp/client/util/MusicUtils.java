@@ -3,8 +3,8 @@ package dev.felnull.imp.client.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.client.nmusic.MusicEngine;
-import dev.felnull.imp.nmusic.SpatialType;
+import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.music.SpatialType;
 import org.lwjgl.openal.AL10;
 
 import java.util.concurrent.CompletableFuture;

@@ -1,15 +1,14 @@
 package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.YoutubePlayListMusicsFixedButtonsList;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.YoutubeMusicLoaderType;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
@@ -216,11 +215,11 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
             String satuhor = "";
             int sct = 0;
             try {
-                var pl = LavaPlayerUtil.loadTracks(getManager(), id);
+                var pl = LavaPlayerUtil.loadTracks(LavaPlayerManager.getInstance().getAudioPlayerManager(), id);
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
-                        var ret = getYoutubeLoaderType().createResult(track);
+                        var ret = IMPMusicMedias.YOUTUBE.createResult(track);
                         var en = new YoutubePlayListEntry(ret.name(), ret.author(), ret.source(), ret.imageInfo());
                         youtubePlayListEntries.add(en);
                     }
@@ -248,14 +247,6 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
             setImportPlayListName(sname);
             setImportPlayListAuthor(satuhor);
         }
-
-        private AudioPlayerManager getManager() {
-            return getYoutubeLoaderType().getAudioPlayerManager();
-        }
-    }
-
-    private YoutubeMusicLoaderType getYoutubeLoaderType() {
-        return ((YoutubeMusicLoaderType) IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.YOUTUBE));
     }
 
     public static record YoutubePlayListEntry(String name, String artist, MusicSource source, ImageInfo imageInfo) {
