@@ -11,7 +11,7 @@ import dev.felnull.imp.client.gui.components.ImageSetButton;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
-import dev.felnull.imp.client.util.FileChooserUtil;
+import dev.felnull.imp.client.util.FileChooserUtils;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
@@ -72,7 +72,7 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
 
             addRenderWidget(new ImageSetButton(getStartX() + 149, getStartY() + 22, ImageSetButton.ImageSetType.DELETE, n -> setImage(ImageInfo.EMPTY), getScreen()));
 
-            addRenderWidget(new ImageSetButton(getStartX() + 112, getStartY() + 22, ImageSetButton.ImageSetType.FILE_OPEN, n -> openImage(FileChooserUtil.openImageFileChooser(false)), getScreen()));
+            addRenderWidget(new ImageSetButton(getStartX() + 112, getStartY() + 22, ImageSetButton.ImageSetType.FILE_OPEN, n -> openImage(FileChooserUtils.openImageFileChooser(false)), getScreen()));
 
             addRenderWidget(new ImageSetButton(getStartX() + 75, getStartY() + 22, ImageSetButton.ImageSetType.PLAYER_FACE, n -> setImage(new ImageInfo(ImageInfo.ImageType.PLAYER_FACE, IIMPSmartRender.mc.player.getGameProfile().getName())), getScreen()));
 

@@ -19,7 +19,7 @@ public interface MusicMedia {
 
     boolean isSearchable();
 
-    MusicMediaResult load(String sourceName);
+    MusicMediaResult load(String sourceName) throws Exception;
 
     default List<MusicMediaResult> search(String searchText) {
         return new ArrayList<>();

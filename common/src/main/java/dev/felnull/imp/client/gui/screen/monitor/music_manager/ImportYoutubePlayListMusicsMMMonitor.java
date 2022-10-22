@@ -7,7 +7,7 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.client.util.LavaPlayerUtils;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
@@ -87,7 +87,7 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
             if (isStopped()) return;
             try {
                 List<Music> musics = new ArrayList<>();
-                var pl = LavaPlayerUtil.loadTracks(LavaPlayerManager.getInstance().getAudioPlayerManager(), id);
+                var pl = LavaPlayerUtils.loadTracks(LavaPlayerManager.getInstance().getAudioPlayerManager(), id);
                 if (isStopped()) return;
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {

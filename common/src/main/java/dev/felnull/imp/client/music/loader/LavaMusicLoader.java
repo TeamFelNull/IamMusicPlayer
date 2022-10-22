@@ -20,12 +20,12 @@ public class LavaMusicLoader implements MusicLoader {
 
     @Override
     public void tryLoad(@NotNull MusicSource source) throws Exception {
-        var lm = LavaPlayerManager.getInstance();
-
-        if (!lm.getMedias().containsKey(source.getLoaderType()))
+        if (!isSupportMedia(source.getLoaderType()))
             throw new RuntimeException("Unsupported media");
 
-        var track = lm.loadTrack(source.getIdentifier());
+        var lm = LavaPlayerManager.getInstance();
+
+        var track = lm.loadTrack(wrappedIdentifier(source.getIdentifier()));
         if (track.isEmpty())
             throw new RuntimeException("Failed to load track");
 
@@ -36,6 +36,15 @@ public class LavaMusicLoader implements MusicLoader {
         this.musicSource = source;
     }
 
+    protected boolean isSupportMedia(String mediaName) {
+        var lm = LavaPlayerManager.getInstance();
+        return lm.getMedias().containsKey(mediaName);
+    }
+
+    protected String wrappedIdentifier(String identifier) throws Exception {
+        return identifier;
+    }
+
     @Override
     public int priority() {
         return 0;
@@ -43,6 +52,7 @@ public class LavaMusicLoader implements MusicLoader {
 
     @Override
     public void cansel() {
-        this.audioTrack.stop();
+        if (this.audioTrack != null)
+            this.audioTrack.stop();
     }
 }

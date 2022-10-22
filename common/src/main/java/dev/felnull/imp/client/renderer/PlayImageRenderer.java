@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNMath;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.util.NetEaseCloudMusicUtils;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.client.util.OETextureUtils;
@@ -22,6 +23,7 @@ public class PlayImageRenderer {
     private static final String YOUTUBE_THUMBNAIL_URL = "https://i.ytimg.com/vi/%s/hqdefault.jpg";
     private static final Pattern YOUTUBE_THUMBNAIL_URL_REGEX = Pattern.compile("https://i.ytimg.com/vi/.+/hqdefault.jpg");
     private static final Pattern SOUND_CLOUD_URL_REGEX = Pattern.compile("https://soundcloud.com/.+");
+    private static final Pattern NETEASE_CLOUD_MUSIC_URL_REGEX = Pattern.compile("https://p1.music.126.net/.+");
     private static final String SCT_IMG_ST = "<img ";
     private static final String SCT_IMG_END = ">";
     private static final String SCT_SRC_ST = "src=\"";
@@ -42,6 +44,17 @@ public class PlayImageRenderer {
                 }
                 return ret;
             }
+        } else if (url.startsWith("imp_ncmp_")) {
+            var curl = url.substring("imp_ncmp_".length());
+            if (!curl.isEmpty()) {
+                String ret = null;
+                try {
+                    var sj = NetEaseCloudMusicUtils.getSongJson(curl);
+                    ret = NetEaseCloudMusicUtils.getPictureURL(sj);
+                } catch (Exception ignored) {
+                }
+                return ret;
+            }
         }
         return null;
     }
@@ -51,6 +64,9 @@ public class PlayImageRenderer {
         if (url.startsWith("imp_sct_")) {
             var scurl = url.substring("imp_sct_".length());
             return SOUND_CLOUD_URL_REGEX.matcher(scurl).matches();
+        } else if (url.startsWith("imp_ncmp_")) {
+            var curl = url.substring("imp_ncmp_".length());
+            return !curl.isEmpty();
         }
         return false;
     }
@@ -149,6 +165,17 @@ public class PlayImageRenderer {
                 w = (float) st.getX();
                 h = (float) st.getY();
             } else if (scale != null) {
+                w = (float) scale.w();
+                h = (float) scale.h();
+            }
+            return Pair.of(loc, new Vec2(w, h));
+        } else if (imageInfo.getImageType() == ImageInfo.ImageType.NETEASE_CLOUD_MUSIC_PICTURE) {
+            var idf = imageInfo.getIdentifier();
+            var loc = OETextureUtils.getAndLoadURLTextureAsync("imp_ncmp_" + idf, cash).of();
+            var scale = OETextureUtils.getTextureScale(loc);
+            float w = 1;
+            float h = 1;
+            if (scale != null) {
                 w = (float) scale.w();
                 h = (float) scale.h();
             }

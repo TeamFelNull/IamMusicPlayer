@@ -9,7 +9,7 @@ import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.client.util.LavaPlayerUtils;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
@@ -171,7 +171,7 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
         public void run() {
             if (isStopped()) return;
             try {
-                var otrack = LavaPlayerUtil.loadTrack(LavaPlayerManager.getInstance().getAudioPlayerManager(), url);
+                var otrack = LavaPlayerUtils.loadTrack(LavaPlayerManager.getInstance().getAudioPlayerManager(), url);
                 if (isStopped()) return;
                 if (otrack.isPresent()) {
                     var track = otrack.get();

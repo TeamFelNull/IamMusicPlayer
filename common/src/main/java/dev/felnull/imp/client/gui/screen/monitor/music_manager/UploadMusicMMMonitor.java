@@ -10,7 +10,7 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.util.FileChooserUtil;
+import dev.felnull.imp.client.util.FileChooserUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
 import dev.felnull.otyacraftengine.util.OEUtils;
@@ -68,7 +68,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         }));
 
         this.openFileButton = this.addRenderWidget(new SmartButton(getStartX() + (width - 270) / 2, getStartY() + 103, 270, 15, OPEN_FILE_TEXT, n -> {
-            uploadFile(FileChooserUtil.openMusicFileChooser(false));
+            uploadFile(FileChooserUtils.openMusicFileChooser(false));
         }));
         this.openFileButton.setIcon(WIDGETS_TEXTURE, 73, 19, 11, 11);
         this.openFileButton.visible = canUpload();

@@ -22,7 +22,6 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     private static final Component MUSIC_CHECKING_TEXT = Component.translatable("imp.text.musicChecking");
@@ -301,8 +300,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
                     }
                     if (isStopped()) return;
                 }
-            } catch (InterruptedException ignored) {
-            } catch (ExecutionException e) {
+            } catch (Exception ignored) {
             }
             musicLoadThread = null;
         }

@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class LavaPlayerUtil {
+public class LavaPlayerUtils {
     private static final Map<CashEntry, AudioTrack> TRACK_CASH = new HashMap<>();
 
     public static Optional<AudioTrack> loadCashedTrack(String loadType, AudioPlayerManager audioPlayerManager, String identifier, boolean remove) throws ExecutionException, InterruptedException {

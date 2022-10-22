@@ -11,6 +11,7 @@ public class IMPMusicLoaders {
 
     public static void init() {
         register(LavaMusicLoader::new);
+        register(NetEaseCloudMusicLoader::new);
     }
 
     public static void register(Supplier<MusicLoader> loaderSupplier) {

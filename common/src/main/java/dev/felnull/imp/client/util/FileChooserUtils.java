@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.nio.file.Path;
 
-public class FileChooserUtil {
+public class FileChooserUtils {
 
     public static File[] openMusicFileChooser(boolean multiSelect) {
         Path initPath = null;

@@ -4,13 +4,10 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.concurrent.ExecutionException;
 
 public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
     private static final Component ENTER_TEXT = Component.translatable("imp.text.enterText.default");
@@ -43,15 +40,12 @@ public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
     }
 
     @Override
-    public MusicMediaResult load(String sourceName) {
+    public MusicMediaResult load(String sourceName) throws Exception {
         var lm = LavaPlayerManager.getInstance();
-        try {
-            var otrack = LavaPlayerUtil.loadTrack(lm.getAudioPlayerManager(), sourceName);
-            if (otrack.isPresent() && !otrack.get().getInfo().isStream)
-                return createResult(otrack.get());
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        var otrack = lm.loadTrack(sourceName);
+        if (otrack.isPresent() && !otrack.get().getInfo().isStream)
+            return createResult(otrack.get());
         return null;
     }
 

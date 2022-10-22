@@ -9,7 +9,7 @@ import dev.felnull.imp.client.gui.components.YoutubePlayListMusicsFixedButtonsLi
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.client.util.LavaPlayerUtils;
 import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -215,7 +215,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
             String satuhor = "";
             int sct = 0;
             try {
-                var pl = LavaPlayerUtil.loadTracks(LavaPlayerManager.getInstance().getAudioPlayerManager(), id);
+                var pl = LavaPlayerUtils.loadTracks(LavaPlayerManager.getInstance().getAudioPlayerManager(), id);
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
