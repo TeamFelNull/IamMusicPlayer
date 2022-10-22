@@ -3,8 +3,8 @@ package dev.felnull.imp.client.music.speaker;
 import dev.felnull.imp.api.MusicSpeakerInfoAccess;
 import dev.felnull.imp.api.client.MusicSpeakerAccess;
 import dev.felnull.imp.client.integration.SoundPhysicsRemasteredIntegration;
-import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.client.util.MusicMath;
+import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.MusicSpeakerFixedInfo;
 import dev.felnull.imp.music.tracker.MusicTracker;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,6 +29,7 @@ public class MusicSpeaker implements MusicSpeakerAccess {
     private long scheduledStartTime;
     private long liveTime = System.currentTimeMillis();
     private boolean playStarted;
+    private boolean broken;
 
     public MusicSpeaker(UUID musicPlayerId, UUID speakerId, MusicTracker tracker) {
         this.musicPlayerId = musicPlayerId;
@@ -61,6 +62,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
      * 毎Tick呼び出し
      */
     public void tick() {
+        if (broken)
+            return;
+
         MusicUtils.assertOnMusicTick();
 
         alSourceUpdate();
@@ -97,6 +101,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
      * @param delay 遅れ
      */
     public void play(long delay) {
+        if (broken)
+            return;
+
         this.playStarted = true;
         this.startTime = System.currentTimeMillis();
 
@@ -138,6 +145,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
      * @throws Exception 例外
      */
     public void destroy() throws Exception {
+        if (broken)
+            return;
+
         if (isPlaying())
             stop();
 
@@ -153,6 +163,8 @@ public class MusicSpeaker implements MusicSpeakerAccess {
 
         if (SoundPhysicsRemasteredIntegration.INSTANCE.isEnable())
             SoundPhysicsRemasteredIntegration.INSTANCE.onDestroy(musicPlayerId, speakerId);
+
+        broken = true;
     }
 
     /**
@@ -160,6 +172,9 @@ public class MusicSpeaker implements MusicSpeakerAccess {
      * {@link #destroy()}を呼び出し後に新しくスピーカーを生成してください
      */
     public void stop() {
+        if (broken)
+            return;
+
         MusicUtils.assertOnMusicTick();
 
         if (getPlayState() != AL_STOPPED)
