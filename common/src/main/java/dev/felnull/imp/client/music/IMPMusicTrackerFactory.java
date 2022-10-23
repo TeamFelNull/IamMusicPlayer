@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.music.tracker.*;
+import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.server.level.TagSerializable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -17,8 +18,8 @@ public class IMPMusicTrackerFactory {
 
     public static void init() {
         register(IMPMusicTrackers.FIXED_TRACKER, FixedMusicTracker::new);
-        register(IMPMusicTrackers.ENTITY_TRACKER, () -> new EntityMusicTracker(mc.level));
-        register(IMPMusicTrackers.PLAYER_TRACKER, () -> new PlayerMusicTracker(mc.player, mc.level));
+        register(IMPMusicTrackers.ENTITY_TRACKER, () -> new EntityMusicTracker(mc.level, OERenderUtils::getPartialTicks));
+        register(IMPMusicTrackers.PLAYER_TRACKER, () -> new PlayerMusicTracker(mc.player, mc.level, OERenderUtils::getPartialTicks));
     }
 
     public static void register(ResourceLocation location, Supplier<? extends MusicTracker> factory) {

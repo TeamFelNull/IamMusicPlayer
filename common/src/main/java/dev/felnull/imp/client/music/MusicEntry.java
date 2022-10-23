@@ -2,6 +2,7 @@ package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.client.music.loader.IMPMusicLoaders;
 import dev.felnull.imp.client.music.loader.MusicLoader;
+import dev.felnull.imp.client.music.player.MusicLoadChunk;
 import dev.felnull.imp.client.music.player.MusicPlayer;
 import dev.felnull.imp.client.music.speaker.MusicSpeaker;
 import dev.felnull.imp.client.music.task.MusicDestroyRunner;
@@ -47,12 +48,11 @@ public class MusicEntry {
         return startPosition;
     }
 
-    public MusicLoadRange getLoadRange() {
-        if (musicPlayer.get() != null) {
-            var range = musicPlayer.get().getLoadRange();
-            return new MusicLoadRange(range.getLeft(), range.getRight());
-        }
-        return null;
+    public List<MusicLoadChunk> getLoadChunks() {
+        if (musicPlayer.get() != null)
+            return musicPlayer.get().getLoadChunks();
+
+        return new ArrayList<>();
     }
 
     public int getChannels() {
@@ -64,7 +64,7 @@ public class MusicEntry {
     public long getCurrentPosition() {
         if (musicPlayer.get() != null)
             return musicPlayer.get().getPosition();
-        return 0;
+        return startPosition;
     }
 
     public float getCurrentAudioWave(int channel) {

@@ -4,8 +4,8 @@ import dev.felnull.imp.api.client.MusicPlayerAccess;
 import dev.felnull.imp.client.music.AudioInfo;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.speaker.MusicSpeaker;
-import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface MusicPlayer<T, E> extends MusicPlayerAccess {
@@ -141,9 +141,9 @@ public interface MusicPlayer<T, E> extends MusicPlayerAccess {
     long getMaxWaitTime();
 
     /**
-     * 読み込みされてる範囲
+     * 音楽が読み込まれてる塊の一覧
      *
-     * @return 開始-終了
+     * @return リスト
      */
-    Pair<Long, Long> getLoadRange();
+    List<MusicLoadChunk> getLoadChunks();
 }

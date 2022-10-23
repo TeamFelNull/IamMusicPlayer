@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicEntry;
+import dev.felnull.imp.client.music.player.MusicLoadChunk;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
@@ -54,10 +55,14 @@ public class MusicLinesOverlay extends GuiComponent {
         }
         int all = (sw - 4) - (x + 2);
 
-        var range = entry.getLoadRange();
+        var chunks = entry.getLoadChunks();
 
-        if (!source.isLive() && range != null)
-            drawLine(poseStack, x, y, (float) range.first() / (float) source.getDuration(), ((float) range.last() / (float) source.getDuration()) * (float) all, 1f, 0x7000C900);
+        if (!source.isLive()) {
+            for (MusicLoadChunk chunk : chunks) {
+                boolean l = (chunk.position() / 1000) % 2 == 0;
+                drawLine(poseStack, x, y, (float) chunk.position() / (float) source.getDuration(), ((float) chunk.duration() / (float) source.getDuration()) * (float) all, 1f, l ? 0x7000FF00 : 0x7000C900);
+            }
+        }
 
         drawPositionLine(poseStack, x, y, (float) entry.getStartPosition() / (float) source.getDuration(), 0XFF0000FF);
 
@@ -71,7 +76,7 @@ public class MusicLinesOverlay extends GuiComponent {
         }
 
 
-        drawLine(poseStack, x, y, crunt, 1, entry.getCurrentAudioWave(0), 0XFFFFFF00);
+        drawLine(poseStack, x, y, crunt, 1, /*entry.getCurrentAudioWave(0)*/1f, 0XFFFFFF00);
     }
 
     private void drawPositionLine(PoseStack poseStack, float x, float y, float position, int color) {

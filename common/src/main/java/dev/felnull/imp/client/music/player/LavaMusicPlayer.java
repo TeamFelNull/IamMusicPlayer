@@ -2,11 +2,13 @@ package dev.felnull.imp.client.music.player;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import dev.felnull.imp.client.lava.IMPAudioPlayerInputStream;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.AudioInfo;
+import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.music.resource.MusicSource;
 
 import javax.sound.sampled.AudioInputStream;
@@ -30,6 +32,17 @@ public class LavaMusicPlayer extends BaseMusicPlayer {
         this.audioPlayer.addListener(new AudioEventAdapter() {
             @Override
             public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
+                stopReadStream();
+            }
+
+            @Override
+            public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
+                MusicEngine.getInstance().getLogger().error("Audio track error: " + track.getInfo().identifier, exception);
+                stopReadStream();
+            }
+
+            @Override
+            public void onTrackStuck(AudioPlayer player, AudioTrack track, long thresholdMs) {
                 stopReadStream();
             }
         });

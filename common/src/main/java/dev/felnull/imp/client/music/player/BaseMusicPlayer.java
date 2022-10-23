@@ -10,7 +10,6 @@ import dev.felnull.imp.client.music.speaker.MusicSpeaker;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.MusicSpeakerFixedInfo;
 import dev.felnull.imp.music.resource.MusicSource;
-import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.BufferUtils;
 
 import javax.sound.sampled.AudioInputStream;
@@ -77,6 +76,9 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     @Override
     public void destroy() throws Exception {
+        if (this.destroy)
+            return;
+
         this.destroy = true;
         this.playing = false;
 
@@ -123,7 +125,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             value.pause();
         }
 
-        if (musicSource.isLive()) finished = true;
+        if (musicSource.isLive())
+            finished = true;
     }
 
     @Override
@@ -196,6 +199,12 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     private void readTick() {
         int lc = readEntries.size();
+
+        if (lc == 0 && loadEnd) {
+            finished = true;
+            return;
+        }
+
         int nc;
 
         if (musicSource.isLive()) {
@@ -426,7 +435,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         infos.addAll(speakers.values().stream().map(MusicSpeaker::getFixedInfo).distinct().toList());
         infos.addAll(preSpeakers.values().stream().map(MusicSpeaker::getFixedInfo).distinct().toList());
 
-        return new ReadInput(this.stream, this.totalReadTime, loadCount, infos.stream().distinct().toList(), getAudioInfo());
+        return new ReadInput(this.stream, this.totalReadTime + this.startPosition, loadCount, infos.stream().distinct().toList(), getAudioInfo());
     }
 
     protected void stopReadStream() {
@@ -486,7 +495,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     private void readApply(ReadResult readResult) {
-        if (readResult.end()) loadEnd = true;
+        if (readResult.end())
+            loadEnd = true;
 
         totalReadTime += readResult.readEntries().size() * 1000L;
         for (ReadResultEntry readEntry : readResult.readEntries()) {
@@ -538,14 +548,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     @Override
-    public Pair<Long, Long> getLoadRange() {
-        long st = musicSource.getDuration();
-        long en = 0;
-        for (ReadEntry readEntry : readEntries) {
-            st = Math.min(st, readEntry.position);
-            en = Math.max(en, readEntry.position + 1000);
-        }
-        return Pair.of(st, en);
+    public List<MusicLoadChunk> getLoadChunks() {
+        return readEntries.stream().map(n -> new MusicLoadChunk(n.position(), 1000)).toList();
     }
 
     public static record LoadInput(long position, Map<UUID, MusicSpeaker> speakers, int aheadLoad) {

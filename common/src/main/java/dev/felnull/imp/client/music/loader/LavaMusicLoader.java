@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.music.loader;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.player.LavaMusicPlayer;
 import dev.felnull.imp.client.music.player.MusicPlayer;
@@ -52,7 +53,7 @@ public class LavaMusicLoader implements MusicLoader {
 
     @Override
     public void cansel() {
-        if (this.audioTrack != null)
+        if (this.audioTrack != null && this.audioTrack.getState() != AudioTrackState.INACTIVE)
             this.audioTrack.stop();
     }
 }
