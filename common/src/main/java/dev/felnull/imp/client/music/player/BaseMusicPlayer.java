@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.LoadInput, BaseMusicPlayer.LoadResult> {
     private final InvokeExecutor tickExecutor = new InvokeExecutor();
@@ -32,7 +32,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private final MusicSource musicSource;
     private final int aheadLoad;
     private final Object readLock = new Object();
-    private final AtomicReference<Thread> readThread = new AtomicReference<>();
+    private final AtomicBoolean readStreamEnd = new AtomicBoolean();
     private final UUID musicPlayerId;
     private boolean destroy;
     private boolean loaded;
@@ -83,7 +83,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         stopReadStream();
 
         synchronized (readLock) {
-            if (stream != null) stream.close();
+            if (stream != null)
+                stream.close();
         }
 
         closeAudioStream();
@@ -429,19 +430,23 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     protected void stopReadStream() {
-        //Forgeで不具合が出る可能性があるけど多少はね？
-        if (readThread.get() != null) readThread.get().interrupt();
+        readStreamEnd.set(true);
+    }
+
+    protected boolean isReadEnd() {
+        return readStreamEnd.get();
     }
 
     private boolean readStream(AudioInputStream stream, byte[] buffer) throws IOException {
+        if (readStreamEnd.get())
+            return false;
+
         synchronized (readLock) {
-            readThread.set(Thread.currentThread());
             try {
-                if (stream.read(buffer) < 0) return false;
+                if (stream.read(buffer) < 0)
+                    return false;
             } catch (InterruptedIOException ex) {
                 return false;
-            } finally {
-                readThread.set(null);
             }
         }
         return true;
