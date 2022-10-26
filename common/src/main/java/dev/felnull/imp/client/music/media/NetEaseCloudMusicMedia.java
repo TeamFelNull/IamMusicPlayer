@@ -39,6 +39,9 @@ public class NetEaseCloudMusicMedia implements MusicMedia {
 
     @Override
     public List<MusicMediaResult> search(String searchText) {
+        if (searchText.isEmpty())
+            return new ArrayList<>();
+
         try {
             List<MusicMediaResult> ret = new ArrayList<>();
             var sr = NetEaseCloudMusicUtils.getSearchSongs(searchText);

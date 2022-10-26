@@ -192,7 +192,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         this.searchButton.visible = isMSNVisible() && isMSNShortWidth();
         this.uploadButton.visible = "upload".equals(getMusicLoaderType());
 
-        if ((getScreen().isMusicPlaying() && !getMusicSource().equals(getScreen().getMusicPlayer().getSource())) || (getScreen().isMusicLoading()))
+        if ((getScreen().isMusicPlaying() && !getMusicSource().equals(getScreen().getMusicPlayer().getSource())) || (getScreen().isMusicLoading() && !getMusicSource().equals(getScreen().getMusicPlayer().getSource())))
             getScreen().stopMusic();
     }
 

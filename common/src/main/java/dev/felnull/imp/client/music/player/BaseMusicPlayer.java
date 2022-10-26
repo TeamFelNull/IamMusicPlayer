@@ -84,12 +84,17 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
         stopReadStream();
 
-        synchronized (readLock) {
-            if (stream != null)
-                stream.close();
-        }
-
-        closeAudioStream();
+        CompletableFuture.runAsync(() -> {
+            try {
+                closeAudioStream();
+                synchronized (readLock) {
+                    if (stream != null)
+                        stream.close();
+                }
+            } catch (Exception e) {
+                MusicEngine.getInstance().getLogger().error("Failed to close music stream", e);
+            }
+        }, MusicEngine.getInstance().getMusicAsyncExecutor());
 
         for (MusicSpeaker value : speakers.values()) {
             value.destroy();
@@ -200,7 +205,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private void readTick() {
         int lc = readEntries.size();
 
-        if (lc == 0 && loadEnd) {
+        if ((lc == 0 && isPlaying()) || readStreamEnd.get()) {
             finished = true;
             return;
         }
@@ -447,9 +452,6 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     private boolean readStream(AudioInputStream stream, byte[] buffer) throws IOException {
-        if (readStreamEnd.get())
-            return false;
-
         synchronized (readLock) {
             try {
                 if (stream.read(buffer) < 0)
@@ -458,7 +460,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
                 return false;
             }
         }
-        return true;
+        return !readStreamEnd.get();
     }
 
     private ReadResult readAsync(ReadInput input) throws Exception {

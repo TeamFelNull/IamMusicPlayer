@@ -44,9 +44,8 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
             if (getScreen().isMusicPlaying()) {
                 getScreen().stopMusic();
             } else {
-                if (!getMusicSource().isEmpty()) {
+                if (!getMusicSource().isEmpty())
                     getScreen().playMusic(getMusicSource(), 0);
-                }
             }
         }));
         this.playControlButton.setHideText(true);

@@ -275,9 +275,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
     public void playMusic(MusicSource source, long postion) {
         stopMusic();
-        getMusicEngine().load(musicPlayerId, source, postion, (success, time, error, retry) -> {
-            getMusicEngine().play(musicPlayerId, 0);
-        });
+        getMusicEngine().loadAndPlay(musicPlayerId, source, postion, false);
         getMusicEngine().addSpeaker(musicPlayerId, musicPlayerId, IMPMusicTrackerFactory.linked(IMPMusicTrackers.createPlayerTracker(mc.player, 1, 10)));
 
         //getMusicEngine().loadAddMusicPlayer(musicPlayerId, new MusicPlaybackInfo(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(mc.player), 1, 10), source, postion, (result, time, player, retry) -> getMusicEngine().playMusicPlayer(musicPlayerId, 0));
@@ -292,7 +290,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     }
 
     public boolean isMusicLoading() {
-        return getMusicEngine().isLoad(musicPlayerId);
+        return getMusicEngine().isLoading(musicPlayerId);
     }
 
     private MusicEngine getMusicEngine() {

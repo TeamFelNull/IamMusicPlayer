@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class LavaPlayerManager {
@@ -88,7 +90,7 @@ public class LavaPlayerManager {
         return medias;
     }
 
-    public Optional<AudioTrack> loadTrack(String identifier) throws ExecutionException, InterruptedException {
+    public Optional<AudioTrack> loadTrack(String identifier) throws ExecutionException, InterruptedException, TimeoutException {
         AtomicReference<AudioTrack> audioTrack = new AtomicReference<>();
         AtomicReference<FriendlyException> fe = new AtomicReference<>();
         audioPlayerManager.loadItem(identifier, new AudioLoadResultHandler() {
@@ -112,7 +114,7 @@ public class LavaPlayerManager {
             public void loadFailed(FriendlyException ex) {
                 fe.set(ex);
             }
-        }).get();
+        }).get(10, TimeUnit.SECONDS);
         if (fe.get() != null)
             throw fe.get();
         return Optional.ofNullable(audioTrack.get());
@@ -123,7 +125,7 @@ public class LavaPlayerManager {
     }
 
     @Nullable
-    public Pair<MusicMedia, MusicMediaResult> autoLoad(String sourceName) throws ExecutionException, InterruptedException {
+    public Pair<MusicMedia, MusicMediaResult> autoLoad(String sourceName) throws ExecutionException, InterruptedException, TimeoutException {
         var lpm = LavaPlayerManager.getInstance();
         var track = lpm.loadTrack(sourceName);
         if (track.isEmpty() || track.get().getInfo().isStream)

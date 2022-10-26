@@ -1,11 +1,11 @@
 package dev.felnull.imp.client.music.player;
 
+import com.sedmelluq.discord.lavaplayer.format.AudioPlayerInputStream;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
-import dev.felnull.imp.client.lava.IMPAudioPlayerInputStream;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.AudioInfo;
 import dev.felnull.imp.client.music.MusicEngine;
@@ -47,7 +47,7 @@ public class LavaMusicPlayer extends BaseMusicPlayer {
             }
         });
 
-        var stream = IMPAudioPlayerInputStream.createForceStopStream(audioPlayer, lm.getAudioDataFormat(), 1000 * 15, false, this::isReadEnd);
+        var stream = AudioPlayerInputStream.createStream(audioPlayer, lm.getAudioDataFormat(), 1000 * 3, true);
         this.audioPlayer.playTrack(this.audioTrack);
         return stream;
     }

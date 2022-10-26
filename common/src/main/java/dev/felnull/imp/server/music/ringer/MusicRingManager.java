@@ -1,5 +1,6 @@
 package dev.felnull.imp.server.music.ringer;
 
+import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +49,7 @@ public class MusicRingManager {
         return false;
     }
 
-    public void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, int state) {
+    public void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, IMPPackets.MusicRingResponseStateType state) {
         var ring = MUSIC_RINGS.get(player.getLevel());
         if (ring != null)
             ring.onUpdate(player, uuid, waitUUID, state);

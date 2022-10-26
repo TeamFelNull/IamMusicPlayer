@@ -217,7 +217,8 @@ public class MusicEngine implements MusicEngineAccess {
     public boolean load(@NotNull UUID musicPlayerId, @NotNull MusicSource source, long position, @NotNull LoadCompleteListener listener) {
         if (getCurrentMusicLoad() >= getMaxMusicLoad()) return false;
 
-        if (isLoad(musicPlayerId)) return false;
+        if (isExist(musicPlayerId))
+            return false;
 
 
         var mpe = new MusicEntry(musicPlayerId, source, position);
@@ -315,13 +316,26 @@ public class MusicEngine implements MusicEngineAccess {
     }
 
     /**
-     * 音楽が読み込まれてるかどうか
+     * 音楽が存在するかどうか
      *
      * @param musicPlayerId 音楽プレイヤーID
      * @return 読み込まれてるならtrue
      */
-    public boolean isLoad(UUID musicPlayerId) {
+    public boolean isExist(UUID musicPlayerId) {
         return musicEntries.containsKey(musicPlayerId);
+    }
+
+    /**
+     * 音楽を読み込み中かどうか
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 読み込み中かどうか
+     */
+    public boolean isLoading(UUID musicPlayerId) {
+        var me = musicEntries.get(musicPlayerId);
+        if (me != null)
+            return !me.isLoaded();
+        return false;
     }
 
     public Logger getLogger() {

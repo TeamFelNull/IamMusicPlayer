@@ -9,6 +9,7 @@ import dev.felnull.imp.client.util.LavaPlayerUtils;
 import dev.felnull.imp.music.resource.ImageInfo;
 import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -41,6 +42,9 @@ public class YoutubeMusicMedia extends LavaPlayerBaseMusicMedia {
 
     @Override
     public List<MusicMediaResult> search(String searchText) {
+        if (searchText.isEmpty())
+            return new ArrayList<>();
+
         var lm = LavaPlayerManager.getInstance();
         List<AudioTrack> tracks;
 

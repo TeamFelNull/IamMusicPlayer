@@ -2,8 +2,8 @@ package dev.felnull.imp.client.music;
 
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.util.MusicUtils;
-import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.SpatialType;
+import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.tracker.IMPMusicTrackers;
 import net.minecraft.world.entity.player.Player;
 import org.lwjgl.openal.AL11;
@@ -144,5 +144,27 @@ public class MusicTest {
                 MusicUtils.runOnMusicTick(() -> me.addSpeaker(id, UUID.randomUUID(), tracker));
             }
         }).start();
+    }
+
+    public static void test6(Player player, String name) throws Exception {
+        var track = LavaPlayerManager.getInstance().loadTrack(name).get();
+
+        long duration = track.getDuration();
+        if (track.getInfo().isStream)
+            duration = -1;
+
+        var ms = new MusicSource("youtube", name, duration);//new MusicSource("youtube", name, duration);
+        var me = MusicEngine.getInstance();
+        var id = UUID.randomUUID();
+
+        me.load(id, ms, 0, (success, time, error, retry) -> {
+
+            if (success) {
+                var tracker1 = IMPMusicTrackerFactory.linked(IMPMusicTrackers.createFixedTracker(player.position(), 1f, 10, -1, SpatialType.ENTRUST));
+                me.addSpeaker(id, UUID.randomUUID(), tracker1);
+
+                me.play(id, 0);
+            }
+        });
     }
 }

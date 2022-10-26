@@ -164,7 +164,22 @@ public class IMPPackets {
         }
     }
 
+    public static record MusicRingUpdateResultMessage(UUID uuid, UUID waitId,
+                                                      MusicRingResponseStateType ringResponseStateType) implements PacketMessage {
+        public MusicRingUpdateResultMessage(FriendlyByteBuf bf) {
+            this(bf.readUUID(), bf.readUUID(), bf.readEnum(MusicRingResponseStateType.class));
+        }
 
+        @Override
+        public FriendlyByteBuf toFBB(FriendlyByteBuf buf) {
+            buf.writeUUID(uuid);
+            buf.writeUUID(waitId);
+            buf.writeEnum(ringResponseStateType);
+            return buf;
+        }
+    }
+
+/*
     public static class MusicRingUpdateResultMessage implements PacketMessage {
         public final UUID uuid;
         public final UUID waitId;
@@ -190,7 +205,7 @@ public class IMPPackets {
             buf.writeInt(this.state);
             return buf;
         }
-    }
+    }*/
 
     public static record MusicRingStateMessage(UUID uuid, UUID waitId, MusicRingStateType stateType, long elapsed,
                                                CompoundTag tracker) implements PacketMessage {
@@ -484,5 +499,11 @@ public class IMPPackets {
         PLAY,
         STOP,
         UPDATE
+    }
+
+    public static enum MusicRingResponseStateType {
+        NONE,
+        PLAYING,
+        LOADING
     }
 }

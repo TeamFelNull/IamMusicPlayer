@@ -142,7 +142,7 @@ public class MusicRing {
 //        return new MusicPlaybackInfo(tr.getKey(), tr.getValue(), ringer.isRingerMute() ? 0 : ringer.getRingerVolume(), ringer.isRingerMute() ? 0 : ringer.getRingerRange());
     }
 
-    protected void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, int state) {
+    protected void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, IMPPackets.MusicRingResponseStateType state) {
         var pr = playerInfos.get(uuid);
         if (pr != null && pr.infoUUID.equals(waitUUID)) pr.responseUpdate(player, state);
     }
@@ -226,14 +226,16 @@ public class MusicRing {
             }
         }
 
-        private void responseUpdate(ServerPlayer player, int state) {
+        private void responseUpdate(ServerPlayer player, IMPPackets.MusicRingResponseStateType state) {
             var id = player.getGameProfile().getId();
             if (listenPlayers.contains(id)) {
-                if (state != 1) listenPlayers.remove(id);
+                if (state != IMPPackets.MusicRingResponseStateType.PLAYING)
+                    listenPlayers.remove(id);
             }
 
             if (middleLoadPlayers.contains(id)) {
-                if (state != 2) middleLoadPlayers.remove(id);
+                if (state != IMPPackets.MusicRingResponseStateType.LOADING)
+                    middleLoadPlayers.remove(id);
             }
         }
 
