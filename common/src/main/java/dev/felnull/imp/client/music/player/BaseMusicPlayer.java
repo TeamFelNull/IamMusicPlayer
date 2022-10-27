@@ -136,8 +136,10 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     @Override
     public void resume() {
-        this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
-        this.pauseTime = -1;
+        if(playing){
+            this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
+            this.pauseTime = -1;
+        }
         this.pause = false;
 
         for (MusicSpeaker value : speakers.values()) {
@@ -281,24 +283,6 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         }
     }
 
-    /*private void pollBufferEntries(List<MusicBuffer> buffers) {
-        for (MusicBuffer buffer : buffers) {
-            if (buffer.canRelease()) {
-                buffer.release();
-                for (ReadEntry readEntry : readEntries) {
-                    List<MusicSpeakerFixedInfo> del = new ArrayList<>();
-                    for (Map.Entry<MusicSpeakerFixedInfo, MusicBuffer> entry : readEntry.buffers.entrySet()) {
-                        if (entry.getValue() == buffer)
-                            del.add(entry.getKey());
-                    }
-                    for (MusicSpeakerFixedInfo musicSpeakerFixedInfo : del) {
-                        readEntry.buffers.remove(musicSpeakerFixedInfo);
-                    }
-                }
-            }
-        }
-    }*/
-
     private void speakerUpdate(MusicSpeaker speaker) {
         if (!this.pause && playing && !speaker.isPlaying() && speaker.canPlay())
             speaker.play(0);
@@ -400,7 +384,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         if (this.startTime < 0) return this.startPosition + delay;
 
         long pt = this.totalPauseTime;
-        if (this.pauseTime >= 0) pt += System.currentTimeMillis() - this.pauseTime;
+        if (this.pauseTime >= 0)
+            pt += System.currentTimeMillis() - this.pauseTime;
         return System.currentTimeMillis() - this.startTime - pt + this.startPosition + this.delay;
     }
 

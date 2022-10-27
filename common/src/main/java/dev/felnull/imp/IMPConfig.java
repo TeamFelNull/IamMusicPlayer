@@ -33,7 +33,7 @@ public class IMPConfig implements ConfigData {
     public String lavaPlayerNativesURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/lavaplayer/natives_link.json";
 
     @ConfigEntry.Category("client")
-    public String neteaseCloudMusicApiURL = "https://api.felnull.dev/netease-cloud-music-api/";
+    public String neteaseCloudMusicApiURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/api_server.json";
 
     @ConfigEntry.Category("server")
     public long maxWaitTime = 1000 * 10;

@@ -30,6 +30,7 @@ public class MusicSpeaker implements MusicSpeakerAccess {
     private long liveTime = System.currentTimeMillis();
     private boolean playStarted;
     private boolean broken;
+    private boolean pause;
 
     public MusicSpeaker(UUID musicPlayerId, UUID speakerId, MusicTracker tracker) {
         this.musicPlayerId = musicPlayerId;
@@ -104,8 +105,12 @@ public class MusicSpeaker implements MusicSpeakerAccess {
         if (broken)
             return;
 
+        if (pause)
+            this.pauseTime = System.currentTimeMillis();
+
         this.playStarted = true;
         this.startTime = System.currentTimeMillis();
+        this.pause = true;
 
         MusicUtils.assertOnMusicTick();
 
@@ -129,8 +134,10 @@ public class MusicSpeaker implements MusicSpeakerAccess {
      * 一時停止を解除
      */
     public void resume() {
-        this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
+        if (this.pauseTime >= 0)
+            this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
         this.pauseTime = -1;
+        this.pause = false;
 
         if (getPlayState() == AL_PAUSED) alSourcePlay(this.source);
     }
