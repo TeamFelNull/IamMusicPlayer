@@ -1,7 +1,6 @@
 package dev.felnull.imp.client.music.loader;
 
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.player.LavaMusicPlayer;
 import dev.felnull.imp.client.music.player.MusicPlayer;
@@ -21,12 +20,16 @@ public class LavaMusicLoader implements MusicLoader {
 
     @Override
     public void tryLoad(@NotNull MusicSource source) throws Exception {
-        if (!isSupportMedia(source.getLoaderType()))
+        if (!isSupportMedia(source))
             throw new RuntimeException("Unsupported media");
 
         var lm = LavaPlayerManager.getInstance();
 
-        var track = lm.loadTrack(wrappedIdentifier(source.getIdentifier()));
+        var wr = wrappedIdentifier(source);
+        if (wr == null)
+            throw new RuntimeException("Failed to get wrapped identifier");
+
+        var track = lm.loadTrack(wr);
         if (track.isEmpty())
             throw new RuntimeException("Failed to load track");
 
@@ -37,23 +40,20 @@ public class LavaMusicLoader implements MusicLoader {
         this.musicSource = source;
     }
 
-    protected boolean isSupportMedia(String mediaName) {
+    protected boolean isSupportMedia(MusicSource source) {
+        if (source.isLive() && source.getLoaderType().isEmpty())
+            return true;
+
         var lm = LavaPlayerManager.getInstance();
-        return lm.getMedias().containsKey(mediaName);
+        return lm.getMedias().containsKey(source.getLoaderType());
     }
 
-    protected String wrappedIdentifier(String identifier) throws Exception {
-        return identifier;
+    protected String wrappedIdentifier(MusicSource source) throws Exception {
+        return source.getIdentifier();
     }
 
     @Override
     public int priority() {
         return 0;
-    }
-
-    @Override
-    public void cansel() {
-        if (this.audioTrack != null && this.audioTrack.getState() != AudioTrackState.INACTIVE)
-            this.audioTrack.stop();
     }
 }

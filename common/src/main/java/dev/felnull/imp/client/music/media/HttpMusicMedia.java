@@ -37,4 +37,9 @@ public class HttpMusicMedia extends LavaPlayerBaseMusicMedia {
     public Component getEnterText() {
         return URL_ENTER_TEXT;
     }
+
+    @Override
+    public int priority() {
+        return -1;
+    }
 }

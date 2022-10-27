@@ -189,7 +189,8 @@ public class MusicRing {
         }
 
         private long getRingerPosition() {
-            if (getRinger().isRingerStream()) return 0;
+            if (getRinger().isRingerStream())
+                return 0;
             var sc = getRinger().getRingerMusicSource();
             return Mth.clamp(getRinger().getRingerPosition(), 0, sc != null ? sc.getDuration() : 0);
         }
@@ -334,6 +335,12 @@ public class MusicRing {
             }
             for (UUID middleLoadPlayer : middleLoadPlayers) {
                 sendStopPackets(middleLoadPlayer);
+            }
+            for (UUID listenPlayer : firstReadyPlayers) {
+                sendStopPackets(listenPlayer);
+            }
+            for (UUID listenPlayer : firstWaitPlayers) {
+                sendStopPackets(listenPlayer);
             }
         }
     }

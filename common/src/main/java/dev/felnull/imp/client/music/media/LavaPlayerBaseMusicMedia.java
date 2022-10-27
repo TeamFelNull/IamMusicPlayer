@@ -63,4 +63,8 @@ public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
     }
 
     abstract public boolean match(AudioTrack track);
+
+    public int priority() {
+        return 0;
+    }
 }

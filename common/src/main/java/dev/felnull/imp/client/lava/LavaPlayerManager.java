@@ -16,8 +16,7 @@ import dev.felnull.imp.client.music.media.MusicMediaResult;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -77,13 +76,19 @@ public class LavaPlayerManager {
 
 
     private void registerSourceManager(AudioPlayerManager audioPlayerManager) {
-        for (Map.Entry<String, MusicMedia> entry : IMPMusicMedias.getAllMedia().entrySet()) {
-            var media = entry.getValue();
+        Comparator<Map.Entry<String, MusicMedia>> sc = Comparator.comparingInt(value -> {
+            if (value.getValue() instanceof LavaPlayerBaseMusicMedia lavaPlayerBaseMusicMedia)
+                return lavaPlayerBaseMusicMedia.priority();
+            return 0;
+        });
+
+        IMPMusicMedias.getAllMedia().entrySet().stream().sorted(sc.reversed()).forEach(v -> {
+            var media = v.getValue();
             if (media instanceof LavaPlayerBaseMusicMedia lavaPlayerBaseMusicMedia) {
                 lavaPlayerBaseMusicMedia.registerSourceManager(audioPlayerManager);
-                medias.put(entry.getKey(), lavaPlayerBaseMusicMedia);
+                medias.put(v.getKey(), lavaPlayerBaseMusicMedia);
             }
-        }
+        });
     }
 
     public Map<String, LavaPlayerBaseMusicMedia> getMedias() {
@@ -136,5 +141,40 @@ public class LavaPlayerManager {
                 return Pair.of(value, value.createResult(track.get()));
         }
         return null;
+    }
+
+
+    public List<AudioTrack> searchYoutube(String name) throws ExecutionException, InterruptedException {
+        return loadTracks("ytsearch:" + name).getRight();
+    }
+
+    public Pair<AudioPlaylist, List<AudioTrack>> loadTracks(String name) throws ExecutionException, InterruptedException {
+        List<AudioTrack> tracks = new ArrayList<>();
+        AtomicReference<FriendlyException> fe = new AtomicReference<>();
+        AtomicReference<AudioPlaylist> playlist = new AtomicReference<>();
+        audioPlayerManager.loadItem(name, new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                tracks.add(track);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist pl) {
+                tracks.addAll(pl.getTracks());
+                playlist.set(pl);
+            }
+
+            @Override
+            public void noMatches() {
+            }
+
+            @Override
+            public void loadFailed(FriendlyException ex) {
+                fe.set(ex);
+            }
+        }).get();
+        if (fe.get() != null)
+            throw fe.get();
+        return Pair.of(playlist.get(), tracks);
     }
 }

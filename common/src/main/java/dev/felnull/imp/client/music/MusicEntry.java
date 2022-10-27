@@ -175,8 +175,8 @@ public class MusicEntry {
 
         var cf = CompletableFuture.supplyAsync(() -> {
             var loader = selectLoader(source);
-            if (loader == null) throw new RuntimeException("No available loaders found");
-            runner.run(loader::cansel);
+            if (loader == null)
+                throw new RuntimeException("No available loaders found");
             return loader;
         }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
             return ret.createMusicPlayer(musicPlayerId);
@@ -227,24 +227,15 @@ public class MusicEntry {
     }
 
     private MusicLoader selectLoader(MusicSource source) {
-        List<MusicLoader> loaded = new ArrayList<>();
-        var ldr = IMPMusicLoaders.getAllLoader().stream().map(Supplier::get).filter(n -> {
+        List<MusicLoader> loaders = IMPMusicLoaders.getAllLoader().stream().map(Supplier::get).sorted(Comparator.comparingInt(MusicLoader::priority).reversed()).toList();
+        for (MusicLoader loader : loaders) {
             try {
-                n.tryLoad(source);
-                loaded.add(n);
-                return true;
-            } catch (Exception ex) {
-                return false;
+                loader.tryLoad(source);
+                return loader;
+            } catch (Exception ignored) {
             }
-        }).min(Comparator.comparingInt(MusicLoader::priority));
-
-        var rldr = ldr.orElse(null);
-
-        for (MusicLoader loader : loaded) {
-            if (loader != null && loader != rldr) loader.cansel();
         }
-
-        return rldr;
+        return null;
     }
 
 

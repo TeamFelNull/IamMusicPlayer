@@ -59,7 +59,7 @@ dependencies {
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
     }
-    shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
+    shadowIn 'com.github.sealedtx:java-youtube-downloader:3.1.0'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
 }

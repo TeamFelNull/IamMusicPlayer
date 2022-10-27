@@ -8,7 +8,6 @@ import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
-import dev.felnull.imp.client.util.LavaPlayerUtils;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
@@ -144,7 +143,7 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
             try {
                 if (isStopped()) return;
                 List<Music> musics = new ArrayList<>();
-                var pl = LavaPlayerUtils.loadTracks(LavaPlayerManager.getInstance().getAudioPlayerManager(), id);
+                var pl = LavaPlayerManager.getInstance().loadTracks(id);
                 if (isStopped()) return;
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {

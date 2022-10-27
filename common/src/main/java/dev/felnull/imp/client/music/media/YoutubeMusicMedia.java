@@ -5,7 +5,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.util.LavaPlayerUtils;
 import dev.felnull.imp.music.resource.ImageInfo;
 import net.minecraft.network.chat.Component;
 
@@ -49,7 +48,7 @@ public class YoutubeMusicMedia extends LavaPlayerBaseMusicMedia {
         List<AudioTrack> tracks;
 
         try {
-            tracks = LavaPlayerUtils.searchYoutube(lm.getAudioPlayerManager(), searchText);
+            tracks = lm.searchYoutube(searchText);
         } catch (ExecutionException | InterruptedException e) {
             return ImmutableList.of();
         }

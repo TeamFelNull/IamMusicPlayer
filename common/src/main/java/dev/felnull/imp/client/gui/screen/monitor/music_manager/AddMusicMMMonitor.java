@@ -300,7 +300,8 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
                     }
                     if (isStopped()) return;
                 }
-            } catch (Exception ignored) {
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
             musicLoadThread = null;
         }

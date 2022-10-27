@@ -37,9 +37,4 @@ public interface MusicLoader {
      * @return 優先権
      */
     int priority();
-
-    /**
-     * {@link #tryLoad}の後にキャンセルする場合に呼び出し
-     */
-    void cansel();
 }

@@ -152,6 +152,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     public void tick() {
         MusicUtils.runInvokeTasks(tickExecutor, "Music Player");
 
+
         if (!this.loaded) return;
 
         List<UUID> delSpeakers = new ArrayList<>();
@@ -358,7 +359,6 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         var stream = openAudioStream(input.position);
         var readInput = new ReadInput(stream, input.position, input.aheadLoad, input.speakers.values().stream().map(MusicSpeaker::getFixedInfo).distinct().toList(), getAudioInfo());
         var readRet = readAsync(readInput);
-
         return new LoadResult(stream, readRet, input.speakers.keySet().stream().toList());
     }
 
