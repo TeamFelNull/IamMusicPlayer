@@ -530,11 +530,15 @@ public class CassetteDeckBlockEntity extends IMPBaseEntityBlockEntity implements
 
     @Override
     public float getRingerVolume() {
+        if (isRingerMute())
+            return 0;
         return getRawVolume();
     }
 
     @Override
     public float getRingerRange() {
+        if (isRingerMute())
+            return 0;
         return 90f * getRawVolume();
     }
 

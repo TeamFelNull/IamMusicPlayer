@@ -58,7 +58,7 @@ public class BoomboxEntityRinger implements IBoomboxRinger {
             return Pair.of(MusicRingManager.PLAYER_TRACKER, MusicRingManager.createPlayerTracker(player));
         return Pair.of(MusicRingManager.ENTITY_TRACKER, MusicRingManager.createEntityTracker(entity));
       */
-        return IMPMusicTrackers.createEntityTracker(entity, 1f, 10f);
+        return IMPMusicTrackers.createEntityTracker(entity, getRingerVolume(), getRingerRange());
     }
 
     @Override

@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.music.loader;
 
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
-import dev.felnull.imp.client.util.NetEaseCloudMusicUtils;
+import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.music.resource.MusicSource;
 
 public class NetEaseCloudMusicLoader extends LavaMusicLoader {
@@ -12,6 +12,6 @@ public class NetEaseCloudMusicLoader extends LavaMusicLoader {
 
     @Override
     protected String wrappedIdentifier(MusicSource source) throws Exception {
-        return NetEaseCloudMusicUtils.getMp3Url(source.getIdentifier());
+        return NetEaseCloudMusicManager.getInstance().getMp3Url(source.getIdentifier());
     }
 }

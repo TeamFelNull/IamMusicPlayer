@@ -8,18 +8,15 @@ import java.util.UUID;
 
 public class MusicRingerEngineConnector {
     public static void load(UUID musicPlayerId, MusicTracker musicTracker, MusicSource source, long position, LoadCompleteListener listener) {
-        System.out.println("load");
         getEngine().load(musicPlayerId, source, position, listener);
         getEngine().addSpeaker(musicPlayerId, musicPlayerId, musicTracker);
     }
 
     public static void play(UUID musicPlayerId, long delay) {
-        System.out.println("play");
         getEngine().play(musicPlayerId, delay);
     }
 
     public static void stop(UUID musicPlayerId) {
-        System.out.println("stop");
         getEngine().stop(musicPlayerId);
     }
 

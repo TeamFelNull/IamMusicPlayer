@@ -2,7 +2,7 @@ package dev.felnull.imp.client.music.media;
 
 import com.google.gson.JsonObject;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
-import dev.felnull.imp.client.util.NetEaseCloudMusicUtils;
+import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import net.minecraft.network.chat.Component;
@@ -44,7 +44,7 @@ public class NetEaseCloudMusicMedia implements MusicMedia {
 
         try {
             List<MusicMediaResult> ret = new ArrayList<>();
-            var sr = NetEaseCloudMusicUtils.getSearchSongs(searchText);
+            var sr = NetEaseCloudMusicManager.getInstance().getSearchSongs(searchText);
 
             for (JsonObject jo : sr) {
                 ret.add(createResult(jo, String.valueOf(jo.get("id").getAsInt()), jo.get("dt").getAsLong()));
@@ -59,16 +59,16 @@ public class NetEaseCloudMusicMedia implements MusicMedia {
     @Override
     public MusicMediaResult load(String sourceName) throws Exception {
         var lm = LavaPlayerManager.getInstance();
-        var otrack = lm.loadTrack(NetEaseCloudMusicUtils.getMp3Url(sourceName));
+        var otrack = lm.loadTrack(NetEaseCloudMusicManager.getInstance().getMp3Url(sourceName));
         if (otrack.isEmpty() || otrack.get().getInfo().isStream)
             return null;
 
-        var sj = NetEaseCloudMusicUtils.getSongJson(sourceName);
+        var sj = NetEaseCloudMusicManager.getInstance().getSongJson(sourceName);
         return createResult(sj, sourceName, otrack.get().getDuration());
     }
 
     private MusicMediaResult createResult(JsonObject songJson, String songId, long duration) {
-        var naa = NetEaseCloudMusicUtils.getNameAndArtist(songJson);
+        var naa = NetEaseCloudMusicManager.getInstance().getNameAndArtist(songJson);
         return new MusicMediaResult(new MusicSource("netease_cloud_music", songId, duration), new ImageInfo(ImageInfo.ImageType.NETEASE_CLOUD_MUSIC_PICTURE, songId), naa.getLeft(), String.join(", ", naa.getRight()));
     }
 }

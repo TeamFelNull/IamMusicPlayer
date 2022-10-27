@@ -9,6 +9,7 @@ import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.imp.client.music.media.LavaPlayerBaseMusicMedia;
 import dev.felnull.imp.client.music.media.MusicMedia;
@@ -35,10 +36,11 @@ public class LavaPlayerManager {
 
     public void reload() {
         medias.clear();
+
         if (audioPlayerManager != null)
             audioPlayerManager.shutdown();
 
-        audioDataFormat = new Pcm16AudioDataFormat(2, 48000, 960, false);
+        audioDataFormat = new Pcm16AudioDataFormat(2, IamMusicPlayer.CONFIG.sampleRate, 960, false);
 
         audioPlayerManager = createAudioPlayerManager();
     }

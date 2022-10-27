@@ -7,6 +7,7 @@ import dev.felnull.imp.api.client.MusicEngineAccess;
 import dev.felnull.imp.api.client.MusicPlayerAccess;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.task.MusicEngineDestroyRunner;
+import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.tracker.MusicTracker;
@@ -37,7 +38,7 @@ public class MusicEngine implements MusicEngineAccess {
     }
 
     public String getDebugString() {
-        return String.format("IMP Musics: %d/%d - %d/%d (%d loaders) %d ms", getCurrentMusicSpeaker(), getMaxMusicSpeaker(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), lastProsesTime);
+        return String.format("IMP Musics: %d/%d - %d/%d (%d Loaders) %d ms", getCurrentMusicSpeaker(), getMaxMusicSpeaker(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), lastProsesTime);
     }
 
     @Nullable
@@ -255,12 +256,10 @@ public class MusicEngine implements MusicEngineAccess {
     public boolean play(@NotNull UUID musicPlayerId, long delay) {
         MusicEntry mpe = musicEntries.get(musicPlayerId);
 
-        if (mpe == null || !mpe.isLoaded()) return false;
+        if (mpe == null || !mpe.isLoaded())
+            return false;
 
-        MusicUtils.runOnMusicTick(() -> {
-            mpe.playStart(delay);
-        });
-
+        mpe.playStart(delay);
         return true;
     }
 
@@ -277,8 +276,7 @@ public class MusicEngine implements MusicEngineAccess {
         if (mpe == null)
             return false;
 
-        MusicUtils.runOnMusicTick(mpe::destroy);
-
+        mpe.destroy();
         return true;
     }
 

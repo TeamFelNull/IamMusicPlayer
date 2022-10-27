@@ -21,10 +21,19 @@ public class IMPConfig implements ConfigData {
     public boolean spatial = true;
 
     @ConfigEntry.Category("client")
+    public int sampleRate = 48000;
+
+    @ConfigEntry.Category("client")
+    public boolean useYoutubeDownloader = true;
+
+    @ConfigEntry.Category("client")
     public String relayServerURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/relay_server.json";
 
     @ConfigEntry.Category("client")
     public String lavaPlayerNativesURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/lavaplayer/natives_link.json";
+
+    @ConfigEntry.Category("client")
+    public String neteaseCloudMusicApiURL = "https://api.felnull.dev/netease-cloud-music-api/";
 
     @ConfigEntry.Category("server")
     public long maxWaitTime = 1000 * 10;

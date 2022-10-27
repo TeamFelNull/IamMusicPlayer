@@ -206,7 +206,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private void readTick() {
         int lc = readEntries.size();
 
-        if ((lc == 0 && isPlaying()) || readStreamEnd.get()) {
+        if (lc == 0 && isPlaying()) {
             finished = true;
             return;
         }
@@ -219,7 +219,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
             nc = (int) ((float) (musicSource.getDuration() - getPosition()) / 1000f + 0.5f);
         }
 
-        if (!finished && !loadEnd && !reading && (lc <= (aheadLoad / 2) || (nc - aheadLoad) <= aheadLoad)) {
+        if (!finished && !loadEnd && !reading && (lc <= aheadLoad || (nc - aheadLoad) <= aheadLoad)) {
             var cf = CompletableFuture.supplyAsync(() -> {
                 return readStart(aheadLoad);
             }, tickExecutor).thenApplyAsync(ret -> {
@@ -347,7 +347,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     public LoadInput loadStart(long position) {
         this.startPosition = position;
 
-        return new LoadInput(position, ImmutableMap.copyOf(preSpeakers), aheadLoad);
+        return new LoadInput(position, ImmutableMap.copyOf(preSpeakers), aheadLoad, musicSource.isLive());
     }
 
     abstract protected AudioInputStream openAudioStream(long position) throws Exception;
@@ -359,6 +359,10 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         var stream = openAudioStream(input.position);
         var readInput = new ReadInput(stream, input.position, input.aheadLoad, input.speakers.values().stream().map(MusicSpeaker::getFixedInfo).distinct().toList(), getAudioInfo());
         var readRet = readAsync(readInput);
+
+        if (input.live())
+            Thread.sleep(1000 * 3);
+
         return new LoadResult(stream, readRet, input.speakers.keySet().stream().toList());
     }
 
@@ -447,9 +451,6 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         readStreamEnd.set(true);
     }
 
-    protected boolean isReadEnd() {
-        return readStreamEnd.get();
-    }
 
     private boolean readStream(AudioInputStream stream, byte[] buffer) throws IOException {
         synchronized (readLock) {
@@ -554,7 +555,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         return readEntries.stream().map(n -> new MusicLoadChunk(n.position(), 1000)).toList();
     }
 
-    public static record LoadInput(long position, Map<UUID, MusicSpeaker> speakers, int aheadLoad) {
+    public static record LoadInput(long position, Map<UUID, MusicSpeaker> speakers, int aheadLoad, boolean live) {
     }
 
     public static record LoadResult(AudioInputStream stream, ReadResult readResults, List<UUID> speakers) {

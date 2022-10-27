@@ -11,15 +11,32 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class YoutubeUtil {
     private static final YoutubeDownloader youtubeDownloader = new YoutubeDownloader();
+    private static final Map<String, URLCacheEntry> CACHE = new HashMap<>();
 
+    @Nullable
     public static String getYoutubeRawURL(String videoID) {
-        var video = youtubeDownloader.getVideoInfo(new RequestVideoInfo(videoID)).data();
-        if (video.details().isLive())
-            return null;
-        return video.audioFormats().stream().filter(n -> n.extension() == Extension.WEBA).min(Comparator.comparingInt(AudioFormat::averageBitrate)).map(Format::url).orElse(null);
+        synchronized (CACHE) {
+            var hit = CACHE.get(videoID);
+            if (hit != null && ((hit.url != null && System.currentTimeMillis() - hit.time < 1000 * 60 * 10) || (hit.url == null && System.currentTimeMillis() - hit.time < 1000 * 60)))
+                return hit.url();
+
+            var video = youtubeDownloader.getVideoInfo(new RequestVideoInfo(videoID)).data();
+
+            String url = null;
+            if (!video.details().isLive())
+                url = video.audioFormats().stream().filter(n -> n.extension() == Extension.WEBA).min(Comparator.comparingInt(AudioFormat::averageBitrate)).map(Format::url).orElse(null);
+
+            hit = new URLCacheEntry(System.currentTimeMillis(), url);
+            CACHE.put(videoID, hit);
+            return hit.url();
+        }
+
+
     }
 
     public static PlaylistInfo getYoutubePlayList(String playListID) {
@@ -38,5 +55,8 @@ public class YoutubeUtil {
         if (!v.contains("&"))
             return v;
         return v.split("&")[0];
+    }
+
+    private static record URLCacheEntry(long time, String url) {
     }
 }

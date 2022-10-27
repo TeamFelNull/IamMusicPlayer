@@ -23,7 +23,7 @@ public class IMPItems {
         return new ManualItem(pr);
     });
 
-    public static final RegistrySupplier<Item> SOUND_TEST = register("sound_test", () -> new SoundTestItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
+  //  public static final RegistrySupplier<Item> SOUND_TEST = register("sound_test", () -> new SoundTestItem(new Item.Properties().tab(IMPCreativeModeTab.MOD_TAB)));
 
 
     private static RegistrySupplier<Item> register(String name) {

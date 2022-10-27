@@ -112,6 +112,12 @@ public class MusicEntry {
         return loaded;
     }
 
+    public boolean isPlaying() {
+        if (musicPlayer.get() != null)
+            return musicPlayer.get().isPlaying();
+        return false;
+    }
+
     protected int getSpeakerCount() {
         if (musicPlayer.get() != null) return musicPlayer.get().getSpeakerCount();
         return 0;

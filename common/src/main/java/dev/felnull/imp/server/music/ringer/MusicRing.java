@@ -25,6 +25,7 @@ public class MusicRing {
     public MusicRing(ServerLevel level) {
         this.level = level;
         this.baseTime = System.currentTimeMillis();
+        this.lastTime = getTime();
     }
 
     private ServerLevel getLevel() {
@@ -137,8 +138,8 @@ public class MusicRing {
     }
 
     private MusicTrackerEntry getMusicTracker(IMusicRinger ringer) {
-        var tr = ringer.getRingerTracker();
-        return new MusicTrackerEntry(tr.location(), tr.tracker());
+        return ringer.getRingerTracker();
+        //   return new MusicTrackerEntry(tr.location(), tr.tracker());
 //        return new MusicPlaybackInfo(tr.getKey(), tr.getValue(), ringer.isRingerMute() ? 0 : ringer.getRingerVolume(), ringer.isRingerMute() ? 0 : ringer.getRingerRange());
     }
 
@@ -149,7 +150,14 @@ public class MusicRing {
 
     protected void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry, long elapsed) {
         var pr = playerInfos.get(uuid);
-        if (pr != null && pr.infoUUID.equals(waitUUID)) pr.addReadyPlayer(player, result, retry, elapsed);
+
+        if (pr != null && pr.infoUUID.equals(waitUUID)) {
+            long st = getTime() - pr.startTime;
+            if (st > getMaxWaitTime())
+                elapsed -= getMaxWaitTime();
+
+            pr.addReadyPlayer(player, result, retry, elapsed);
+        }
     }
 
     private class RingedPlayerInfos {
@@ -200,7 +208,7 @@ public class MusicRing {
             if (notWait) {
                 if (middleLoadPlayers.contains(id)) {
                     if (result) {
-                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY, elapsed, getMusicTracker(getRinger()).saveToTag()).toFBB());
+                        NetworkManager.sendToPlayer(player, IMPPackets.MUSIC_RING_STATE, new IMPPackets.MusicRingStateMessage(ringerUUID, infoUUID, IMPPackets.MusicRingStateType.PLAY, getRinger().isRingerStream() ? 0 : elapsed, getMusicTracker(getRinger()).saveToTag()).toFBB());
                         listenPlayers.add(id);
                     } else {
                         failurePlayers.put(id, System.currentTimeMillis());

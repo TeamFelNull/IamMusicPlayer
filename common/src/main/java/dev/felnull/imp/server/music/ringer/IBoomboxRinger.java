@@ -58,11 +58,16 @@ public interface IBoomboxRinger extends IMusicRinger {
 
     @Override
     default public float getRingerVolume() {
+        if (isRingerMute())
+            return 0;
         return getRingerBoomboxData().getRawVolume();
     }
 
     @Override
     default public float getRingerRange() {
+        if (isRingerMute())
+            return 0;
+
         return 90f * getRingerBoomboxData().getRawVolume();
     }
 

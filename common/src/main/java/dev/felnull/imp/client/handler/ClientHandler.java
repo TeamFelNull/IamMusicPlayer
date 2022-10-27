@@ -13,6 +13,7 @@ import dev.felnull.imp.client.gui.components.MusicVolumeSlider;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.entity.IRingerPartyParrot;
@@ -96,7 +97,7 @@ public class ClientHandler {
 
     private static InteractionResult onConfigSave(ConfigHolder<IMPConfig> configHolder, IMPConfig impConfig) {
         MusicEngine.getInstance().destroy();
-
+        NetEaseCloudMusicManager.getInstance().reload();
         return InteractionResult.PASS;
     }
 

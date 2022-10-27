@@ -1,9 +1,11 @@
-package dev.felnull.imp.client.util;
+package dev.felnull.imp.client.neteasecloudmusic;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import dev.felnull.fnjl.util.FNStringUtil;
 import dev.felnull.fnjl.util.FNURLUtil;
+import dev.felnull.imp.IamMusicPlayer;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.*;
@@ -14,27 +16,55 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * https://github.com/Binaryify/NeteaseCloudMusicApi
  */
-public class NetEaseCloudMusicUtils {
+public class NetEaseCloudMusicManager {
+    private static final NetEaseCloudMusicManager INSTANCE = new NetEaseCloudMusicManager();
+    private static final String BUILD_IN_API_URL = "https://api.felnull.dev/netease-cloud-music-api/";
     private static final Gson GSON = new Gson();
-    private static final String API_URL = "https://www.morimori0317.net/netease-cloud-music-api";
+    private final AtomicBoolean init = new AtomicBoolean();
+    private String apiURL = null;
 
-    public static String getMp3Url(String songId) throws IOException {
-        String urlStr = API_URL + "/song/url?id=" + songId;
+    public static NetEaseCloudMusicManager getInstance() {
+        return INSTANCE;
+    }
+
+    public void reload() {
+        init.set(false);
+    }
+
+    private void init() {
+        synchronized (init) {
+            if (!init.compareAndSet(false, true))
+                return;
+
+            String curl = IamMusicPlayer.CONFIG.neteaseCloudMusicApiURL;
+
+
+            apiURL = curl;
+        }
+    }
+
+    public String getMp3Url(String songId) throws IOException {
+        init();
+        String urlStr = FNStringUtil.urlConcatenation(apiURL, "/song/url?id=" + songId);
         JsonObject jo;
         try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {
             jo = GSON.fromJson(reader, JsonObject.class);
         }
         var data = jo.getAsJsonArray("data");
+        if (data.isEmpty())
+            return null;
         var entry = data.get(0).getAsJsonObject();
         return entry.get("url").getAsString();
     }
 
-    public static JsonObject getSongJson(String songId) throws IOException {
-        var urlStr = API_URL + "/song/detail?ids=" + songId;
+    public JsonObject getSongJson(String songId) throws IOException {
+        init();
+        var urlStr = FNStringUtil.urlConcatenation(apiURL, "/song/detail?ids=" + songId);
         JsonObject jo;
         try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {
             jo = GSON.fromJson(reader, JsonObject.class);
@@ -45,12 +75,12 @@ public class NetEaseCloudMusicUtils {
         return songs.get(0).getAsJsonObject();
     }
 
-    public static String getPictureURL(JsonObject songJson) {
+    public String getPictureURL(JsonObject songJson) {
         var ajo = songJson.getAsJsonObject("al");
         return ajo.get("picUrl").getAsString();
     }
 
-    public static Pair<String, List<String>> getNameAndArtist(JsonObject songJson) {
+    public Pair<String, List<String>> getNameAndArtist(JsonObject songJson) {
         var aljo = songJson.getAsJsonObject("al");
         var name = aljo.get("name").getAsString();
 
@@ -62,11 +92,13 @@ public class NetEaseCloudMusicUtils {
         return Pair.of(name, artists);
     }
 
-    public static List<JsonObject> getSearchSongs(String text) throws IOException, URISyntaxException {
+    public List<JsonObject> getSearchSongs(String text) throws IOException, URISyntaxException {
+        init();
+
         text = URLEncoder.encode(text, StandardCharsets.UTF_8);
         text = new URI(text).toASCIIString();
 
-        var urlStr = API_URL + "/cloudsearch?keywords=" + text;
+        var urlStr = FNStringUtil.urlConcatenation(apiURL, "/cloudsearch?keywords=" + text);
 
         JsonObject jo;
         try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {

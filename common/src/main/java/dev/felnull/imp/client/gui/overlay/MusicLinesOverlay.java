@@ -9,26 +9,17 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 
-import java.util.*;
+import java.util.Map;
+import java.util.UUID;
 
 public class MusicLinesOverlay extends GuiComponent {
     private static final Minecraft mc = Minecraft.getInstance();
-    private final Map<UUID, WaveRecord> waveRecords = new HashMap<>();
 
     public void render(PoseStack poseStack, float tickDelta) {
         var me = MusicEngine.getInstance();
         int fh = mc.font.lineHeight;
 
         drawText(poseStack, me.getDebugString(), 2, 2);
-
-        List<UUID> dels = new ArrayList<>();
-        for (UUID uuid : waveRecords.keySet()) {
-            if (!me.getMusicEntries().containsKey(uuid))
-                dels.add(uuid);
-        }
-        for (UUID del : dels) {
-            waveRecords.remove(del);
-        }
 
         int ct = 0;
         for (Map.Entry<UUID, MusicEntry> entry : me.getMusicEntries().entrySet()) {
@@ -40,7 +31,27 @@ public class MusicLinesOverlay extends GuiComponent {
     private void drawMusicLine(PoseStack poseStack, int x, int y, UUID uuid, MusicEntry entry) {
         var source = entry.getSource();
         String duStr = source.isLive() ? ("Live(" + FNStringUtil.getTimeFormat(entry.getCurrentPosition()) + ")") : FNStringUtil.getTimeProgress(entry.getCurrentPosition(), source.getDuration());
-        drawText(poseStack, String.format("%s:%s %s", source.getLoaderType(), source.getIdentifier(), duStr) + (!entry.isLoaded() ? " Loading..." : ""), x + 1, y);
+        String text = " None";
+        if (!entry.isLoaded()) {
+            text = " §6Loading§r";
+        } else if (entry.isLoaded() && !entry.isPlaying()) {
+            text = " §3Waiting§r";
+        } else if (entry.isPlaying()) {
+            text = " §2Playing§r";
+        }
+
+        String idf = source.getIdentifier();
+        if (idf.length() > 15)
+            idf = idf.substring(0, 15) + "...";
+
+        String mst;
+        if (source.getLoaderType().isEmpty()) {
+            mst = idf;
+        } else {
+            mst = String.format("%s:%s", source.getLoaderType(), idf);
+        }
+
+        drawText(poseStack, String.format("%s %s", mst, duStr) + text, x + 1, y);
 
         int sw = mc.getWindow().getGuiScaledWidth();
         int fh = mc.font.lineHeight;
@@ -55,6 +66,10 @@ public class MusicLinesOverlay extends GuiComponent {
         }
         int all = (sw - 4) - (x + 2);
 
+        long liveLoop = 1000 * 60;
+        long liveLoopPos = entry.getCurrentPosition() % liveLoop;
+        long loopCount = entry.getCurrentPosition() / liveLoop;
+
         var chunks = entry.getLoadChunks();
 
         if (!source.isLive()) {
@@ -62,9 +77,22 @@ public class MusicLinesOverlay extends GuiComponent {
                 boolean l = (chunk.position() / 1000) % 2 == 0;
                 drawLine(poseStack, x, y, (float) chunk.position() / (float) source.getDuration(), ((float) chunk.duration() / (float) source.getDuration()) * (float) all, 1f, l ? 0x7000FF00 : 0x7000C900);
             }
+        } else {
+            for (MusicLoadChunk chunk : chunks) {
+                if (chunk.position() / liveLoop != loopCount)
+                    continue;
+                boolean l = (chunk.position() / 1000) % 2 == 0;
+                long liveLoopChunkPos = chunk.position() % liveLoop;
+                drawLine(poseStack, x, y, (float) liveLoopChunkPos / (float) liveLoop, ((float) chunk.duration() / (float) liveLoop) * (float) all, 1f, l ? 0x7000FF00 : 0x7000C900);
+            }
         }
 
-        drawPositionLine(poseStack, x, y, (float) entry.getStartPosition() / (float) source.getDuration(), 0XFF0000FF);
+        if (!source.isLive()) {
+            drawPositionLine(poseStack, x, y, (float) entry.getStartPosition() / (float) source.getDuration(), 0xFF0000FF);
+        } else {
+            if (loopCount == 0)
+                drawPositionLine(poseStack, x, y, (float) entry.getStartPosition() / liveLoop, 0xFF0000FF);
+        }
 
 
         int len = all / 10;
@@ -75,8 +103,12 @@ public class MusicLinesOverlay extends GuiComponent {
             drawLine(poseStack, x, y, ol * i, ol, 1f, 0xFFFF00FF);
         }
 
-
-        drawLine(poseStack, x, y, crunt, 1, /*entry.getCurrentAudioWave(0)*/1f, 0XFFFFFF00);
+        if (!source.isLive()) {
+            drawLine(poseStack, x, y, crunt, 1f, 1f, 0XFFFFFF00);
+        } else {
+            float lcrunt = (float) liveLoopPos / (float) liveLoop;
+            drawLine(poseStack, x, y, lcrunt, 1f, 1f, 0XFFFFFF00);
+        }
     }
 
     private void drawPositionLine(PoseStack poseStack, float x, float y, float position, int color) {
@@ -96,11 +128,5 @@ public class MusicLinesOverlay extends GuiComponent {
         int k = mc.font.width(text);
         fill(poseStack, 1, y - 1, 2 + k + 1, y + j - 1, -1873784752);
         mc.font.draw(poseStack, text, x, y, 14737632);
-    }
-
-    private static record WaveRecord(List<WaveChannelRecord> channelRecords) {
-    }
-
-    private static record WaveChannelRecord(float[] waves) {
     }
 }
