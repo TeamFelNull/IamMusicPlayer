@@ -1,5 +1,6 @@
 package dev.felnull.imp.client.music.player;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.api.client.MusicSpeakerAccess;
@@ -53,6 +54,14 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
         this.musicSource = musicSource;
         this.aheadLoad = aheadLoad;
         this.musicPlayerId = musicPlayerId;
+    }
+
+    @Override
+    public List<MusicSpeaker> getSpeakerList() {
+        ImmutableList.Builder<MusicSpeaker> speakerBuilder = new ImmutableList.Builder<>();
+        speakerBuilder.addAll(speakers.values());
+        speakerBuilder.addAll(preSpeakers.values());
+        return speakerBuilder.build();
     }
 
     @Override
@@ -136,7 +145,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     @Override
     public void resume() {
-        if(playing){
+        if (playing) {
             this.totalPauseTime += System.currentTimeMillis() - this.pauseTime;
             this.pauseTime = -1;
         }

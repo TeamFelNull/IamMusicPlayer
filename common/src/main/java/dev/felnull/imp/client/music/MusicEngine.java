@@ -6,11 +6,17 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.api.client.MusicEngineAccess;
 import dev.felnull.imp.api.client.MusicPlayerAccess;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.speaker.MusicSpeaker;
 import dev.felnull.imp.client.music.task.MusicEngineDestroyRunner;
-import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.client.util.MusicUtils;
+import dev.felnull.imp.entity.IRingerPartyParrot;
+import dev.felnull.imp.music.MusicSpeakerInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.tracker.MusicTracker;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +32,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class MusicEngine implements MusicEngineAccess {
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
+    private static final Minecraft mc = Minecraft.getInstance();
     private final Map<UUID, MusicEntry> musicEntries = new HashMap<>();
     private final InvokeExecutor musicTickExecutor = new InvokeExecutor();
     private ExecutorService musicLoaderExecutor = createMusicLoadExecutor();
@@ -61,7 +68,7 @@ public class MusicEngine implements MusicEngineAccess {
      * @return 数
      */
     public int getMaxMusicSpeaker() {
-        return 256;
+        return Math.max(IamMusicPlayer.CONFIG.maxPlayCont, 0);
     }
 
     /**
@@ -259,6 +266,12 @@ public class MusicEngine implements MusicEngineAccess {
         if (mpe == null || !mpe.isLoaded())
             return false;
 
+        if (mpe.getMusicPlayer() != null) {
+            for (MusicSpeaker musicSpeaker : mpe.getMusicPlayer().getSpeakerList()) {
+                notifyRangeEntities(musicPlayerId, musicSpeaker.getTracker().getSpeakerInfo());
+            }
+        }
+
         mpe.playStart(delay);
         return true;
     }
@@ -379,7 +392,8 @@ public class MusicEngine implements MusicEngineAccess {
 
         MusicEntry mpe = musicEntries.get(musicPlayerId);
 
-        if (mpe == null) return false;
+        if (mpe == null)
+            return false;
 
         return mpe.updateMusicTracker(speakerId, musicTracker);
     }
@@ -398,5 +412,17 @@ public class MusicEngine implements MusicEngineAccess {
         if (mp == null)
             return false;
         return mp.isPlaying();
+    }
+
+    private void notifyRangeEntities(UUID uuid, MusicSpeakerInfo speakerInfo) {
+        if (mc.level == null)
+            return;
+
+        var v3 = speakerInfo.position();
+        var aabb = new AABB(new BlockPos(v3)).inflate(speakerInfo.getRange());
+        for (LivingEntity livingentity : mc.level.getEntitiesOfClass(LivingEntity.class, aabb)) {
+            if (livingentity instanceof IRingerPartyParrot ringerPartyParrot)
+                ringerPartyParrot.setRingerUUID(uuid);
+        }
     }
 }

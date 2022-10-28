@@ -9,9 +9,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 public class IMPConfig implements ConfigData {
 
     @ConfigEntry.Category("client")
-    public boolean errorLog = false;
-
-    @ConfigEntry.Category("client")
     public double volume = 1f;
 
     @ConfigEntry.Category("client")
@@ -21,7 +18,7 @@ public class IMPConfig implements ConfigData {
     public boolean spatial = true;
 
     @ConfigEntry.Category("client")
-    public int sampleRate = 48000;
+    public int sampleRate = 44100;
 
     @ConfigEntry.Category("client")
     public boolean useYoutubeDownloader = true;

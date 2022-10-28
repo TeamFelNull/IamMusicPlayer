@@ -17,6 +17,8 @@ public interface MusicPlayer<T, E> extends MusicPlayerAccess {
      */
     void play(long delay);
 
+    List<MusicSpeaker> getSpeakerList();
+
     /**
      * 音楽プレイヤーを終了
      * リソースなどを解放

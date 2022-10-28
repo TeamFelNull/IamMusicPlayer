@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.fnjl.util.FNMath;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.music.media.NetEaseCloudMusicMedia;
 import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
@@ -172,7 +173,7 @@ public class PlayImageRenderer {
             return Pair.of(loc, new Vec2(w, h));
         } else if (imageInfo.getImageType() == ImageInfo.ImageType.NETEASE_CLOUD_MUSIC_PICTURE) {
             var idf = imageInfo.getIdentifier();
-            var loc = OETextureUtils.getAndLoadURLTextureAsync("imp_ncmp_" + idf, cash).of();
+            var loc = OETextureUtils.getAndLoadURLTextureAsync("imp_ncmp_" + idf, cash).of(NetEaseCloudMusicMedia.ICON);
             var scale = OETextureUtils.getTextureScale(loc);
             float w = 1;
             float h = 1;

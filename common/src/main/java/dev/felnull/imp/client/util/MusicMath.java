@@ -20,10 +20,11 @@ public class MusicMath {
     }
 
     private static double calculatePseudoAttenuation(float distance, float range, double volume) {
-        float curve = (float) -Math.log10(9f / 10f * distance / range + 1f / 10f);
+       /* float curve = (float) -Math.log10(9f / 10f * distance / range + 1f / 10f);
         //https://cdn.discordapp.com/attachments/465465434641006593/840981921068875857/unknown.png
         //distanceがrange越えると0になる対数関数
-        var val = Mth.clamp(volume * curve, 0, 1);
+        var val = Mth.clamp(volume * curve, 0, 1);*/
+        double val = Math.max(1 - distance / range, 0) * (volume * 0.5);
         return Double.isNaN(val) ? 0 : val;
     }
 }

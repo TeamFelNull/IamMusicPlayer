@@ -1,6 +1,7 @@
 package dev.felnull.imp.client.music.media;
 
 import com.google.gson.JsonObject;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
@@ -16,6 +17,7 @@ import java.util.List;
 public class NetEaseCloudMusicMedia implements MusicMedia {
     private static final Component MEDIA_NAME = Component.translatable("imp.loaderType.neteasecloudmusic");
     private static final Component NECM_ENTER_TEXT = Component.translatable("imp.text.enterText.neteasecloudmusic");
+    public static final ResourceLocation ICON = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/loader_types/neteasecloudmusic.png");
 
     @Override
     public Component getMediaName() {
@@ -29,7 +31,7 @@ public class NetEaseCloudMusicMedia implements MusicMedia {
 
     @Override
     public ResourceLocation getIcon() {
-        return null;
+        return ICON;
     }
 
     @Override

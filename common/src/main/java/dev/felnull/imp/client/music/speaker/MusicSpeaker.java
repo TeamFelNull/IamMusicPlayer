@@ -234,7 +234,7 @@ public class MusicSpeaker implements MusicSpeakerAccess {
     }
 
     private void linearAttenuation(float r) {
-        alSourcei(source, AL_DISTANCE_MODEL, 53251);
+        alSourcei(source, AL_DISTANCE_MODEL, AL_LINEAR_DISTANCE);
         alSourcef(source, AL_MAX_DISTANCE, r);
         alSourcef(source, AL_ROLLOFF_FACTOR, 1.0F);
         alSourcef(source, AL_REFERENCE_DISTANCE, 0.0F);

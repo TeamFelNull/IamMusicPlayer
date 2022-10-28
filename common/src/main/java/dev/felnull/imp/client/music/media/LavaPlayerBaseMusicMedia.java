@@ -44,6 +44,9 @@ public abstract class LavaPlayerBaseMusicMedia implements MusicMedia {
         var lm = LavaPlayerManager.getInstance();
 
         var otrack = lm.loadTrack(sourceName);
+        if (otrack.isPresent() && !match(otrack.get()))
+            return null;
+
         if (otrack.isPresent() && !otrack.get().getInfo().isStream)
             return createResult(otrack.get());
         return null;

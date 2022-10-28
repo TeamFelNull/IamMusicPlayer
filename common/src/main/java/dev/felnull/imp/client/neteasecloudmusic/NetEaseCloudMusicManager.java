@@ -63,7 +63,7 @@ public class NetEaseCloudMusicManager {
 
     private String jsonCheck(String url) throws Exception {
         JsonObject jo;
-        try (InputStream stream = FNURLUtil.getStream(new URL(url)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {
+        try (InputStream stream = FNURLUtil.getStream(new URL(url)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream, StandardCharsets.UTF_8)) {
             jo = GSON.fromJson(reader, JsonObject.class);
         }
         var jao = jo.getAsJsonObject("netease_cloud_music_api");
@@ -77,7 +77,7 @@ public class NetEaseCloudMusicManager {
         init();
         String urlStr = FNStringUtil.urlConcatenation(apiURL, "/song/url?id=" + songId);
         JsonObject jo;
-        try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {
+        try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream, StandardCharsets.UTF_8)) {
             jo = GSON.fromJson(reader, JsonObject.class);
         }
         var data = jo.getAsJsonArray("data");
@@ -91,7 +91,7 @@ public class NetEaseCloudMusicManager {
         init();
         var urlStr = FNStringUtil.urlConcatenation(apiURL, "/song/detail?ids=" + songId);
         JsonObject jo;
-        try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {
+        try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream, StandardCharsets.UTF_8)) {
             jo = GSON.fromJson(reader, JsonObject.class);
         }
         var songs = jo.getAsJsonArray("songs");
@@ -126,7 +126,7 @@ public class NetEaseCloudMusicManager {
         var urlStr = FNStringUtil.urlConcatenation(apiURL, "/cloudsearch?keywords=" + text);
 
         JsonObject jo;
-        try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream)) {
+        try (InputStream stream = FNURLUtil.getStream(new URL(urlStr)); InputStream bufStream = new BufferedInputStream(stream); Reader reader = new InputStreamReader(bufStream, StandardCharsets.UTF_8)) {
             jo = GSON.fromJson(reader, JsonObject.class);
         }
         var rj = jo.getAsJsonObject("result");

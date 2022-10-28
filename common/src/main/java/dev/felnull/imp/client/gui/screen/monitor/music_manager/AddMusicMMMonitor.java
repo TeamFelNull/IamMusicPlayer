@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
@@ -52,7 +53,9 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         this.musicLoaderTypes.clear();
         this.musicLoaderTypes.add("auto");
         this.musicLoaderTypes.add("upload");
-        this.musicLoaderTypes.addAll(IMPMusicMedias.getAllMedia().keySet());
+        List<String> medias = new ArrayList<>(IMPMusicMedias.getAllMedia().keySet());
+        Collections.reverse(medias);
+        this.musicLoaderTypes.addAll(medias);
 
         this.addRenderWidget(new MusicLoaderTypesFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 65, 5, Component.translatable("imp.fixedList.musicLoaderTypes"), musicLoaderTypes, (fixedButtonsList, s, i, i1) -> {
             setMusicLoaderType(s);
@@ -116,7 +119,9 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         this.musicLoaderTypes.clear();
         this.musicLoaderTypes.add("auto");
         this.musicLoaderTypes.add("upload");
-        this.musicLoaderTypes.addAll(IMPMusicMedias.getAllMedia().keySet());
+        List<String> medias = new ArrayList<>(IMPMusicMedias.getAllMedia().keySet());
+        Collections.reverse(medias);
+        this.musicLoaderTypes.addAll(medias);
 
         float onPxW = monitorWidth / (float) width;
         float onPxH = monitorHeight / (float) height;
@@ -145,7 +150,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         for (int k = 0; k < Math.min(5, musicLoaderTypes.size()); k++) {
             var lt = musicLoaderTypes.get(k);
             renderSmartButtonBoxSprite(poseStack, multiBufferSource, 189, 23 + (k * 13), OERenderUtils.MIN_BREADTH * 3, 165, 13, i, j, onPxW, onPxH, monitorHeight, lt.equals(getMusicLoaderType(blockEntity)));
-            var type = IMPMusicMedias.getAllMedia().get(lt);
+            var type = IMPMusicMedias.getMedia(lt);
             int tx = 189 + 2;
             if ((type != null && type.getIcon() != null) || "upload".equals(lt)) {
                 var icon = type != null ? type.getIcon() : MusicLoaderTypesFixedButtonsList.UPLOAD_ICON;
@@ -270,7 +275,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         public void run() {
             try {
                 if (isStopped()) return;
-                var loader = IMPMusicMedias.getAllMedia().get(loaderType);
+                var loader = IMPMusicMedias.getMedia(loaderType);
                 if ("upload".equals(loaderType))
                     loader = IMPMusicMedias.HTTP;
                 if (isStopped()) return;
