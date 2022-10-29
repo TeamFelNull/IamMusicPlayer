@@ -1,5 +1,6 @@
 package dev.felnull.imp.mixin.client;
 
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.MusicEngine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.DebugScreenOverlay;
@@ -20,7 +21,7 @@ public class DebugScreenOverlayMixin {
 
     @Inject(method = "getGameInformation", at = @At("RETURN"))
     private void getGameInformation(CallbackInfoReturnable<List<String>> cir) {
-        if (!this.minecraft.showOnlyReducedInfo())
+        if (!IamMusicPlayer.CONFIG.showMusicLines && !this.minecraft.showOnlyReducedInfo())
             cir.getReturnValue().add(MusicEngine.getInstance().getDebugString());
     }
 }

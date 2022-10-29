@@ -34,6 +34,12 @@ public class MusicEntry {
         return musicPlayer.get();
     }
 
+    protected int getTaskCount() {
+        if (musicPlayer.get() != null)
+            return musicPlayer.get().getTaskCount();
+        return 0;
+    }
+
     protected MusicEntry(UUID musicPlayerId, MusicSource source, long position) {
         this.musicPlayerId = musicPlayerId;
         this.source = source;

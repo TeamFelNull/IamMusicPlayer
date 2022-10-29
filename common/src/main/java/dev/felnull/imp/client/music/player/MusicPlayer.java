@@ -148,4 +148,11 @@ public interface MusicPlayer<T, E> extends MusicPlayerAccess {
      * @return リスト
      */
     List<MusicLoadChunk> getLoadChunks();
+
+    /**
+     * 実行待ちタスク数
+     *
+     * @return タスク数
+     */
+    int getTaskCount();
 }

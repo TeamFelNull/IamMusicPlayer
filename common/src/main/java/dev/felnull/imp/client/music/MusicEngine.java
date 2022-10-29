@@ -45,7 +45,7 @@ public class MusicEngine implements MusicEngineAccess {
     }
 
     public String getDebugString() {
-        return String.format("IMP Musics: %d/%d - %d/%d (%d Loaders) %d ms", getCurrentMusicSpeaker(), getMaxMusicSpeaker(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), lastProsesTime);
+        return String.format("[%s] SPK: %d/%d, LOAD: %d/%d, WKR: %d, TASK %d, TICK: %d ms", IamMusicPlayer.getModName(), getCurrentMusicSpeaker(), getMaxMusicSpeaker(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), getCurrentMusicTaskCount(), lastProsesTime);
     }
 
     @Nullable
@@ -104,6 +104,19 @@ public class MusicEngine implements MusicEngineAccess {
         if (musicLoaderExecutor instanceof ThreadPoolExecutor threadPoolExecutor)
             return threadPoolExecutor.getActiveCount();
         return -1;
+    }
+
+    /**
+     * 現在の実行待ちタスク数
+     *
+     * @return タスク数
+     */
+    public int getCurrentMusicTaskCount() {
+        int ct = 0;
+        for (MusicEntry value : musicEntries.values()) {
+            ct += value.getTaskCount();
+        }
+        return musicTickExecutor.getTaskCount();
     }
 
     /**

@@ -1,5 +1,6 @@
 package dev.felnull.imp;
 
+import dev.architectury.platform.Platform;
 import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.blockentity.IMPBlockEntities;
@@ -34,5 +35,9 @@ public class IamMusicPlayer {
 
     public static void setup() {
         IMPVillagerProfessions.setup();
+    }
+
+    public static String getModName() {
+        return Platform.getMod(MODID).getName();
     }
 }

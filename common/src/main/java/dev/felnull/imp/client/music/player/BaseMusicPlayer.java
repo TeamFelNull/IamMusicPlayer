@@ -540,6 +540,11 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     }
 
     @Override
+    public int getTaskCount() {
+        return tickExecutor.getTaskCount();
+    }
+
+    @Override
     public long getMaxWaitTime() {
         return aheadLoad * 1000L;
     }

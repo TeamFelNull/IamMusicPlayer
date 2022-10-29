@@ -106,7 +106,7 @@ shadowJar {
 
     mergeServiceFiles {
         relocate 'javax.ws.rs.ext', 'dev.felnull.imp.include.javax.ws.rs.ext'
-     //   relocate 'javax.script.ScriptEngineFactory', 'dev.felnull.imp.include.javax.script.ScriptEngineFactory'
+        //   relocate 'javax.script.ScriptEngineFactory', 'dev.felnull.imp.include.javax.script.ScriptEngineFactory'
         relocate 'org.glassfish.jersey.internal.spi', 'dev.felnull.imp.include.org.glassfish.jersey.internal.spi'
     }
 
@@ -239,5 +239,12 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
         uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
         gameVersions = List.of(project.support_versions.split(","))
         loaders = ["fabric", "quilt"]
+        dependencies {
+            required.project("P7dR8mSH")//Fabric API
+            required.project("9s6osm5g")//Cloth Config API
+            required.project("lhGA9TYQ")//Architectury API
+            required.project("iu3upNjC")//Otyacraft Engine
+            optional.project("nU0bVIaL")//Patchouli
+        }
     }
 }

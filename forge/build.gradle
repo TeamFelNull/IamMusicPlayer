@@ -222,5 +222,11 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
         uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
         gameVersions = List.of(project.support_versions.split(","))
         loaders = ["forge"]
+        dependencies {
+            required.project("9s6osm5g")//Cloth Config API
+            required.project("lhGA9TYQ")//Architectury API
+            required.project("iu3upNjC")//Otyacraft Engine
+            optional.project("nU0bVIaL")//Patchouli
+        }
     }
 }
