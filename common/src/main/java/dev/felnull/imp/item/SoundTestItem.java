@@ -1,6 +1,5 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.imp.client.music.MusicTest;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +22,7 @@ public class SoundTestItem extends Item {
         if (level.isClientSide()) {
             System.out.println("Sound test");
 
-            if (!player.isCrouching()) {
+            /*if (!player.isCrouching()) {
                 try {
                     MusicTest.test6(player, itemStack.getHoverName().getString());
                 } catch (Exception ex) {
@@ -35,7 +34,7 @@ public class SoundTestItem extends Item {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }
+            }*/
 
         }
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);

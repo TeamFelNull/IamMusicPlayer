@@ -10,17 +10,23 @@ import org.lwjgl.openal.AL10;
 import java.util.concurrent.CompletableFuture;
 
 public class MusicUtils {
+
+    //https://openal.org/documentation/openal-1.1-specification.pdf
     public static void checkALError() {
+        String error = null;
         int e = AL10.alGetError();
         switch (e) {
-            case AL10.AL_INVALID_NAME -> throw new RuntimeException("Invalid name parameter");
-            case AL10.AL_INVALID_ENUM -> throw new RuntimeException("Invalid parameter");
-            case AL10.AL_INVALID_VALUE -> throw new RuntimeException("Invalid enum parameter value");
-            case AL10.AL_INVALID_OPERATION -> throw new RuntimeException("Illegal call");
-            case AL10.AL_OUT_OF_MEMORY -> throw new RuntimeException("Unable to allocate memory");
+            case AL10.AL_INVALID_NAME -> error = "Invalid name parameter";
+            case AL10.AL_INVALID_ENUM -> error = "Invalid parameter";
+            case AL10.AL_INVALID_VALUE -> error = "Invalid enum parameter value";
+            case AL10.AL_INVALID_OPERATION -> error = "Illegal call";
+            case AL10.AL_OUT_OF_MEMORY -> error = "Unable to allocate memory";
         }
         if (e != AL10.AL_NO_ERROR)
-            throw new RuntimeException("Unknown error");
+            error = "Unknown error";
+
+        if (error != null)
+            MusicEngine.getInstance().getLogger().error("OpenAL Error: {}", error);
     }
 
     public static boolean isOnMusicTick() {
@@ -28,8 +34,7 @@ public class MusicUtils {
     }
 
     public static void assertOnMusicTick() {
-        if (!isOnMusicTick())
-            throw new RuntimeException("Call from wrong thread");
+        if (!isOnMusicTick()) throw new RuntimeException("Call from wrong thread");
     }
 
     public static void runOnMusicTick(Runnable runnable) {
@@ -47,8 +52,7 @@ public class MusicUtils {
     }
 
     public static boolean isSpatial(SpatialType spatialType) {
-        if (spatialType == SpatialType.ENTRUST)
-            return IamMusicPlayer.CONFIG.spatial;
+        if (spatialType == SpatialType.ENTRUST) return IamMusicPlayer.CONFIG.spatial;
         return spatialType == SpatialType.ENABLE;
     }
 }
