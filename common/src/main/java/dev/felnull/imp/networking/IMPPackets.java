@@ -3,7 +3,6 @@ package dev.felnull.imp.networking;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.handler.ClientMessageHandler;
-import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.*;
 import dev.felnull.imp.server.handler.ServerMessageHandler;
 import dev.felnull.imp.util.IMPNbtUtil;
@@ -171,59 +170,10 @@ public class IMPPackets {
     }
 
 
-    public static class MusicRingUpdateResultMessage implements PacketMessage {
-        public final UUID uuid;
-        public final UUID waitId;
-        public final int state;
-
+    public static record MusicRingUpdateResultMessage(UUID uuid, UUID waitId,
+                                                      MusicRingResponseStateType ringResponseStateType) implements PacketMessage {
         public MusicRingUpdateResultMessage(FriendlyByteBuf bf) {
-            this.uuid = bf.readUUID();
-            this.waitId = bf.readUUID();
-            this.state = bf.readInt();
-
-        }
-
-        public MusicRingUpdateResultMessage(UUID uuid, UUID waitId, int state) {
-            this.uuid = uuid;
-            this.waitId = waitId;
-            this.state = state;
-        }
-
-        @Override
-        public FriendlyByteBuf toFBB() {
-            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-            buf.writeUUID(this.uuid);
-            buf.writeUUID(this.waitId);
-            buf.writeInt(this.state);
-            return buf;
-        }
-    }
-
-    public static class MusicRingStateMessage implements PacketMessage {
-        public final UUID uuid;
-        public final UUID waitId;
-        public final int num;
-        public final long elapsed;
-        public final MusicPlaybackInfo playbackInfo;
-
-        public MusicRingStateMessage(FriendlyByteBuf bf) {
-            this.uuid = bf.readUUID();
-            this.waitId = bf.readUUID();
-            this.num = bf.readInt();
-            this.elapsed = bf.readLong();
-            this.playbackInfo = OENbtUtil.readSerializable(bf.readNbt(), "pbi", new MusicPlaybackInfo());
-        }
-
-        public MusicRingStateMessage(UUID uuid, UUID waitId, int num) {
-            this(uuid, waitId, num, 0, MusicPlaybackInfo.EMPTY);
-        }
-
-        public MusicRingStateMessage(UUID uuid, UUID waitId, int num, long elapsed, MusicPlaybackInfo playbackInfo) {
-            this.uuid = uuid;
-            this.waitId = waitId;
-            this.num = num;
-            this.elapsed = elapsed;
-            this.playbackInfo = playbackInfo;
+            this(bf.readUUID(), bf.readUUID(), bf.readEnum(MusicRingResponseStateType.class));
         }
 
         @Override
@@ -231,9 +181,29 @@ public class IMPPackets {
             FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
             buf.writeUUID(uuid);
             buf.writeUUID(waitId);
-            buf.writeInt(num);
+            buf.writeEnum(ringResponseStateType);
+            return buf;
+        }
+    }
+
+    public static record MusicRingStateMessage(UUID uuid, UUID waitId, MusicRingStateType stateType, long elapsed,
+                                               CompoundTag tracker) implements PacketMessage {
+        public MusicRingStateMessage(UUID uuid, UUID waitId, MusicRingStateType stateType) {
+            this(uuid, waitId, stateType, 0, new CompoundTag());
+        }
+
+        public MusicRingStateMessage(FriendlyByteBuf bf) {
+            this(bf.readUUID(), bf.readUUID(), bf.readEnum(MusicRingStateType.class), bf.readLong(), bf.readNbt());
+        }
+
+        @Override
+        public FriendlyByteBuf toFBB() {
+            FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
+            buf.writeUUID(uuid);
+            buf.writeUUID(waitId);
+            buf.writeEnum(stateType);
             buf.writeLong(elapsed);
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "pbi", this.playbackInfo));
+            buf.writeNbt(tracker);
             return buf;
         }
     }
@@ -273,27 +243,10 @@ public class IMPPackets {
         }
     }
 
-    public static class MusicReadyMessage implements PacketMessage {
-        public final UUID waitId;
-        public final UUID uuid;
-        public final MusicSource source;
-        public final MusicPlaybackInfo playbackInfo;
-        public final long position;
-
+    public static record MusicReadyMessage(UUID waitId, UUID uuid, MusicSource source, CompoundTag tracker,
+                                           long position) implements PacketMessage {
         public MusicReadyMessage(FriendlyByteBuf bf) {
-            this.waitId = bf.readUUID();
-            this.uuid = bf.readUUID();
-            this.source = OENbtUtil.readSerializable(bf.readNbt(), "ms", new MusicSource());
-            this.playbackInfo = OENbtUtil.readSerializable(bf.readNbt(), "pbi", new MusicPlaybackInfo());
-            this.position = bf.readLong();
-        }
-
-        public MusicReadyMessage(UUID waitId, UUID uuid, MusicSource source, MusicPlaybackInfo playbackInfo, long position) {
-            this.waitId = waitId;
-            this.uuid = uuid;
-            this.source = source;
-            this.playbackInfo = playbackInfo;
-            this.position = position;
+            this(bf.readUUID(), bf.readUUID(), OENbtUtil.readSerializable(bf.readNbt(), "ms", new MusicSource()), bf.readNbt(), bf.readLong());
         }
 
         @Override
@@ -302,7 +255,7 @@ public class IMPPackets {
             buf.writeUUID(this.waitId);
             buf.writeUUID(this.uuid);
             buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "ms", this.source));
-            buf.writeNbt(OENbtUtil.writeSerializable(new CompoundTag(), "pbi", this.playbackInfo));
+            buf.writeNbt(this.tracker);
             buf.writeLong(this.position);
             return buf;
         }
@@ -475,5 +428,18 @@ public class IMPPackets {
                 return values()[id];
             return NONE;
         }
+    }
+
+    public static enum MusicRingStateType {
+        NONE,
+        PLAY,
+        STOP,
+        UPDATE
+    }
+
+    public static enum MusicRingResponseStateType {
+        NONE,
+        PLAYING,
+        LOADING
     }
 }

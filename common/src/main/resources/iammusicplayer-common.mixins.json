@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "minVersion": "0.8",
   "client": [
-    "client.LibraryMixin",
+    "client.DebugScreenOverlayMixin",
     "client.SoundEngineMixin"
   ],
   "mixins": [

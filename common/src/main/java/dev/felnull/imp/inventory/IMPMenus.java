@@ -3,7 +3,6 @@ package dev.felnull.imp.inventory;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.otyacraftengine.inventory.OEItemBEBaseMenu;
 import dev.felnull.otyacraftengine.item.location.IPlayerItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.core.BlockPos;

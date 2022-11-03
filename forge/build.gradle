@@ -1,7 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.modrinth.minotaur" version "2.4.4"
 }
 loom {
     forge {
@@ -46,6 +46,7 @@ dependencies {
     modApi "me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}"
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
     modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
+    modApi "curse.maven:ctm-535489:3775919"
 
     modCompileOnly "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}:api"
     modRuntimeOnly "vazkii.patchouli:Patchouli:${rootProject.patchouli_version}"
@@ -206,15 +207,20 @@ curseforge {
 }
 
 if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
-    task publishModrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
+    modrinth {
         token = System.getenv('modrinthapikey')
         projectId = "${rootProject.modrinth_id}"
         versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
         versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Forge"
-        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")
-        versionType = "${project.release_type}".toUpperCase()
-        addGameVersion("${rootProject.minecraft_version}")
-        addLoader("forge")
-        addGameVersion "${rootProject.minecraft_version}"
+        versionType = "${project.release_type}"
+        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
+        gameVersions = List.of(project.support_versions.split(","))
+        loaders = ["forge"]
+        dependencies {
+            required.project("9s6osm5g")//Cloth Config API
+            required.project("lhGA9TYQ")//Architectury API
+            required.project("iu3upNjC")//Otyacraft Engine
+            optional.project("nU0bVIaL")//Patchouli
+        }
     }
 }

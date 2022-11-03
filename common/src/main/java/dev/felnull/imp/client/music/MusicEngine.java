@@ -1,12 +1,17 @@
 package dev.felnull.imp.client.music;
 
+import com.google.common.collect.ImmutableMap;
+import dev.felnull.fnjl.concurrent.InvokeExecutor;
 import dev.felnull.imp.IamMusicPlayer;
-import dev.felnull.imp.client.music.player.IMusicPlayer;
-import dev.felnull.imp.client.music.tracker.IMPMusicTrackers;
-import dev.felnull.imp.client.util.SoundMath;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.player.MusicPlayer;
+import dev.felnull.imp.client.music.speaker.MusicSpeaker;
+import dev.felnull.imp.client.music.task.MusicEngineDestroyRunner;
+import dev.felnull.imp.client.util.MusicUtils;
 import dev.felnull.imp.entity.IRingerPartyParrot;
-import dev.felnull.imp.music.MusicPlaybackInfo;
+import dev.felnull.imp.music.MusicSpeakerInfo;
 import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.music.tracker.MusicTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,315 +19,422 @@ import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class MusicEngine {
-    private static final Minecraft mc = Minecraft.getInstance();
     private static final Logger LOGGER = LogManager.getLogger(MusicEngine.class);
     private static final MusicEngine INSTANCE = new MusicEngine();
-    private final ExecutorService executor = Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern(IamMusicPlayer.MODID + "-music-loader-%d").daemon(true).build());
-    private final Map<UUID, MusicPlayEntry> MUSIC_PLAYERS = new HashMap<>();
-    private final Map<UUID, MusicLoadThread> MUSIC_LOADS = new HashMap<>();
-    private final List<UUID> REMOVES_PLAYERS = new ArrayList<>();
-    private final List<UUID> REMOVE_LOADS = new ArrayList<>();
-    private final Map<UUID, Long> LAST_SUBTITLE = new HashMap<>();
-    private final List<UnPauseStartEntry> UNPAUSES_STARTS = new ArrayList<>();
-    private final Map<UUID, MusicReloadEntry> RESTART_LIVES = new HashMap<>();
-    private final List<UUID> RESTART_CHECK = new ArrayList<>();
-    private long lastTime;
+    private static final Minecraft mc = Minecraft.getInstance();
+    private final Map<UUID, MusicEntry> musicEntries = new HashMap<>();
+    private final InvokeExecutor musicTickExecutor = new InvokeExecutor();
+    private ExecutorService musicLoaderExecutor = createMusicLoadExecutor();
+    private MusicEngineDestroyRunner musicDestroyRunner = new MusicEngineDestroyRunner();
     private long lastProsesTime;
-    private boolean pause;
-    private boolean reloading;
     public boolean reloadFlag;
 
     public static MusicEngine getInstance() {
         return INSTANCE;
     }
 
-    public ExecutorService getExecutor() {
-        return executor;
+    public String getDebugString() {
+        return String.format("[%s] SPK: %d/%d, LOAD: %d/%d, WKR: %d, TASK %d, TICK: %d ms", IamMusicPlayer.getModName(), getCurrentMusicSpeaker(), getMaxMusicSpeaker(), getCurrentMusicLoad(), getMaxMusicLoad(), getCurrentMusicLoader(), getCurrentMusicTaskCount(), lastProsesTime);
     }
 
-    public int getCurrentMusicPlayed() {
-        return MUSIC_PLAYERS.size() + MUSIC_LOADS.size();
+    @Nullable
+    public MusicEntry getMusicEntry(@NotNull UUID musicPlayerId) {
+        return musicEntries.get(musicPlayerId);
     }
 
-    public int getMaxMusicPlayed() {
+    /**
+     * 最大読み込み可能音楽数
+     *
+     * @return 数
+     */
+    public int getMaxMusicLoad() {
         return Math.max(IamMusicPlayer.CONFIG.maxPlayCont, 0);
     }
 
-    public boolean isReloading() {
-        return reloading;
+    /**
+     * 最大スピーカー数
+     *
+     * @return 数
+     */
+    public int getMaxMusicSpeaker() {
+        return Math.max(IamMusicPlayer.CONFIG.maxPlayCont, 0);
     }
 
-    public String getDebugString() {
-        return String.format("Musics: %d/%d %d ms", getCurrentMusicPlayed(), getMaxMusicPlayed(), lastProsesTime);
+    /**
+     * 現在の読み込み済み音楽数
+     *
+     * @return 数
+     */
+    public int getCurrentMusicLoad() {
+        return musicEntries.size();
     }
 
-    public boolean playMusicPlayer(UUID id, long delay) {
-        synchronized (UNPAUSES_STARTS) {
-            if (pause) {
-                UNPAUSES_STARTS.add(new UnPauseStartEntry(id, delay));
-                return true;
-            }
+    /**
+     * 現在のスピーカーの数
+     *
+     * @return 数
+     */
+    public int getCurrentMusicSpeaker() {
+        int ct = 0;
+
+        for (MusicEntry value : musicEntries.values()) {
+            ct += value.getSpeakerCount();
         }
-        MusicPlayEntry playEntry;
-        synchronized (MUSIC_PLAYERS) {
-            if (!MUSIC_PLAYERS.containsKey(id))
-                return false;
-            playEntry = MUSIC_PLAYERS.get(id);
-            var player = playEntry.player();
-            if (!player.isPlaying())
-                player.play(delay);
+
+        return ct;
+    }
+
+    /**
+     * 現在の音楽読み込みスレッドの個数
+     *
+     * @return 数
+     */
+    public int getCurrentMusicLoader() {
+        if (musicLoaderExecutor instanceof ThreadPoolExecutor threadPoolExecutor)
+            return threadPoolExecutor.getActiveCount();
+        return -1;
+    }
+
+    /**
+     * 現在の実行待ちタスク数
+     *
+     * @return タスク数
+     */
+    public int getCurrentMusicTaskCount() {
+        int ct = 0;
+        for (MusicEntry value : musicEntries.values()) {
+            ct += value.getTaskCount();
         }
-        notifyNearbyEntities(id, playEntry);
+        return musicTickExecutor.getTaskCount();
+    }
+
+    /**
+     * 毎Tick呼ばれる
+     */
+    public void tick() {
+        long startTime = System.currentTimeMillis();
+
+        MusicUtils.runInvokeTasks(musicTickExecutor, "Music Engine");
+
+        List<UUID> destroys = new ArrayList<>();
+        musicEntries.forEach((uuid, musicEntry) -> {
+            if (!musicEntry.tick()) destroys.add(uuid);
+        });
+        for (UUID destroy : destroys) {
+            musicEntries.remove(destroy);
+        }
+
+        lastProsesTime = System.currentTimeMillis() - startTime;
+    }
+
+    /**
+     * ワールドから退出、再読み込み時に呼び出し
+     * 再読み後すぐにも呼び出されてしまうので再読み時は無視
+     */
+    public void stopAll() {
+        if (reloadFlag) {
+            reloadFlag = false;
+            return;
+        }
+        List<UUID> musicPlayerIds;
+
+        musicPlayerIds = new ArrayList<>(musicEntries.keySet());
+
+        for (UUID musicPlayerId : musicPlayerIds) {
+            stop(musicPlayerId);
+        }
+    }
+
+
+    /**
+     * MusicEngine壊れる～
+     * 再読み込みなどされたときに呼び出し
+     */
+    public void destroy() {
+        getLogger().info("Music engine reloaded");
+
+        stopAll();
+
+        musicDestroyRunner.destroy();
+        musicDestroyRunner = new MusicEngineDestroyRunner();
+
+        if (musicLoaderExecutor != null) musicLoaderExecutor.shutdown();
+        musicLoaderExecutor = createMusicLoadExecutor();
+
+        LavaPlayerManager.getInstance().reload();
+    }
+
+    /**
+     * ESCなどを押してポーズされたときに停止するときに呼ばれる
+     */
+    public void pause() {
+        for (MusicEntry value : musicEntries.values()) {
+            value.pause();
+        }
+    }
+
+    /**
+     * ESCなどのポーズが解除されたときに呼ばれる
+     */
+    public void resume() {
+        for (MusicEntry value : musicEntries.values()) {
+            value.resume();
+        }
+    }
+
+    /**
+     * 音楽読み込み用Executorを作成
+     *
+     * @return Executor
+     */
+    private ExecutorService createMusicLoadExecutor() {
+        return Executors.newCachedThreadPool(new BasicThreadFactory.Builder().namingPattern("IMP-Music-Loader-%d").daemon(true).build());
+    }
+
+    /**
+     * 非同期読み込み用Executor
+     *
+     * @return ExecutorService
+     */
+    public ExecutorService getMusicAsyncExecutor() {
+        return musicLoaderExecutor;
+    }
+
+
+    public MusicEngineDestroyRunner getMusicDestroyRunner() {
+        return musicDestroyRunner;
+    }
+
+    /**
+     * Tick上での読み込み用Executor
+     *
+     * @return Executor
+     */
+    public Executor getMusicTickExecutor() {
+        return musicTickExecutor;
+    }
+
+    /**
+     * 音楽を読み込む
+     * 読み込みが完了しても再生されない
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param source        音楽情報
+     * @param position      再生開始位置
+     * @param listener      完了リスナー
+     * @return 読み込み開始したかどうか、読み込み拒否(読み込み数が限界、すでに読み込み中、読み込み済み)などの時はfalse
+     */
+    public boolean load(@NotNull UUID musicPlayerId, @NotNull MusicSource source, long position, @NotNull LoadCompleteListener listener) {
+        if (getCurrentMusicLoad() >= getMaxMusicLoad()) return false;
+
+        if (isExist(musicPlayerId))
+            return false;
+
+
+        var mpe = new MusicEntry(musicPlayerId, source, position);
+        musicEntries.put(musicPlayerId, mpe);
+
+        mpe.loadStart(listener);
         return true;
     }
 
-    private void notifyNearbyEntities(UUID uuid, MusicPlayEntry playEntry) {
-        var v3 = playEntry.player().getCoordinatePosition();
-        float rp = playEntry.playbackInfo().getRange() / 90f;
-        for (LivingEntity livingentity : mc.level.getEntitiesOfClass(LivingEntity.class, (new AABB(new BlockPos(v3))).inflate(9.0d * rp))) {
+    /**
+     * 読み込みが完了したら自動的に再生する
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param source        音楽ソース
+     * @param position      再生位置
+     * @param delayed       遅れ
+     * @return 再生できたかどうか
+     */
+    public boolean loadAndPlay(@NotNull UUID musicPlayerId, @NotNull MusicSource source, long position, boolean delayed) {
+        return load(musicPlayerId, source, position, (success, time, error, retry) -> {
+            if (success) play(musicPlayerId, delayed ? time : 0);
+        });
+    }
+
+    /**
+     * 読み込み済み音楽の再生を開始する
+     * 事前に {@link #load(UUID, MusicSource, long, LoadCompleteListener)}で読み込んでください
+     * 読み込まれてない場合はfalse
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param delay         読み込んだ時間からの遅れ (最大10秒程)
+     * @return 再生開始できたかどうか
+     */
+    public boolean play(@NotNull UUID musicPlayerId, long delay) {
+        MusicEntry mpe = musicEntries.get(musicPlayerId);
+
+        if (mpe == null || !mpe.isLoaded())
+            return false;
+
+        if (mpe.getMusicPlayer() != null) {
+            for (MusicSpeaker musicSpeaker : mpe.getMusicPlayer().getSpeakerList()) {
+                notifyRangeEntities(musicPlayerId, musicSpeaker.getTracker().getSpeakerInfo());
+            }
+        }
+
+        mpe.playStart(delay);
+        return true;
+    }
+
+    /**
+     * 指定の音楽プレイヤーの再生を停止
+     * 読み込み中であっても中止される
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 停止できたかどうか
+     */
+    public boolean stop(UUID musicPlayerId) {
+        MusicEntry mpe = musicEntries.remove(musicPlayerId);
+
+        if (mpe == null)
+            return false;
+
+        mpe.destroy();
+        return true;
+    }
+
+    /**
+     * スピーカーを追加
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param speakerId     スピーカーID
+     * @param tracker       スピーカーのトラッカー
+     * @return 追加できたかどうか
+     */
+    public boolean addSpeaker(@NotNull UUID musicPlayerId, @NotNull UUID speakerId, MusicTracker tracker) {
+        if (getCurrentMusicSpeaker() >= getMaxMusicSpeaker()) return false;
+
+        MusicEntry mpe = musicEntries.get(musicPlayerId);
+
+        if (mpe == null) return false;
+
+        return mpe.addSpeaker(speakerId, tracker);
+    }
+
+    /**
+     * 指定のスピーカーを削除
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param speakerId     スピーカーID
+     * @return 削除できたかどうか
+     */
+    public boolean removeSpeaker(@NotNull UUID musicPlayerId, @NotNull UUID speakerId) {
+        MusicEntry mpe = musicEntries.get(musicPlayerId);
+
+        if (mpe == null) return false;
+
+        return mpe.removeSpeaker(speakerId);
+    }
+
+    /**
+     * 音楽が存在するかどうか
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 読み込まれてるならtrue
+     */
+    public boolean isExist(UUID musicPlayerId) {
+        return musicEntries.containsKey(musicPlayerId);
+    }
+
+    /**
+     * 音楽を読み込み中かどうか
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 読み込み中かどうか
+     */
+    public boolean isLoading(UUID musicPlayerId) {
+        var me = musicEntries.get(musicPlayerId);
+        if (me != null)
+            return !me.isLoaded();
+        return false;
+    }
+
+    public Logger getLogger() {
+        return LOGGER;
+    }
+
+    public Map<UUID, MusicEntry> getMusicEntries() {
+        return ImmutableMap.copyOf(musicEntries);
+    }
+
+
+    public Map<UUID, MusicPlayer<?, ?>> getMusicPlayers() {
+        ImmutableMap.Builder<UUID, MusicPlayer<?, ?>> musicPlayersBuilder = ImmutableMap.builder();
+        for (Map.Entry<UUID, MusicEntry> entry : musicEntries.entrySet()) {
+            var player = entry.getValue().getMusicPlayer();
+            if (player != null) musicPlayersBuilder.put(entry.getKey(), player);
+        }
+        return musicPlayersBuilder.build();
+    }
+
+    public boolean loadAndPlaySimple(@NotNull UUID musicPlayerId, @NotNull MusicTracker musicTracker, @NotNull MusicSource source, long position, boolean delayed) {
+        boolean ret = load(musicPlayerId, source, position, (success, time, error, retry) -> {
+            if (success) {
+                play(musicPlayerId, delayed ? time : 0);
+            }
+        });
+        if (ret)
+            addSpeaker(musicPlayerId, musicPlayerId, musicTracker);
+        return ret;
+    }
+
+    /**
+     * 音楽トラッカーを更新する
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @param speakerId     スピーカーID
+     * @param musicTracker  音楽トラッカー
+     * @return 更新できたかどうか
+     */
+    public boolean updateMusicTracker(@NotNull UUID musicPlayerId, @NotNull UUID speakerId, MusicTracker musicTracker) {
+        if (musicTracker == null)
+            return false;
+
+        MusicEntry mpe = musicEntries.get(musicPlayerId);
+
+        if (mpe == null)
+            return false;
+
+        return mpe.updateMusicTracker(speakerId, musicTracker);
+    }
+
+    /**
+     * 指定の音楽プレイヤーが再生中かどうか
+     *
+     * @param musicPlayerId 音楽プレイヤーID
+     * @return 再生中かどうか
+     */
+    public boolean isPlaying(@NotNull UUID musicPlayerId) {
+        MusicEntry mpe = musicEntries.get(musicPlayerId);
+        if (mpe == null)
+            return false;
+        var mp = mpe.getMusicPlayer();
+        if (mp == null)
+            return false;
+        return mp.isPlaying();
+    }
+
+    private void notifyRangeEntities(UUID uuid, MusicSpeakerInfo speakerInfo) {
+        if (mc.level == null)
+            return;
+
+        var v3 = speakerInfo.position();
+        var aabb = new AABB(new BlockPos(v3)).inflate(speakerInfo.getRange());
+        for (LivingEntity livingentity : mc.level.getEntitiesOfClass(LivingEntity.class, aabb)) {
             if (livingentity instanceof IRingerPartyParrot ringerPartyParrot)
                 ringerPartyParrot.setRingerUUID(uuid);
         }
     }
-
-    public boolean loadAddMusicPlayer(UUID id, MusicPlaybackInfo playbackInfo, MusicSource source, long position, MusicLoadThread.MusicLoadResultListener listener) {
-        synchronized (MUSIC_LOADS) {
-            if (getCurrentMusicPlayed() >= getMaxMusicPlayed() || MUSIC_LOADS.containsKey(id) || MUSIC_PLAYERS.containsKey(id))
-                return false;
-            var mt = new MusicLoadThread(source, playbackInfo, position, (result, time, player, retry) -> {
-                if (result)
-                    addMusicPlayer(id, playbackInfo, player);
-                listener.onResult(result, time, player, retry);
-            });
-            MUSIC_LOADS.put(id, mt);
-            mt.start();
-        }
-        return true;
-    }
-
-    public boolean stopLoadMusicPlayer(UUID id) {
-        synchronized (MUSIC_LOADS) {
-            var load = MUSIC_LOADS.remove(id);
-            if (load != null) {
-                if (load.isAlive())
-                    load.stopped();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean addMusicPlayer(UUID id, MusicPlaybackInfo playbackInfo, IMusicPlayer musicPlayer) {
-        synchronized (MUSIC_PLAYERS) {
-            if ((getCurrentMusicPlayed() >= getMaxMusicPlayed() && !MUSIC_LOADS.containsKey(id)) || MUSIC_PLAYERS.containsKey(id))
-                return false;
-            MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, musicPlayer));
-
-            musicPlayer.setVolume(SoundMath.calculateVolume(playbackInfo.getVolume()));
-            musicPlayer.setRange(playbackInfo.getRange());
-        }
-        return true;
-    }
-
-    public boolean updateMusicPlaybackInfo(UUID id, MusicPlaybackInfo playbackInfo) {
-        synchronized (MUSIC_PLAYERS) {
-            if (!MUSIC_PLAYERS.containsKey(id))
-                return false;
-            MUSIC_PLAYERS.put(id, new MusicPlayEntry(playbackInfo, MUSIC_PLAYERS.get(id).player()));
-
-            var player = MUSIC_PLAYERS.get(id).player();
-            player.setVolume(SoundMath.calculateVolume(playbackInfo.getVolume()));
-            player.setRange(playbackInfo.getRange());
-        }
-        return true;
-    }
-
-    public boolean stopMusicPlayer(UUID id) {
-        synchronized (RESTART_LIVES) {
-            if (RESTART_LIVES.containsKey(id)) {
-                if (RESTART_CHECK.contains(id)) {
-                    RESTART_LIVES.remove(id);
-                    RESTART_CHECK.remove(id);
-                    return true;
-                } else {
-                    RESTART_CHECK.add(id);
-                }
-            }
-        }
-        synchronized (UNPAUSES_STARTS) {
-            UnPauseStartEntry uss = null;
-            for (UnPauseStartEntry us : UNPAUSES_STARTS) {
-                if (us.id().equals(id)) {
-                    uss = us;
-                    break;
-                }
-            }
-            if (uss != null) {
-                UNPAUSES_STARTS.remove(uss);
-                return true;
-            }
-        }
-        synchronized (MUSIC_PLAYERS) {
-            var rmPly = MUSIC_PLAYERS.remove(id);
-            LAST_SUBTITLE.remove(id);
-            if (rmPly != null) {
-                rmPly.player().stop();
-                rmPly.player().destroy();
-                return true;
-            }
-            return false;
-        }
-    }
-
-    public void stopAllMusicPlayer() {
-        synchronized (MUSIC_PLAYERS) {
-            MUSIC_PLAYERS.forEach((n, m) -> REMOVES_PLAYERS.add(n));
-            RESTART_LIVES.forEach((n, m) -> REMOVES_PLAYERS.add(n));
-        }
-    }
-
-    public void stopAllMusicLoad() {
-        synchronized (MUSIC_LOADS) {
-            MUSIC_LOADS.forEach((n, m) -> REMOVE_LOADS.add(n));
-        }
-    }
-
-    public boolean isPlaying(UUID uuid) {
-        var rp = MUSIC_PLAYERS.get(uuid);
-        return (rp != null && rp.player() != null && rp.player().isPlaying()) || (pause && UNPAUSES_STARTS.stream().anyMatch(m -> m.id().equals(uuid))) || (pause && rp != null && rp.player().isPaused());
-    }
-
-    public void stop() {
-        if (!reloadFlag) {
-            stopAllMusicLoad();
-            stopAllMusicPlayer();
-        }
-        reloadFlag = false;
-    }
-
-    public void reload() {
-        LOGGER.info("Music engine started");
-        reloading = true;
-        Map<UUID, MusicReloadEntry> RELOADS = new HashMap<>();
-        synchronized (MUSIC_LOADS) {
-            MUSIC_LOADS.forEach((n, m) -> RELOADS.put(n, new MusicReloadEntry(m.getPlaybackInfo(), m.getSource(), m.getPosition(), m.getListener())));
-        }
-        RELOADS.forEach((n, m) -> stopLoadMusicPlayer(n));
-
-        List<UUID> REMOVEMUSICS = new ArrayList<>();
-        synchronized (MUSIC_PLAYERS) {
-            MUSIC_PLAYERS.forEach((n, m) -> {
-                RELOADS.put(n, new MusicReloadEntry(m.playbackInfo(), m.player().getMusicSource(), m.player().getPosition(), null));
-                REMOVEMUSICS.add(n);
-            });
-        }
-        Map<UUID, Long> LASTTIMES = new HashMap<>();
-        REMOVEMUSICS.forEach(n -> {
-            if (isPlaying(n))
-                LASTTIMES.put(n, System.currentTimeMillis());
-            stopMusicPlayer(n);
-        });
-
-        RELOADS.forEach((n, m) -> loadAddMusicPlayer(n, m.playbackInfo(), m.source(), m.position(), (result, time, player, retry) -> {
-            if (m.listener() != null)
-                m.listener().onResult(result, time, player, retry);
-
-            if (result && LASTTIMES.containsKey(n)) {
-                long delay = System.currentTimeMillis() - LASTTIMES.get(n);
-                playMusicPlayer(n, delay);
-            }
-        }));
-        reloading = false;
-    }
-
-    public void tick() {
-        lastTime = System.currentTimeMillis();
-        synchronized (MUSIC_PLAYERS) {
-            REMOVES_PLAYERS.forEach(this::stopMusicPlayer);
-            REMOVES_PLAYERS.clear();
-            MUSIC_PLAYERS.forEach((n, m) -> {
-                if (m.player().isFinished()) {
-                    REMOVES_PLAYERS.add(n);
-                    return;
-                }
-                var tracker = IMPMusicTrackers.createTracker(m.playbackInfo().getTracker(), m.playbackInfo().getTrackerTag());
-                if (tracker != null) {
-                    var ps = tracker.getPosition().get();
-                    m.player().setCoordinatePosition(ps);
-                    m.player().setFixedSound(ps == null);
-                }
-                m.player().update(m.playbackInfo());
-            });
-        }
-        synchronized (MUSIC_LOADS) {
-            REMOVE_LOADS.forEach(this::stopLoadMusicPlayer);
-            REMOVE_LOADS.clear();
-            MUSIC_LOADS.forEach((n, m) -> {
-                if (!m.isAlive())
-                    REMOVE_LOADS.add(n);
-            });
-        }
-        lastProsesTime = System.currentTimeMillis() - lastTime;
-    }
-
-    public void pause() {
-        this.pause = true;
-        synchronized (MUSIC_PLAYERS) {
-            MUSIC_PLAYERS.forEach((n, m) -> {
-                if (!m.player().getMusicSource().isLive()) {
-                    m.player().pause();
-                } else {
-                    RESTART_LIVES.put(n, new MusicReloadEntry(m.playbackInfo(), m.player().getMusicSource(), 0, null));
-                    REMOVES_PLAYERS.add(n);
-                }
-            });
-        }
-    }
-
-    public void resume() {
-        this.pause = false;
-        synchronized (MUSIC_PLAYERS) {
-            MUSIC_PLAYERS.forEach((n, m) -> m.player().unpause());
-        }
-        UNPAUSES_STARTS.forEach(n -> playMusicPlayer(n.id(), n.delay()));
-        UNPAUSES_STARTS.clear();
-        RESTART_LIVES.forEach((n, m) -> loadAddMusicPlayer(n, m.playbackInfo(), m.source(), 0, (result, time, player, retry) -> {
-            if (result)
-                playMusicPlayer(n, 0);
-        }));
-        RESTART_LIVES.clear();
-        RESTART_CHECK.clear();
-    }
-
-    public IMusicPlayer getMusicPlayer(UUID uuid) {
-        var en = MUSIC_PLAYERS.get(uuid);
-        if (en != null)
-            return MUSIC_PLAYERS.get(uuid).player();
-        return null;
-    }
-
-    public MusicLoadThread getLoadingMusic(UUID uuid) {
-        return MUSIC_LOADS.get(uuid);
-    }
-
-    public boolean isLoad(UUID musicPlayerId) {
-        return MUSIC_LOADS.containsKey(musicPlayerId);
-    }
-
-    private static record MusicPlayEntry(MusicPlaybackInfo playbackInfo, IMusicPlayer player) {
-    }
-
-    private static record MusicReloadEntry(MusicPlaybackInfo playbackInfo, MusicSource source, long position,
-                                           MusicLoadThread.MusicLoadResultListener listener) {
-    }
-
-    private static record UnPauseStartEntry(UUID id, long delay) {
-    }
-
 }

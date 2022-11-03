@@ -6,10 +6,9 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.SearchMusicsFixedButtonsList;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
-import dev.felnull.imp.music.resource.ImageInfo;
-import dev.felnull.imp.music.resource.MusicSource;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
+import dev.felnull.imp.client.music.media.MusicMedia;
+import dev.felnull.imp.client.music.media.MusicMediaResult;
 import dev.felnull.imp.util.FlagThread;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.gui.components.EditBox;
@@ -24,7 +23,7 @@ import java.util.List;
 public class SearchMusicMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation SEARCH_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/search_music.png");
     private static final Component SEARCHING_TEXT = new TranslatableComponent("imp.text.searching");
-    private final List<SearchMusicEntry> searchMusics = new ArrayList<>();
+    private final List<MusicMediaResult> searchMusics = new ArrayList<>();
     private SearchMusicsFixedButtonsList searchMusicsFixedButtonsList;
     private EditBox searchNameEditBox;
     private SearchThread searchThread;
@@ -110,8 +109,8 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
         getScreen().insMusicSourceName(name);
     }
 
-    public IMusicLoaderType getRawMusicLoaderType() {
-        return IMPMusicLoaderTypes.getMusicLoaderTypes().get(getMusicLoaderType());
+    public MusicMedia getRawMusicLoaderType() {
+        return IMPMusicMedias.getAllMedia().get(getMusicLoaderType());
     }
 
     public String getMusicLoaderType() {
@@ -127,9 +126,6 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     @Override
     protected MusicManagerBlockEntity.MonitorType getParentType() {
         return MusicManagerBlockEntity.MonitorType.ADD_MUSIC;
-    }
-
-    public static record SearchMusicEntry(String name, String artist, MusicSource source, ImageInfo imageInfo) {
     }
 
     private class SearchThread extends FlagThread {
@@ -150,12 +146,8 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
             if (isStopped())
                 return;
 
-            List<SearchMusicEntry> slst;
-            try {
-                slst = lt.search(name);
-            } catch (InterruptedException e) {
-                return;
-            }
+            List<MusicMediaResult> slst;
+            slst = lt.search(name);
 
             if (isStopped())
                 return;
@@ -163,7 +155,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
             setSearchMusics(slst);
         }
 
-        private synchronized void setSearchMusics(List<SearchMusicEntry> musics) {
+        private synchronized void setSearchMusics(List<MusicMediaResult> musics) {
             if (musics != null) {
                 searchMusics.clear();
                 searchMusics.addAll(musics);

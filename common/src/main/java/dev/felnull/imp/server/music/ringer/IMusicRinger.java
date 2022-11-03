@@ -1,13 +1,11 @@
 package dev.felnull.imp.server.music.ringer;
 
 import dev.felnull.imp.music.resource.MusicSource;
-import net.minecraft.nbt.CompoundTag;
+import dev.felnull.imp.music.tracker.MusicTrackerEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +32,7 @@ public interface IMusicRinger {
 
     public void setRingerPosition(long position);
 
-    public Pair<ResourceLocation, CompoundTag> getRingerTracker();
+    public MusicTrackerEntry getRingerTracker();
 
     public @NotNull Vec3 getRingerSpatialPosition();
 

@@ -7,10 +7,6 @@ import me.shedaniel.autoconfig.annotation.ConfigEntry;
 @Config(name = IamMusicPlayer.MODID)
 @Config.Gui.Background("textures/block/note_block.png")
 public class IMPConfig implements ConfigData {
-
-    @ConfigEntry.Category("client")
-    public boolean errorLog = false;
-
     @ConfigEntry.Category("client")
     public double volume = 1f;
 
@@ -21,10 +17,19 @@ public class IMPConfig implements ConfigData {
     public boolean spatial = true;
 
     @ConfigEntry.Category("client")
+    public int sampleRate = 44100;
+
+    @ConfigEntry.Category("client")
+    public boolean useYoutubeDownloader = true;
+
+    @ConfigEntry.Category("client")
     public String relayServerURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/relay_server.json";
 
     @ConfigEntry.Category("client")
     public String lavaPlayerNativesURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/lavaplayer/natives_link.json";
+
+    @ConfigEntry.Category("client")
+    public String neteaseCloudMusicApiURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/api_server.json";
 
     @ConfigEntry.Category("server")
     public long maxWaitTime = 1000 * 10;
@@ -38,4 +43,7 @@ public class IMPConfig implements ConfigData {
     @ConfigEntry.Gui.RequiresRestart
     @ConfigEntry.Category("integration")
     public boolean patchouliIntegration = true;
+
+    @ConfigEntry.Category("integration")
+    public boolean soundPhysicsRemasteredIntegration = true;
 }

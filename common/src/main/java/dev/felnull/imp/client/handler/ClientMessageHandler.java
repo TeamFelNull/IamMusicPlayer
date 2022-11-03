@@ -1,75 +1,38 @@
 package dev.felnull.imp.client.handler;
 
 import dev.architectury.networking.NetworkManager;
-import dev.felnull.imp.client.music.MusicEngine;
+import dev.felnull.imp.client.music.IMPMusicTrackerFactory;
+import dev.felnull.imp.client.music.MusicRingerEngineConnector;
 import dev.felnull.imp.client.music.MusicSyncManager;
-import dev.felnull.imp.music.MusicPlaybackInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
-import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.networking.IMPPackets;
 import net.minecraft.client.Minecraft;
 
 import java.util.Collections;
-import java.util.UUID;
 
 public class ClientMessageHandler {
     private static final Minecraft mc = Minecraft.getInstance();
 
     public static void onMusicRingStateResponseMessage(IMPPackets.MusicRingStateMessage message, NetworkManager.PacketContext packetContext) {
-        if (mc.getConnection() == null) return;
-        var mm = MusicEngine.getInstance();
-        if (message.num == 0) {
-            mm.playMusicPlayer(message.uuid, message.elapsed);
-        } else if (message.num == 1) {
-            mm.stopMusicPlayer(message.uuid);
-            mm.stopLoadMusicPlayer(message.uuid);
-        } else if (message.num == 2) {
-            int plFlg = 0;
-            if (mm.isPlaying(message.uuid)) {
-                mm.updateMusicPlaybackInfo(message.uuid, message.playbackInfo);
-                plFlg = 1;
-            } else if (mm.isLoad(message.uuid)) {
-                plFlg = 2;
+        packetContext.queue(() -> {
+            if (mc.getConnection() == null) return;
+            switch (message.stateType()) {
+                case PLAY -> MusicRingerEngineConnector.play(message.uuid(), message.elapsed());
+                case STOP -> MusicRingerEngineConnector.stop(message.uuid());
+                case UPDATE -> {
+                    var ret = MusicRingerEngineConnector.update(message.uuid(), IMPMusicTrackerFactory.loadByTag(message.tracker()));
+                    NetworkManager.sendToServer(IMPPackets.MUSIC_RING_UPDATE_RESULT, new IMPPackets.MusicRingUpdateResultMessage(message.uuid(), message.waitId(), ret).toFBB());
+                }
             }
-            NetworkManager.sendToServer(IMPPackets.MUSIC_RING_UPDATE_RESULT, new IMPPackets.MusicRingUpdateResultMessage(message.uuid, message.waitId, plFlg).toFBB());
-        }
+        });
     }
 
     public static void onMusicRingReadyResponseMessage(IMPPackets.MusicReadyMessage message, NetworkManager.PacketContext packetContext) {
-        packetContext.queue(() -> loadMusic(message.waitId, message.uuid, message.playbackInfo, message.source, message.position, 0, false));
-    }
-
-    private static void loadMusic(UUID waitID, UUID uuid, MusicPlaybackInfo playbackInfo, MusicSource source, long position, int tryCont, boolean autoPlay) {
-        if (mc.getConnection() == null) return;
-        var mm = MusicEngine.getInstance();
-        if (tryCont >= 3 || mm.getCurrentMusicPlayed() >= mm.getMaxMusicPlayed()) {
-            if (!autoPlay) {
-                NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, false, false, 0).toFBB());
-            }
-        } else {
-            mm.stopMusicPlayer(uuid);
-            mm.stopLoadMusicPlayer(uuid);
-            mm.loadAddMusicPlayer(uuid, playbackInfo, source, position, (result, time, player, retry) -> {
-                if (!result && retry) {
-                    Thread th = new Thread(() -> {
-                        try {
-                            Thread.sleep(1000);
-                            loadMusic(waitID, uuid, playbackInfo, source, position, tryCont + 1, autoPlay);
-                        } catch (InterruptedException ignored) {
-                        }
-                    });
-                    th.start();
-                } else {
-                    if (autoPlay) {
-                        if (result) {
-                            mm.playMusicPlayer(uuid, time);
-                        }
-                    } else {
-                        NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(waitID, uuid, result, retry, time).toFBB());
-                    }
-                }
+        packetContext.queue(() -> {
+            MusicRingerEngineConnector.load(message.uuid(), IMPMusicTrackerFactory.loadByTag(message.tracker()), message.source(), message.position(), (success, time, error, retry) -> {
+                NetworkManager.sendToServer(IMPPackets.MUSIC_RING_READY_RESULT, new IMPPackets.MusicRingReadyResultMessage(message.waitId(), message.uuid(), success, retry, time).toFBB());
             });
-        }
+        });
     }
 
     public static void onMusicSyncResponseMessage(IMPPackets.MusicSyncResponseMessage message, NetworkManager.PacketContext packetContext) {

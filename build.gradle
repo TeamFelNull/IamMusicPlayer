@@ -41,6 +41,9 @@ allprojects {
         }
         maven { url 'https://jitpack.io' }
         maven { url 'https://maven.blamejared.com' }
+        maven {
+            url "https://cursemaven.com"
+        }
     }
 
     tasks.withType(JavaCompile) {

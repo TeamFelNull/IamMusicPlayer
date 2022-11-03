@@ -1,35 +1,37 @@
 package dev.felnull.imp.client.music.loader;
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.player.IMusicPlayer;
-import dev.felnull.imp.client.music.player.YoutubeDownloaderMusicPlayer;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.MusicSource;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
-
-public class YoutubeDownloaderMusicLoader extends LavaPlayerMusicLoader {
-    public YoutubeDownloaderMusicLoader() {
-        super(IMPMusicLoaderTypes.HTTP);
+public class YoutubeDownloaderMusicLoader extends LavaMusicLoader {
+    @Override
+    protected boolean isSupportMedia(MusicSource source) {
+        return IMPMusicMedias.YOUTUBE.getName().equals(source.getLoaderType());
     }
 
     @Override
-    public IMusicPlayer createMusicPlayer(MusicSource source) {
-        return new YoutubeDownloaderMusicPlayer(source, audioPlayerManager, COMMON_PCM_S16_LE_C2, isSpatial());
+    public void tryLoad(@NotNull MusicSource source) throws Exception {
+        if (!IamMusicPlayer.CONFIG.useYoutubeDownloader)
+            throw new RuntimeException("YoutubeDownloader is disabled in config");
+        super.tryLoad(source);
     }
 
     @Override
-    public boolean canLoad(MusicSource source) throws Exception {
-        if (!IMPMusicLoaderTypes.YOUTUBE.equals(source.getLoaderType()) || source.isLive())
-            return false;
+    protected String wrappedIdentifier(MusicSource source) throws Exception {
+        if (source.isLive())
+            return null;
 
-        var url = YoutubeUtil.getCashedYoutubeRawURL(source.getIdentifier(), false);
+        var url = YoutubeUtil.getYoutubeRawURL(source.getIdentifier());
         if (url == null)
-            return false;
+            throw new RuntimeException("Failed to get Youtube URL");
+        return url;
+    }
 
-        Optional<AudioTrack> track = LavaPlayerUtil.loadCashedTrack(source.getLoaderType(), audioPlayerManager, url, false);
-        return track.isPresent() && !track.get().getInfo().isStream;
+    @Override
+    public int priority() {
+        return 1;
     }
 }

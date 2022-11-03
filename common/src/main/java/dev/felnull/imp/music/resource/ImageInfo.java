@@ -87,5 +87,5 @@ public class ImageInfo implements ITAGSerializable {
             }
             return EMPTY;
         }
-    }
+        }
 }

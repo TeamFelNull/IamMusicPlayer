@@ -7,8 +7,8 @@ import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PlaybackProgressBar;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.IMusicLoaderType;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
+import dev.felnull.imp.client.music.media.MusicMedia;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OERenderUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -56,11 +56,11 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
 
         this.addRenderWidget(new PlaybackProgressBar(getStartX() + this.playBackX + 22, getStartY() + this.playBackY + 14, new TranslatableComponent("imp.progressBar.playbackControl"), () -> {
             if (getScreen().isMusicPlaying())
-                return getScreen().getMusicPlayer().getPositionProgress();
+                return getScreen().getMusicPlayer().getCurrentPositionProgress();
             return 0f;
         }, n -> {
             if (getScreen().isMusicPlaying()) {
-                var ms = getScreen().getMusicPlayer().getMusicSource();
+                var ms = getScreen().getMusicPlayer().getSource();
                 getScreen().playMusic(ms, (long) ((float) ms.getDuration() * n));
             }
         }));
@@ -98,7 +98,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         Component pt;
         if (getScreen().isMusicPlaying()) {
             var mp = getScreen().getMusicPlayer();
-            pt = new TextComponent(FNStringUtil.getTimeProgress(mp.getPosition(), mp.getMusicSource().getDuration()));
+            pt = new TextComponent(FNStringUtil.getTimeProgress(mp.getCurrentPosition(), mp.getSource().getDuration()));
         } else if (getScreen().isMusicLoading()) {
             pt = PLAYBACK_LOADING_PROGRESS_TEXT;
         } else if (!getMusicSource().isEmpty()) {
@@ -122,7 +122,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
                     OERenderUtil.drawTexture(ic, poseStack, getStartX() + 190, getStartY() + 23, 0, 0, 13, 13, 13, 13);
                     sx += 13;
                 }
-                drawSmartText(poseStack, lt.getName(), getStartX() + 190 + sx + 2, getStartY() + 21f + (15f - 6.5f) / 2f);
+                drawSmartText(poseStack, lt.getMediaName(), getStartX() + 190 + sx + 2, getStartY() + 21f + (15f - 6.5f) / 2f);
             }
         }
     }
@@ -166,7 +166,7 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
                     renderTextureSprite(ic, poseStack, multiBufferSource, 190, 23, OERenderUtil.MIN_BREADTH * 5, 13, 13, 0, 0, 13, 13, 13, 13, i, j, onPxW, onPxH, monitorHeight);
                     sx += 13;
                 }
-                renderSmartTextSprite(poseStack, multiBufferSource, lt.getName(), 190 + sx + 2, 21f + (15f - 6.5f) / 2f + 2f, OERenderUtil.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, lt.getMediaName(), 190 + sx + 2, 21f + (15f - 6.5f) / 2f + 2f, OERenderUtil.MIN_BREADTH * 5, onPxW, onPxH, monitorHeight, i);
             }
         }
 
@@ -219,13 +219,13 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     @Nullable
-    protected IMusicLoaderType getRawMusicLoaderType(@NotNull MusicManagerBlockEntity musicManagerBlockEntity) {
-        return IMPMusicLoaderTypes.getMusicLoaderTypes().get(getMusicLoaderType(musicManagerBlockEntity));
+    protected MusicMedia getRawMusicLoaderType(@NotNull MusicManagerBlockEntity musicManagerBlockEntity) {
+        return IMPMusicMedias.getAllMedia().get(getMusicLoaderType(musicManagerBlockEntity));
     }
 
     @Nullable
-    protected IMusicLoaderType getRawMusicLoaderType() {
-        return IMPMusicLoaderTypes.getMusicLoaderTypes().get(getMusicLoaderType());
+    protected MusicMedia getRawMusicLoaderType() {
+        return IMPMusicMedias.getAllMedia().get(getMusicLoaderType());
     }
 
     @NotNull

@@ -5,15 +5,15 @@ import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.inventory.BoomboxMenu;
 import dev.felnull.imp.item.BoomboxItem;
+import dev.felnull.imp.music.tracker.IMPMusicTrackers;
+import dev.felnull.imp.music.tracker.MusicTrackerEntry;
 import dev.felnull.imp.server.music.ringer.IBoomboxRinger;
 import dev.felnull.imp.server.music.ringer.IMusicRinger;
-import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.imp.util.IMPItemUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
@@ -225,8 +224,8 @@ public class BoomboxBlockEntity extends IMPBaseEntityBlockEntity implements IBoo
     }
 
     @Override
-    public Pair<ResourceLocation, CompoundTag> getRingerTracker() {
-        return Pair.of(MusicRingManager.FIXED_TRACKER, MusicRingManager.createFixedTracker(getRingerSpatialPosition()));
+    public MusicTrackerEntry getRingerTracker() {
+        return IMPMusicTrackers.createFixedTracker(getRingerSpatialPosition(), getRingerVolume(), getRingerRange());
     }
 
     @Override

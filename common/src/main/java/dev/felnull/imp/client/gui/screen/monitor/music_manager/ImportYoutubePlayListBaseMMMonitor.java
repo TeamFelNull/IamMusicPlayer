@@ -1,16 +1,14 @@
 package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.YoutubePlayListMusicsFixedButtonsList;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.YoutubeMusicLoaderType;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.imp.client.util.YoutubeUtil;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -44,8 +42,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
         super.init(leftPos, topPos);
 
         addRenderWidget(new SmartButton(getStartX() + 5, getStartY() + 180, 87, 15, BACK_TEXT, n -> {
-            if (getParentType() != null)
-                insMonitor(getParentType());
+            if (getParentType() != null) insMonitor(getParentType());
             resetImport();
         }));
 
@@ -210,31 +207,28 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
 
         @Override
         public void run() {
-            if (isStopped())
-                return;
+            if (isStopped()) return;
 
             String sid = "";
             String sname = "";
             String satuhor = "";
             int sct = 0;
             try {
-                var pl = LavaPlayerUtil.loadTracks(getManager(), id);
+                var pl = LavaPlayerManager.getInstance().loadTracks(id);
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
-                        var ret = getYoutubeLoaderType().createResult(track);
+                        var ret = IMPMusicMedias.YOUTUBE.createResult(track);
                         var en = new YoutubePlayListEntry(ret.name(), ret.author(), ret.source(), ret.imageInfo());
                         youtubePlayListEntries.add(en);
                     }
-                    if (isStopped())
-                        return;
+                    if (isStopped()) return;
                 }
                 sid = id;
                 sct = youtubePlayListEntries.size();
                 sname = pl.getLeft().getName();
 
-                if (isStopped())
-                    return;
+                if (isStopped()) return;
 
                 var pid = YoutubeUtil.getPlayListID(id);
                 if (pid != null) {
@@ -243,21 +237,12 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
                 }
             } catch (Exception ignored) {
             }
-            if (isStopped())
-                return;
+            if (isStopped()) return;
             setImportPlayList(sid);
             setImportPlayListMusicCount(sct);
             setImportPlayListName(sname);
             setImportPlayListAuthor(satuhor);
         }
-
-        private AudioPlayerManager getManager() {
-            return getYoutubeLoaderType().getAudioPlayerManager();
-        }
-    }
-
-    private YoutubeMusicLoaderType getYoutubeLoaderType() {
-        return ((YoutubeMusicLoaderType) IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.YOUTUBE));
     }
 
     public static record YoutubePlayListEntry(String name, String artist, MusicSource source, ImageInfo imageInfo) {

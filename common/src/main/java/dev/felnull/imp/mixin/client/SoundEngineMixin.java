@@ -16,7 +16,7 @@ public class SoundEngineMixin {
 
     @Inject(method = "reload", at = @At("HEAD"))
     private void reload(CallbackInfo ci) {
-        MusicEngine.getInstance().reload();
+        MusicEngine.getInstance().destroy();
     }
 
     @Inject(method = "reload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/SoundEngine;destroy()V"))
@@ -26,6 +26,6 @@ public class SoundEngineMixin {
 
     @Inject(method = "stopAll", at = @At("HEAD"))
     private void stopAll(CallbackInfo ci) {
-        MusicEngine.getInstance().stop();
+        MusicEngine.getInstance().stopAll();
     }
 }

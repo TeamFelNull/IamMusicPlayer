@@ -6,9 +6,8 @@ import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.music.loadertypes.YoutubeMusicLoaderType;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
+import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
@@ -145,12 +144,12 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
             try {
                 if (isStopped()) return;
                 List<Music> musics = new ArrayList<>();
-                var pl = LavaPlayerUtil.loadTracks(getYoutubeLoaderType().getAudioPlayerManager(), id);
+                var pl = LavaPlayerManager.getInstance().loadTracks(id);
                 if (isStopped()) return;
                 if (pl.getLeft() == null) throw new IllegalStateException("Not PlayList");
                 for (AudioTrack track : pl.getRight()) {
                     if (!track.getInfo().isStream) {
-                        var ret = getYoutubeLoaderType().createResult(track);
+                        var ret = IMPMusicMedias.YOUTUBE.createResult(track);
                         var en = new ImportYoutubePlayListMMMonitor.YoutubePlayListEntry(ret.name(), ret.author(), ret.source(), ret.imageInfo());
                         var music = new Music(UUID.randomUUID(), en.name(), en.artist(), en.source(), en.imageInfo(), mc.player.getGameProfile().getId(), System.currentTimeMillis());
                         musics.add(music);
@@ -170,10 +169,6 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
             } catch (Exception ex) {
                 failureImportPlayList = true;
             }
-        }
-
-        private YoutubeMusicLoaderType getYoutubeLoaderType() {
-            return ((YoutubeMusicLoaderType) IMPMusicLoaderTypes.getLoaderType(IMPMusicLoaderTypes.YOUTUBE));
         }
     }
 }

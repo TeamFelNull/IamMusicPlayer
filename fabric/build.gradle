@@ -1,7 +1,7 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "1.2.1"
+    id "com.modrinth.minotaur" version "2.4.4"
 }
 repositories {
     maven { url "https://maven.terraformersmc.com/releases/" }
@@ -31,6 +31,7 @@ dependencies {
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
+    modApi "curse.maven:ctm-535489:3804243"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -49,6 +50,7 @@ dependencies {
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
    // shadowIn 'org.jsoup:jsoup:1.14.3'
     shadowIn 'com.mpatric:mp3agic:0.9.1'
+
 }
 
 processResources {
@@ -199,16 +201,21 @@ curseforge {
 
 
 if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
-    task publishModrinth(type: com.modrinth.minotaur.TaskModrinthUpload) {
+    modrinth {
         token = System.getenv('modrinthapikey')
         projectId = "${rootProject.modrinth_id}"
         versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric"
         versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")
-        versionType = "${project.release_type}".toUpperCase()
-        addGameVersion("${rootProject.minecraft_version}")
-        addLoader("fabric")
-        addLoader("quilt")
-        addGameVersion "${rootProject.minecraft_version}"
+        versionType = "${project.release_type}"
+        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
+        gameVersions = List.of(project.support_versions.split(","))
+        loaders = ["fabric", "quilt"]
+        dependencies {
+            required.project("P7dR8mSH")//Fabric API
+            required.project("9s6osm5g")//Cloth Config API
+            required.project("lhGA9TYQ")//Architectury API
+            required.project("iu3upNjC")//Otyacraft Engine
+            optional.project("nU0bVIaL")//Patchouli
+        }
     }
 }

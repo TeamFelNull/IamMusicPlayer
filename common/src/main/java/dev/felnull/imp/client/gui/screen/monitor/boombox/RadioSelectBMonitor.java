@@ -7,8 +7,7 @@ import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
-import dev.felnull.imp.client.music.loadertypes.IMPMusicLoaderTypes;
-import dev.felnull.imp.client.util.LavaPlayerUtil;
+import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.data.BoomboxData;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
@@ -172,7 +171,7 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
         public void run() {
             if (isStopped()) return;
             try {
-                var otrack = LavaPlayerUtil.loadTrack(IMPMusicLoaderTypes.allAudioPlayerManager, url);
+                var otrack = LavaPlayerManager.getInstance().loadTrack(url);
                 if (isStopped()) return;
                 if (otrack.isPresent()) {
                     var track = otrack.get();
