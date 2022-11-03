@@ -207,7 +207,7 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
         versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric"
         versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Fabric"
         versionType = "${project.release_type}"
-        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
+        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-${rootProject.minecraft_version}-${project.mod_version}.jar")
         gameVersions = List.of(project.support_versions.split(","))
         loaders = ["fabric", "quilt"]
         dependencies {
