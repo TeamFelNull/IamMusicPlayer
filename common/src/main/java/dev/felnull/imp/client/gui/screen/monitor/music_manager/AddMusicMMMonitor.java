@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.imp.client.gui.components.MusicLoaderTypesFixedButtonsList;
+import dev.felnull.imp.client.gui.components.MusicLoaderTypesFixedListWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
@@ -39,6 +39,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     private SmartButton uploadButton;
     private MusicLoadThread musicLoadThread;
     private boolean loadFailure;
+    private MusicLoaderTypesFixedListWidget musicLoaderTypesFixedButtonsList;
 
     public AddMusicMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -57,10 +58,10 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
         Collections.reverse(medias);
         this.musicLoaderTypes.addAll(medias);
 
-        this.addRenderWidget(new MusicLoaderTypesFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 65, 5, Component.translatable("imp.fixedList.musicLoaderTypes"), musicLoaderTypes, (fixedButtonsList, s, i, i1) -> {
-            setMusicLoaderType(s);
+        this.musicLoaderTypesFixedButtonsList = this.addRenderWidget(new MusicLoaderTypesFixedListWidget(getStartX() + 189, getStartY() + 23, 175, 65, Component.translatable("imp.fixedList.musicLoaderTypes"), 5, musicLoaderTypes, (widget, item) -> {
+            setMusicLoaderType(item);
             loadFailure = false;
-        }, n -> getMusicLoaderType().equals(n)));
+        }, this.musicLoaderTypesFixedButtonsList, n -> getMusicLoaderType().equals(n)));
 
         this.musicSourceNameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 189, getStartY() + 112, isMSNShortWidth() ? 141 : 177, 12, Component.translatable("imp.editBox.musicSourceName"));
         this.musicSourceNameEditBox.setMaxLength(300);
@@ -153,7 +154,7 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
             var type = IMPMusicMedias.getMedia(lt);
             int tx = 189 + 2;
             if ((type != null && type.getIcon() != null) || "upload".equals(lt)) {
-                var icon = type != null ? type.getIcon() : MusicLoaderTypesFixedButtonsList.UPLOAD_ICON;
+                var icon = type != null ? type.getIcon() : MusicLoaderTypesFixedListWidget.UPLOAD_ICON;
                 OERenderUtils.renderTextureSprite(icon, poseStack, multiBufferSource, (189f + 1f) * onPxW, monitorHeight - (23f + ((float) k * 13f) + 1f + 11f) * onPxH, OERenderUtils.MIN_BREADTH * 5, 0, 0, 0, 11f * onPxW, 11f * onPxH, 0, 0, 11f * onPxW, 11f * onPxH, 11f * onPxW, 11f * onPxH, i, j);
                 tx += 13 - 1;
             }

@@ -2,7 +2,7 @@ package dev.felnull.imp.client.renderer.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
+import dev.felnull.imp.client.gui.components.MyPlayListFixedListWidget;
 import dev.felnull.imp.client.model.IMPModels;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.item.CassetteTapeItem;
@@ -80,7 +80,7 @@ public class CassetteTapeItemRenderer implements BEWLItemRenderer {
         OERenderUtils.poseRotateX(poseStack, 90f);
         OERenderUtils.poseRotateY(poseStack, 180);
         float x = music.getImage().isEmpty() ? 3.85f : 2.65f;
-        OERenderUtils.renderTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedButtonsList.dateFormat.format(new Date(music.getCreateDate()))), -(1f / 16f) * 3.85f, (1f / 16f) * 0.18f, 0, 0.15f, 0, 0, i);
+        OERenderUtils.renderTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedListWidget.dateFormat.format(new Date(music.getCreateDate()))), -(1f / 16f) * 3.85f, (1f / 16f) * 0.18f, 0, 0.15f, 0, 0, i);
         Component namec = Component.literal(music.getName());
         int ms = music.getImage().isEmpty() ? 120 : 80;
         String dot = "...";

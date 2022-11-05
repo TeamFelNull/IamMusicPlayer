@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.imp.client.gui.components.SearchMusicsFixedButtonsList;
+import dev.felnull.imp.client.gui.components.SearchMusicsFixedListWidget;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
 import dev.felnull.imp.client.music.media.MusicMedia;
@@ -23,7 +23,7 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     private static final ResourceLocation SEARCH_MUSIC_TEXTURE = new ResourceLocation(IamMusicPlayer.MODID, "textures/gui/container/music_manager/monitor/search_music.png");
     private static final Component SEARCHING_TEXT = Component.translatable("imp.text.searching");
     private final List<MusicMediaResult> searchMusics = new ArrayList<>();
-    private SearchMusicsFixedButtonsList searchMusicsFixedButtonsList;
+    private SearchMusicsFixedListWidget searchMusicsFixedButtonsList;
     private EditBox searchNameEditBox;
     private SearchThread searchThread;
 
@@ -34,11 +34,11 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.searchMusicsFixedButtonsList = this.addRenderWidget(new SearchMusicsFixedButtonsList(getStartX() + 2, getStartY() + 25, 366, 172, 4, Component.translatable("imp.fixedList.searchMusic"), searchMusics, (fixedButtonsList, searchMusicEntry, i, i1) -> {
-            setMusicSourceName(searchMusicEntry.source().getIdentifier());
+        this.searchMusicsFixedButtonsList = this.addRenderWidget(new SearchMusicsFixedListWidget(getStartX() + 2, getStartY() + 25, 366, 172, Component.translatable("imp.fixedList.searchMusic"), 4, searchMusics, (widget, item) -> {
+            setMusicSourceName(item.source().getIdentifier());
             getScreen().lastSearch = true;
             insMonitor(MusicManagerBlockEntity.MonitorType.ADD_MUSIC);
-        }));
+        }, this.searchMusicsFixedButtonsList));
 
         this.searchNameEditBox = new EditBox(IIMPSmartRender.mc.font, getStartX() + 2, getStartY() + 11, 367, 12, Component.translatable("imp.editBox.musicSearchName"));
         this.searchNameEditBox.setMaxLength(300);

@@ -5,14 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
-import dev.felnull.imp.client.gui.components.AuthorityPlayersFixedButtonsList;
+import dev.felnull.imp.client.gui.components.AuthorityPlayersFixedListWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.music.resource.AuthorityInfo;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.networking.IMPPackets;
-import dev.felnull.otyacraftengine.client.gui.components.FixedButtonsList;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
@@ -42,6 +41,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
     private SmartRadioButton banRadio;
     private SmartRadioButton adminRadio;
     private SmartButton expulsionButton;
+    private AuthorityPlayersFixedListWidget authorityPlayersFixedButtonsList;
 
     public AuthorityMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -54,12 +54,7 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
             if (getParentType() != null) insMonitor(getParentType());
         }));
 
-        addRenderWidget(new AuthorityPlayersFixedButtonsList(getStartX() + 6, getStartY() + 23, 175, 135, 9, Component.translatable("imp.fixedList.authorityPlayers"), members, new FixedButtonsList.PressEntry<UUID>() {
-            @Override
-            public void onPressEntry(FixedButtonsList<UUID> fixedButtonsList, UUID uuid, int i, int i1) {
-                setSelectedPlayer(uuid);
-            }
-        }, n -> n.equals(getSelectedPlayer())));
+        this.authorityPlayersFixedButtonsList = addRenderWidget(new AuthorityPlayersFixedListWidget(getStartX() + 6, getStartY() + 23, 175, 135, Component.translatable("imp.fixedList.authorityPlayers"), 9, members, (widget, item) -> setSelectedPlayer(item), this.authorityPlayersFixedButtonsList, n -> n.equals(getSelectedPlayer())));
 
         Supplier<Set<RadioButton>> rdos = () -> ImmutableSet.of(this.readOnlyRadio, this.memberRadio, this.adminRadio, this.banRadio);
 

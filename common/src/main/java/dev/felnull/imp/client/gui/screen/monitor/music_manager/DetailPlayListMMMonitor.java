@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
-import dev.felnull.imp.client.gui.components.MemberPlayersFixedButtonsList;
+import dev.felnull.imp.client.gui.components.MemberPlayersFixedListWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
@@ -41,6 +41,7 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
     private SmartRadioButton publishingRadio;
     private SmartRadioButton initAuthRadio;
     private String cashName;
+    private MemberPlayersFixedListWidget memberPlayersFixedButtonsList;
 
     public DetailPlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -71,8 +72,8 @@ public class DetailPlayListMMMonitor extends PlayListBaseMMMonitor {
         this.initAuthRadio.setSelected(true);
         this.initAuthRadio.active = false;
 
-        addRenderWidget(new MemberPlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 175, 100, 5, Component.translatable("imp.fixedList.memberPlayers"), memberPlayers, (fixedButtonsList, uuid, i, i1) -> {
-        }, this::getSelectedMusicPlayList));
+        this.memberPlayersFixedButtonsList = addRenderWidget(new MemberPlayersFixedListWidget(getStartX() + 189, getStartY() + 23, 175, 100, Component.translatable("imp.fixedList.memberPlayers"), 5, memberPlayers, (widget, item) -> {
+        }, this.memberPlayersFixedButtonsList, this::getSelectedMusicPlayList));
 
         addRenderWidget(new SmartButton(getStartX() + width - 95 - 87 * 2 - 3, getStartY() + 180, 87, 15, AUTHORITY_TEXT, n -> {
             insMonitor(MusicManagerBlockEntity.MonitorType.AUTHORITY);

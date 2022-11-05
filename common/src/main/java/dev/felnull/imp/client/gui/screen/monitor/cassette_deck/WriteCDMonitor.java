@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.components.SmartButton;
-import dev.felnull.imp.client.gui.components.WriteMusicsFixedButtonsList;
-import dev.felnull.imp.client.gui.components.WritePlayListFixedButtonsList;
+import dev.felnull.imp.client.gui.components.WriteMusicsFixedListWidget;
+import dev.felnull.imp.client.gui.components.WritePlayListFixedListWidget;
 import dev.felnull.imp.client.gui.screen.CassetteDeckScreen;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
@@ -30,6 +30,8 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
     private final List<Music> musics = new ArrayList<>();
     private List<MusicPlayList> musicPlayListsCash;
     private List<Music> musicsCash;
+    private WriteMusicsFixedListWidget writeMusicsFixedButtonsList;
+    private WritePlayListFixedListWidget writePlayListFixedButtonsList;
 
     public WriteCDMonitor(CassetteDeckBlockEntity.MonitorType monitorType, CassetteDeckScreen screen) {
         super(monitorType, screen);
@@ -47,9 +49,9 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
         this.writeButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 11, 131, 20, 8);
         this.writeButton.active = canWriteStart();
 
-        this.addRenderWidget(new WritePlayListFixedButtonsList(getStartX() + 1, getStartY() + 1, musicPlayLists, (fixedButtonsList, playList, i, i1) -> setSelectPlaylist(playList.getUuid()), n -> n.getUuid().equals(getSelectPlaylist())));
+        this.writePlayListFixedButtonsList = this.addRenderWidget(new WritePlayListFixedListWidget(getStartX() + 1, getStartY() + 1, musicPlayLists, (widget, item) -> setSelectPlaylist(item.getUuid()), this.writePlayListFixedButtonsList, n -> n.getUuid().equals(getSelectPlaylist())));
 
-        this.addRenderWidget(new WriteMusicsFixedButtonsList(getStartX() + 70, getStartY() + 1, musics, (fixedButtonsList, music, i, i1) -> setMusic(music.getUuid()), n -> n.equals(getMusic())));
+        this.writeMusicsFixedButtonsList = this.addRenderWidget(new WriteMusicsFixedListWidget(getStartX() + 70, getStartY() + 1, musics, (widget, item) -> setMusic(item.getUuid()), n -> n.equals(getMusic()), this.writeMusicsFixedButtonsList));
     }
 
     @Override

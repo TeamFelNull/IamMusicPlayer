@@ -5,7 +5,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.SmartButton;
-import dev.felnull.imp.client.gui.components.YoutubePlayListMusicsFixedButtonsList;
+import dev.felnull.imp.client.gui.components.YoutubePlayListMusicsFixedListWidget;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
@@ -30,6 +30,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     private SmartButton importButton;
     private PlayListLoadThread playListLoader;
     private EditBox playlistIdentifierEditBox;
+    private YoutubePlayListMusicsFixedListWidget youtubePlayListMusicsFixedButtonsList;
 
     public ImportYoutubePlayListBaseMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -55,7 +56,7 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
         this.playlistIdentifierEditBox.setResponder(this::startPlayListLoad);
         this.playlistIdentifierEditBox.setValue(getImportPlayList());
 
-        addRenderWidget(new YoutubePlayListMusicsFixedButtonsList(getStartX() + 1, getStartY() + 10, 368, 148, 4, Component.translatable("imp.fixedList.youtubePlayListMusics"), youtubePlayListEntries));
+        this.youtubePlayListMusicsFixedButtonsList = addRenderWidget(new YoutubePlayListMusicsFixedListWidget(getStartX() + 1, getStartY() + 10, 368, 148, Component.translatable("imp.fixedList.youtubePlayListMusics"), 4, youtubePlayListEntries, this.youtubePlayListMusicsFixedButtonsList));
 
         startPlayListLoad(getImportPlayList());
     }

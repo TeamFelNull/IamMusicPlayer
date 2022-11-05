@@ -21,11 +21,11 @@ public class FileChooserUtils {
         Path initPath = null;
         if (OENatives.getInstance().isSupportSpecialFolder())
             initPath = OENatives.getInstance().getMyPicturesFolder();
-        return trayOpenFileChooser("image", initPath, multiSelect);
+        return trayOpenFileChooser("image", initPath, multiSelect, "*.png", "*.jpg", "*.jpeg", "*.gif");
     }
 
     @Nullable
-    private static File[] trayOpenFileChooser(String name, Path initPath, boolean multiSelect) {
-        return OEClientUtils.openFileChooser(I18n.get("imp.fileChooser.title." + name), initPath, null, multiSelect);
+    private static File[] trayOpenFileChooser(String name, Path initPath, boolean multiSelect, @Nullable String... filterPatterns) {
+        return OEClientUtils.openFilterFileChooser(I18n.get("imp.fileChooser.title." + name), initPath, null, multiSelect, filterPatterns);
     }
 }

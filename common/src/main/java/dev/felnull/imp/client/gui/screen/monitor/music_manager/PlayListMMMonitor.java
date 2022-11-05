@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.imp.client.gui.components.MusicsFixedButtonsList;
-import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
+import dev.felnull.imp.client.gui.components.MusicsFixedListWidget;
+import dev.felnull.imp.client.gui.components.MyPlayListFixedListWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
@@ -42,6 +42,8 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     private SmartButton addPlaylistButton;
     private SmartButton addMusic;
     private SmartButton detailButton;
+    private MusicsFixedListWidget musicsFixedButtonsList;
+    private MyPlayListFixedListWidget myPlayListFixedButtonsList;
 
     public PlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -50,9 +52,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        addRenderWidget(new MyPlayListFixedButtonsList(getStartX() + 1, getStartY() + 20, musicPlayLists, (fixedButtonsList, playList, i, i1) -> {
-            setSelectedPlayList(playList.getUuid());
-        }, n -> n.getUuid().equals(getSelectedPlayList())));
+        this.myPlayListFixedButtonsList = addRenderWidget(new MyPlayListFixedListWidget(getStartX() + 1, getStartY() + 20, musicPlayLists, (widget, item) -> setSelectedPlayList(item.getUuid()), this.myPlayListFixedButtonsList, n -> n.getUuid().equals(getSelectedPlayList())));
 
         this.addPlaylistButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 72 + 9, 9, ADD_PLAYLIST_TEXT, n -> {
             insMonitor(MusicManagerBlockEntity.MonitorType.ADD_PLAY_LIST);
@@ -68,10 +68,10 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
         this.musicSortButton = addRenderWidget(new SortButton.SortTypeButton(getStartX() + 174, getStartY() + 189, n -> updateMusics(), true, getScreen()));
         this.musicOrderButton = addRenderWidget(new SortButton.OrderTypeButton(getStartX() + 271, getStartY() + 189, n -> updateMusics(), true, getScreen()));
 
-        this.addRenderWidget(new MusicsFixedButtonsList(getStartX() + 102, getStartY() + 40, 267, 148, 4, Component.translatable("imp.fixedList.musics"), musics, (fixedButtonsList, music, i, i1) -> {
-            setSelectedMusic(music.getUuid());
+        this.musicsFixedButtonsList = this.addRenderWidget(new MusicsFixedListWidget(getStartX() + 102, getStartY() + 40, 267, 148, Component.translatable("imp.fixedList.musics"), 4, musics, (widget, item) -> {
+            setSelectedMusic(item.getUuid());
             insMonitor(MusicManagerBlockEntity.MonitorType.DETAIL_MUSIC);
-        }));
+        }, false, this.musicsFixedButtonsList));
 
         this.detailButton = this.addRenderWidget(new SmartButton(getStartX() + 336, getStartY() + 20, 33, 9, DETAIL_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.DETAIL_PLAY_LIST)));
         this.detailButton.visible = getSelectedMusicPlayList() != null;
@@ -139,7 +139,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
                 }
 
                 renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(OEClientUtils.getWidthOmitText(playList.getName(), 80 - sx, "...")), sx + 3, 20 + (k * 21) + 3, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 21) + 12, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0.7f, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedListWidget.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 21) + 12, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, 0.7f, i);
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, 92, 20, OERenderUtils.MIN_BREADTH * 2, 168, i, j, onPxW, onPxH, monitorHeight, plsc, 8);
@@ -165,7 +165,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
 
                 renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(music.getAuthor()), sx + 3 + 102, 40 + (k * 37) + 14, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-                var pname = OEClientUtils.getPlayerNameByUUID(music.getOwner()).map(n -> (Component) Component.literal(n)).orElse(MusicsFixedButtonsList.UNKNOWN_PLAYER_TEXT);
+                var pname = OEClientUtils.getPlayerNameByUUID(music.getOwner()).map(n -> (Component) Component.literal(n)).orElse(MusicsFixedListWidget.UNKNOWN_PLAYER_TEXT);
 
                 poseStack.pushPose();
                 poseStack.translate((sx + 102 + 2) * onPxW, monitorHeight - (40 + (k * 37) + 23 + 9) * onPxH, OERenderUtils.MIN_BREADTH * 4);
@@ -174,7 +174,7 @@ public class PlayListMMMonitor extends MusicManagerMonitor {
 
                 renderSmartTextSprite(poseStack, multiBufferSource, pname, sx + 3 + 102 + 12, 40 + (k * 37) + 26, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
-                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedButtonsList.dateFormat.format(new Date(music.getCreateDate()))), sx + 3 + 102 + 12 + 88, 40 + (k * 37) + 26, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedListWidget.dateFormat.format(new Date(music.getCreateDate()))), sx + 3 + 102 + 12 + 88, 40 + (k * 37) + 26, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
             }
         }
         renderScrollbarSprite(poseStack, multiBufferSource, 360, 40, OERenderUtils.MIN_BREADTH * 2, 148, i, j, onPxW, onPxH, monitorHeight, msc, 4);

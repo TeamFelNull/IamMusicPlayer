@@ -3,8 +3,8 @@ package dev.felnull.imp.client.gui.screen.monitor.boombox;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.BoomboxData;
-import dev.felnull.imp.client.gui.components.RemoteMusicsFixedButtonsList;
-import dev.felnull.imp.client.gui.components.RemotePlayListFixedButtonsList;
+import dev.felnull.imp.client.gui.components.RemoteMusicsFixedListWidget;
+import dev.felnull.imp.client.gui.components.RemotePlayListFixedListWidget;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.music.resource.MusicPlayList;
@@ -24,6 +24,8 @@ public class RemotePlayBackSelectBMonitor extends BoomboxMonitor {
     private final List<Music> musics = new ArrayList<>();
     private List<MusicPlayList> musicPlayListsCash;
     private List<Music> musicsCash;
+    private RemoteMusicsFixedListWidget remoteMusicsFixedButtonsList;
+    private RemotePlayListFixedListWidget remotePlayListFixedButtonsList;
 
     public RemotePlayBackSelectBMonitor(BoomboxData.MonitorType monitorType, BoomboxScreen screen) {
         super(monitorType, screen);
@@ -32,12 +34,12 @@ public class RemotePlayBackSelectBMonitor extends BoomboxMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        this.addRenderWidget(new RemotePlayListFixedButtonsList(getStartX() + 1, getStartY() + 1, musicPlayLists, (fixedButtonsList, playList, i, i1) -> setSelectPlaylist(playList.getUuid()), n -> n.getUuid().equals(getSelectPlaylist())));
+        this.remotePlayListFixedButtonsList = this.addRenderWidget(new RemotePlayListFixedListWidget(getStartX() + 1, getStartY() + 1, musicPlayLists, (widget, item) -> setSelectPlaylist(item.getUuid()), this.remotePlayListFixedButtonsList, musicPlayList -> musicPlayList.getUuid().equals(getSelectPlaylist())));
 
-        this.addRenderWidget(new RemoteMusicsFixedButtonsList(getStartX() + 70, getStartY() + 1, musics, (fixedButtonsList, music, i, i1) -> {
-            setMusic(music.getUuid());
+        this.remoteMusicsFixedButtonsList = this.addRenderWidget(new RemoteMusicsFixedListWidget(getStartX() + 70, getStartY() + 1, musics, (widget, item) -> {
+            setMusic(item.getUuid());
             setMonitor(BoomboxData.MonitorType.REMOTE_PLAYBACK);
-        }));
+        }, remoteMusicsFixedButtonsList));
     }
 
     @Override

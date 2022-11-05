@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.imp.client.gui.components.JoinPlayListFixedButtonsList;
-import dev.felnull.imp.client.gui.components.MyPlayListFixedButtonsList;
+import dev.felnull.imp.client.gui.components.JoinPlayListFixedListWidget;
+import dev.felnull.imp.client.gui.components.MyPlayListFixedListWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SortButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
@@ -34,6 +34,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
     private SmartButton addOnlinePlayListButton;
     private SortButton.SortTypeButton playlistSortButton;
     private SortButton.OrderTypeButton playlistOrderButton;
+    private JoinPlayListFixedListWidget joinPlayListFixedButtonsList;
 
     public AddPlayListMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -42,10 +43,10 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
     @Override
     public void init(int leftPos, int topPos) {
         super.init(leftPos, topPos);
-        addRenderWidget(new JoinPlayListFixedButtonsList(getStartX() + 1, getStartY() + 20, musicPlayLists, (fixedButtonsList, playList, i, i1) -> {
-            getScreen().insAddPlayList(playList.getUuid());
+        this.joinPlayListFixedButtonsList = addRenderWidget(new JoinPlayListFixedListWidget(getStartX() + 1, getStartY() + 20, musicPlayLists, (widget, item) -> {
+            getScreen().insAddPlayList(item.getUuid());
             insMonitor(MusicManagerBlockEntity.MonitorType.PLAY_LIST);
-        }));
+        }, this.joinPlayListFixedButtonsList));
 
         this.createPlayListButton = addRenderWidget(new SmartButton(getStartX() + 1, getStartY() + 189, 90, 9, CREATE_PLAYLIST_TEXT, n -> insMonitor(MusicManagerBlockEntity.MonitorType.CREATE_PLAY_LIST)));
         this.createPlayListButton.setIcon(WIDGETS_TEXTURE, 78, 14, 5, 5);
@@ -94,7 +95,7 @@ public class AddPlayListMMMonitor extends MusicManagerMonitor {
                 }
 
                 renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(playList.getName()), sx + 3, 20 + (k * 28) + 5, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
-                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedButtonsList.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
+                renderSmartTextSprite(poseStack, multiBufferSource, Component.literal(MyPlayListFixedListWidget.dateFormat.format(new Date(playList.getCreateDate()))), sx + 3, 20 + (k * 28) + 18, OERenderUtils.MIN_BREADTH * 4, onPxW, onPxH, monitorHeight, i);
 
                 poseStack.pushPose();
                 poseStack.translate((sx + 101) * onPxW, monitorHeight - (20 + (k * 28) + 2 + 9) * onPxH, OERenderUtils.MIN_BREADTH * 4);

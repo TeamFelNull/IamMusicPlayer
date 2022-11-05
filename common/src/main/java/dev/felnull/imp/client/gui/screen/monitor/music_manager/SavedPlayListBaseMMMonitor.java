@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
-import dev.felnull.imp.client.gui.components.PlayersFixedButtonsList;
+import dev.felnull.imp.client.gui.components.PlayersFixedListWidget;
 import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.components.SmartRadioButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
@@ -39,6 +39,8 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
     private SmartRadioButton initAuthReadOnlyRadio;
     private SmartRadioButton initAuthMemberRadio;
     private PlayerUUIDLoadThread playerUUIDLoadThread;
+    private PlayersFixedListWidget onlinePlayersFixedButtonsList;
+    private PlayersFixedListWidget invitePlayersFixedButtonsList;
 
     public SavedPlayListBaseMMMonitor(MusicManagerBlockEntity.MonitorType type, MusicManagerScreen screen) {
         super(type, screen);
@@ -74,8 +76,8 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
         this.addInvitePlayerButton.setIcon(MusicManagerMonitor.WIDGETS_TEXTURE, 106, 19, 11, 11);
         this.addInvitePlayerButton.setHideText(true);
 
-        addRenderWidget(new PlayersFixedButtonsList(getStartX() + 189, getStartY() + 23, 87, 65, 5, Component.translatable("imp.fixedList.onlinePlayers"), onlinePlayers, (fixedButtonsList, uuid, i, i1) -> addInvitePlayer(uuid)));
-        addRenderWidget(new PlayersFixedButtonsList(getStartX() + 278, getStartY() + 23, 87, 65, 5, Component.translatable("imp.fixedList.invitePlayers"), invitePlayers, (fixedButtonsList, uuid, i, i1) -> removeInvitePlayer(uuid)));
+        this.onlinePlayersFixedButtonsList = addRenderWidget(new PlayersFixedListWidget(getStartX() + 189, getStartY() + 23, 87, 65, Component.translatable("imp.fixedList.onlinePlayers"), 5, onlinePlayers, (widget, item) -> addInvitePlayer(item), this.onlinePlayersFixedButtonsList));
+        this.invitePlayersFixedButtonsList = addRenderWidget(new PlayersFixedListWidget(getStartX() + 278, getStartY() + 23, 87, 65, Component.translatable("imp.fixedList.invitePlayers"), 5, invitePlayers, (widget, item) -> removeInvitePlayer(item), this.invitePlayersFixedButtonsList));
     }
 
     @Override
