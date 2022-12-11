@@ -2,11 +2,10 @@ package dev.felnull.imp.server.handler;
 
 import com.mojang.brigadier.CommandDispatcher;
 import dev.architectury.event.events.common.CommandRegistrationEvent;
-import dev.felnull.imp.IamMusicPlayer;
+import dev.architectury.event.events.common.LootEvent;
 import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.server.commands.MusicCommand;
-import dev.felnull.otyacraftengine.server.event.LootTableEvent;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -26,10 +25,10 @@ public class ServerHandler {
 
     public static void init() {
         CommandRegistrationEvent.EVENT.register(ServerHandler::registerCommand);
-        LootTableEvent.LOOT_TABLE_MODIFY.register(ServerHandler::lootTableModify);
+        LootEvent.MODIFY_LOOT_TABLE.register(ServerHandler::modifyLootTable);
     }
 
-    private static void lootTableModify(LootTables lootManager, ResourceLocation id, LootTableEvent.LootTableModify modifyAccess) {
+    public static void modifyLootTable(LootTables lootTables, ResourceLocation id, LootEvent.LootTableModificationContext context, boolean builtin) {
         boolean normal = LOOT_NORMAL.contains(id.toString());
         boolean rare = LOOT_RARE.contains(id.toString());
 
@@ -38,13 +37,13 @@ public class ServerHandler {
                     .when(LootItemRandomChanceCondition.randomChance(rare ? 0.364364f : 0.1919810f))
                     .add(LootItem.lootTableItem(IMPItems.PARABOLIC_ANTENNA.get()).setWeight(1))
                     .add(LootItem.lootTableItem(IMPItems.RADIO_ANTENNA.get()).setWeight(rare ? 1 : 4));
-            modifyAccess.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "antenna"), antennaPoolB);
+            context.addPool(antennaPoolB);
 
             var djKitPoolB = LootPool.lootPool().setRolls(UniformGenerator.between(1, 3))
                     .when(LootItemRandomChanceCondition.randomChance(0.114514f))
                     .add(LootItem.lootTableItem(IMPBlocks.BOOMBOX.get()).setWeight(1))
                     .add(LootItem.lootTableItem(IMPItems.CASSETTE_TAPE.get()).setWeight(rare ? 3 : 6));
-            modifyAccess.addLootPool(new ResourceLocation(IamMusicPlayer.MODID, "dj_kit"), djKitPoolB);
+            context.addPool(djKitPoolB);
         }
     }
 

@@ -1,5 +1,7 @@
 package dev.felnull.imp;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import dev.architectury.platform.Platform;
 import dev.felnull.imp.advancements.IMPCriteriaTriggers;
 import dev.felnull.imp.block.IMPBlocks;
@@ -18,6 +20,7 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 public class IamMusicPlayer {
     public static final IMPConfig CONFIG = AutoConfig.register(IMPConfig.class, Toml4jConfigSerializer::new).getConfig();
     public static final String MODID = "iammusicplayer";
+    private static final Supplier<String> MODNAME = Suppliers.memoize(() -> Platform.getMod(MODID).getName());
 
     public static void init() {
         IMPPackets.init();
@@ -38,6 +41,6 @@ public class IamMusicPlayer {
     }
 
     public static String getModName() {
-        return Platform.getMod(MODID).getName();
+        return MODNAME.get();
     }
 }
