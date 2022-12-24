@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "loader": "forge:obj",
+  "model": "iammusicplayer:models/item/parabolic_antenna/xmas/xmas_antenna_side.obj",
+  "flip_v": true,
+  "emissive_ambient": false
+}

@@ -1,6 +1,6 @@
 # Blender v3.2.2 OBJ File: 'parabolic_antenna.blend'
 # www.blender.org
-mtllib parabolic_antenna.mtl
+mtllib xmas_antenna.mtl
 o Cylinder.001
 v 0.000000 -2.492532 -1.000000
 v 0.500000 -2.492532 -0.866025

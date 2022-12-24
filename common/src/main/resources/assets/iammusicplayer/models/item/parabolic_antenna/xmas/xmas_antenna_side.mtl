@@ -1,7 +1,7 @@
-# Blender MTL File: 'parabolic_antenna.blend'
+# Blender MTL File: 'xmas_parabolic_antenna.blend'
 # Material Count: 1
 
-newmtl Material.001
+newmtl Material.002
 Ns 224.999983
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd iammusicplayer:item/parabolic_antenna/parabolic_antenna
+map_Kd block/white_wool

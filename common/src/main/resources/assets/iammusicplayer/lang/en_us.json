@@ -3,7 +3,7 @@
   "item.iammusicplayer.radio_antenna": "Radio Antenna",
   "item.iammusicplayer.radio_antenna.desc": "Required to listen to radio streams",
   "item.iammusicplayer.parabolic_antenna": "Parabolic Antenna",
-  "item.iammusicplayer.parabolic_antenna.desc": "Required for listening without using cassette tapes",
+  "item.iammusicplayer.parabolic_antenna.desc": "Required to listen to music without using cassette tapes",
   "item.iammusicplayer.cassette_tape": "Cassette Tape",
   "item.iammusicplayer.cassette_tape_glass": "Glass Cassette Tape",
   "item.iammusicplayer.cassette_tape.written": "Written Cassette Tape",
