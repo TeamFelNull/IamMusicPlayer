@@ -19,7 +19,7 @@ public class MusicRing {
     private final Map<UUID, RingedPlayerInfos> playerInfos = new HashMap<>();
     private final Set<UUID> waitRingers = new HashSet<>();
     private long baseTime;
-    private long pauseTime;
+    private long pauseTime = -1;
     private long lastTime;
 
     public MusicRing(ServerLevel level) {
@@ -97,7 +97,8 @@ public class MusicRing {
     }
 
     protected void resume() {
-        this.baseTime += System.currentTimeMillis() - this.pauseTime;
+        if (this.pauseTime >= 0)
+            this.baseTime += System.currentTimeMillis() - this.pauseTime;
         this.pauseTime = 0;
     }
 
@@ -240,6 +241,9 @@ public class MusicRing {
             if (listenPlayers.contains(id)) {
                 if (state != IMPPackets.MusicRingResponseStateType.PLAYING)
                     listenPlayers.remove(id);
+
+                if (state == IMPPackets.MusicRingResponseStateType.LOADING)
+                    sendStopPackets(id);
             }
 
             if (middleLoadPlayers.contains(id)) {

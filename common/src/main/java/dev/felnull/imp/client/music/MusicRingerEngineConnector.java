@@ -26,7 +26,7 @@ public class MusicRingerEngineConnector {
             return IMPPackets.MusicRingResponseStateType.PLAYING;
         }
 
-        if (getEngine().isLoading(musicPlayerId))
+        if (getEngine().isLoading(musicPlayerId) || getEngine().isExist(musicPlayerId))
             return IMPPackets.MusicRingResponseStateType.LOADING;
 
         return IMPPackets.MusicRingResponseStateType.NONE;

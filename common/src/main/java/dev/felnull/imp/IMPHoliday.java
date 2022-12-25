@@ -1,7 +1,6 @@
 package dev.felnull.imp;
 
 import com.google.common.base.Suppliers;
-import net.minecraft.server.PlayerAdvancements;
 
 import java.util.Calendar;
 import java.util.function.Supplier;
@@ -13,7 +12,6 @@ public class IMPHoliday {
     });
 
     public static boolean isXmas() {
-        return false;
-//        return XMAS.get();
+        return XMAS.get();
     }
 }

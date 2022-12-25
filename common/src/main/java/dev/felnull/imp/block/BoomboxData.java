@@ -318,6 +318,7 @@ public class BoomboxData {
         OENbtUtils.writeUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         if (this.selectedMusic != null) tag.put("SelectedMusic", this.selectedMusic.createSavedTag());
         tag.putString("ContinuousType", this.continuousType.getName());
+        tag.putString("LastMonitorType", this.lastMonitorType.getName());
 
 
         if (absolutely) {
@@ -329,7 +330,6 @@ public class BoomboxData {
             tag.putInt("ParabolicAntennaProgress", this.parabolicAntennaProgress);
             tag.putInt("AntennaProgressOld", this.antennaProgressOld);
             tag.putInt("AntennaProgress", this.antennaProgress);
-            tag.putString("LastMonitorType", this.lastMonitorType.getName());
             tag.putBoolean("NoChangeCassetteTape", this.noChangeCassetteTape);
         }
 
@@ -360,6 +360,7 @@ public class BoomboxData {
         this.radioAuthor = tag.getString("RadioAuthor");
         OENbtUtils.readUUIDMap(tag, "PlayerSelectPlaylists", playerSelectPlaylists);
         this.continuousType = ContinuousType.getByName(tag.getString("ContinuousType"));
+        this.lastMonitorType = MonitorType.getByName(tag.getString("LastMonitorType"));
 
         if (tag.contains("SelectedMusic"))
             this.selectedMusic = TagSerializable.loadSavedTag(tag.getCompound("SelectedMusic"), new Music());
@@ -373,7 +374,6 @@ public class BoomboxData {
             this.parabolicAntennaProgress = tag.getInt("ParabolicAntennaProgress");
             this.antennaProgressOld = tag.getInt("AntennaProgressOld");
             this.antennaProgress = tag.getInt("AntennaProgress");
-            this.lastMonitorType = MonitorType.getByName(tag.getString("LastMonitorType"));
             this.noChangeCassetteTape = tag.getBoolean("NoChangeCassetteTape");
         }
 

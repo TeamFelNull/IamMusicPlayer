@@ -362,6 +362,7 @@ public class MusicEngine implements MusicEngineAccess {
         return false;
     }
 
+
     public Logger getLogger() {
         return LOGGER;
     }
