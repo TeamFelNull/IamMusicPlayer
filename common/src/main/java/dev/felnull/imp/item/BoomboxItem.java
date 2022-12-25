@@ -53,13 +53,14 @@ public class BoomboxItem extends BlockItem implements IInstructionItem {
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand interactionHand) {
         var itemStack = player.getItemInHand(interactionHand);
-        if (player.isCrouching() || isPowered(itemStack)) {
-            if (!level.isClientSide()) {
-                if (player.isCrouching())
-                    setPower(itemStack, !isPowered(itemStack));
-                else if (getTransferProgress(itemStack) == 10)
-                    BoomboxItemContainer.openContainer((ServerPlayer) player, interactionHand, itemStack);
-            }
+        if (player.isCrouching()) {
+            if (!level.isClientSide())
+                setPower(itemStack, !isPowered(itemStack));
+        } else if (isPowered(itemStack) && getTransferProgress(itemStack) == 10) {
+            if (!level.isClientSide())
+                BoomboxItemContainer.openContainer((ServerPlayer) player, interactionHand, itemStack);
+
+            return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
         }
         return super.use(level, player, interactionHand);
     }
