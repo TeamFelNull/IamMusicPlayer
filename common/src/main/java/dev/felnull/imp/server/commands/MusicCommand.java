@@ -3,7 +3,7 @@ package dev.felnull.imp.server.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.api.IamMusicPlayerAPI;
-import dev.felnull.imp.api.music.MusicRingerAccess;
+import dev.felnull.imp.api.MusicRingerAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

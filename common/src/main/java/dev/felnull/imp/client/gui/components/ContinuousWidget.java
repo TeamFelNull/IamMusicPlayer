@@ -10,14 +10,15 @@ import net.minecraft.network.chat.Component;
 
 public class ContinuousWidget extends AbstractWidget implements IIMPSmartRender {
     private final Value<BoomboxData.ContinuousType> continuousTypeValue;
+    private static final Component CONTINUOUSCONTROL = Component.translatable("imp.widget.continuousControl");
 
     public ContinuousWidget(int x, int y, Value<BoomboxData.ContinuousType> continuousTypeValue) {
-        super(x, y, 40, 10, Component.translatable("imp.widget.continuousControl"));
+        super(x, y, 40, 10, CONTINUOUSCONTROL);
         this.continuousTypeValue = continuousTypeValue;
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 
@@ -29,6 +30,6 @@ public class ContinuousWidget extends AbstractWidget implements IIMPSmartRender 
 
     @Override
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
-        drawSmartCenterText(poseStack, continuousTypeValue.get().getComponent(), x + width / 2f, y + 2, isHoveredOrFocused() ? 0XFF007F06 : 0XFF115D0E);
+        drawSmartCenterText(poseStack, continuousTypeValue.get().getComponent(), getX() + width / 2f, getY() + 2, isHoveredOrFocused() ? 0XFF007F06 : 0XFF115D0E);
     }
 }

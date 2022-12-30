@@ -14,8 +14,6 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.tracker.IMPMusicTrackers;
 import dev.felnull.otyacraftengine.util.OENbtUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -72,10 +70,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
         if (monitor != null) {
             if (monitor.getType() != MusicManagerBlockEntity.MonitorType.UPLOAD_MUSIC || type != MusicManagerBlockEntity.MonitorType.ADD_MUSIC)
                 musicFileImage = null;
-            monitor.renderables.forEach(n -> {
-                if (n instanceof GuiEventListener guiEventListener)
-                    removeWidget(guiEventListener);
-            });
+            monitor.renderables.forEach(this::removeWidget);
             monitor.depose();
         }
 
@@ -84,10 +79,7 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
 
         monitor = monitors.get(type);
         monitor.init(leftPos, topPos);
-        monitor.renderables.forEach(n -> {
-            if (n instanceof AbstractWidget widget)
-                addRenderableWidget(widget);
-        });
+        monitor.renderables.forEach(this::addRenderableWidget);
     }
 
     private MusicManagerBlockEntity.MonitorType getBEMonitorType() {

@@ -1,4 +1,5 @@
 package dev.felnull.imp.explatform.fabric;
+/*
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,3 +14,4 @@ public class IMPPatchouliExpectPlatformImpl {
         return PatchouliAPI.get().getOpenBookGui();
     }
 }
+*/

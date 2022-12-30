@@ -3,19 +3,14 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class SmartButton extends Button implements IIMPSmartRender {
+public class SmartButton extends IMPButton implements IIMPSmartRender {
     private boolean center = true;
     private ResourceLocation iconTexture;
     private int iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight;
     private boolean hideText;
-
-    public SmartButton(int x, int y, int w, int h, Component text, OnPress onPress, OnTooltip onTooltip) {
-        super(x, y, w, h, text, onPress, onTooltip);
-    }
 
     public void setCenter(boolean center) {
         this.center = center;
@@ -31,7 +26,7 @@ public class SmartButton extends Button implements IIMPSmartRender {
 
     @Override
     public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-        drawSmartButtonBox(poseStack, x, y, width, height, this.getYImage(this.isHoveredOrFocused()));
+        drawSmartButtonBox(poseStack, getX(), getY(), width, height, this.getYImage(this.isHoveredOrFocused()));
         float fx = center ? (float) (width - mc.font.width(getMessage())) / 2f : 2;
         float fy = (float) (height - 7) / 2f;
 
@@ -39,14 +34,14 @@ public class SmartButton extends Button implements IIMPSmartRender {
             float itx = hideText ? (width - iconWidth) / 2f : 2;
             float ity = (float) (height - iconHeight) / 2f;
             fx += itx + iconWidth;
-            OERenderUtils.drawTexture(iconTexture, poseStack, x + itx, y + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
+            OERenderUtils.drawTexture(iconTexture, poseStack, getX() + itx, getY() + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
         }
 
         if (!hideText)
-            drawSmartText(poseStack, getMessage(), x + fx, y + fy);
+            drawSmartText(poseStack, getMessage(), getX() + fx, getY() + fy);
 
-        if (this.isHoveredOrFocused())
-            this.renderToolTip(poseStack, mx, my);
+        /*if (this.isHoveredOrFocused())
+            this.renderToolTip(poseStack, mx, my);*/
     }
 
     public void setIcon(ResourceLocation location, int stX, int stY, int w, int h) {

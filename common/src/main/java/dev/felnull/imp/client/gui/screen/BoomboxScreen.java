@@ -13,8 +13,6 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.gui.screen.OEItemBEContainerBaseScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -266,10 +264,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
 
     private void changeScreenMonitor(BoomboxData.MonitorType type) {
         if (monitor != null) {
-            monitor.renderables.forEach(n -> {
-                if (n instanceof GuiEventListener guiEventListener)
-                    removeWidget(guiEventListener);
-            });
+            monitor.renderables.forEach(this::removeWidget);
             monitor.depose();
         }
 
@@ -278,10 +273,7 @@ public class BoomboxScreen extends OEItemBEContainerBaseScreen<BoomboxMenu> {
 
         monitor = monitors.get(type);
         monitor.init(leftPos, topPos);
-        monitor.renderables.forEach(n -> {
-            if (n instanceof AbstractWidget widget)
-                addRenderableWidget(widget);
-        });
+        monitor.renderables.forEach(this::addRenderableWidget);
     }
 
     private BoomboxData.MonitorType getRawMonitorType() {

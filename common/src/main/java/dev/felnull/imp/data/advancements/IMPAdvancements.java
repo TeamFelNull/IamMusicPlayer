@@ -8,6 +8,8 @@ import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.advancement.ModInvolvementTrigger;
+import dev.felnull.otyacraftengine.data.CrossDataGeneratorAccess;
+import dev.felnull.otyacraftengine.data.provider.AdvancementSubProviderWrapper;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.network.chat.Component;
@@ -15,9 +17,13 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
-public class IMPAdvancements implements Consumer<Consumer<Advancement>> {
+public class IMPAdvancements extends AdvancementSubProviderWrapper {
+    protected IMPAdvancements(CrossDataGeneratorAccess crossDataGeneratorAccess) {
+        super(crossDataGeneratorAccess);
+    }
+
     @Override
-    public void accept(Consumer<Advancement> advancementConsumer) {
+    public void generate(Consumer<Advancement> advancementConsumer) {
         Advancement root = Advancement.Builder.advancement()
                 .display(IMPBlocks.BOOMBOX.get(), Component.translatable("advancements.iammusicplayer.root.title"), Component.translatable("advancements.iammusicplayer.root.description"), new ResourceLocation("iammusicplayer:textures/gui/advancements/backgrounds/imp.png"), FrameType.TASK, false, false, false)
                 .addCriterion(IamMusicPlayer.MODID, ModInvolvementTrigger.TriggerInstance.involvedMod(IamMusicPlayer.MODID))

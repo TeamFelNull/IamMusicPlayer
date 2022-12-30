@@ -20,7 +20,7 @@ public class LoopControlWidget extends AbstractWidget {
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
         boolean il = loop.get();
         int z = isHoveredOrFocused() ? 16 : 0;
-        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, (il ? 8 : 0) + z, 164, 8, 7);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), (il ? 8 : 0) + z, 164, 8, 7);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class LoopControlWidget extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 }

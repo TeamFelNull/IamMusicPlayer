@@ -1,6 +1,6 @@
 package dev.felnull.imp.server.music.ringer;
 
-import dev.felnull.imp.api.music.MusicRingerAccess;
+import dev.felnull.imp.api.MusicRingerAccess;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.tracker.MusicTrackerEntry;
 import net.minecraft.network.chat.Component;

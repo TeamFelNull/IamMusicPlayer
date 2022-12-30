@@ -34,7 +34,7 @@ allprojects {
 
     repositories {
         maven {
-            url = "https://maven.felnull.dev/"
+            url = "https://maven.felnull.dev"
         }
         maven {
             url = 'https://m2.dv8tion.net/releases'

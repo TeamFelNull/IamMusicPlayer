@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[43,)"
+loaderVersion = "[44,)"
 issueTrackerURL = "https://github.com/TeamFelnull/IamMusicPlayer/issues"
 license = "GNU LGPLv3"
 
@@ -17,40 +17,37 @@ The ikisugi music player mod...
 '''
 logoFile = "logo.png"
 
-[modproperties.iammusicplayer]
-catalogueImageIcon = "icon.png"
-
 [[dependencies.iammusicplayer]]
 modId = "forge"
 mandatory = true
-versionRange = "[43,)"
+versionRange = "[44,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,)"
+versionRange = "[1.19.3,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "architectury"
 mandatory = true
-versionRange = "[6.2.43,)"
+versionRange = "[7.0.64,)"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "cloth_config"
 mandatory = true
-versionRange = "[8.0.75,)"
+versionRange = "[9.0.94,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.iammusicplayer]]
 modId = "otyacraftengine"
 mandatory = true
-versionRange = "[3.2.0,)"
+versionRange = "[3.3.0,)"
 ordering = "NONE"
 side = "BOTH"

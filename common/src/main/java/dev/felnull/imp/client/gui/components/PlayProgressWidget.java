@@ -21,18 +21,18 @@ public class PlayProgressWidget extends AbstractWidget {
     public void renderButton(PoseStack poseStack, int i, int j, float f) {
         int z = isHoveredOrFocused() ? 6 : 0;
 
-        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 58, 81 + z, width, 3);
-        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, x, y, 58, 78 + z, (float) width * progress.get(), 3);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 58, 81 + z, width, 3);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 58, 78 + z, (float) width * progress.get(), 3);
     }
 
     @Override
     public void onClick(double d, double e) {
         super.onClick(d, e);
-        progress.accept(Mth.clamp((float) (d - x) / (float) width, 0, 1f));
+        progress.accept(Mth.clamp((float) (d - getX()) / (float) width, 0, 1f));
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 }

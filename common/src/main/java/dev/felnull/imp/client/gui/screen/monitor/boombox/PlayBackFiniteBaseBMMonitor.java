@@ -66,11 +66,11 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
     public void tick() {
         super.tick();
         this.loopControlWidget.visible = canPlay();
-        this.loopControlWidget.x = getStartX() + (isShortTipProgressBar() ? 156 : 189);
-        this.loopControlWidget.y = getStartY() + (isShortTipProgressBar() ? 15 : 26);
+        this.loopControlWidget.setX(getStartX() + (isShortTipProgressBar() ? 156 : 189));
+        this.loopControlWidget.setY(getStartY() + (isShortTipProgressBar() ? 15 : 26));
         this.playProgressWidget.visible = canPlay();
         this.playProgressWidget.setWidth(getProgressBarWidth(getScreen().getBoomBoxData()));
-        this.playProgressWidget.x = getStartX() + (isShortProgressBar() ? 48 : 12);
+        this.playProgressWidget.setX(getStartX() + (isShortProgressBar() ? 48 : 12));
     }
 
     private int getProgressBarWidth(BoomboxData data) {

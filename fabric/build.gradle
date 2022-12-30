@@ -1,7 +1,5 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.4.4"
 }
 
 architectury {
@@ -21,6 +19,8 @@ sourceSets {
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    mixin { useLegacyMixinAp = true }
 
     runs {
         datagen {
@@ -45,9 +45,11 @@ configurations {
     implementation.extendsFrom shadowIn
     shadowCommon.extendsFrom shadowIn
 }
+
 repositories {
-    maven { url "https://maven.terraformersmc.com/releases/" }
+    maven { url "https://maven.terraformersmc.com/releases/" }//modmenu
 }
+
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
@@ -57,12 +59,14 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}"
-    modApi "com.terraformersmc:modmenu:4.0.6"
-    modApi "me.shedaniel.cloth:cloth-config-fabric:8.0.75"
-    modApi "me.shedaniel:RoughlyEnoughItems-fabric:9.1.528"
-    modApi "vazkii.patchouli:Patchouli:1.19.2-76-FABRIC"
-    modApi "curse.maven:ctm-535489:3949790"
+    modApi "dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}"
+    modApi "com.terraformersmc:modmenu:5.0.2"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:9.0.94"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:10.0.578"
+    modApi "dev.felnull:special-model-loader:1.0.0"
+    include "dev.felnull:special-model-loader:1.0.0"
+    modApi "curse.maven:ctm-535489:4199804"
+
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
@@ -70,7 +74,6 @@ dependencies {
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.1.0'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
-
 }
 
 processResources {
@@ -80,41 +83,7 @@ processResources {
         expand "version": project.version
     }
 }
-shadowJar {
-    configurations = [project.configurations.shadowIn]
-    relocate 'org.slf4j', 'dev.felnull.imp.include.org.slf4j'
-    relocate 'certificates', 'dev.felnull.imp.include.certificates'
-    relocate 'com.fasterxml', 'dev.felnull.imp.include.com.fasterxml'
-    relocate 'org.jsoup', 'dev.felnull.imp.include.org.jsoup'
-    relocate 'natives', 'dev.felnull.imp.include.natives'
-    relocate 'mozilla', 'dev.felnull.imp.include.mozilla'
-    relocate 'net.iharder', 'dev.felnull.imp.include.net.iharder'
-    relocate 'com.sedmelluq.lava', 'dev.felnull.imp.include.com.sedmelluq.lava'
-    relocate 'org.apache.http', 'dev.felnull.imp.include.org.apache.http'
-    relocate('org.apache.commons', 'dev.felnull.imp.include.org.apache.commons') {
-        include 'org.apache.commons.logging.**'
-        include 'org.apache.commons.io.**'
-        include 'org.apache.commons.codec.**'
-    }
-    relocate 'com.github', 'dev.felnull.imp.include.com.github'
-    relocate 'com.alibaba', 'dev.felnull.imp.include.com.alibaba'
-    relocate 'dev.felnull.fnjl', 'dev.felnull.imp.include.dev.felnull.fnjl'
-    relocate 'com.mpatric', 'dev.felnull.imp.include.com.mpatric'
-    relocate('com.sedmelluq.discord.lavaplayer', 'dev.felnull.imp.include.com.sedmelluq.discord.lavaplayer') {
-        exclude 'com.sedmelluq.discord.lavaplayer.natives.**'
-    }
 
-    mergeServiceFiles {
-        relocate 'javax.ws.rs.ext', 'dev.felnull.imp.include.javax.ws.rs.ext'
-        //   relocate 'javax.script.ScriptEngineFactory', 'dev.felnull.imp.include.javax.script.ScriptEngineFactory'
-        relocate 'org.glassfish.jersey.internal.spi', 'dev.felnull.imp.include.org.glassfish.jersey.internal.spi'
-    }
-
-    relocate 'ibxm', 'dev.felnull.imp.include.ibxm'
-    relocate 'net.sourceforge.jaad.aac', 'dev.felnull.imp.include.net.sourceforge.jaad.aac'
-    relocate 'org.mozilla.javascript', 'dev.felnull.imp.include.org.mozilla.javascript'
-    relocate 'org.mozilla.classfile', 'dev.felnull.imp.include.org.mozilla.classfile'
-}
 shadowJar {
     exclude "architectury.common.json"
 
@@ -127,7 +96,6 @@ remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
     classifier null
-    setArchivesBaseName("${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}")
 }
 
 jar {
@@ -151,100 +119,11 @@ publishing {
         mavenFabric(MavenPublication) {
             artifactId = rootProject.archives_base_name + "-" + project.name
             from components.java
-            pom {
-                name = 'IamMusicPlayer'
-                description = 'The ikisugi music player mod.'
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'MORIMORI0317'
-                        name = 'MORIMORI0317'
-                    }
-                    developer {
-                        id = 'FelNull'
-                        name = 'TeamFelNull'
-                        email = 'teamfelnull@felnull.dev'
-                    }
-                }
-            }
         }
     }
 
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
-            }
-        }
-    }
-}
-
-curseforge {
-    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
-        apiKey = System.getenv('curesforgeapikey')
-        project {
-            id = "${rootProject.curesforge_id}"
-
-            changelog = '';
-
-            releaseType = "${rootProject.release_type}"
-            addGameVersion "${rootProject.minecraft_version}"
-            addGameVersion 'Java 17'
-            addGameVersion "Fabric"
-            addGameVersion "Quilt"
-
-            project.support_versions.split(",").each {
-                String version -> addGameVersion version
-            }
-
-            relations {
-                requiredDependency "fabric-api"
-                requiredDependency "cloth-config"
-                requiredDependency "architectury-api"
-                requiredDependency "otyacraft-engine"
-                optionalDependency "patchouli-fabric"
-            }
-
-            mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-            }
-
-            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}-sources.jar")) {
-                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric-sources"
-            }
-            afterEvaluate {
-                uploadTask.dependsOn("build")
-            }
-        }
-    }
-    options {
-        forgeGradleIntegration = false
-    }
-}
-
-if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
-    modrinth {
-        token = System.getenv('modrinthapikey')
-        projectId = "${rootProject.modrinth_id}"
-        versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-        versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Fabric"
-        versionType = "${project.release_type}"
-        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
-        gameVersions = List.of(project.support_versions.split(","))
-        loaders = ["fabric", "quilt"]
-        dependencies {
-            required.project("P7dR8mSH")//Fabric API
-            required.project("9s6osm5g")//Cloth Config API
-            required.project("lhGA9TYQ")//Architectury API
-            required.project("iu3upNjC")//Otyacraft Engine
-            optional.project("nU0bVIaL")//Patchouli
-        }
+        // Add repositories to publish to here.
     }
 }

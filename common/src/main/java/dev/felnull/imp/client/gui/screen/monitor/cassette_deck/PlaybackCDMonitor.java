@@ -180,11 +180,11 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
         super.tick();
         this.volumeWidget.visible = isPlayBack();
         this.playBackControlWidget.visible = isPlayBack();
-        this.playBackControlWidget.x = getStartX() + (isShortProgressBar() ? 45 : 2);
+        this.playBackControlWidget.setX(getStartX() + (isShortProgressBar() ? 45 : 2));
         this.loopControlWidget.visible = isPlayBack();
         this.playProgressWidget.visible = isPlayBack();
         this.playProgressWidget.setWidth(isShortProgressBar() ? 133 : 176);
-        this.playProgressWidget.x = getStartX() + (isShortProgressBar() ? 55 : 12);
+        this.playProgressWidget.setX(getStartX() + (isShortProgressBar() ? 55 : 12));
     }
 
     private boolean isShortProgressBar(CassetteDeckBlockEntity blockEntity) {

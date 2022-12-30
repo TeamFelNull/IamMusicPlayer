@@ -40,9 +40,9 @@ public class PowerButton extends ImageButton {
             tx += this.width;
 
         RenderSystem.enableDepthTest();
-        blit(poseStack, this.x, this.y, (float) tx, (float) ty, this.width, this.height, this.textureWidth, this.textureHeight);
-        if (this.isHoveredOrFocused())
-            this.renderToolTip(poseStack, i, j);
+        blit(poseStack, this.getX(), this.getY(), (float) tx, (float) ty, this.width, this.height, this.textureWidth, this.textureHeight);
+        /*if (this.isHoveredOrFocused())
+            this.renderToolTip(poseStack, i, j);*/
     }
 
     private static void onPower(IMPBaseContainerScreen<?> screen) {

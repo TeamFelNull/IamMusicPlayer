@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
-import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEventHandler implements IIMPSmartRender {
     protected final List<GuiEventListener> children = new ArrayList<>();
-    public final List<Widget> renderables = new ArrayList<>();
+    public final List<AbstractWidget> renderables = new ArrayList<>();
     protected Component title;
     protected int x;
     protected int y;
@@ -61,7 +61,7 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
 
     }
 
-    protected <W extends Widget> W addRenderWidget(W widget) {
+    protected <W extends AbstractWidget> W addRenderWidget(W widget) {
         renderables.add(widget);
         return widget;
     }

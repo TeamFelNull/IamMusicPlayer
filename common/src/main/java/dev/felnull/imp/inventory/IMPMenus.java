@@ -6,7 +6,7 @@ import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.otyacraftengine.item.location.PlayerItemLocation;
 import dev.felnull.otyacraftengine.util.OEMenuUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 
 public class IMPMenus {
-    private static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(IamMusicPlayer.MODID, Registry.MENU_REGISTRY);
+    private static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(IamMusicPlayer.MODID, Registries.MENU);
     public static final RegistrySupplier<MenuType<MusicManagerMenu>> MUSIC_MANAGER = registerBlockMenu("music_manager", MusicManagerMenu::new);
     public static final RegistrySupplier<MenuType<CassetteDeckMenu>> CASSETTE_DECK = registerBlockMenu("cassette_deck", CassetteDeckMenu::new);
     public static final RegistrySupplier<MenuType<BoomboxMenu>> BOOMBOX = registerItemAndBlockMenu("boombox", BoomboxMenu::new);

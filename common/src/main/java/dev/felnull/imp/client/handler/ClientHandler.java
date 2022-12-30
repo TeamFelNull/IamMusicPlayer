@@ -22,7 +22,6 @@ import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
-import dev.felnull.otyacraftengine.client.event.OBJLoaderEvent;
 import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
@@ -35,7 +34,6 @@ import net.minecraft.client.gui.screens.SoundOptionsScreen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -48,7 +46,6 @@ public class ClientHandler {
     private static final Minecraft mc = Minecraft.getInstance();
 
     public static void init() {
-        OBJLoaderEvent.LOAD_CHECK.register(ClientHandler::objLoad);
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(ClientHandler::onClientLevelLoad);
         ClientEvent.CHANGE_HAND_HEIGHT.register(ClientHandler::changeHandHeight);
         ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
@@ -101,11 +98,6 @@ public class ClientHandler {
         return InteractionResult.PASS;
     }
 
-    private static EventResult objLoad(ResourceLocation resourceLocation) {
-        if (IamMusicPlayer.MODID.equals(resourceLocation.getNamespace()))
-            return EventResult.interruptTrue();
-        return EventResult.pass();
-    }
 
     private static void onClientLevelLoad(ClientLevel clientLevel) {
         MusicSyncManager.getInstance().reset();

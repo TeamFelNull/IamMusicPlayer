@@ -1,4 +1,4 @@
-package dev.felnull.imp.api.music;
+package dev.felnull.imp.api;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;

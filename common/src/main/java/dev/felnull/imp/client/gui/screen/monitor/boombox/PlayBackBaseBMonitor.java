@@ -61,7 +61,7 @@ public abstract class PlayBackBaseBMonitor extends BoomboxMonitor {
         this.volumeWidget.visible = canPlay();
 
         this.playBackControlWidget.visible = canPlay();
-        this.playBackControlWidget.x = getStartX() + (isShortProgressBar() ? 38 : 2);
+        this.playBackControlWidget.setX(getStartX() + (isShortProgressBar() ? 38 : 2));
     }
 
     @Override

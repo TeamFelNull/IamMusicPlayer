@@ -1,6 +1,5 @@
 package dev.felnull.imp.api;
 
-import dev.felnull.imp.api.music.MusicRingerAccess;
 import dev.felnull.imp.impl.IamMusicPlayerAPIImpl;
 import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Unmodifiable;

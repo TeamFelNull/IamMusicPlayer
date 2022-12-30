@@ -1,6 +1,6 @@
 package dev.felnull.imp.item;
 
-import dev.felnull.otyacraftengine.item.IEquipmentItem;
+import dev.felnull.otyacraftengine.item.EquipmentItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ParabolicAntennaItem extends RadioAntennaItem implements IEquipmentItem {
+public class ParabolicAntennaItem extends RadioAntennaItem implements EquipmentItem {
     private static final Component DESC = Component.translatable("item.iammusicplayer.parabolic_antenna.desc").withStyle(ChatFormatting.GRAY);
 
     public ParabolicAntennaItem(Properties properties) {

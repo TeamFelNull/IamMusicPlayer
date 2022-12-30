@@ -4,12 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
-import net.minecraft.client.gui.components.Button;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-public class BoomboxButton extends Button {
+public class BoomboxButton extends IMPButton {
     private final BoomboxData.ButtonType type;
     private final Supplier<BoomboxData.Buttons> buttons;
     private final BooleanSupplier downShift;
@@ -30,11 +29,11 @@ public class BoomboxButton extends Button {
         int r = isHoveredOrFocused() ? 1 : 0;
         if (type.getState(buttons.get()))
             r += 2;
-        OERenderUtils.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x, y, r * 19, 175, 19, 13);
+        OERenderUtils.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, getX(), getY(), r * 19, 175, 19, 13);
 
         float zx = ((float) width - 9f) / 2f;
         float zy = ((float) height - 9f) / 2f;
-        OERenderUtils.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, x + zx, y + zy, (type.ordinal() - 1) * 9, 188 + (downShift.getAsBoolean() ? 9 : 0), 9, 9);
+        OERenderUtils.drawTexture(BoomboxScreen.BG_TEXTURE, poseStack, getX() + zx, getY() + zy, (type.ordinal() - 1) * 9, 188 + (downShift.getAsBoolean() ? 9 : 0), 9, 9);
     }
 
     public BoomboxData.ButtonType getType() {

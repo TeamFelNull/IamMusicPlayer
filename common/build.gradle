@@ -13,8 +13,8 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-    modApi "${rootProject.oe_repo_pre}dev.felnull:otyacraftengine:${rootProject.oe_version}"
-    modApi "me.shedaniel.cloth:cloth-config:8.0.75"
+    modApi "dev.felnull:otyacraftengine:${rootProject.oe_version}"
+    modApi "me.shedaniel.cloth:cloth-config:9.0.94"
 
     implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     implementation("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
@@ -29,37 +29,11 @@ publishing {
         mavenCommon(MavenPublication) {
             artifactId = rootProject.archives_base_name
             from components.java
-            pom {
-                name = 'IamMusicPlayer'
-                description = 'The ikisugi music player mod.'
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://www.gnu.org/licenses/lgpl-3.0.txt'
-                    }
-                }
-                developers {
-                    developer {
-                        id = 'MORIMORI0317'
-                        name = 'MORIMORI0317'
-                    }
-                    developer {
-                        id = 'FelNull'
-                        name = 'TeamFelNull'
-                        email = 'teamfelnull@felnull.dev'
-                    }
-                }
-            }
         }
     }
 
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
-            }
-        }
+        // Add repositories to publish to here.
     }
 }
