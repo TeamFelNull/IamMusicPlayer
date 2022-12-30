@@ -1,5 +1,6 @@
 package dev.felnull.imp.client.handler;
 
+import dev.architectury.event.CompoundEventResult;
 import dev.architectury.event.EventResult;
 import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientLifecycleEvent;
@@ -9,8 +10,6 @@ import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.IMPBlocks;
-import dev.felnull.imp.client.gui.components.MusicVolumeSlider;
-import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
@@ -22,8 +21,6 @@ import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
-import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
-import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -33,7 +30,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.SoundOptionsScreen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -44,17 +40,29 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClientHandler {
     private static final Minecraft mc = Minecraft.getInstance();
+    private static double LAST_MUSIC_VOLUME = IamMusicPlayer.CONFIG.volume;
 
     public static void init() {
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(ClientHandler::onClientLevelLoad);
         ClientEvent.CHANGE_HAND_HEIGHT.register(ClientHandler::changeHandHeight);
-        ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
-        AutoConfig.getConfigHolder((Class<IMPConfig>) IamMusicPlayer.CONFIG.getClass()).registerSaveListener(ClientHandler::onConfigSave);
+        AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
         MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
         ClientTickEvent.CLIENT_POST.register(ClientHandler::ontClientTick);
         ClientEvent.HAND_ATTACK.register(ClientHandler::onHandAttack);
+        ClientGuiEvent.SET_SCREEN.register(ClientHandler::modifyScreen);
+        ClientGuiEvent.INIT_POST.register(ClientHandler::screenInit);
+    }
+
+    private static void screenInit(Screen screen, ScreenAccess access) {
+        LAST_MUSIC_VOLUME = IamMusicPlayer.CONFIG.volume;
+    }
+
+    private static CompoundEventResult<Screen> modifyScreen(Screen screen) {
+        if (mc.screen instanceof SoundOptionsScreen && LAST_MUSIC_VOLUME != IamMusicPlayer.CONFIG.volume)
+            AutoConfig.getConfigHolder(IMPConfig.class).save();
+        return CompoundEventResult.pass();
     }
 
     private static EventResult onHandAttack(@NotNull ItemStack itemStack) {
@@ -107,16 +115,6 @@ public class ClientHandler {
         if (oldStack.getItem() instanceof BoomboxItem && newStack.getItem() instanceof BoomboxItem && BoomboxItem.matches(oldStack, newStack))
             return EventResult.interruptFalse();
         return EventResult.pass();
-    }
-
-    private static void onScreenInit(Screen screen, ScreenAccess screenAccess) {
-        if (screen instanceof SoundOptionsScreen) {
-            int i = 11;
-            int x = screen.width / 2 - 155 + i % 2 * 160;
-            int y = screen.height / 6 - 12 + 22 * (i >> 1);
-            screenAccess.addRenderableWidget(new MusicVolumeSlider(x, y, 150));
-            screenAccess.addRenderableWidget(new IconButton(x + 150 + 4, y, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.createRelative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
-        }
     }
 
     private static EventResult onPoseHumanoidArm(HumanoidArm arm, InteractionHand hand, HumanoidModel<? extends LivingEntity> model, LivingEntity livingEntity) {

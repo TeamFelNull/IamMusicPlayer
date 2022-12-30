@@ -6,7 +6,8 @@
   "client": [
     "client.DebugScreenOverlayMixin",
     "client.LevelRendererMixin",
-    "client.SoundEngineMixin"
+    "client.SoundEngineMixin",
+    "client.SoundOptionsScreenMixin"
   ],
   "mixins": [
     "ParrotMixin"
