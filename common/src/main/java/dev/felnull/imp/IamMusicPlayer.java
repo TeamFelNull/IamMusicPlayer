@@ -16,18 +16,11 @@ import dev.felnull.imp.server.handler.ServerHandler;
 import dev.felnull.imp.server.handler.ServerMusicHandler;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
-import net.minecraft.client.OptionInstance;
-import net.minecraft.client.Options;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 
 public class IamMusicPlayer {
     public static final IMPConfig CONFIG = AutoConfig.register(IMPConfig.class, Toml4jConfigSerializer::new).getConfig();
     public static final String MODID = "iammusicplayer";
     private static final Supplier<String> MODNAME = Suppliers.memoize(() -> Platform.getMod(MODID).getName());
-    public static final OptionInstance<Double> IMP_VOLUME_OPTION = new OptionInstance<>("soundCategory." + IamMusicPlayer.MODID, OptionInstance.noTooltip(), (component, val) -> {
-        return val == 0.0 ? Options.genericValueLabel(component, CommonComponents.OPTION_OFF) : Component.translatable("options.percent_value", component, (int) (val * 100.0));
-    }, OptionInstance.UnitDouble.INSTANCE, CONFIG.volume, (val) -> CONFIG.volume = val);
 
     public static void init() {
         IMPPackets.init();

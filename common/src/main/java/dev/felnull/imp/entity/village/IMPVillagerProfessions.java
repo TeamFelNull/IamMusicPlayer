@@ -6,11 +6,14 @@ import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import dev.felnull.imp.IamMusicPlayer;
+import dev.felnull.imp.block.IMPBlocks;
+import dev.felnull.imp.item.IMPItems;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.util.OERegisterUtils;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +24,7 @@ import java.util.function.Supplier;
 
 public class IMPVillagerProfessions {
     private static final DeferredRegister<VillagerProfession> VILLAGER_PROFESSIONS = DeferredRegister.create(IamMusicPlayer.MODID, Registries.VILLAGER_PROFESSION);
-    //public static final RegistrySupplier<VillagerProfession> DJ = register("dj", IMPPoiType.DJ, SoundEvents.LANTERN_PLACE);
+    public static final RegistrySupplier<VillagerProfession> DJ = register("dj", IMPPoiType.DJ, SoundEvents.LANTERN_PLACE);
 
     private static RegistrySupplier<VillagerProfession> register(String name, Supplier<PoiType> poiType, SoundEvent soundEvent) {
         return VILLAGER_PROFESSIONS.register(name, () -> new VillagerProfession(new ResourceLocation(IamMusicPlayer.MODID, name).toString(), holder -> holder.value().equals(poiType.get()), holder -> holder.value().equals(poiType.get()), ImmutableSet.of(), ImmutableSet.of(), soundEvent));
@@ -32,7 +35,7 @@ public class IMPVillagerProfessions {
     }
 
     public static void setup() {
-       /* registerBuying(DJ.get(), 1, IMPItems.CASSETTE_TAPE.get(), 1, 1, 10, 2);
+        registerBuying(DJ.get(), 1, IMPItems.CASSETTE_TAPE.get(), 1, 1, 10, 2);
         registerBuying(DJ.get(), 1, IMPItems.CASSETTE_TAPE_GLASS.get(), 1, 1, 10, 2);
         registerBuying(DJ.get(), 2, IMPBlocks.MUSIC_MANAGER.get(), 18, 1, 1, 12);
         registerBuying(DJ.get(), 3, IMPBlocks.CASSETTE_DECK.get(), 13, 1, 1, 12);
@@ -43,7 +46,7 @@ public class IMPVillagerProfessions {
         registerSelling(DJ.get(), 1, Items.DRIED_KELP, 12, 15, 2);
         registerSelling(DJ.get(), 2, Items.NOTE_BLOCK, 8, 10, 13);
         registerSelling(DJ.get(), 2, Items.REDSTONE, 12, 15, 2);
-        registerSelling(DJ.get(), 3, Items.JUKEBOX, 1, 5, 20);*/
+        registerSelling(DJ.get(), 3, Items.JUKEBOX, 1, 5, 20);
 
         TradeRegistry.registerTradeForWanderingTrader(true, new SimpleTrade(new ItemStack(Items.EMERALD, 42), ItemStack.EMPTY, IMPItemUtil.createKamesutaAntenna(), 1, 10, 0.05f));
     }
