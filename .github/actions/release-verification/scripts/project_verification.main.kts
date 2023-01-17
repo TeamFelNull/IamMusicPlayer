@@ -33,7 +33,7 @@ val gp: Map<String, String> = wrkDir.resolve("gradle.properties")
         .collect(Collectors.toMap({ it[0].trim() }, { it[1].trim() }))
 
 fun assertGradleProperties(name: String, orName: String) {
-    if (gp[name] == null)
+    if (gp[name] == null && gp[orName] == null)
         throw Exception("Required value does not exist in gradle.properties/gradle.propertiesに必要な値が存在しません: $name,$orName")
 }
 
