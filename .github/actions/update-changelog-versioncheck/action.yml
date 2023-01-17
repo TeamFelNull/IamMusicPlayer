@@ -1,0 +1,61 @@
+#変更ログ、Forgeのバージョン確認用Jsonを更新
+name: Update Changelog and Version Check
+description: The Update Changelog and Version Check
+
+runs:
+  using: composite
+  steps:
+    - name: Check Tag by Branch #タグからブランチ特定
+      shell: bash
+      id: checkTagByBranch
+      run: |
+        TAG="${{ github.ref_name }}"
+        TAG_BRANCHES=`git branch -a --contains tags/$TAG | tail -n +2`
+        DEFAULT_BRANCH=`git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`
+
+        chmod +x ${{ github.action_path }}/scripts/branch_by_tag.main.kts
+        TARGET_BRANCH=`${{ github.action_path }}/scripts/branch_by_tag.main.kts "$DEFAULT_BRANCH" "$TAG_BRANCHES"`
+
+        echo "default_branch_result=$DEFAULT_BRANCH" >> $GITHUB_OUTPUT 
+        echo "target_branch_result=$TARGET_BRANCH" >> $GITHUB_OUTPUT
+        echo "Default Branch: $DEFAULT_BRANCH"
+        echo "Target Branch: $TARGET_BRANCH"
+
+    - name: Patch Commit Changelog #変更ログを適用してコミット
+      shell: bash
+      run: |
+        chmod +x gradlew
+        ./gradlew check
+
+        TARGET_BRANCH="${{ steps.checkTagByBranch.outputs.target_branch_result }}"
+
+        ./gradlew patchChangelog
+
+        git checkout $TARGET_BRANCH
+        git config user.email "action@github.com"
+        git config user.name "GitHub Action"
+        git add ./CHANGELOG.md
+        git commit -m "Patched Changelog ${{ github.ref_name }}"
+        git push origin $TARGET_BRANCH
+        echo "Commit done!"
+
+    - name: Update Commit Version Check #バージョン確認Jsonを更新してコミット
+      shell: bash
+      run: |
+        DEFAULT_BRANCH="${{ steps.checkTagByBranch.outputs.default_branch_result }}"
+        TARGET_BRANCH="${{ steps.checkTagByBranch.outputs.target_branch_result }}"
+
+        if [ "$DEFAULT_BRANCH" != "$TARGET_BRANCH" ]; then
+          echo 'Checkout Default Branch'
+          git checkout $DEFAULT_BRANCH
+        fi
+
+        CHANGE_LOG=`./gradlew getChangelog --console=plain -q --no-header --no-summary --no-links`
+
+        chmod +x ${{ github.action_path }}/scripts/update_version_check.main.kts 
+        ${{ github.action_path }}/scripts/update_version_check.main.kts "${{ github.ref_name }}" "$CHANGE_LOG" "${{ github.repository }}"
+
+        git add ./version_check.json
+        git commit -m "Update Version Check ${{ github.ref_name }}"
+        git push origin $DEFAULT_BRANCH
+        echo "Commit done!"

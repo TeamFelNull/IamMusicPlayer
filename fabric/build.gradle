@@ -177,7 +177,7 @@ publishing {
 
     repositories {
         maven {
-            url "https://maven.felnull.dev/"
+            url "${project.maven_put_url}"
             credentials {
                 username = "felnull"
                 password = "${project.maven_put_pass}" != '' ? "${project.maven_put_pass}" : System.getenv('mavenpassword')
@@ -192,7 +192,8 @@ curseforge {
         project {
             id = "${rootProject.curesforge_id}"
 
-            changelog = '';
+            changelogType = 'markdown'
+            changelog = file('../LATEST_CHANGELOG.md')
 
             releaseType = "${rootProject.release_type}"
             addGameVersion "${rootProject.minecraft_version}"
@@ -246,5 +247,6 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("iu3upNjC")//Otyacraft Engine
             optional.project("nU0bVIaL")//Patchouli
         }
+        changelog = file('../LATEST_CHANGELOG.md').text
     }
 }

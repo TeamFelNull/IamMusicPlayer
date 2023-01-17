@@ -1,0 +1,52 @@
+#リリース前検証
+name: Verification
+description: Release verification
+
+inputs:
+  curseforge-token:
+    description: CurseForge Token
+    required: true
+
+  modrinth-token:
+    description: Modrinth Token
+    required: true
+
+  maven-password:
+    description: Maven Password
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Version Verification #バージョン検証
+      shell: bash
+      run: |
+        TAG="${{ github.ref_name }}"
+        TAG_BRANCHES=`git branch -a --contains tags/$TAG | tail -n +2`
+        DEFAULT_BRANCH=`git remote show origin | grep 'HEAD branch' | awk '{print $NF}'`
+        ALL_TAG=`git tag`
+        
+        chmod +x ${{ github.action_path }}/scripts/version_verification.main.kts
+        ${{ github.action_path }}/scripts/version_verification.main.kts "$TAG" "$DEFAULT_BRANCH" "$TAG_BRANCHES" "$ALL_TAG"
+
+    - name: Project Verification #プロジェクト検証
+      shell: bash
+      run: |
+        TAG="${{ github.ref_name }}"
+        chmod +x gradlew
+        ./gradlew check
+        
+        CHANGE_LOG=`./gradlew getChangelog --console=plain -q --no-header --no-summary --no-links --unreleased`
+        
+        chmod +x ${{ github.action_path }}/scripts/project_verification.main.kts
+        ${{ github.action_path }}/scripts/project_verification.main.kts "$TAG" "$CHANGE_LOG"
+
+    - name: Release Destination Verification #リリース先検証
+      shell: bash
+      run: |
+        chmod +x ${{ github.action_path }}/scripts/release_destination_verification.main.kts
+        ${{ github.action_path }}/scripts/release_destination_verification.main.kts "${{ github.repository }}"
+      env:
+        curseforgetoken: ${{ inputs.curseforge-token }}
+        modrinthtoken: ${{ inputs.modrinth-token }}
+        mavenpassword: ${{ inputs.maven-password }}
