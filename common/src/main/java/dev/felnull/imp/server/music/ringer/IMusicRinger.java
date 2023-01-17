@@ -49,6 +49,7 @@ public interface IMusicRinger extends MusicRingerAccess {
         return getMusicRing().isWaitRinger(getRingerUUID());
     }
 
+    @NotNull
     default MusicRing getMusicRing() {
         return MusicRingManager.getInstance().getMusicRing(getRingerLevel());
     }

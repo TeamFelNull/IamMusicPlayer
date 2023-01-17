@@ -20,7 +20,7 @@ public class IamMusicPlayerAPIImpl implements IamMusicPlayerAPI {
     @Unmodifiable
     @Override
     public Collection<MusicRingerAccess> getRingers(ServerLevel level) {
-        var mr = MusicRingManager.getInstance().getMusicRingers().get(level);
+        var mr = MusicRingManager.getInstance().getMusicRing(level);
         return mr.getRingers().values().stream().map(n -> (MusicRingerAccess) n).toList();
     }
 }
