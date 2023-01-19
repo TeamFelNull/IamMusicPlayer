@@ -10,6 +10,7 @@ import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.IMPConfig;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.IMPBlocks;
+import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
@@ -21,7 +22,8 @@ import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
-import dev.felnull.otyacraftengine.event.MoreEntityEvent;
+import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
+import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -30,6 +32,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.SoundOptionsScreen;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -48,18 +51,22 @@ public class ClientHandler {
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
-        MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
+        //  MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
         ClientTickEvent.CLIENT_POST.register(ClientHandler::ontClientTick);
         ClientEvent.HAND_ATTACK.register(ClientHandler::onHandAttack);
-        ClientGuiEvent.SET_SCREEN.register(ClientHandler::modifyScreen);
-        ClientGuiEvent.INIT_POST.register(ClientHandler::screenInit);
+        ClientGuiEvent.SET_SCREEN.register(ClientHandler::onModifyScreen);
+        ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
     }
 
-    private static void screenInit(Screen screen, ScreenAccess access) {
-        LAST_MUSIC_VOLUME = IamMusicPlayer.CONFIG.volume;
+    private static void onScreenInit(Screen screen, ScreenAccess screenAccess) {
+        if (screen instanceof SoundOptionsScreen) {
+            LAST_MUSIC_VOLUME = IamMusicPlayer.CONFIG.volume;
+
+            screenAccess.addRenderableWidget(new IconButton(screen.width - 27, screen.height - 27, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.createRelative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
+        }
     }
 
-    private static CompoundEventResult<Screen> modifyScreen(Screen screen) {
+    private static CompoundEventResult<Screen> onModifyScreen(Screen screen) {
         if (mc.screen instanceof SoundOptionsScreen && LAST_MUSIC_VOLUME != IamMusicPlayer.CONFIG.volume)
             AutoConfig.getConfigHolder(IMPConfig.class).save();
         return CompoundEventResult.pass();

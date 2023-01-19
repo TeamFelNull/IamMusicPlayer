@@ -1,0 +1,24 @@
+#セットアップ
+name: Setup
+description: The Setup
+
+runs:
+  using: composite
+  steps:
+    - name: Setup JDK #JDKセットアップ
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'corretto'
+        java-version: '17'
+
+    - name: Setup Gradle #Gradleセットアップ
+      uses: gradle/gradle-build-action@v2
+      with:
+        gradle-home-cache-cleanup: true
+        cache-read-only: false
+
+    - name: Gradle Check #Gradle動作確認
+      shell: bash
+      run: |
+        chmod +x gradlew
+        ./gradlew check

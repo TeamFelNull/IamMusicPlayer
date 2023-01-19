@@ -17,7 +17,7 @@ public class CommonHandler {
     public static List<UUID> itemBoomboxes = new ArrayList<>();
 
     public static void init() {
-        MoreEntityEvent.ENTITY_TICK.register(CommonHandler::onEntityTick);
+       // MoreEntityEvent.ENTITY_TICK.register(CommonHandler::onEntityTick);
         TickEvent.SERVER_POST.register(CommonHandler::onTickEnd);
     }
 
@@ -25,10 +25,10 @@ public class CommonHandler {
         itemBoomboxes.clear();
     }
 
-    private static EventResult onEntityTick(Entity entity) {
+    /*private static EventResult onEntityTick(Entity entity) {
         if (IamMusicPlayer.CONFIG.dropItemRing && entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof BoomboxItem) {
             BoomboxItem.tick(entity.level, entity, itemEntity.getItem(), true);
         }
         return EventResult.pass();
-    }
+    }*/
 }

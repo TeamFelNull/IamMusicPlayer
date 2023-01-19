@@ -42,6 +42,6 @@
     "minecraft": ">=1.19.3",
     "architectury": ">=7.0.64",
     "cloth-config2": ">=9.0.94",
-    "otyacraftengine": ">=3.3.0-pre.1"
+    "otyacraftengine": ">=3.3.0-alpha.1"
   }
 }
