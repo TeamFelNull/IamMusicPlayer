@@ -24,7 +24,7 @@
   },
   "1.15.2": {
     "1.2": "Resume music when boombox is stopped or broken\n-Simultaneously proceed downloading and listening\n-The One Probe is supported\n-Fix crash when Cassette Deck finishes recording on Mac or Linux",
-    "1.1": "Name Change(Ikisugi Music Player -> Iam Music Player)\n-Other change iroiro.",
+    "1.1": "Name Change(Ikisugi Music Player -\u003e Iam Music Player)\n-Other change iroiro.",
     "1.0": "The Frist Release."
   },
   "promos": {
@@ -41,6 +41,11 @@
     "1.16.1-latest": "1.4",
     "1.16.1-recommended": "1.4",
     "1.15.2-latest": "1.2",
-    "1.15.2-recommended": "1.2"
+    "1.15.2-recommended": "1.2",
+    "1.19.3-latest": "3.20.0-alpha.1",
+    "1.19.3-recommended": "3.20.0-alpha.1"
+  },
+  "1.19.3": {
+    "3.20.0-alpha.1": "Changed\n- Port MC1.19.3\n- Embed OBJ loader (Fabric Only)\n"
   }
 }
