@@ -1,8 +1,7 @@
 # Changelog
-
 Changelog to track updates for this mod.  
-Add your changes to Unreleased if you want to commit.  
-Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+    Add your changes to Unreleased if you want to commit.  
+    Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
@@ -16,17 +15,23 @@ Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 
 ### Fixed
 
-- Open mymusic and mypictuer initially when selecting music or images
-
 ### Security
+
+## [3.20.0-alpha.2] - 2023-01-20
+
+### Changed
+- Port MC1.19.3
+- Embed OBJ loader (Fabric Only)
+
+### Fixed
+- Open mymusic and mypictuer initially when selecting music or images
 
 ## [3.20.0-alpha.1] - 2023-01-19
 
 ### Changed
-
 - Port MC1.19.3
 - Embed OBJ loader (Fabric Only)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...HEAD
-
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...HEAD
 [3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
+[3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
