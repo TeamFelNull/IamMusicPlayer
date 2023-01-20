@@ -13,7 +13,7 @@ import dev.felnull.imp.block.IMPBlocks;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.imp.client.music.MusicSyncManager;
-import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
+import dev.felnull.imp.client.music.media.NetEaseCloudMusicManager;
 import dev.felnull.imp.client.renderer.item.IMPItemRenderers;
 import dev.felnull.imp.client.renderer.item.hand.BoomboxHandRenderer;
 import dev.felnull.imp.entity.IRingerPartyParrot;

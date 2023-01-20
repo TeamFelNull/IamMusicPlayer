@@ -5,7 +5,7 @@ import dev.felnull.fnjl.util.FNMath;
 import dev.felnull.fnjl.util.FNURLUtil;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.client.music.media.NetEaseCloudMusicMedia;
-import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
+import dev.felnull.imp.client.music.media.NetEaseCloudMusicManager;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.client.util.OETextureUtils;

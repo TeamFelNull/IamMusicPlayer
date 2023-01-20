@@ -1,4 +1,4 @@
-package dev.felnull.imp.client.neteasecloudmusic;
+package dev.felnull.imp.client.music.media;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;

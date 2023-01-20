@@ -1,7 +1,7 @@
 package dev.felnull.imp.client.music.loader;
 
 import dev.felnull.imp.client.music.media.IMPMusicMedias;
-import dev.felnull.imp.client.neteasecloudmusic.NetEaseCloudMusicManager;
+import dev.felnull.imp.client.music.media.NetEaseCloudMusicManager;
 import dev.felnull.imp.music.resource.MusicSource;
 
 public class NetEaseCloudMusicLoader extends LavaMusicLoader {

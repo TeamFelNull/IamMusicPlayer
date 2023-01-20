@@ -198,7 +198,7 @@ curseforge {
                 requiredDependency "cloth-config"
                 requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
-                optionalDependency "patchouli"
+            //    optionalDependency "patchouli"
             }
 
             mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")) {
@@ -226,7 +226,7 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("9s6osm5g")//Cloth Config API
             required.project("lhGA9TYQ")//Architectury API
             required.project("iu3upNjC")//Otyacraft Engine
-            optional.project("nU0bVIaL")//Patchouli
+          //  optional.project("nU0bVIaL")//Patchouli
         }
         changelog = file('../LATEST_CHANGELOG.md').text
     }
