@@ -11,4 +11,4 @@ include("common")
 include("fabric")
 include("forge")
 
-rootProject.name = "iam-music-player"
+rootProject.name = "IamMusicPlayer"
