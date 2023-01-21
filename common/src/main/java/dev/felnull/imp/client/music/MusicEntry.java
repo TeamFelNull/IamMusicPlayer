@@ -23,6 +23,7 @@ public class MusicEntry {
     private final UUID musicPlayerId;
     private boolean loaded;
     private boolean stopped;
+    private boolean loadEnd;
 
     public float getCurrentPositionProgress() {
         if (source.isLive())
@@ -92,7 +93,12 @@ public class MusicEntry {
 
             if (musicPlayer.get().isDestroy()) return false;
             musicPlayer.get().tick();
+
+        } else if (loadEnd) {
+            destroy();
+            return false;
         }
+
         return true;
     }
 
@@ -226,9 +232,11 @@ public class MusicEntry {
         }, me.getMusicTickExecutor());
 
         cf.whenCompleteAsync((ret, throwable) -> {
+            loadEnd = true;
             loaded = ret != null && ret.success;
 
             if (throwable != null) {
+                MusicEngine.getInstance().getLogger().error("Music load error", throwable);
                 listener.onComplete(false, 0, throwable, musicPlayer.get() != null);
                 return;
             }

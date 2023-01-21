@@ -129,7 +129,8 @@ public class MusicEngine implements MusicEngineAccess {
 
         List<UUID> destroys = new ArrayList<>();
         musicEntries.forEach((uuid, musicEntry) -> {
-            if (!musicEntry.tick()) destroys.add(uuid);
+            if (!musicEntry.tick())
+                destroys.add(uuid);
         });
         for (UUID destroy : destroys) {
             musicEntries.remove(destroy);
