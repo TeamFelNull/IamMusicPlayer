@@ -49,7 +49,7 @@ public class LavaNativeManager {
             throw new IllegalStateException("Failed to create the folder of the native library");
 
         JsonObject jo;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(FNURLUtil.getStream(new URL(IamMusicPlayer.CONFIG.lavaPlayerNativesURL))))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(FNURLUtil.getStream(new URL(IamMusicPlayer.getConfig().lavaPlayerNativesURL))))) {
             jo = GSON.fromJson(reader, JsonObject.class);
         }
 

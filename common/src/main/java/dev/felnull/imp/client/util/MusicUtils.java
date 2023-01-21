@@ -52,7 +52,7 @@ public class MusicUtils {
     }
 
     public static boolean isSpatial(SpatialType spatialType) {
-        if (spatialType == SpatialType.ENTRUST) return IamMusicPlayer.CONFIG.spatial;
+        if (spatialType == SpatialType.ENTRUST) return IamMusicPlayer.getConfig().spatial;
         return spatialType == SpatialType.ENABLE;
     }
 }

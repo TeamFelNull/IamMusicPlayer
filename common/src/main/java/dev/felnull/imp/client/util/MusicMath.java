@@ -7,7 +7,7 @@ import org.lwjgl.openal.AL11;
 
 public class MusicMath {
     public static double calculateVolume(double playerVolume) {
-        return Mth.clamp(playerVolume * IamMusicPlayer.CONFIG.volume, 0.0, 1.0);
+        return Mth.clamp(playerVolume * IamMusicPlayer.getConfig().volume, 0.0, 1.0);
     }
 
     public static double calculatePseudoAttenuation(Vec3 position, float range, double volume) {

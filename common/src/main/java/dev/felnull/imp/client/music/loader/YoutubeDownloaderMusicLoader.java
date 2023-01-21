@@ -14,7 +14,7 @@ public class YoutubeDownloaderMusicLoader extends LavaMusicLoader {
 
     @Override
     public void tryLoad(@NotNull MusicSource source) throws Exception {
-        if (!IamMusicPlayer.CONFIG.useYoutubeDownloader)
+        if (!IamMusicPlayer.getConfig().useYoutubeDownloader)
             throw new RuntimeException("YoutubeDownloader is disabled in config");
         super.tryLoad(source);
     }

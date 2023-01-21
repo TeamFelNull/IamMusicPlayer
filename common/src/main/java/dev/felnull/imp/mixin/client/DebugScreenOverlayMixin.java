@@ -21,7 +21,7 @@ public class DebugScreenOverlayMixin {
 
     @Inject(method = "getGameInformation", at = @At("RETURN"))
     private void getGameInformation(CallbackInfoReturnable<List<String>> cir) {
-        if (!IamMusicPlayer.CONFIG.showMusicLines && !this.minecraft.showOnlyReducedInfo())
+        if (!IamMusicPlayer.getConfig().showMusicLines && !this.minecraft.showOnlyReducedInfo())
             cir.getReturnValue().add(MusicEngine.getInstance().getDebugString());
     }
 }

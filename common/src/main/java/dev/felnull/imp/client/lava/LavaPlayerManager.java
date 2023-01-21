@@ -35,12 +35,19 @@ public class LavaPlayerManager {
     }
 
     public void reload() {
+        try {
+            IamMusicPlayer.getConfig();
+        } catch (NoClassDefFoundError error) {
+            error.printStackTrace();
+            return;
+        }
+
         medias.clear();
 
         if (audioPlayerManager != null)
             audioPlayerManager.shutdown();
 
-        audioDataFormat = new Pcm16AudioDataFormat(2, IamMusicPlayer.CONFIG.sampleRate, 960, false);
+        audioDataFormat = new Pcm16AudioDataFormat(2, IamMusicPlayer.getConfig().sampleRate, 960, false);
 
         audioPlayerManager = createAudioPlayerManager();
     }

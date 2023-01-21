@@ -20,7 +20,7 @@ public class SoundPhysicsRemasteredIntegration extends BaseIntegration {
 
     @Override
     public boolean isConfigEnabled() {
-        return IamMusicPlayer.CONFIG.soundPhysicsRemasteredIntegration;
+        return IamMusicPlayer.getConfig().soundPhysicsRemasteredIntegration;
     }
 
     //https://github.com/henkelmax/sound-physics-remastered/blob/1.19.2/common/src/main/java/com/sonicether/soundphysics/integration/voicechat/AudioChannel.java

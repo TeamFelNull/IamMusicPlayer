@@ -359,10 +359,10 @@ public class MusicRing {
 
 
     public static long getMaxWaitTime() {
-        return IamMusicPlayer.CONFIG.maxWaitTime;
+        return IamMusicPlayer.getConfig().maxWaitTime;
     }
 
     public static long getRetryTime() {
-        return IamMusicPlayer.CONFIG.retryTime;
+        return IamMusicPlayer.getConfig().retryTime;
     }
 }

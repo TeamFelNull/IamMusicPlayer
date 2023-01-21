@@ -59,7 +59,7 @@ public class MusicEngine implements MusicEngineAccess {
      * @return 数
      */
     public int getMaxMusicLoad() {
-        return Math.max(IamMusicPlayer.CONFIG.maxPlayCont, 0);
+        return Math.max(IamMusicPlayer.getConfig().maxPlayCont, 0);
     }
 
     /**
@@ -68,7 +68,7 @@ public class MusicEngine implements MusicEngineAccess {
      * @return 数
      */
     public int getMaxMusicSpeaker() {
-        return Math.max(IamMusicPlayer.CONFIG.maxPlayCont, 0);
+        return Math.max(IamMusicPlayer.getConfig().maxPlayCont, 0);
     }
 
     /**

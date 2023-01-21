@@ -28,7 +28,7 @@ public class RenderHandler {
     }
 
     private static void renderHud(PoseStack poseStack, float tickDelta) {
-        if (IamMusicPlayer.CONFIG.showMusicLines)
+        if (IamMusicPlayer.getConfig().showMusicLines)
             MUSIC_LINES_OVERLAY.render(poseStack, tickDelta);
     }
 

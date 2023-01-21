@@ -86,7 +86,7 @@ public class BoomboxEntityRinger implements IBoomboxRinger {
                 }
             }
         }
-        if (IamMusicPlayer.CONFIG.dropItemRing && entity instanceof ItemEntity itemEntity) {
+        if (IamMusicPlayer.getConfig().dropItemRing && entity instanceof ItemEntity itemEntity) {
             var item = itemEntity.getItem();
             if (uuid.equals(BoomboxItem.getRingerUUID(item))) return item;
         }

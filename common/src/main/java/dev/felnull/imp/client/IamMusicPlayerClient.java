@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 public class IamMusicPlayerClient {
     public static final OptionInstance<Double> IMP_VOLUME_OPTION = new OptionInstance<>("soundCategory." + IamMusicPlayer.MODID, OptionInstance.noTooltip(), (component, val) -> {
         return val == 0.0 ? Options.genericValueLabel(component, CommonComponents.OPTION_OFF) : Component.translatable("options.percent_value", component, (int) (val * 100.0));
-    }, OptionInstance.UnitDouble.INSTANCE, IamMusicPlayer.CONFIG.volume, (val) -> IamMusicPlayer.CONFIG.volume = val);
+    }, OptionInstance.UnitDouble.INSTANCE, IamMusicPlayer.getConfig().volume, (val) -> IamMusicPlayer.getConfig().volume = val);
 
     public static void init() {
         configInit();

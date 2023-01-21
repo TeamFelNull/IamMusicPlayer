@@ -16,7 +16,7 @@ public class PatchouliIntegration extends BaseIntegration {
 
     @Override
     public boolean isConfigEnabled() {
-        return IamMusicPlayer.CONFIG.patchouliIntegration;
+        return IamMusicPlayer.getConfig().patchouliIntegration;
     }
 
     public void openBookGUI(ServerPlayer player, ResourceLocation location) {

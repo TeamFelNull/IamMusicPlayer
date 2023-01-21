@@ -14,6 +14,7 @@ Changelog to track updates for this mod.
 ### Removed
 
 ### Fixed
+- Fixed a problem that crashes without notifying when ClothConfig is not installed (Forge Only)
 
 ### Security
 

@@ -241,7 +241,7 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
         public void run() {
             if (isStopped()) return;
             try {
-                var url = IamMusicPlayer.CONFIG.relayServerURL;
+                var url = IamMusicPlayer.getConfig().relayServerURL;
                 String status = null;
                 JsonObject lastJo = null;
                 long eqTime = 0;

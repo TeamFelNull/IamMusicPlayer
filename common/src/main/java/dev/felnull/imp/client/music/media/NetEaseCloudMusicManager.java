@@ -42,7 +42,7 @@ public class NetEaseCloudMusicManager {
             if (!init.compareAndSet(false, true))
                 return;
 
-            String curl = IamMusicPlayer.CONFIG.neteaseCloudMusicApiURL;
+            String curl = IamMusicPlayer.getConfig().neteaseCloudMusicApiURL;
 
             try {
                 var ret = jsonCheck(curl);

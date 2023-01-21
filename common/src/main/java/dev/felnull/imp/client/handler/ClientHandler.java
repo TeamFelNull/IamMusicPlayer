@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClientHandler {
     private static final Minecraft mc = Minecraft.getInstance();
-    private static double LAST_MUSIC_VOLUME = IamMusicPlayer.CONFIG.volume;
+    private static double LAST_MUSIC_VOLUME = IamMusicPlayer.getConfig().volume;
 
     public static void init() {
         ClientLifecycleEvent.CLIENT_LEVEL_LOAD.register(ClientHandler::onClientLevelLoad);
@@ -60,14 +60,14 @@ public class ClientHandler {
 
     private static void onScreenInit(Screen screen, ScreenAccess screenAccess) {
         if (screen instanceof SoundOptionsScreen) {
-            LAST_MUSIC_VOLUME = IamMusicPlayer.CONFIG.volume;
+            LAST_MUSIC_VOLUME = IamMusicPlayer.getConfig().volume;
 
             screenAccess.addRenderableWidget(new IconButton(screen.width - 27, screen.height - 27, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.createRelative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
         }
     }
 
     private static CompoundEventResult<Screen> onModifyScreen(Screen screen) {
-        if (mc.screen instanceof SoundOptionsScreen && LAST_MUSIC_VOLUME != IamMusicPlayer.CONFIG.volume)
+        if (mc.screen instanceof SoundOptionsScreen && LAST_MUSIC_VOLUME != IamMusicPlayer.getConfig().volume)
             AutoConfig.getConfigHolder(IMPConfig.class).save();
         return CompoundEventResult.pass();
     }
