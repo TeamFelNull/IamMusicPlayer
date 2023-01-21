@@ -21,8 +21,8 @@ jobs:
       - name: Verification
         uses: ./.github/actions/release-verification
         with:
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN_MORI }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN_MORI }}
           maven-password: ${{ secrets.MAVEN_PASSWORD }}
 
       - name: Generate Changelog
@@ -37,8 +37,8 @@ jobs:
           mkdir -p /home/runner/.gradle/caches/fabric-loom/assets
           ./gradlew check fabric:runDatagen forge:runData build publish curseforge modrinth --stacktrace --no-daemon
         env:
-          curesforgeapikey: ${{ secrets.CURSEFORGE_TOKEN }}
-          modrinthapikey:  ${{ secrets.MODRINTH_TOKEN }}
+          curesforgeapikey: ${{ secrets.CURSEFORGE_TOKEN_MORI }}
+          modrinthapikey:  ${{ secrets.MODRINTH_TOKEN_MORI }}
           mavenpassword: ${{ secrets.MAVEN_PASSWORD }}
 
       - name: Collect Releases
@@ -46,8 +46,8 @@ jobs:
         run: |
           mkdir release
           cd release
-          cp -r ../fabric/build/libs fabric
-          cp -r ../forge/build/libs forge
+          cp -r ../fabric/build/libs/. ./
+          cp -r ../forge/build/libs/. ./
           ls
           echo "${{ secrets.GITHUB_TOKEN }}"
 
