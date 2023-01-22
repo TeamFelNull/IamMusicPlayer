@@ -242,8 +242,8 @@ public class MusicRing {
                 if (state != IMPPackets.MusicRingResponseStateType.PLAYING)
                     listenPlayers.remove(id);
 
-                if (state == IMPPackets.MusicRingResponseStateType.LOADING)
-                    sendStopPackets(id);
+            //    if (state == IMPPackets.MusicRingResponseStateType.LOADING)
+            //        sendStopPackets(id);
             }
 
             if (middleLoadPlayers.contains(id)) {

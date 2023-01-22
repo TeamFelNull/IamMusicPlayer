@@ -31,14 +31,17 @@ public class MusicLinesOverlay extends GuiComponent {
     private void drawMusicLine(PoseStack poseStack, int x, int y, UUID uuid, MusicEntry entry) {
         var source = entry.getSource();
         String duStr = source.isLive() ? ("Live(" + FNStringUtil.getTimeFormat(entry.getCurrentPosition()) + ")") : FNStringUtil.getTimeProgress(entry.getCurrentPosition(), source.getDuration());
-        String text = " None";
-        if (!entry.isLoaded()) {
-            text = " §6Loading§r";
-        } else if (entry.isLoaded() && !entry.isPlaying()) {
-            text = " §3Waiting§r";
-        } else if (entry.isPlaying()) {
+
+        String text;
+
+        if (entry.isPlaying()) {
             text = " §2Playing§r";
+        } else if (!entry.isLoaded()) {
+            text = " §6Loading§r";
+        } else {
+            text = " §3Waiting§r";
         }
+
 
         String idf = source.getIdentifier();
         if (idf.length() > 15)

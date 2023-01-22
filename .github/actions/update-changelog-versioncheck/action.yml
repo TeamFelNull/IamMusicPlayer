@@ -44,15 +44,15 @@ runs:
       run: |
         DEFAULT_BRANCH="${{ steps.checkTagByBranch.outputs.default_branch_result }}"
         TARGET_BRANCH="${{ steps.checkTagByBranch.outputs.target_branch_result }}"
-
+        
+        CHANGE_LOG=`./gradlew getChangelog --console=plain -q --no-header --no-summary --no-links`
+        
         if [ "$DEFAULT_BRANCH" != "$TARGET_BRANCH" ]; then
           echo 'Checkout Default Branch'
           git stash
           git checkout $DEFAULT_BRANCH
         fi
-
-        CHANGE_LOG=`./gradlew getChangelog --console=plain -q --no-header --no-summary --no-links`
-
+        
         chmod +x ${{ github.action_path }}/scripts/update_version_check.main.kts 
         ${{ github.action_path }}/scripts/update_version_check.main.kts "${{ github.ref_name }}" "$CHANGE_LOG" "${{ github.repository }}"
 

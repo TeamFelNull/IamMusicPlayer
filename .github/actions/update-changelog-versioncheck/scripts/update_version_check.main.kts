@@ -4,10 +4,13 @@ Forgeのバージョン確認Jsonを更新
 */
 
 @file:DependsOn("com.google.code.gson:gson:2.10.1")
+@file:DependsOn("com.vdurmont:semver4j:3.1.0")
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.vdurmont.semver4j.Semver
+import com.vdurmont.semver4j.SemverException
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -72,8 +75,19 @@ for (mcVersion in mcVersions) {
     jo.add(mcVersion, vEntry)
 
     promosJo.addProperty("$mcVersion-latest", version)
-    if (recommended || !promosJo.has("$mcVersion-recommended"))
-        promosJo.addProperty("$mcVersion-recommended", version)
+
+    var flg = true
+    val pjName = "$mcVersion-recommended"
+
+    if (promosJo.has(pjName) && promosJo.isJsonPrimitive && promosJo.getAsJsonPrimitive(pjName).isString) {
+        try {
+            flg = !Semver(promosJo.getAsJsonPrimitive(pjName).asString).isStable
+        } catch (_: SemverException) {
+        }
+    }
+
+    if (recommended || flg)
+        promosJo.addProperty(pjName, version)
 }
 
 jo.add("promos", promosJo)

@@ -23,6 +23,7 @@ public class MusicEntry {
     private final UUID musicPlayerId;
     private boolean loaded;
     private boolean stopped;
+    private boolean loadFailed;
 
     public float getCurrentPositionProgress() {
         if (source.isLive())
@@ -68,8 +69,10 @@ public class MusicEntry {
     }
 
     public long getCurrentPosition() {
-        if (musicPlayer.get() != null)
-            return musicPlayer.get().getPosition();
+        if (musicPlayer.get() != null) {
+            long pos = musicPlayer.get().getPosition();
+            if (pos >= 0) return pos;
+        }
         return startPosition;
     }
 
@@ -84,15 +87,23 @@ public class MusicEntry {
     }
 
     protected boolean tick() {
+        if (loadFailed) {
+            destroy();
+            return false;
+        }
+
         if (musicPlayer.get() != null) {
             if (musicPlayer.get().waitDestroy()) {
                 destroy();
                 return false;
             }
 
-            if (musicPlayer.get().isDestroy()) return false;
+            if (musicPlayer.get().isDestroy())
+                return false;
+
             musicPlayer.get().tick();
         }
+
         return true;
     }
 
@@ -194,6 +205,7 @@ public class MusicEntry {
             return ret.createMusicPlayer(musicPlayerId);
         }, me.getMusicTickExecutor()).thenApplyAsync(ret -> {
             musicPlayer.set(ret);
+
             runner.run(ret::destroyNonThrow);
             return ret;
         }, me.getMusicAsyncExecutor()).thenApplyAsync(ret -> {
@@ -229,6 +241,11 @@ public class MusicEntry {
             loaded = ret != null && ret.success;
 
             if (throwable != null) {
+                loadFailed = true;
+
+                if (!(throwable instanceof RuntimeException))
+                    MusicEngine.getInstance().getLogger().error("Music load error", throwable);
+
                 listener.onComplete(false, 0, throwable, musicPlayer.get() != null);
                 return;
             }

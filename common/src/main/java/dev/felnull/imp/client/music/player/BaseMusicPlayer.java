@@ -42,7 +42,7 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
     private boolean finished;
     private boolean loadEnd;
     private long delay;
-    private long startPosition;
+    private long startPosition = -1;
     private long startTime = -1;
     private long pauseTime = -1;
     private long totalPauseTime;
@@ -390,7 +390,8 @@ public abstract class BaseMusicPlayer implements MusicPlayer<BaseMusicPlayer.Loa
 
     @Override
     public long getPosition() {
-        if (this.startTime < 0) return this.startPosition + delay;
+        if (this.startTime < 0)
+            return this.startPosition + delay;
 
         long pt = this.totalPauseTime;
         if (this.pauseTime >= 0)
