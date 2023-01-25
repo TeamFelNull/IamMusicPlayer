@@ -27,6 +27,7 @@ fun getBranchName(branchName: String): String {
 val wrkDir: Path = System.getenv("GITHUB_WORKSPACE")?.let(Path::of) ?: Paths.get("./")
 val gp: Map<String, String> = wrkDir.resolve("gradle.properties")
         .let { Files.lines(it) }
+        .filter { it.isNotBlank() }
         .filter { !it.trim().startsWith("#") }
         .map { it.split("=") }
         .collect(Collectors.toMap({ it[0].trim() }, { it[1].trim() }))
@@ -143,9 +144,11 @@ if (allSemVer.isNotEmpty()) {
         }
     }
 
-    // if (compVer.none { toVersionOnly(it) == toVersionOnly(preDictPreVer) })
-    if (compVer.map { Semver(toVersionOnly(it)) }.distinct().none { it.isGreaterThanOrEqualTo(preDictPreVer) && it.isLowerThan(version) })
+    val compVo = compVer.map { Semver(toVersionOnly(it)) }.distinct()
+
+    if (compVo.any { it.isLowerThan(preDictPreVer) } && compVo.none { it.isGreaterThanOrEqualTo(preDictPreVer) && it.isLowerThan(version) })
         throw Exception("Pre version does not exist/以前のバージョンが存在しません: $preDictPreVer")
+
 } else {
     println("First version")
 }

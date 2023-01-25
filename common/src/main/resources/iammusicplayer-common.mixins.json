@@ -10,6 +10,7 @@
     "client.SoundOptionsScreenMixin"
   ],
   "mixins": [
+    "ItemEntityMixin",
     "ParrotMixin"
   ],
   "injectors": {

@@ -5,15 +5,15 @@ description: Release verification
 inputs:
   curseforge-token:
     description: CurseForge Token
-    required: true
+    required: false
 
   modrinth-token:
     description: Modrinth Token
-    required: true
+    required: false
 
   maven-password:
     description: Maven Password
-    required: true
+    required: false
 
 runs:
   using: composite

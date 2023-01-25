@@ -24,6 +24,7 @@ import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
 import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
+import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -35,7 +36,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -51,11 +51,12 @@ public class ClientHandler {
         AutoConfig.getConfigHolder(IMPConfig.class).registerSaveListener(ClientHandler::onConfigSave);
         ClientEvent.POSE_HUMANOID_ARM.register(ClientHandler::onPoseHumanoidArm);
         ClientEvent.INTEGRATED_SERVER_PAUSE.register(ClientHandler::onPauseChange);
-        //  MoreEntityEvent.ENTITY_TICK.register(ClientHandler::onEntityTick);
+        MoreEntityEvent.LIVING_ENTITY_TICK.register(ClientHandler::onLivingEntityTick);
         ClientTickEvent.CLIENT_POST.register(ClientHandler::ontClientTick);
         ClientEvent.HAND_ATTACK.register(ClientHandler::onHandAttack);
         ClientGuiEvent.SET_SCREEN.register(ClientHandler::onModifyScreen);
         ClientGuiEvent.INIT_POST.register(ClientHandler::onScreenInit);
+
     }
 
     private static void onScreenInit(Screen screen, ScreenAccess screenAccess) {
@@ -84,14 +85,16 @@ public class ClientHandler {
         return EventResult.pass();
     }
 
-    private static EventResult onEntityTick(Entity entity) {
-        if (!entity.level.isClientSide()) return EventResult.pass();
-        var mm = MusicEngine.getInstance();
-        if (entity instanceof IRingerPartyParrot ringerPartyParrot) {
+    private static EventResult onLivingEntityTick(@NotNull LivingEntity livingEntity) {
+        if (!livingEntity.level.isClientSide()) return EventResult.pass();
+
+        if (livingEntity instanceof IRingerPartyParrot ringerPartyParrot) {
+            var mm = MusicEngine.getInstance();
             var id = ringerPartyParrot.getRingerUUID();
             if (id == null || !mm.isPlaying(id))
                 ringerPartyParrot.setRingerUUID(null);
         }
+
         return EventResult.pass();
     }
 
