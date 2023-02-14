@@ -7,74 +7,15 @@ on:
 
 jobs:
   release:
-    name: Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+    uses: TeamFelnull/actions-reusable-workflows/.github/workflows/mcmod-release.yml@master
+    with:
+      build_tasks: "build publish curseforge modrinth"
+    secrets:
+      curseforge_token: ${{ secrets.CURSEFORGE_TOKEN_MORI }}
+      modrinth_token: ${{ secrets.MODRINTH_TOKEN_MORI }}
+      maven_password: ${{ secrets.MAVEN_PASSWORD }}
 
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Verification
-        uses: ./.github/actions/release-verification
-        with:
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN_MORI }}
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN_MORI }}
-          maven-password: ${{ secrets.MAVEN_PASSWORD }}
-
-      - name: Generate Changelog
-        shell: bash
-        run: |
-          ./gradlew patchChangelog
-          ./gradlew getChangelog --console=plain -q --no-header --no-summary --no-links > LATEST_CHANGELOG.md
-
-      - name: Build And Release
-        shell: bash
-        run: |
-          mkdir -p /home/runner/.gradle/caches/fabric-loom/assets
-          ./gradlew check fabric:runDatagen forge:runData build publish curseforge modrinth --stacktrace --no-daemon
-        env:
-          curesforgeapikey: ${{ secrets.CURSEFORGE_TOKEN_MORI }}
-          modrinthapikey:  ${{ secrets.MODRINTH_TOKEN_MORI }}
-          mavenpassword: ${{ secrets.MAVEN_PASSWORD }}
-
-      - name: Collect Releases
-        shell: bash
-        run: |
-          mkdir release
-          cd release
-          cp -r ../fabric/build/libs/. ./
-          cp -r ../forge/build/libs/. ./
-          ls
-          echo "${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: releases
-          path: release/*
-
-      - name: GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: LATEST_CHANGELOG.md
-          files: release/*
-  
   postRelease:
     name: Update after release
     needs: release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Update Changelog and Version Check
-        uses: ./.github/actions/update-changelog-versioncheck
+    uses: TeamFelnull/actions-reusable-workflows/.github/workflows/mcmod-post-release.yml@master

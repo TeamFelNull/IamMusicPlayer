@@ -68,7 +68,7 @@ dependencies {
     modApi "dev.felnull:special-model-loader:1.0.0"
     include "dev.felnull:special-model-loader:1.0.0"
     modApi "curse.maven:ctm-535489:4199804"
-
+    modApi "vazkii.patchouli:Patchouli:1.19.3-78-FABRIC"
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
@@ -217,7 +217,7 @@ curseforge {
                 requiredDependency "cloth-config"
                 requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
-            //    optionalDependency "patchouli-fabric"
+                optionalDependency "patchouli-fabric"
                 embeddedLibrary "special-model-loader"
             }
 
@@ -253,7 +253,7 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("9s6osm5g")//Cloth Config API
             required.project("lhGA9TYQ")//Architectury API
             required.project("iu3upNjC")//Otyacraft Engine
-     //       optional.project("nU0bVIaL")//Patchouli
+            optional.project("nU0bVIaL")//Patchouli
             embedded.project("ajFw7VkX")//Special Model Loader
         }
         changelog = file('../LATEST_CHANGELOG.md').text
