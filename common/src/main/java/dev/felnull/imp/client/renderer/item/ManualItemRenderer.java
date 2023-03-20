@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class ManualItemRenderer implements BEWLItemRenderer {
@@ -35,12 +36,12 @@ public class ManualItemRenderer implements BEWLItemRenderer {
     }
 
     @Override
-    public void render(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int light, int overlay) {
+    public void render(ItemStack stack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int light, int overlay) {
         var model = IMPModels.MANUAL.get();
         var vc = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.solidBlockSheet(), true, stack.hasFoil()); //multiBufferSource.getBuffer(Sheets.cutoutBlockSheet());
         float par = Mth.lerp(f, openProgressO, openProgress) / 10f;
         poseStack.pushPose();
-        if (transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND) {
+        if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND) {
             OERenderUtils.poseTrans16(poseStack, 11, 0, 0);
             OERenderUtils.poseRotateZ(poseStack, -25 * par);
             OERenderUtils.poseTrans16(poseStack, -11, 0, 0);
@@ -48,7 +49,7 @@ public class ManualItemRenderer implements BEWLItemRenderer {
 
         OERenderUtils.renderModel(poseStack, vc, model, light, overlay);
 
-        if (transformType == ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND || transformType == ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND) {
+        if (displayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || displayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
             OERenderUtils.poseTrans16(poseStack, 0, 0.125 * par, 0);
             OERenderUtils.poseTrans16(poseStack, 10, 0.125, 0);
             OERenderUtils.poseRotateZ(poseStack, -135 * par);

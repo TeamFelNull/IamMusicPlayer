@@ -7,12 +7,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class BoomboxHandRenderer {
@@ -56,7 +56,7 @@ public class BoomboxHandRenderer {
         marm.yRot = 0.5f * rv;
     }
 
-    public static void renderArmWithItem(ItemInHandLayer<? extends LivingEntity, ? extends EntityModel<?>> layer, LivingEntity livingEntity, ItemStack itemStack, ItemTransforms.TransformType transformType, HumanoidArm arm, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
+    public static void renderArmWithItem(ItemInHandLayer<? extends LivingEntity, ? extends EntityModel<?>> layer, LivingEntity livingEntity, ItemStack itemStack, ItemDisplayContext displayContext, HumanoidArm arm, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
         if (!itemStack.isEmpty()) {
             boolean bl = arm == HumanoidArm.LEFT;
             float rv = arm == HumanoidArm.RIGHT ? 1f : -1f;
@@ -66,7 +66,7 @@ public class BoomboxHandRenderer {
             OERenderUtils.poseRotateY(poseStack, 180f);
             poseStack.translate(0, 0.2f, 1.2f);
             poseStack.translate(rv / 16.0f, 0.125f, -0.625f);
-            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(livingEntity, itemStack, transformType, bl, poseStack, multiBufferSource, i);
+            Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(livingEntity, itemStack, displayContext, bl, poseStack, multiBufferSource, i);
             poseStack.popPose();
         }
     }

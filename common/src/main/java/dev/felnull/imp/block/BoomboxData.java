@@ -753,7 +753,7 @@ public class BoomboxData {
     }
 
     public BlockPos getPosition() {
-        return new BlockPos(access.getPosition());
+        return BlockPos.containing(access.getPosition());
     }
 
     public void update() {

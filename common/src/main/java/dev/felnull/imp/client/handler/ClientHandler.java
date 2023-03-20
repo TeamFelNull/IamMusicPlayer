@@ -22,7 +22,7 @@ import dev.felnull.imp.item.BoomboxItem;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.imp.server.music.ringer.MusicRingManager;
 import dev.felnull.otyacraftengine.client.event.ClientEvent;
-import dev.felnull.otyacraftengine.client.gui.TextureSpecify;
+import dev.felnull.otyacraftengine.client.gui.TextureRegion;
 import dev.felnull.otyacraftengine.client.gui.components.IconButton;
 import dev.felnull.otyacraftengine.event.MoreEntityEvent;
 import dev.felnull.otyacraftengine.item.location.HandItemLocation;
@@ -63,7 +63,7 @@ public class ClientHandler {
         if (screen instanceof SoundOptionsScreen) {
             LAST_MUSIC_VOLUME = IamMusicPlayer.getConfig().volume;
 
-            screenAccess.addRenderableWidget(new IconButton(screen.width - 27, screen.height - 27, 20, 20, Component.translatable("imp.button.config"), TextureSpecify.createRelative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5), n -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get())));
+            screenAccess.addRenderableWidget(new IconButton(screen.width - 27, screen.height - 27, 20, 20, Component.translatable("imp.button.config"), (button) -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get()), TextureRegion.relative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5)));
         }
     }
 

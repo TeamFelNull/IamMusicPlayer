@@ -12,8 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.item.ItemDisplayContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class CassetteDeckBlockEntityRenderer extends AbstractBlockEntityRenderer
             poseStack.pushPose();
             OERenderUtils.poseTrans16(poseStack, 3.7, 2.225, 3f);
             OERenderUtils.poseScaleAll(poseStack, 0.72f);
-            mc.getItemRenderer().renderStatic(blockEntity.isChangeCassetteTape() ? blockEntity.getOldCassetteTape() : blockEntity.getCassetteTape(), ItemTransforms.TransformType.FIXED, i, j, poseStack, multiBufferSource, 0);
+            mc.getItemRenderer().renderStatic(blockEntity.isChangeCassetteTape() ? blockEntity.getOldCassetteTape() : blockEntity.getCassetteTape(), ItemDisplayContext.FIXED, i, j, poseStack, multiBufferSource, mc.level, 0);
             poseStack.popPose();
         }
 

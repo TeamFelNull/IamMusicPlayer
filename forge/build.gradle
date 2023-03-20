@@ -49,11 +49,11 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
     modApi "dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
-    modApi "me.shedaniel.cloth:cloth-config-forge:9.0.94"
+    modApi "me.shedaniel.cloth:cloth-config-forge:10.0.96"
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:10.0.578"
-    modApi "curse.maven:ctm-535489:4199802"
-    modCompileOnly "vazkii.patchouli:Patchouli:1.19.3-78:api"
-    modRuntimeOnly "vazkii.patchouli:Patchouli:1.19.3-78"
+    modApi "curse.maven:ctm-535489:4438790"//Sound Physics Remastered
+   /* modCompileOnly "vazkii.patchouli:Patchouli:1.19.3-78:api"
+    modRuntimeOnly "vazkii.patchouli:Patchouli:1.19.3-78"*/
 
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {

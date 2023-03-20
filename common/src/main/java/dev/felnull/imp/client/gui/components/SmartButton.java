@@ -24,8 +24,19 @@ public class SmartButton extends IMPButton implements IIMPSmartRender {
         this.hideText = hideText;
     }
 
+    protected int getYImage(boolean hoverd) {
+        int i = 1;
+        if (!this.active) {
+            i = 0;
+        } else if (hoverd) {
+            i = 2;
+        }
+
+        return 46 + i * 20;
+    }
+
     @Override
-    public void renderButton(PoseStack poseStack, int mx, int my, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         drawSmartButtonBox(poseStack, getX(), getY(), width, height, this.getYImage(this.isHoveredOrFocused()));
         float fx = center ? (float) (width - mc.font.width(getMessage())) / 2f : 2;
         float fy = (float) (height - 7) / 2f;

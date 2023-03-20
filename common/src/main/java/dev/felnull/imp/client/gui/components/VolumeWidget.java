@@ -32,7 +32,7 @@ public class VolumeWidget extends AbstractWidget implements IIMPSmartRender {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         int vol = volume.get();
         boolean imute = mute.getAsBoolean();
         int nv = imute ? 3 : vol / 100;

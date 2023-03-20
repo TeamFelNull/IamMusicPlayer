@@ -433,7 +433,7 @@ public class MusicEngine implements MusicEngineAccess {
             return;
 
         var v3 = speakerInfo.position();
-        var aabb = new AABB(new BlockPos(v3)).inflate(speakerInfo.getRange());
+        var aabb = new AABB(BlockPos.containing(v3)).inflate(speakerInfo.getRange());
         for (LivingEntity livingentity : mc.level.getEntitiesOfClass(LivingEntity.class, aabb)) {
             if (livingentity instanceof IRingerPartyParrot ringerPartyParrot)
                 ringerPartyParrot.setRingerUUID(uuid);

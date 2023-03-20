@@ -33,7 +33,7 @@ public class ImageSetButton extends IMPButton implements IIMPSmartRender {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mx, int my, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         drawSmartButtonBox(poseStack, getX(), getY(), width, height, isHoveredOrFocused());
         if (type == ImageSetType.PLAYER_FACE) {
             OERenderUtils.drawPlayerFace(poseStack, mc.player.getGameProfile().getId(), (float) getX() + ((float) width - 11f) / 2f, (float) getY() + ((float) height - 11f) / 2f, 11);

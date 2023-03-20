@@ -8,7 +8,6 @@ import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.advancement.ModInvolvementTrigger;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.*;
@@ -57,7 +56,7 @@ public class MusicRing {
                         long eq = getTime() - lastTime;
                         if (ms.getDuration() >= ringer.getRingerPosition() + eq || ringer.isRingerStream()) {
                             var sc = ringer.getRingerMusicSource();
-                            ringer.setRingerPosition(Mth.clamp(ringer.getRingerPosition() + eq, 0, sc != null ? sc.getDuration() : 0));
+                            ringer.setRingerPosition(clamp(ringer.getRingerPosition() + eq, 0, sc != null ? sc.getDuration() : 0));
                         } else {
                             ringer.setRingerPosition(0);
                             ringer.ringerEnd();
@@ -73,6 +72,10 @@ public class MusicRing {
         }
         stopRingers.forEach(this::stopRinger);
         lastTime = getTime();
+    }
+
+    public static long clamp(long value, long max, long min) {
+        return value < max ? max : Math.min(value, min);
     }
 
     protected boolean isWaitRinger(UUID ringer) {
@@ -201,7 +204,7 @@ public class MusicRing {
             if (getRinger().isRingerStream())
                 return 0;
             var sc = getRinger().getRingerMusicSource();
-            return Mth.clamp(getRinger().getRingerPosition(), 0, sc != null ? sc.getDuration() : 0);
+            return clamp(getRinger().getRingerPosition(), 0, sc != null ? sc.getDuration() : 0);
         }
 
         private void addReadyPlayer(ServerPlayer player, boolean result, boolean retry, long elapsed) {
@@ -242,8 +245,8 @@ public class MusicRing {
                 if (state != IMPPackets.MusicRingResponseStateType.PLAYING)
                     listenPlayers.remove(id);
 
-            //    if (state == IMPPackets.MusicRingResponseStateType.LOADING)
-            //        sendStopPackets(id);
+                //    if (state == IMPPackets.MusicRingResponseStateType.LOADING)
+                //        sendStopPackets(id);
             }
 
             if (middleLoadPlayers.contains(id)) {

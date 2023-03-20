@@ -25,7 +25,7 @@ public class BoomboxButton extends IMPButton {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         int r = isHoveredOrFocused() ? 1 : 0;
         if (type.getState(buttons.get()))
             r += 2;

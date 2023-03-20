@@ -16,9 +16,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
             poseStack.pushPose();
             OERenderUtils.poseTrans16(poseStack, 7.7, 3.225, 6);
             OERenderUtils.poseScaleAll(poseStack, 0.72f);
-            mc.getItemRenderer().renderStatic(changeCassetteTape ? oldCassetteTape : cassetteTape, ItemTransforms.TransformType.FIXED, i, j, poseStack, multiBufferSource, 0);
+            mc.getItemRenderer().renderStatic(changeCassetteTape ? oldCassetteTape : cassetteTape, ItemDisplayContext.FIXED, i, j, poseStack, multiBufferSource, mc.level, 0);
             poseStack.popPose();
         }
 
@@ -159,7 +159,7 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
             OERenderUtils.poseTrans16(poseStack, 0, 1.3, 0);
             OERenderUtils.poseRotateX(poseStack, -30 + Math.abs(-0.5f + (roted % 120 / 120f)) * 2f * 60);
             OERenderUtils.poseTrans16(poseStack, 0, -1.3, 0);
-            mc.getItemRenderer().renderStatic(antenna, ItemTransforms.TransformType.GROUND, i, j, poseStack, multiBufferSource, 0);
+            mc.getItemRenderer().renderStatic(antenna, ItemDisplayContext.GROUND, i, j, poseStack, multiBufferSource, mc.level, 0);
             poseStack.popPose();
         }
     }

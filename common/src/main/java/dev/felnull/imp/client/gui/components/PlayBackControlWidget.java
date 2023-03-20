@@ -26,8 +26,9 @@ public class PlayBackControlWidget extends AbstractWidget implements IIMPSmartRe
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 
+
     @Override
-    public void renderButton(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         var state = stateTypeSupplier.get();
         int z = isHoveredOrFocused() ? 30 : 0;
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), state.ordinal() * 10 + z, 145, 10, 10);

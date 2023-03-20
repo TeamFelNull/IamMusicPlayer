@@ -7,13 +7,13 @@ import dev.felnull.otyacraftengine.client.renderer.item.BEWLItemRenderer;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
     @Override
-    public void render(ItemStack itemStack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
+    public void render(ItemStack itemStack, ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, float f, int i, int i1) {
         var antenaModel = IMPModels.PARABOLIC_ANTENNA;
 
         if (IMPHoliday.isXmas() && IMPModels.XMAS_ANTENNA != null)
@@ -33,7 +33,7 @@ public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
         var vc = ItemRenderer.getFoilBufferDirect(multiBufferSource, Sheets.solidBlockSheet(), true, itemStack.hasFoil());
 
         poseStack.pushPose();
-        if (transformType == ItemTransforms.TransformType.HEAD) {
+        if (displayContext == ItemDisplayContext.HEAD) {
             if (IMPHoliday.isXmas()) {
                 OERenderUtils.poseRotateX(poseStack, 180f);
                 OERenderUtils.poseScaleAll(poseStack, 3f);
@@ -55,7 +55,7 @@ public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
             if (IMPModels.XMAS_ANTENNA_SIDE != null)
                 OERenderUtils.renderModel(poseStack, vc, IMPModels.XMAS_ANTENNA_SIDE.get(), i, i1);
 
-            if (transformType == ItemTransforms.TransformType.HEAD && IMPModels.XMAS_ANTENNA_TAMA != null)
+            if (displayContext == ItemDisplayContext.HEAD && IMPModels.XMAS_ANTENNA_TAMA != null)
                 OERenderUtils.renderModel(poseStack, vc, IMPModels.XMAS_ANTENNA_TAMA.get(), i, i1);
         }
 

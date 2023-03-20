@@ -35,7 +35,7 @@ public class PlaybackProgressBar extends AbstractButton {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 52, 54 + (isHoveredOrFocused() ? 3 : 0), getWidth(), getHeight());
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 52, 48 + (isHoveredOrFocused() ? 3 : 0), (float) getWidth() * progressGetter.get(), getHeight());
     }

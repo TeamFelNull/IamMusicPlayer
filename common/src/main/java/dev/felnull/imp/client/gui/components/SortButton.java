@@ -30,7 +30,7 @@ public abstract class SortButton extends IMPButton implements IIMPSmartRender {
     }
 
     @Override
-    public void renderButton(PoseStack poseStack, int mx, int my, float f) {
+    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         drawSmartButtonBox(poseStack, getX(), getY(), width, height, isHoveredOrFocused());
       /*  if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);*/
@@ -124,8 +124,8 @@ public abstract class SortButton extends IMPButton implements IIMPSmartRender {
         }
 
         @Override
-        public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-            super.renderButton(poseStack, mx, my, f);
+        public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+            super.renderWidget(poseStack, i, j, f);
             OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX() + 1, getY() + 1, 73 + getSortType().ordinal() * 7, 0, 7, 7);
             if (longed) {
                 drawSmartText(poseStack, getToolTipComponent(), getX() + 9, getY() + 1);
@@ -157,8 +157,8 @@ public abstract class SortButton extends IMPButton implements IIMPSmartRender {
         }
 
         @Override
-        public void renderButton(PoseStack poseStack, int mx, int my, float f) {
-            super.renderButton(poseStack, mx, my, f);
+        public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+            super.renderWidget(poseStack, i, j, f);
             OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX() + 1, getY() + 1, 73 + getOrderType().ordinal() * 7, 7, 7, 7);
             if (longed) {
                 drawSmartText(poseStack, getToolTipComponent(), getX() + 9, getY() + 1);
