@@ -39,9 +39,9 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.19.3",
-    "architectury": ">=7.0.64",
-    "cloth-config2": ">=9.0.94",
+    "minecraft": ">=1.19.4",
+    "architectury": ">=8.1.73",
+    "cloth-config2": ">=10.0.96",
     "otyacraftengine": ">=3.4.0"
   }
 }

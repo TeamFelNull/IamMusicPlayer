@@ -3,6 +3,7 @@ package dev.felnull.imp.client.gui.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,16 +25,17 @@ public class SmartButton extends IMPButton implements IIMPSmartRender {
         this.hideText = hideText;
     }
 
-    protected int getYImage(boolean hoverd) {
+    protected int getYImage(boolean bl) {
         int i = 1;
         if (!this.active) {
             i = 0;
-        } else if (hoverd) {
+        } else if (bl) {
             i = 2;
         }
 
-        return 46 + i * 20;
+        return i;
     }
+
 
     @Override
     public void renderWidget(PoseStack poseStack, int i, int j, float f) {

@@ -18,14 +18,14 @@ public abstract class IMPBaseFixedListWidget<E> extends FixedListWidget<E> imple
         super(x, y, width, height, message, entryShowCount, entryList, entryName, onPressEntry, selectable, IMP_BASE_TEXTURE, old);
     }
 
-    protected int getYImage(boolean hoverd) {
+    protected int getYImage(boolean bl) {
         int i = 1;
         if (!this.active) {
             i = 0;
-        } else if (hoverd) {
+        } else if (bl) {
             i = 2;
         }
 
-        return 46 + i * 20;
+        return i;
     }
 }
