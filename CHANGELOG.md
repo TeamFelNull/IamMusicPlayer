@@ -8,7 +8,7 @@ Changelog to track updates for this mod.
 ### Added
 
 ### Changed
-- Port MC1.19.4
+
 ### Deprecated
 
 ### Removed
@@ -16,6 +16,11 @@ Changelog to track updates for this mod.
 ### Fixed
 
 ### Security
+
+## [3.21.0-alpha.1] - 2023-03-22
+
+### Changed
+- Port MC1.19.4
 
 ## [3.20.1] - 2023-02-14
 
@@ -54,9 +59,10 @@ Changelog to track updates for this mod.
 - Port MC1.19.3
 - Embed OBJ loader (Fabric Only)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.1...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.0-alpha.1...HEAD
+[3.21.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.1...v3.21.0-alpha.1
 [3.20.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0...v3.20.1
 [3.20.0]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-beta.1...v3.20.0
-[3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
-[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
 [3.20.0-beta.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...v3.20.0-beta.1
+[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
+[3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
