@@ -43,6 +43,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClientHandler {
     private static final Minecraft mc = Minecraft.getInstance();
+    private static final Component CONFIG_BUTTON = Component.translatable("imp.button.config");
+    private static final TextureRegion CONFIG_BUTTON_REGION = TextureRegion.relative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5);
     private static double LAST_MUSIC_VOLUME = IamMusicPlayer.getConfig().volume;
 
     public static void init() {
@@ -63,7 +65,7 @@ public class ClientHandler {
         if (screen instanceof SoundOptionsScreen) {
             LAST_MUSIC_VOLUME = IamMusicPlayer.getConfig().volume;
 
-            screenAccess.addRenderableWidget(new IconButton(screen.width - 27, screen.height - 27, 20, 20, Component.translatable("imp.button.config"), (button) -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get()), TextureRegion.relative(MusicManagerMonitor.WIDGETS_TEXTURE, 36, 58, 14, 5)));
+            screenAccess.addRenderableWidget(new IconButton(screen.width - 27, screen.height - 27, 20, 20, CONFIG_BUTTON, (button) -> mc.setScreen(AutoConfig.getConfigScreen(IMPConfig.class, screen).get()), CONFIG_BUTTON_REGION));
         }
     }
 
