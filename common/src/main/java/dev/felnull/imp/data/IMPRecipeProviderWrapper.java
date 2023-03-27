@@ -11,6 +11,7 @@ import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Consumer;
 
@@ -49,6 +50,17 @@ public class IMPRecipeProviderWrapper extends RecipeProviderWrapper {
                 .pattern("E")
                 .pattern("I")
                 .pattern("I")
+                .group("antenna")
+                .unlockedBy(providerAccess.getHasName(Items.ENDER_PEARL), providerAccess.has(PlatformItemTags.enderPearls().getKey()))
+                .save(exporter);
+
+        ShapedRecipeBuilder.shaped(IMPItems.PARABOLIC_ANTENNA.get())
+                .define('E', PlatformItemTags.enderPearls().getKey())
+                .define('I', PlatformItemTags.ironIngots())
+                .define('B', Blocks.IRON_BLOCK)
+                .pattern("IEI")
+                .pattern("I I")
+                .pattern(" B ")
                 .group("antenna")
                 .unlockedBy(providerAccess.getHasName(Items.ENDER_PEARL), providerAccess.has(PlatformItemTags.enderPearls().getKey()))
                 .save(exporter);
