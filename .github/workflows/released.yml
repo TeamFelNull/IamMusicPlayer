@@ -9,7 +9,8 @@ jobs:
   release:
     uses: TeamFelnull/actions-reusable-workflows/.github/workflows/mcmod-release.yml@master
     with:
-      build_tasks: "check fabric:runDatagen forge:runData build publish curseforge modrinth"
+      before_build_tasks: "fabric:runDatagen forge:runData"
+      build_tasks: "build publish curseforge modrinth"
     secrets:
       curseforge_token: ${{ secrets.CURSEFORGE_TOKEN_MORI }}
       modrinth_token: ${{ secrets.MODRINTH_TOKEN_MORI }}
