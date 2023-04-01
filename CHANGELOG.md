@@ -6,9 +6,9 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-
+- AprilFool Antenna
 ### Changed
-
+- Update SpecialModelLoader
 ### Deprecated
 
 ### Removed

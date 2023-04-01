@@ -18,6 +18,8 @@ public class ParabolicAntennaItemRenderer implements BEWLItemRenderer {
 
         if (IMPHoliday.isXmas() && IMPModels.XMAS_ANTENNA != null)
             antenaModel = IMPModels.XMAS_ANTENNA;
+        else if (IMPHoliday.isAprilFool() && IMPModels.APRIL_FOOL_ANTENNA != null)
+            antenaModel = IMPModels.APRIL_FOOL_ANTENNA;
 
         var name = itemStack.getHoverName().getString();
         if (name.equalsIgnoreCase("kamesuta")) {

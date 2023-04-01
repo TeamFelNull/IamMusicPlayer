@@ -30,6 +30,8 @@ public class IMPModels {
     public static final ModelHolder XMAS_ANTENNA_SIDE = Util.make(() -> IMPHoliday.isXmas() ? REGISTER.register(modLoc("item/parabolic_antenna/xmas/xmas_antenna_side")) : null);
     @Nullable
     public static final ModelHolder XMAS_ANTENNA_TAMA = Util.make(() -> IMPHoliday.isXmas() ? REGISTER.register(modLoc("item/parabolic_antenna/xmas/xmas_antenna_tama")) : null);
+    @Nullable
+    public static final ModelHolder APRIL_FOOL_ANTENNA = Util.make(() -> IMPHoliday.isAprilFool() ? REGISTER.register(modLoc("item/parabolic_antenna/april_fool/april_fool_antenna")) : null);
 
     public static final ModelHolder CASSETTE_TAPE_BASE_NORMAL_MODEL = REGISTER.register(modLoc("item/cassette_tape/base_nomal"));
     public static final ModelHolder CASSETTE_TAPE_BASE_GLASS_MODEL = REGISTER.register(modLoc("item/cassette_tape/base_glass"));
