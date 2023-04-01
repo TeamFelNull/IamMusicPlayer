@@ -6,9 +6,9 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-- AprilFool Antenna
+
 ### Changed
-- Update SpecialModelLoader
+
 ### Deprecated
 
 ### Removed
@@ -16,6 +16,14 @@ Changelog to track updates for this mod.
 ### Fixed
 
 ### Security
+
+## [3.21.2] - 2023-04-01
+
+### Added
+- AprilFool Antenna
+
+### Changed
+- Update SpecialModelLoader
 
 ## [3.21.1] - 2023-03-27
 
@@ -69,12 +77,13 @@ Changelog to track updates for this mod.
 - Port MC1.19.3
 - Embed OBJ loader (Fabric Only)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.1...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.2...HEAD
+[3.21.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.1...v3.21.2
 [3.21.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.0...v3.21.1
 [3.21.0]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.0-alpha.1...v3.21.0
 [3.21.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.1...v3.21.0-alpha.1
 [3.20.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0...v3.20.1
 [3.20.0]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-beta.1...v3.20.0
-[3.20.0-beta.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...v3.20.0-beta.1
-[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
 [3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
+[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
+[3.20.0-beta.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...v3.20.0-beta.1
