@@ -48,7 +48,7 @@ dependencies {
     //  shadowIn('com.github.sedmelluq:lavaplayer:PR650-SNAPSHOT')
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.0.2'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
-   // shadowIn 'org.jsoup:jsoup:1.14.3'
+    // shadowIn 'org.jsoup:jsoup:1.14.3'
     shadowIn 'com.mpatric:mp3agic:0.9.1'
 
 }
@@ -62,6 +62,7 @@ processResources {
 }
 shadowJar {
     configurations = [project.configurations.shadowIn]
+    relocate 'org.json', 'dev.felnull.imp.include.org.json'
     relocate 'org.slf4j', 'dev.felnull.imp.include.org.slf4j'
     relocate 'certificates', 'dev.felnull.imp.include.certificates'
     relocate 'com.fasterxml', 'dev.felnull.imp.include.com.fasterxml'
@@ -164,7 +165,10 @@ curseforge {
         apiKey = System.getenv('curesforgeapikey')
         project {
             id = "${rootProject.curesforge_id}"
-            changelog = ""
+
+            changelogType = 'markdown'
+            changelog = file('../LATEST_CHANGELOG.md')
+
             releaseType = "${rootProject.release_type}"
             addGameVersion "${rootProject.minecraft_version}"
             addGameVersion 'Java 17'
@@ -217,5 +221,6 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("iu3upNjC")//Otyacraft Engine
             optional.project("nU0bVIaL")//Patchouli
         }
+        changelog = file('../LATEST_CHANGELOG.md').text
     }
 }
