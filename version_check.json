@@ -46,8 +46,8 @@
     "1.15.2-recommended": "1.2",
     "1.19.3-latest": "3.20.1",
     "1.19.3-recommended": "3.20.1",
-    "1.19.4-latest": "3.21.2",
-    "1.19.4-recommended": "3.21.2"
+    "1.19.4-latest": "3.21.3",
+    "1.19.4-recommended": "3.21.3"
   },
   "1.19.3": {
     "3.20.0-alpha.1": "Changed\n- Port MC1.19.3\n- Embed OBJ loader (Fabric Only)\n",
@@ -60,6 +60,7 @@
     "3.21.0-alpha.1": "Changed\n- Port MC1.19.4\n",
     "3.21.0": "Added\n- Add parabolic antenna craft recipe\n",
     "3.21.1": "Fixed\n- Fixed problems with recipes, etc. not being applied.\n",
-    "3.21.2": "Added\n- AprilFool Antenna\nChanged\n- Update SpecialModelLoader\n"
+    "3.21.2": "Added\n- AprilFool Antenna\nChanged\n- Update SpecialModelLoader\n",
+    "3.21.3": "Changed\n- Updated LavaPlayer version to 1.4\nFixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n"
   }
 }
