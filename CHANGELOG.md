@@ -8,14 +8,22 @@ Changelog to track updates for this mod.
 ### Added
 
 ### Changed
-- Updated LavaPlayer version to 1.4
+
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
+
 ### Security
+
+## [3.19.9] - 2023-04-28
+
+### Changed
+- Updated LavaPlayer version to 1.4
+
+### Fixed
+- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
 
 ## [3.19.8] - 2023-03-27
 
@@ -37,7 +45,8 @@ Changelog to track updates for this mod.
 ### Fixed
 - Fixed server crash due to `NullPointerException` [Issues#45](https://github.com/TeamFelnull/IamMusicPlayer/issues/45)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.8...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.9...HEAD
+[3.19.9]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.8...v3.19.9
 [3.19.8]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.7...v3.19.8
 [3.19.7]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.6...v3.19.7
 [3.19.6]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.5...v3.19.6
