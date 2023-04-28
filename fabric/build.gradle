@@ -82,6 +82,7 @@ processResources {
 }
 shadowJar {
     configurations = [project.configurations.shadowIn]
+    relocate 'org.json', 'dev.felnull.imp.include.org.json'
     relocate 'org.slf4j', 'dev.felnull.imp.include.org.slf4j'
     relocate 'certificates', 'dev.felnull.imp.include.certificates'
     relocate 'com.fasterxml', 'dev.felnull.imp.include.com.fasterxml'
