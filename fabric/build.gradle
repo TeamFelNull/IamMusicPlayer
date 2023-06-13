@@ -68,7 +68,7 @@ dependencies {
     modApi "dev.felnull:special-model-loader:1.1.0"
     include "dev.felnull:special-model-loader:1.1.0"
     modApi "curse.maven:ctm-535489:4438793"//Sound Physics Remastered
-    //modApi "vazkii.patchouli:Patchouli:1.19.3-78-FABRIC"
+    modApi "vazkii.patchouli:Patchouli:1.19.4-79-FABRIC"
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'

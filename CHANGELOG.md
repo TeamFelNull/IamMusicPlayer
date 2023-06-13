@@ -6,7 +6,7 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-
+- Re-support Patchouli
 ### Changed
 
 ### Deprecated
