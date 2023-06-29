@@ -10,6 +10,7 @@ import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonit
 import dev.felnull.imp.music.resource.Music;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -34,24 +35,24 @@ public class WriteExecutionCDMonitor extends CassetteDeckMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
         if (getMusic() == null) return;
         var img = getMusic().getImage();
-        OERenderUtils.drawTexture(img.isEmpty() ? WRITE_EXECUTION_NO_IMAGE_TEXTURE : WRITE_EXECUTION_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(img.isEmpty() ? WRITE_EXECUTION_NO_IMAGE_TEXTURE : WRITE_EXECUTION_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         float sx = 22;
         if (!img.isEmpty()) {
-            getPlayImageRenderer().draw(img, poseStack, getStartX() + 23, getStartY() + 6, 30);
+            getPlayImageRenderer().draw(img, guiGraphics.pose(), getStartX() + 23, getStartY() + 6, 30);
             sx = 55;
         }
-        drawSmartText(poseStack, WRITING_TEXT, getStartX() + sx, getStartY() + 5);
-        drawSmartText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(getMusic().getName(), width - sx - 3, "...")), getStartX() + sx, getStartY() + 15);
+        drawSmartText(guiGraphics, WRITING_TEXT, getStartX() + sx, getStartY() + 5);
+        drawSmartText(guiGraphics, Component.literal(OEClientUtils.getWidthOmitText(getMusic().getName(), width - sx - 3, "...")), getStartX() + sx, getStartY() + 15);
 
-        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getStartX() + 22, getStartY() + 41, 58, 60, 156, 9);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getStartX() + 22, getStartY() + 41, 58, 60, 156, 9);
         float par = getWritePar();
-        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getStartX() + 22, getStartY() + 41, 58, 60 + 9, 156f * par, 9);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getStartX() + 22, getStartY() + 41, 58, 60 + 9, 156f * par, 9);
 
-        drawSmartCenterText(poseStack, Component.literal(FNStringUtil.getPercentage(par)), getStartX() + (width / 2f), getStartY() + 42);
+        drawSmartCenterText(guiGraphics, Component.literal(FNStringUtil.getPercentage(par)), getStartX() + (width / 2f), getStartY() + 42);
     }
 
     @Override

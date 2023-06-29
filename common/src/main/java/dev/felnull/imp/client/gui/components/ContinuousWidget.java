@@ -1,9 +1,9 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.utils.value.Value;
 import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -22,9 +22,14 @@ public class ContinuousWidget extends AbstractWidget implements IIMPSmartRender 
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 
-    @Override
+    /*@Override
     public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         drawSmartCenterText(poseStack, continuousTypeValue.get().getComponent(), getX() + width / 2f, getY() + 2, isHoveredOrFocused() ? 0XFF007F06 : 0XFF115D0E);
+    }*/
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        drawSmartCenterText(guiGraphics, continuousTypeValue.get().getComponent(), getX() + width / 2f, getY() + 2, isHoveredOrFocused() ? 0XFF007F06 : 0XFF115D0E);
     }
 
     @Override

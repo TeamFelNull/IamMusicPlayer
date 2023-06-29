@@ -16,6 +16,7 @@ import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
 import dev.felnull.otyacraftengine.util.OEImageUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -134,31 +135,31 @@ public abstract class ImageNameBaseMMMonitor extends MusicManagerMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(SET_IMAGE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-        drawSmartText(poseStack, IMAGE_TEXT, getStartX() + 5, getStartY() + 13);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(SET_IMAGE_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        drawSmartText(guiGraphics, IMAGE_TEXT, getStartX() + 5, getStartY() + 13);
 
         if (!getImage().isEmpty()) {
-            PlayImageRenderer.getInstance().draw(getImage(), poseStack, getStartX() + 6, getStartY() + 23, 64, false);
+            PlayImageRenderer.getInstance().draw(getImage(), guiGraphics.pose(), getStartX() + 6, getStartY() + 23, 64, false);
         } else {
-            drawSmartCenterText(poseStack, NO_IMAGE_TEXT, getStartX() + 38, getStartY() + 51);
+            drawSmartCenterText(guiGraphics, NO_IMAGE_TEXT, getStartX() + 38, getStartY() + 51);
         }
 
         if (!isLocked()) {
-            drawSmartText(poseStack, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 90);
+            drawSmartText(guiGraphics, DROP_INFO_TEXT, getStartX() + 5, getStartY() + 90);
 
             if (imageUploader != null && imageUploader.isAlive()) {
-                drawSmartFixedWidthText(poseStack, UPLOADING_IMAGE_TEXT, getStartX() + 75, getStartY() + 59, 107);
+                drawSmartFixedWidthText(guiGraphics, UPLOADING_IMAGE_TEXT, getStartX() + 75, getStartY() + 59, 107);
             } else {
                 if (IMAGE_SET_ERROR_TEXT != null)
-                    drawSmartFixedWidthText(poseStack, IMAGE_SET_ERROR_TEXT, getStartX() + 75, getStartY() + 59, 107, 0xFFFF0000);
+                    drawSmartFixedWidthText(guiGraphics, IMAGE_SET_ERROR_TEXT, getStartX() + 75, getStartY() + 59, 107, 0xFFFF0000);
             }
 
             if (NOT_ENTERED_TEXT != null)
-                drawSmartFixedWidthText(poseStack, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
+                drawSmartFixedWidthText(guiGraphics, NOT_ENTERED_TEXT, getStartX() + 5, getStartY() + 171, 177, 0XFFFF6347);
         }
-        drawSmartText(poseStack, NAME_TEXT, getStartX() + 5, getStartY() + 102);
+        drawSmartText(guiGraphics, NAME_TEXT, getStartX() + 5, getStartY() + 102);
 
 
     }

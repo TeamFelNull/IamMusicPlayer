@@ -1,6 +1,5 @@
 package dev.felnull.imp.client.gui.screen.monitor.music_manager;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.architectury.networking.NetworkManager;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
@@ -11,6 +10,7 @@ import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import dev.felnull.otyacraftengine.util.FlagThread;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
         Component ipTx = null;
         if (isImporting()) {
             ipTx = IMPORTING_TEXT;
@@ -40,7 +40,7 @@ public class ImportYoutubePlayListMusicsMMMonitor extends ImportYoutubePlayListB
             ipTx = Component.translatable("imp.text.importMusicCount", getImportPlayListMusicCount());
         }
         if (ipTx != null)
-            drawSmartText(poseStack, ipTx, getStartX() + width - 95 + 7, getStartY() + 184);
+            drawSmartText(guiGraphics, ipTx, getStartX() + width - 95 + 7, getStartY() + 184);
     }
 
     @Override

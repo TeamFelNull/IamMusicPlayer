@@ -14,6 +14,7 @@ import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -178,17 +179,17 @@ public class WriteCDMonitor extends CassetteDeckMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(WRITE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(WRITE_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (getMusic() != null) {
             float sx = 3;
             var img = getMusic().getImage();
             if (!img.isEmpty()) {
                 sx += 11 - 2 + 1;
-                PlayImageRenderer.getInstance().draw(img, poseStack, getStartX() + 16, getStartY() + 44, 11);
+                PlayImageRenderer.getInstance().draw(img, guiGraphics.pose(), getStartX() + 16, getStartY() + 44, 11);
             }
-            drawSmartText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(getMusic().getName(), 147 - sx - 2, "...")), getStartX() + 16 + sx, getStartY() + 44f + (11f - 6.5f) / 2f);
+            drawSmartText(guiGraphics, Component.literal(OEClientUtils.getWidthOmitText(getMusic().getName(), 147 - sx - 2, "...")), getStartX() + 16 + sx, getStartY() + 44f + (11f - 6.5f) / 2f);
         }
     }
 

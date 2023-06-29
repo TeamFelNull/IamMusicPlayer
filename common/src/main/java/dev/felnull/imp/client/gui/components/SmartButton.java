@@ -1,9 +1,8 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
-import net.minecraft.client.gui.components.AbstractButton;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -38,8 +37,8 @@ public class SmartButton extends IMPButton implements IIMPSmartRender {
 
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
-        drawSmartButtonBox(poseStack, getX(), getY(), width, height, this.getYImage(this.isHoveredOrFocused()));
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        drawSmartButtonBox(guiGraphics, getX(), getY(), width, height, this.getYImage(this.isHoveredOrFocused()));
         float fx = center ? (float) (width - mc.font.width(getMessage())) / 2f : 2;
         float fy = (float) (height - 7) / 2f;
 
@@ -47,11 +46,11 @@ public class SmartButton extends IMPButton implements IIMPSmartRender {
             float itx = hideText ? (width - iconWidth) / 2f : 2;
             float ity = (float) (height - iconHeight) / 2f;
             fx += itx + iconWidth;
-            OERenderUtils.drawTexture(iconTexture, poseStack, getX() + itx, getY() + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
+            OERenderUtils.drawTexture(iconTexture, guiGraphics.pose(), getX() + itx, getY() + ity, iconStX, iconStY, iconWidth, iconHeight, textureWidth, textureHeight);
         }
 
         if (!hideText)
-            drawSmartText(poseStack, getMessage(), getX() + fx, getY() + fy);
+            drawSmartText(guiGraphics, getMessage(), getX() + fx, getY() + fy);
 
         /*if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);*/

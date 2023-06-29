@@ -1,10 +1,10 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.imp.music.resource.IIMPComparable;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -30,8 +30,8 @@ public abstract class SortButton extends IMPButton implements IIMPSmartRender {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
-        drawSmartButtonBox(poseStack, getX(), getY(), width, height, isHoveredOrFocused());
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        drawSmartButtonBox(guiGraphics, getX(), getY(), width, height, isHoveredOrFocused());
       /*  if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, mx, my);*/
     }
@@ -124,11 +124,11 @@ public abstract class SortButton extends IMPButton implements IIMPSmartRender {
         }
 
         @Override
-        public void renderWidget(PoseStack poseStack, int i, int j, float f) {
-            super.renderWidget(poseStack, i, j, f);
-            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX() + 1, getY() + 1, 73 + getSortType().ordinal() * 7, 0, 7, 7);
+        public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+            super.renderWidget(guiGraphics, i, j, f);
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX() + 1, getY() + 1, 73 + getSortType().ordinal() * 7, 0, 7, 7);
             if (longed) {
-                drawSmartText(poseStack, getToolTipComponent(), getX() + 9, getY() + 1);
+                drawSmartText(guiGraphics, getToolTipComponent(), getX() + 9, getY() + 1);
             }
         }
     }
@@ -157,11 +157,11 @@ public abstract class SortButton extends IMPButton implements IIMPSmartRender {
         }
 
         @Override
-        public void renderWidget(PoseStack poseStack, int i, int j, float f) {
-            super.renderWidget(poseStack, i, j, f);
-            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX() + 1, getY() + 1, 73 + getOrderType().ordinal() * 7, 7, 7, 7);
+        public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+            super.renderWidget(guiGraphics, i, j, f);
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX() + 1, getY() + 1, 73 + getOrderType().ordinal() * 7, 7, 7, 7);
             if (longed) {
-                drawSmartText(poseStack, getToolTipComponent(), getX() + 9, getY() + 1);
+                drawSmartText(guiGraphics, getToolTipComponent(), getX() + 9, getY() + 1);
             }
         }
     }

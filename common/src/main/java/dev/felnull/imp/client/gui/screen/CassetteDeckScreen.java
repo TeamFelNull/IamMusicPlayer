@@ -1,12 +1,12 @@
 package dev.felnull.imp.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
 import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonitor;
 import dev.felnull.imp.inventory.CassetteDeckMenu;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -42,13 +42,13 @@ public class CassetteDeckScreen extends IMPBaseContainerScreen<CassetteDeckMenu>
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float f, int i, int j) {
-        super.renderBg(poseStack, f, i, j);
+    protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
+        super.renderBg(guiGraphics, f, i, j);
         if (getCassetteTape().isEmpty())
-            OERenderUtils.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 99, 0, 0, 16, 16, 16, 16);
+            OERenderUtils.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, guiGraphics.pose(), leftPos + 183, topPos + 99, 0, 0, 16, 16, 16, 16);
 
         if (monitor != null)
-            monitor.render(poseStack, f, i, j);
+            monitor.render(guiGraphics, f, i, j);
     }
 
     @Override

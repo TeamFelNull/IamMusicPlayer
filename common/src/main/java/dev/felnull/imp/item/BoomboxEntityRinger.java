@@ -38,7 +38,7 @@ public class BoomboxEntityRinger implements IBoomboxRinger {
 
     @Override
     public ServerLevel getRingerLevel() {
-        return (ServerLevel) entity.level;
+        return (ServerLevel) entity.level();
     }
 
     @Override

@@ -9,6 +9,7 @@ import dev.felnull.imp.client.gui.components.LoopControlWidget;
 import dev.felnull.imp.client.gui.components.PlayProgressWidget;
 import dev.felnull.imp.client.gui.screen.BoomboxScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 
@@ -94,13 +95,13 @@ public abstract class PlayBackFiniteBaseBMMonitor extends PlayBackBaseBMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
         if (!canPlay()) return;
         var ptx = LOADING_MUSIC_TEXT;
         if (!getScreen().isMusicLoading())
             ptx = Component.translatable(FNStringUtil.getTimeProgress(getScreen().getMusicPosition(), getPlayBackSource().getDuration()));
-        drawSmartText(poseStack, ptx, getStartX() + 38 - (isShortProgressBar() ? 0 : 36), getStartY() + 15, 0XFF115D0E);
+        drawSmartText(guiGraphics, ptx, getStartX() + 38 - (isShortProgressBar() ? 0 : 36), getStartY() + 15, 0XFF115D0E);
     }
 
     @Override

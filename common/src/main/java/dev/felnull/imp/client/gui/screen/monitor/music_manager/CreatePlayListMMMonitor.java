@@ -14,6 +14,7 @@ import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import dev.felnull.otyacraftengine.util.FlagThread;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 
@@ -33,8 +34,8 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
         Component ipTx = null;
         if (isImporting()) {
             ipTx = IMPORTING_TEXT;
@@ -44,7 +45,7 @@ public class CreatePlayListMMMonitor extends SavedPlayListBaseMMMonitor {
             ipTx = Component.translatable("imp.text.importMusicCount", getImportMusicsCount());
         }
         if (ipTx != null)
-            drawSmartText(poseStack, ipTx, getStartX() + width - 95 + 7, getStartY() + 184);
+            drawSmartText(guiGraphics, ipTx, getStartX() + width - 95 + 7, getStartY() + 184);
     }
 
     @Override

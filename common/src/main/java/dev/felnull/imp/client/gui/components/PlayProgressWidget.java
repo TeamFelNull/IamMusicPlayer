@@ -1,9 +1,9 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.architectury.utils.value.FloatValue;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -17,12 +17,20 @@ public class PlayProgressWidget extends AbstractWidget {
         this.progress = progress;
     }
 
-    @Override
+  /*  @Override
     public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         int z = isHoveredOrFocused() ? 6 : 0;
 
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 58, 81 + z, width, 3);
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 58, 78 + z, (float) width * progress.get(), 3);
+    }*/
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        int z = isHoveredOrFocused() ? 6 : 0;
+
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX(), getY(), 58, 81 + z, width, 3);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX(), getY(), 58, 78 + z, (float) width * progress.get(), 3);
     }
 
     @Override

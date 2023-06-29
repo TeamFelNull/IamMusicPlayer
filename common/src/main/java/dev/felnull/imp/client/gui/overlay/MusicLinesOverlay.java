@@ -7,28 +7,30 @@ import dev.felnull.imp.client.music.MusicEntry;
 import dev.felnull.imp.client.music.player.MusicLoadChunk;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class MusicLinesOverlay extends GuiComponent {
+public class MusicLinesOverlay {
     private static final Minecraft mc = Minecraft.getInstance();
 
-    public void render(PoseStack poseStack, float tickDelta) {
+    public void render(GuiGraphics guiGraphics, float tickDelta) {
         var me = MusicEngine.getInstance();
         int fh = mc.font.lineHeight;
 
-        drawText(poseStack, me.getDebugString(), 2, 2);
+        drawText(guiGraphics, me.getDebugString(), 2, 2);
 
         int ct = 0;
         for (Map.Entry<UUID, MusicEntry> entry : me.getMusicEntries().entrySet()) {
-            drawMusicLine(poseStack, 1, fh + 3 + (ct * (65 + mc.font.lineHeight)), entry.getKey(), entry.getValue());
+            drawMusicLine(guiGraphics, 1, fh + 3 + (ct * (65 + mc.font.lineHeight)), entry.getKey(), entry.getValue());
             ct++;
         }
     }
 
-    private void drawMusicLine(PoseStack poseStack, int x, int y, UUID uuid, MusicEntry entry) {
+    private void drawMusicLine(GuiGraphics guiGraphics, int x, int y, UUID uuid, MusicEntry entry) {
+        PoseStack poseStack = guiGraphics.pose();
+
         var source = entry.getSource();
         String duStr = source.isLive() ? ("Live(" + FNStringUtil.getTimeFormat(entry.getCurrentPosition()) + ")") : FNStringUtil.getTimeProgress(entry.getCurrentPosition(), source.getDuration());
 
@@ -54,7 +56,7 @@ public class MusicLinesOverlay extends GuiComponent {
             mst = String.format("%s:%s", source.getLoaderType(), idf);
         }
 
-        drawText(poseStack, String.format("%s %s", mst, duStr) + text, x + 1, y);
+        drawText(guiGraphics, String.format("%s %s", mst, duStr) + text, x + 1, y);
 
         int sw = mc.getWindow().getGuiScaledWidth();
         int fh = mc.font.lineHeight;
@@ -126,10 +128,12 @@ public class MusicLinesOverlay extends GuiComponent {
         OERenderUtils.drawFill(poseStack, x + 2 + p, y + fh - 1 + 1 + ((60f - h) / 2f), x + 2 + p + w, y + fh - 1 + 1 + ((60f - h) / 2f) + h, color);
     }
 
-    private void drawText(PoseStack poseStack, String text, int x, int y) {
+    private void drawText(GuiGraphics guiGraphics, String text, int x, int y) {
         int j = mc.font.lineHeight;
         int k = mc.font.width(text);
-        fill(poseStack, 1, y - 1, 2 + k + 1, y + j - 1, -1873784752);
-        mc.font.draw(poseStack, text, x, y, 14737632);
+        guiGraphics.fill(1, y - 1, 2 + k + 1, y + j - 1, -1873784752);
+        //mc.font.draw(poseStack, text, x, y, 14737632);
+
+        guiGraphics.drawString(mc.font, text, x, y, 14737632);
     }
 }

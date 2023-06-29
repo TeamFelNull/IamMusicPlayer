@@ -1,9 +1,9 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,7 @@ public class ImageSetButton extends IMPButton implements IIMPSmartRender {
         }
     }
 
-    @Override
+   /* @Override
     public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         drawSmartButtonBox(poseStack, getX(), getY(), width, height, isHoveredOrFocused());
         if (type == ImageSetType.PLAYER_FACE) {
@@ -40,7 +40,17 @@ public class ImageSetButton extends IMPButton implements IIMPSmartRender {
         } else {
             OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, (float) getX() + ((float) width - 11f) / 2f, (float) getY() + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
         }
-        /*if (this.isHoveredOrFocused())
-            this.renderToolTip(poseStack, mx, my);*/
+        *//*if (this.isHoveredOrFocused())
+            this.renderToolTip(poseStack, mx, my);*//*
+    }*/
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        drawSmartButtonBox(guiGraphics, getX(), getY(), width, height, isHoveredOrFocused());
+        if (type == ImageSetType.PLAYER_FACE) {
+            OERenderUtils.drawPlayerFace(guiGraphics.pose(), mc.player.getGameProfile().getId(), (float) getX() + ((float) width - 11f) / 2f, (float) getY() + ((float) height - 11f) / 2f, 11);
+        } else {
+            OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), (float) getX() + ((float) width - 11f) / 2f, (float) getY() + ((float) height - 11f) / 2f, 73 + (type == ImageSetType.DELETE ? 11 : 0), 19, 11, 11);
+        }
     }
 }

@@ -3,6 +3,7 @@ package dev.felnull.imp.client.gui.screen.monitor.cassette_deck;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.screen.CassetteDeckScreen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 
 public class OffCDMonitor extends CassetteDeckMonitor {
@@ -11,7 +12,7 @@ public class OffCDMonitor extends CassetteDeckMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
     }
 
     @Override

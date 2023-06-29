@@ -14,6 +14,7 @@ import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -64,15 +65,15 @@ public abstract class ImportYoutubePlayListBaseMMMonitor extends MusicManagerMon
     abstract protected void onImport();
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(IMPORT_YOUTUBE_PLAY_LIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(IMPORT_YOUTUBE_PLAY_LIST_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (isPlayListLoading()) {
-            drawSmartText(poseStack, LOADING_TEXT, getStartX() + 2, getStartY() + 11);
+            drawSmartText(guiGraphics, LOADING_TEXT, getStartX() + 2, getStartY() + 11);
         }
 
-        drawSmartText(poseStack, Component.literal(getImportPlayListName()), getStartX() + 200, getStartY() + 167);
-        drawSmartText(poseStack, Component.literal(getImportPlayListAuthor()), getStartX() + 200, getStartY() + 183);
+        drawSmartText(guiGraphics, Component.literal(getImportPlayListName()), getStartX() + 200, getStartY() + 167);
+        drawSmartText(guiGraphics, Component.literal(getImportPlayListAuthor()), getStartX() + 200, getStartY() + 183);
     }
 
     @Override

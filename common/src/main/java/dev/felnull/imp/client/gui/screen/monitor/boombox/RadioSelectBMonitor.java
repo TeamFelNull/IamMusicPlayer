@@ -14,6 +14,7 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -53,26 +54,26 @@ public class RadioSelectBMonitor extends BoomboxMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(RADIO_SELECT_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(RADIO_SELECT_BG_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (isRadioChecking()) {
-            drawSmartText(poseStack, RADIO_CHECKING_TEXT, getStartX() + 2, getStartY() + (height - 1f - 14f - 6.5f) / 2f);
+            drawSmartText(guiGraphics, RADIO_CHECKING_TEXT, getStartX() + 2, getStartY() + (height - 1f - 14f - 6.5f) / 2f);
         } else if (!getRadioSource().isEmpty()) {
             float st = 2;
             if (!getRadioImage().isEmpty()) {
-                OERenderUtils.drawTexture(RADIO_SELECT_IMAGE_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-                getPlayImageRenderer().draw(getRadioImage(), poseStack, getStartX() + 1, getStartY() + 1, 20);
+                OERenderUtils.drawTexture(RADIO_SELECT_IMAGE_BG_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+                getPlayImageRenderer().draw(getRadioImage(), guiGraphics.pose(), getStartX() + 1, getStartY() + 1, 20);
                 st += 21;
             }
             if (!getScreen().getBoomBoxData().getRadioName().isEmpty())
-                drawSmartText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(getScreen().getBoomBoxData().getRadioName(), width - 3 - st, "...")), getStartX() + st, getStartY() + 2);
+                drawSmartText(guiGraphics, Component.literal(OEClientUtils.getWidthOmitText(getScreen().getBoomBoxData().getRadioName(), width - 3 - st, "...")), getStartX() + st, getStartY() + 2);
             if (!getScreen().getBoomBoxData().getRadioAuthor().isEmpty()) {
                 var tx = Component.translatable("imp.text.musicAuthor", "");
-                drawSmartText(poseStack, Component.translatable("imp.text.musicAuthor", OEClientUtils.getWidthOmitText(getScreen().getBoomBoxData().getRadioAuthor(), width - 3 - st - mc.font.width(tx), "...")), getStartX() + st, getStartY() + 12);
+                drawSmartText(guiGraphics, Component.translatable("imp.text.musicAuthor", OEClientUtils.getWidthOmitText(getScreen().getBoomBoxData().getRadioAuthor(), width - 3 - st - mc.font.width(tx), "...")), getStartX() + st, getStartY() + 12);
             }
         } else {
-            drawSmartText(poseStack, ENTER_STREAM_TEXT, getStartX() + 2, getStartY() + (height - 1f - 14f - 6.5f) / 2f);
+            drawSmartText(guiGraphics, ENTER_STREAM_TEXT, getStartX() + 2, getStartY() + (height - 1f - 14f - 6.5f) / 2f);
         }
     }
 

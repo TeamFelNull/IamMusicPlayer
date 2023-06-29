@@ -1,10 +1,8 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.screen.IMPBaseContainerScreen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,9 +25,9 @@ public class PowerButton extends ImageButton {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, this.resourceLocation);
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        // RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        //  RenderSystem.setShaderTexture(0, this.resourceLocation);
         int tx = this.xTexStart;
         int ty = this.yTexStart;
 
@@ -39,8 +37,8 @@ public class PowerButton extends ImageButton {
         if (screen.isPowered())
             tx += this.width;
 
-        RenderSystem.enableDepthTest();
-        blit(poseStack, this.getX(), this.getY(), (float) tx, (float) ty, this.width, this.height, this.textureWidth, this.textureHeight);
+        //  RenderSystem.enableDepthTest();
+        guiGraphics.blit(this.resourceLocation, this.getX(), this.getY(), (int) tx, (int) ty, this.width, this.height, this.textureWidth, this.textureHeight);
         /*if (this.isHoveredOrFocused())
             this.renderToolTip(poseStack, i, j);*/
     }

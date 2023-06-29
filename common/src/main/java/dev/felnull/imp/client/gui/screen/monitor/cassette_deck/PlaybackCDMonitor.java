@@ -15,6 +15,7 @@ import dev.felnull.imp.music.resource.Music;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -148,30 +149,30 @@ public class PlaybackCDMonitor extends CassetteDeckMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
 
         if (!getCassetteTape().isEmpty() && IMPItemUtil.isCassetteTape(getCassetteTape())) {
             Music music = CassetteTapeItem.getMusic(getCassetteTape());
             if (music != null) {
-                OERenderUtils.drawTexture(PLAYBACK_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+                OERenderUtils.drawTexture(PLAYBACK_BG_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
                 if (!music.getImage().isEmpty())
-                    OERenderUtils.drawTexture(PLAYBACK_IMAGE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+                    OERenderUtils.drawTexture(PLAYBACK_IMAGE_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
                 int sx = 2;
                 if (!music.getImage().isEmpty()) {
-                    getPlayImageRenderer().draw(music.getImage(), poseStack, getStartX() + 1, getStartY() + 1, height - 2 - 13);
+                    getPlayImageRenderer().draw(music.getImage(), guiGraphics.pose(), getStartX() + 1, getStartY() + 1, height - 2 - 13);
                     sx += height - 2 - 13;
                 }
-                drawSmartCenterText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(music.getName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
+                drawSmartCenterText(guiGraphics, Component.literal(OEClientUtils.getWidthOmitText(music.getName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
                 var ptx = LOADING_MUSIC_TEXT;
                 if (!getScreen().isLoading())
                     ptx = Component.literal(FNStringUtil.getTimeProgress(getScreen().getPosition(), music.getSource().getDuration()));
-                drawSmartText(poseStack, ptx, getStartX() + 45 - (isShortProgressBar() ? 0 : 43), getStartY() + 17, 0XFF115D0E);
+                drawSmartText(guiGraphics, ptx, getStartX() + 45 - (isShortProgressBar() ? 0 : 43), getStartY() + 17, 0XFF115D0E);
             } else {
-                drawSmartCenterText(poseStack, NO_MUSIC_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
+                drawSmartCenterText(guiGraphics, NO_MUSIC_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
             }
         } else {
-            drawSmartCenterText(poseStack, NO_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
+            drawSmartCenterText(guiGraphics, NO_CASSETTE_TAPE_TEXT, getStartX() + width / 2f, getStartY() + (height - 10f) / 2f);
         }
     }
 

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.music.MusicSyncManager;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -53,7 +54,7 @@ public abstract class Monitor<T extends BlockEntity> extends AbstractContainerEv
         this.topPos = 0;
     }
 
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
 
     }
 

@@ -1,7 +1,7 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.4.4"
+    id "com.modrinth.minotaur" version "2.8.0"
 }
 
 architectury {
@@ -23,16 +23,16 @@ loom {
         }
     }
 
-    launches {
+    /*launches {
         data {
             arg "--existing", file("src/main/resources").absolutePath, "--existing", file("../common/src/main/resources").absolutePath
         }
-    }
+    }*/
 }
 
 configurations {
     common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    shadowCommon
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentForge.extendsFrom common
@@ -42,18 +42,20 @@ configurations {
 
 dependencies {
     forge "net.minecraftforge:forge:${rootProject.forge_version}"
-    // Remove the next line if you don't want to depend on the API
+
     modApi "dev.architectury:architectury-forge:${rootProject.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 
     modApi "dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
-    modApi "me.shedaniel.cloth:cloth-config-forge:10.0.96"
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:10.0.578"
-    modApi "curse.maven:ctm-535489:4438790"//Sound Physics Remastered
-    modCompileOnly "vazkii.patchouli:Patchouli:1.19.4-79-FORGE:api"
-    modRuntimeOnly "vazkii.patchouli:Patchouli:1.19.4-79-FORGE"
+
+    modApi "me.shedaniel.cloth:cloth-config-forge:${rootProject.cloth_config_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rootProject.rei_version}"
+
+    modApi "curse.maven:ctm-535489:4573656"//Sound Physics Remastered
+    //modCompileOnly "vazkii.patchouli:Patchouli:1.19.4-79-FORGE:api"
+    //modRuntimeOnly "vazkii.patchouli:Patchouli:1.19.4-79-FORGE"
 
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
@@ -114,18 +116,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier.set("dev-shadow")
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier.set(null)
     setArchivesBaseName("${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}")
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier.set("dev")
 }
 
 sourcesJar {
@@ -202,7 +204,7 @@ curseforge {
                 requiredDependency "cloth-config"
                 requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
-                optionalDependency "patchouli"
+            //    optionalDependency "patchouli"
             }
 
             mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")) {
@@ -230,7 +232,7 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("9s6osm5g")//Cloth Config API
             required.project("lhGA9TYQ")//Architectury API
             required.project("iu3upNjC")//Otyacraft Engine
-            optional.project("nU0bVIaL")//Patchouli
+          //  optional.project("nU0bVIaL")//Patchouli
         }
         changelog = file('../LATEST_CHANGELOG.md').text
     }

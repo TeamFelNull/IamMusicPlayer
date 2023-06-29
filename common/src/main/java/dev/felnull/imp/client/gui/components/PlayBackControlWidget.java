@@ -1,9 +1,9 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -27,11 +27,18 @@ public class PlayBackControlWidget extends AbstractWidget implements IIMPSmartRe
     }
 
 
-    @Override
+    /*@Override
     public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         var state = stateTypeSupplier.get();
         int z = isHoveredOrFocused() ? 30 : 0;
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), state.ordinal() * 10 + z, 145, 10, 10);
+    }*/
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        var state = stateTypeSupplier.get();
+        int z = isHoveredOrFocused() ? 30 : 0;
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX(), getY(), state.ordinal() * 10 + z, 145, 10, 10);
     }
 
     @Override

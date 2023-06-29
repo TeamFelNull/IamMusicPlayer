@@ -1,8 +1,8 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -34,10 +34,16 @@ public class PlaybackProgressBar extends AbstractButton {
     public void onPress() {
     }
 
-    @Override
+    /*@Override
     public void renderWidget(PoseStack poseStack, int i, int j, float f) {
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 52, 54 + (isHoveredOrFocused() ? 3 : 0), getWidth(), getHeight());
         OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getX(), getY(), 52, 48 + (isHoveredOrFocused() ? 3 : 0), (float) getWidth() * progressGetter.get(), getHeight());
+    }*/
+
+    @Override
+    public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX(), getY(), 52, 54 + (isHoveredOrFocused() ? 3 : 0), getWidth(), getHeight());
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getX(), getY(), 52, 48 + (isHoveredOrFocused() ? 3 : 0), (float) getWidth() * progressGetter.get(), getHeight());
     }
 
     @Override

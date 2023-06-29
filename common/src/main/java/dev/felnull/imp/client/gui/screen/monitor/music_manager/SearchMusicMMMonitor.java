@@ -11,6 +11,7 @@ import dev.felnull.imp.client.music.media.MusicMedia;
 import dev.felnull.imp.client.music.media.MusicMediaResult;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -57,11 +58,11 @@ public class SearchMusicMMMonitor extends MusicManagerMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(SEARCH_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(SEARCH_MUSIC_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (searchMusics.isEmpty() && !getMusicSearchName().isEmpty() && searchThread != null && searchThread.isAlive())
-            drawSmartText(poseStack, SEARCHING_TEXT, getStartX() + 3, getStartY() + 27);
+            drawSmartText(guiGraphics, SEARCHING_TEXT, getStartX() + 3, getStartY() + 27);
     }
 
     @Override

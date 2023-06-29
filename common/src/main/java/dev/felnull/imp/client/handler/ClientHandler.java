@@ -88,7 +88,7 @@ public class ClientHandler {
     }
 
     private static EventResult onLivingEntityTick(@NotNull LivingEntity livingEntity) {
-        if (!livingEntity.level.isClientSide()) return EventResult.pass();
+        if (!livingEntity.level().isClientSide()) return EventResult.pass();
 
         if (livingEntity instanceof IRingerPartyParrot ringerPartyParrot) {
             var mm = MusicEngine.getInstance();

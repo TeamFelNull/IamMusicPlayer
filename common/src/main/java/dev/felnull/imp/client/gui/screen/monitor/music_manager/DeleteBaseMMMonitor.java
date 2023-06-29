@@ -6,6 +6,7 @@ import dev.felnull.imp.client.gui.components.SmartButton;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -49,12 +50,13 @@ public abstract class DeleteBaseMMMonitor extends MusicManagerMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        PoseStack poseStack = guiGraphics.pose();
         poseStack.pushPose();
         float sc = Math.min(1f, (width - 20f) / (float) mc.font.width(WARING));
         OERenderUtils.poseScaleAll(poseStack, sc);
-        drawSmartCenterText(poseStack, WARING, (getStartX() + (float) width / 2f) / sc, (getStartY() + (float) height / 2f - 16.5f) / sc);
+        drawSmartCenterText(guiGraphics, WARING, (getStartX() + (float) width / 2f) / sc, (getStartY() + (float) height / 2f - 16.5f) / sc);
         poseStack.popPose();
     }
 

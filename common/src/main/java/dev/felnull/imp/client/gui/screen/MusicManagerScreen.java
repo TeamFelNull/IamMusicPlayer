@@ -1,6 +1,5 @@
 package dev.felnull.imp.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.components.PowerButton;
@@ -14,6 +13,9 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.music.tracker.IMPMusicTrackers;
 import dev.felnull.otyacraftengine.util.OENbtUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.BeaconScreen;
+import net.minecraft.client.gui.screens.inventory.CartographyTableScreen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -229,15 +231,16 @@ public class MusicManagerScreen extends IMPBaseContainerScreen<MusicManagerMenu>
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int i, int j) {
-        this.font.draw(poseStack, this.title, (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
+    protected void renderLabels(GuiGraphics guiGraphics, int i, int j) {
+      guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752,false);
+        //this.font.draw(poseStack, this.title, (float) this.titleLabelX, (float) this.titleLabelY, 4210752);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float f, int i, int j) {
-        super.renderBg(poseStack, f, i, j);
+    protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
+        super.renderBg(guiGraphics, f, i, j);
         if (monitor != null)
-            monitor.render(poseStack, f, i, j);
+            monitor.render(guiGraphics, f, i, j);
     }
 
     @Override

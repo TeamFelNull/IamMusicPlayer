@@ -1,7 +1,7 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id "com.modrinth.minotaur" version "2.4.4"
+    id "com.modrinth.minotaur" version "2.8.0"
 }
 
 architectury {
@@ -40,7 +40,7 @@ assemble.dependsOn runDatagen
 
 configurations {
     common
-    shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
+    shadowCommon 
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
@@ -55,24 +55,27 @@ repositories {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
-    // Remove the next line if you don't want to depend on the API
+ 
     modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     modApi "dev.felnull:otyacraftengine-fabric:${rootProject.oe_version}"
-    modApi "com.terraformersmc:modmenu:6.1.0-rc.4"
-    modApi "me.shedaniel.cloth:cloth-config-fabric:10.0.96"
-    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:11.0.597"
-    modApi "dev.felnull:special-model-loader:1.1.0"
-    include "dev.felnull:special-model-loader:1.1.0"
-    modApi "curse.maven:ctm-535489:4438793"//Sound Physics Remastered
-    modApi "vazkii.patchouli:Patchouli:1.19.4-79-FABRIC"
+    
+    modApi "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
+    modApi "me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${rootProject.rei_version}"
+
+    modApi "dev.felnull:special-model-loader:1.2.0"
+    include "dev.felnull:special-model-loader:1.2.0"
+    modApi "curse.maven:ctm-535489:4573658"//Sound Physics Remastered
+    //modApi "vazkii.patchouli:Patchouli:1.19.4-79-FABRIC"
 
     shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
     }
+
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.1.0'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
@@ -127,19 +130,19 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier.set("dev-shadow")
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier.set(null)
     setArchivesBaseName("${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}")
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier.set("dev")
 }
 
 sourcesJar {
@@ -218,7 +221,7 @@ curseforge {
                 requiredDependency "cloth-config"
                 requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
-                optionalDependency "patchouli-fabric"
+          //      optionalDependency "patchouli-fabric"
                 embeddedLibrary "special-model-loader"
             }
 
@@ -254,7 +257,7 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("9s6osm5g")//Cloth Config API
             required.project("lhGA9TYQ")//Architectury API
             required.project("iu3upNjC")//Otyacraft Engine
-            optional.project("nU0bVIaL")//Patchouli
+          //  optional.project("nU0bVIaL")//Patchouli
             embedded.project("ajFw7VkX")//Special Model Loader
         }
         changelog = file('../LATEST_CHANGELOG.md').text

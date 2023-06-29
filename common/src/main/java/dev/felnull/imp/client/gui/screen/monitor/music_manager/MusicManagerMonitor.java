@@ -7,6 +7,7 @@ import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.imp.client.gui.screen.monitor.Monitor;
 import dev.felnull.imp.client.music.MusicEngine;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -48,12 +49,12 @@ public abstract class MusicManagerMonitor extends Monitor<MusicManagerBlockEntit
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(BG_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (header) {
-            OERenderUtils.drawTexture(BASE_TEXTURE, poseStack, getStartX(), getStartY(), 0, 0, width, 10, width, height);
-            drawSmartText(poseStack, title, getStartX() + 1, getStartY() + 1);
+            OERenderUtils.drawTexture(BASE_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0, 0, width, 10, width, height);
+            drawSmartText(guiGraphics, title, getStartX() + 1, getStartY() + 1);
         }
     }
 

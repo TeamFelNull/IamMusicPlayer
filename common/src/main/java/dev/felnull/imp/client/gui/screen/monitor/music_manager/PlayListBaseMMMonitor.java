@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.MusicManagerScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -26,12 +27,12 @@ public abstract class PlayListBaseMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        drawSmartText(poseStack, PUBLIC_ST_TEXT, getStartX() + 5, getStartY() + 131);
-        drawSmartText(poseStack, INITIAL_AUTHORITY_TEXT, getStartX() + 189, getStartY() + 131);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        drawSmartText(guiGraphics, PUBLIC_ST_TEXT, getStartX() + 5, getStartY() + 131);
+        drawSmartText(guiGraphics, INITIAL_AUTHORITY_TEXT, getStartX() + 189, getStartY() + 131);
 
-        drawSmartText(poseStack, getPlayerListName(), getStartX() + 189, getStartY() + 13);
+        drawSmartText(guiGraphics, getPlayerListName(), getStartX() + 189, getStartY() + 13);
     }
 
     @Override

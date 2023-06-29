@@ -22,7 +22,7 @@ public class ServerMessageHandler {
                 var id = BoomboxItem.getRingerUUID(item);
                 if (id == null || !id.equals(message.boomboxId)) return;
                 var data = BoomboxItem.getData(item);
-                data.cycleLidOpen(packetContext.getPlayer().level);
+                data.cycleLidOpen(packetContext.getPlayer().level());
                 BoomboxItem.setData(item, data);
             }
         });
@@ -31,7 +31,7 @@ public class ServerMessageHandler {
     public static void onMusicPlayListChangeAuthority(IMPPackets.MusicPlayListChangeAuthorityMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
-            if (message.blockEntityExistence.check(player.getLevel()))
+            if (message.blockEntityExistence.check(player.level()))
                 MusicManager.getInstance().changeAuthority(packetContext.getPlayer().getServer(), message.playlist, message.player, message.authorityType, player);
         });
     }
@@ -39,7 +39,7 @@ public class ServerMessageHandler {
     public static void onMultipleMusicAdd(IMPPackets.MultipleMusicAddMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
-            if (message.blockEntityExistence.check(player.getLevel()))
+            if (message.blockEntityExistence.check(player.level()))
                 MusicManager.getInstance().addMultipleMusic(packetContext.getPlayer().getServer(), message.playlist, message.musics, player);
         });
     }
@@ -47,7 +47,7 @@ public class ServerMessageHandler {
     public static void onMusicOrPlayListDeleteMessage(IMPPackets.MusicOrPlayListDeleteMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
-            if (message.blockEntityExistence.check(player.getLevel())) {
+            if (message.blockEntityExistence.check(player.level())) {
                 var mm = MusicManager.getInstance();
                 if (message.music) {
                     mm.deleteMusic(packetContext.getPlayer().getServer(), message.playListID, message.musicID, player);
@@ -80,7 +80,7 @@ public class ServerMessageHandler {
     public static void onMusicEditMessage(IMPPackets.MusicMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
-            if (message.blockEntityExistence.check(player.getLevel()))
+            if (message.blockEntityExistence.check(player.level()))
                 MusicManager.getInstance().editMusic(packetContext.getPlayer().getServer(), message.uuid, message.playlist, message.name, message.image, player);
         });
     }
@@ -88,7 +88,7 @@ public class ServerMessageHandler {
     public static void onMusicPlayListEditMessage(IMPPackets.MusicPlayListMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             ServerPlayer player = (ServerPlayer) packetContext.getPlayer();
-            if (message.blockEntityExistence.check(player.getLevel()))
+            if (message.blockEntityExistence.check(player.level()))
                 MusicManager.getInstance().editPlayList(packetContext.getPlayer().getServer(), message.uuid, message.name, message.image, message.invitePlayers, message.publiced, message.initMember, player);
         });
     }
@@ -96,7 +96,7 @@ public class ServerMessageHandler {
     public static void onMusicPlayListAddMessage(IMPPackets.MusicPlayListMessage message, NetworkManager.PacketContext packetContext) {
         packetContext.queue(() -> {
             var player = (ServerPlayer) packetContext.getPlayer();
-            if (message.blockEntityExistence.check(player.getLevel())) {
+            if (message.blockEntityExistence.check(player.level())) {
                 Map<UUID, AuthorityInfo.AuthorityType> authTypes = new HashMap<>();
                 message.invitePlayers.forEach(n -> authTypes.put(n, AuthorityInfo.AuthorityType.INVITATION));
                 var auth = new AuthorityInfo(message.publiced, packetContext.getPlayer().getGameProfile().getId(), packetContext.getPlayer().getGameProfile().getName(), authTypes, message.initMember ? AuthorityInfo.AuthorityType.MEMBER : AuthorityInfo.AuthorityType.READ_ONLY);
@@ -110,7 +110,7 @@ public class ServerMessageHandler {
                     mm.addMusicToPlayList(player, pl.getUuid(), music);
                 }
 
-                var be = (MusicManagerBlockEntity) ((ServerPlayer) packetContext.getPlayer()).getLevel().getBlockEntity(message.blockEntityExistence.blockPos());
+                var be = (MusicManagerBlockEntity) ((ServerPlayer) packetContext.getPlayer()).level().getBlockEntity(message.blockEntityExistence.blockPos());
                 if (be != null)
                     be.setSelectedPlayList((ServerPlayer) packetContext.getPlayer(), pl.getUuid());
             }

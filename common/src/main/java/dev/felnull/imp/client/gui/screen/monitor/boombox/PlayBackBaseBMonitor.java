@@ -11,6 +11,7 @@ import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -65,19 +66,19 @@ public abstract class PlayBackBaseBMonitor extends BoomboxMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
         if (!canPlay()) return;
-        OERenderUtils.drawTexture(PLAYING_BG_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        OERenderUtils.drawTexture(PLAYING_BG_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
         if (!getPlayBackImage().isEmpty())
-            OERenderUtils.drawTexture(PLAYING_IMAGE_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+            OERenderUtils.drawTexture(PLAYING_IMAGE_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
 
         int sx = 2;
         if (!getPlayBackImage().isEmpty()) {
-            getPlayImageRenderer().draw(getPlayBackImage(), poseStack, getStartX() + 1, getStartY() + 1, height - 2);
+            getPlayImageRenderer().draw(getPlayBackImage(), guiGraphics.pose(), getStartX() + 1, getStartY() + 1, height - 2);
             sx += height - 2;
         }
-        drawSmartCenterText(poseStack, Component.translatable(OEClientUtils.getWidthOmitText(getPlayBackName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
+        drawSmartCenterText(guiGraphics, Component.translatable(OEClientUtils.getWidthOmitText(getPlayBackName(), width - sx - 2, "...")), getStartX() + sx + (width - sx - 2f) / 2f, getStartY() + 3);
     }
 
     @Override

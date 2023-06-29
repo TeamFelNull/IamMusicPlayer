@@ -1,10 +1,10 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.gui.IIMPSmartRender;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
 import dev.felnull.otyacraftengine.client.gui.TextureRegion;
 import dev.felnull.otyacraftengine.client.gui.components.RadioButton;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +21,7 @@ public class SmartRadioButton extends RadioButton implements IIMPSmartRender {
     }
 
     @Override
-    public void drawTextBase(PoseStack poseStack, Component text, int x, int y, int color) {
-        drawSmartText(poseStack, text, x, y);
+    public void drawTextBase(GuiGraphics guiGraphics, Component text, int x, int y, int color) {
+        drawSmartText(guiGraphics, text, x, y);
     }
 }

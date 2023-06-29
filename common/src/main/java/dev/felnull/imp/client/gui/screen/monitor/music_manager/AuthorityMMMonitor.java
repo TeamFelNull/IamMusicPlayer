@@ -17,6 +17,7 @@ import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -86,16 +87,16 @@ public class AuthorityMMMonitor extends MusicManagerMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(AUTHORITY_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width / (getSelectedPlayer() != null ? 1f : 2f), height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(AUTHORITY_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width / (getSelectedPlayer() != null ? 1f : 2f), height, width, height);
         var sp = getSelectedPlayer();
         if (sp != null) {
-            OERenderUtils.drawPlayerFace(poseStack, sp, getStartX() + 189, getStartY() + 23, 21);
+            OERenderUtils.drawPlayerFace(guiGraphics.pose(), sp, getStartX() + 189, getStartY() + 23, 21);
             var str = OEClientUtils.getPlayerNameByUUID(sp).orElseGet(sp::toString);
-            drawSmartFixedWidthText(poseStack, Component.literal(str), getStartX() + 212, getStartY() + 25, 150);
-            drawSmartFixedWidthText(poseStack, getAuthorityType(sp).getText(), getStartX() + 212, getStartY() + 35, 150);
-            if (!canEdit(sp)) drawSmartText(poseStack, CANT_CHANGE_AUTHORITY, getStartX() + 188, getStartY() + 47);
+            drawSmartFixedWidthText(guiGraphics, Component.literal(str), getStartX() + 212, getStartY() + 25, 150);
+            drawSmartFixedWidthText(guiGraphics, getAuthorityType(sp).getText(), getStartX() + 212, getStartY() + 35, 150);
+            if (!canEdit(sp)) drawSmartText(guiGraphics, CANT_CHANGE_AUTHORITY, getStartX() + 188, getStartY() + 47);
         }
     }
 

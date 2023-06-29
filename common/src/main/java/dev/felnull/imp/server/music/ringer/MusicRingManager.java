@@ -39,11 +39,11 @@ public class MusicRingManager {
     }
 
     public void onUpdate(ServerPlayer player, UUID uuid, UUID waitUUID, IMPPackets.MusicRingResponseStateType state) {
-        getMusicRing(player.getLevel()).onUpdate(player, uuid, waitUUID, state);
+        getMusicRing(player.serverLevel()).onUpdate(player, uuid, waitUUID, state);
     }
 
     public void addReadyPlayer(ServerPlayer player, UUID uuid, UUID waitUUID, boolean result, boolean retry, long elapsed) {
-        getMusicRing(player.getLevel()).addReadyPlayer(player, uuid, waitUUID, result, retry, elapsed);
+        getMusicRing(player.serverLevel()).addReadyPlayer(player, uuid, waitUUID, result, retry, elapsed);
     }
 
     @NotNull

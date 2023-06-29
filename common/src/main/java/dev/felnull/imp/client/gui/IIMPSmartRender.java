@@ -7,7 +7,7 @@ import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.ImageInfo;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -21,45 +21,46 @@ public interface IIMPSmartRender {
     @NotNull
     Minecraft mc = Minecraft.getInstance();
 
-    default void drawFill(PoseStack poseStack, int x, int y, int w, int h, int col) {
-        GuiComponent.fill(poseStack, x, y, x + w, y + h, col);
+    default void drawFill(GuiGraphics guiGraphics, int x, int y, int w, int h, int col) {
+        guiGraphics.fill(x, y, x + w, y + h, col);
     }
 
-    default void drawSmartButtonBox(PoseStack poseStack, int x, int y, int w, int h, boolean press) {
-        drawSmartButtonBox(poseStack, x, y, w, h, press ? 2 : 1);
+    default void drawSmartButtonBox(GuiGraphics guiGraphics, int x, int y, int w, int h, boolean press) {
+        drawSmartButtonBox(guiGraphics, x, y, w, h, press ? 2 : 1);
     }
 
-    default void drawSmartButtonBox(PoseStack poseStack, int x, int y, int w, int h, int st) {
+    default void drawSmartButtonBox(GuiGraphics guiGraphics, int x, int y, int w, int h, int st) {
         int c1 = st == 0 ? 0xFF383838 : st == 1 ? 0xFFa9a9a9 : 0xFF9ebdd1;
         int c2 = st == 0 ? 0xFF454545 : st == 1 ? 0xFFb9b9b9 : 0xFFb3d4e9;
 
-        drawFill(poseStack, x, y, w, h, c1);
-        drawFill(poseStack, x + 1, y + 1, w - 2, h - 2, c2);
+        drawFill(guiGraphics, x, y, w, h, c1);
+        drawFill(guiGraphics, x + 1, y + 1, w - 2, h - 2, c2);
     }
 
-    default void drawSmartCenterText(PoseStack poseStack, Component component, float x, float y, int color) {
-        OERenderUtils.drawCenterFont(poseStack, component, x, y, color);
+    default void drawSmartCenterText(GuiGraphics guiGraphics, Component component, float x, float y, int color) {
+        OERenderUtils.drawCenterFont(guiGraphics, component, x, y, color);
     }
 
-    default void drawSmartCenterText(PoseStack poseStack, Component component, float x, float y) {
-        drawSmartCenterText(poseStack, component, x, y, 0xFF000000);
+    default void drawSmartCenterText(GuiGraphics guiGraphics, Component component, float x, float y) {
+        drawSmartCenterText(guiGraphics, component, x, y, 0xFF000000);
     }
 
-    default void drawSmartFixedWidthText(PoseStack poseStack, Component component, float x, float y, float w) {
-        drawSmartFixedWidthText(poseStack, component, x, y, w, 0xFF000000);
+    default void drawSmartFixedWidthText(GuiGraphics guiGraphics, Component component, float x, float y, float w) {
+        drawSmartFixedWidthText(guiGraphics, component, x, y, w, 0xFF000000);
     }
 
 
-    default void drawSmartFixedWidthText(PoseStack poseStack, Component component, float x, float y, float w, int color) {
-        OERenderUtils.drawFixedWidthFont(poseStack, component, x, y, color, w);
+    default void drawSmartFixedWidthText(GuiGraphics guiGraphics, Component component, float x, float y, float w, int color) {
+        OERenderUtils.drawFixedWidthFont(guiGraphics, component, x, y, color, w);
     }
 
-    default void drawSmartText(PoseStack poseStack, Component component, float x, float y) {
-        drawSmartText(poseStack, component, x, y, 0xFF000000);
+    default void drawSmartText(GuiGraphics guiGraphics, Component component, float x, float y) {
+        drawSmartText(guiGraphics, component, x, y, 0xFF000000);
     }
 
-    default void drawSmartText(PoseStack poseStack, Component component, float x, float y, int color) {
-        mc.font.draw(poseStack, component, x, y, color);
+    default void drawSmartText(GuiGraphics guiGraphics, Component component, float x, float y, int color) {
+//        mc.font.draw(poseStack, component, x, y, color);
+        guiGraphics.drawString(Minecraft.getInstance().font, component, (int) x, (int) y, color, false);
     }
 
     default void renderSmartButtonSprite(PoseStack poseStack, MultiBufferSource multiBufferSource, float x, float y, float z, float w, float h, int i, int j, float onePixW, float onePixH, float monitorHeight, ResourceLocation iconLocation, int iconStX, int iconStY, int iconW, int iconH, int iconTexW, int iconTexH, boolean disActive) {

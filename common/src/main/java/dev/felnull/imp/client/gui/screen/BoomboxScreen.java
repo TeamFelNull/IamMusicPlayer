@@ -1,6 +1,5 @@
 package dev.felnull.imp.client.gui.screen;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
@@ -13,6 +12,7 @@ import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.imp.util.IMPItemUtil;
 import dev.felnull.otyacraftengine.client.gui.screen.OEItemBEContainerBasedScreen;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -93,20 +93,20 @@ public class BoomboxScreen extends OEItemBEContainerBasedScreen<BoomboxMenu> {
     }
 
     @Override
-    public void render(PoseStack poseStack, int i, int j, float f) {
-        super.render(poseStack, i, j, f);
+    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        super.render(guiGraphics, i, j, f);
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float f, int i, int j) {
-        super.renderBg(poseStack, f, i, j);
+    protected void renderBg(GuiGraphics guiGraphics, float f, int i, int j) {
+        super.renderBg(guiGraphics, f, i, j);
         if (getCassetteTape().isEmpty())
-            OERenderUtils.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, poseStack, leftPos + 183, topPos + 98, 0, 0, 16, 16, 16, 16);
+            OERenderUtils.drawTexture(EMPTY_CASSETTE_TAPE_SLOT, guiGraphics.pose(), leftPos + 183, topPos + 98, 0, 0, 16, 16, 16, 16);
         if (getAntenna().isEmpty())
-            OERenderUtils.drawTexture(EMPTY_ANTENNA_SLOT, poseStack, leftPos + 183, topPos + 124, 0, 0, 16, 16, 16, 16);
+            OERenderUtils.drawTexture(EMPTY_ANTENNA_SLOT, guiGraphics.pose(), leftPos + 183, topPos + 124, 0, 0, 16, 16, 16, 16);
 
         if (monitor != null)
-            monitor.render(poseStack, f, i, j);
+            monitor.render(guiGraphics, f, i, j);
     }
 
     @Override

@@ -16,6 +16,7 @@ import dev.felnull.imp.networking.IMPPackets;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.networking.existence.BlockEntityExistence;
 import dev.felnull.otyacraftengine.util.FlagThread;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -96,21 +97,21 @@ public class AddMusicMMMonitor extends SavedMusicBaseMMMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
 
         if (musicLoadThread != null && !getMusicSourceName().isEmpty())
-            drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? MUSIC_GUESSING_TEXT : MUSIC_CHECKING_TEXT, getStartX() + 189, getStartY() + 128);
+            drawSmartText(guiGraphics, "auto".equals(getMusicLoaderType()) ? MUSIC_GUESSING_TEXT : MUSIC_CHECKING_TEXT, getStartX() + 189, getStartY() + 128);
 
         if (getRawMusicLoaderType() != null) {
-            drawSmartText(poseStack, getRawMusicLoaderType().getEnterText(), getStartX() + 189, getStartY() + 102);
+            drawSmartText(guiGraphics, getRawMusicLoaderType().getEnterText(), getStartX() + 189, getStartY() + 102);
         } else if ("auto".equals(getMusicLoaderType())) {
-            drawSmartText(poseStack, AUTO_ENTER_TEXT, getStartX() + 189, getStartY() + 102);
-            drawSmartText(poseStack, AUTO_INFO_TEXT, getStartX() + 189, getStartY() + 90);
+            drawSmartText(guiGraphics, AUTO_ENTER_TEXT, getStartX() + 189, getStartY() + 102);
+            drawSmartText(guiGraphics, AUTO_INFO_TEXT, getStartX() + 189, getStartY() + 90);
         }
 
         if (loadFailure && !getMusicSourceName().isEmpty())
-            drawSmartText(poseStack, "auto".equals(getMusicLoaderType()) ? AUTO_FAILURE_TEXT : MUSIC_LOAD_FAILURE_TEXT, getStartX() + 189, getStartY() + 128);
+            drawSmartText(guiGraphics, "auto".equals(getMusicLoaderType()) ? AUTO_FAILURE_TEXT : MUSIC_LOAD_FAILURE_TEXT, getStartX() + 189, getStartY() + 128);
     }
 
     @Override

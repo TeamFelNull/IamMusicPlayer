@@ -15,6 +15,7 @@ import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
 import dev.felnull.otyacraftengine.util.OEUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.tuple.Pair;
@@ -134,13 +135,13 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
         float st = getStartX() + ((float) width - 270f) / 2f;
-        drawSmartText(poseStack, RELAY_SERVER_TEXT, st, getStartY() + 13);
+        drawSmartText(guiGraphics, RELAY_SERVER_TEXT, st, getStartY() + 13);
 
         if (RELAY_SERVER_NAME_TEXT != null)
-            drawSmartText(poseStack, RELAY_SERVER_NAME_TEXT, st, getStartY() + 23, 0xFF008000);
+            drawSmartText(guiGraphics, RELAY_SERVER_NAME_TEXT, st, getStartY() + 23, 0xFF008000);
 
         var tx = SERVER_STATUS_TEXT;
         int py = error ? 0 : 10;
@@ -148,19 +149,19 @@ public class UploadMusicMMMonitor extends MusicManagerMonitor {
             tx = CONNECTING_CHECKING;
             py = 0;
         }
-        if (tx != null) drawSmartFixedWidthText(poseStack, tx, st, getStartY() + 23 + py, 270);
+        if (tx != null) drawSmartFixedWidthText(guiGraphics, tx, st, getStartY() + 23 + py, 270);
 
         if (canUpload()) {
-            if (!isUploading()) drawSmartText(poseStack, DROP_INFO_TEXT, st, getStartY() + 120);
-            if (UPLOAD_INFO_TEXT != null) drawSmartText(poseStack, UPLOAD_INFO_TEXT, st, getStartY() + 43);
+            if (!isUploading()) drawSmartText(guiGraphics, DROP_INFO_TEXT, st, getStartY() + 120);
+            if (UPLOAD_INFO_TEXT != null) drawSmartText(guiGraphics, UPLOAD_INFO_TEXT, st, getStartY() + 43);
             if (UPLOAD_ERROR_TEXT != null && !isUploading())
-                drawSmartText(poseStack, UPLOAD_ERROR_TEXT, st, getStartY() + 83, 0xFFFF0000);
+                drawSmartText(guiGraphics, UPLOAD_ERROR_TEXT, st, getStartY() + 83, 0xFFFF0000);
 
-            drawSmartFixedWidthText(poseStack, HOW_TEXT, st, getStartY() + 53, 270, 0xFF0000FF);
-            drawSmartFixedWidthText(poseStack, WARNING_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
-            drawSmartFixedWidthText(poseStack, RESPONSIBILITY_TEXT, st, getStartY() + 73, 270, 0xFFFF0000);
+            drawSmartFixedWidthText(guiGraphics, HOW_TEXT, st, getStartY() + 53, 270, 0xFF0000FF);
+            drawSmartFixedWidthText(guiGraphics, WARNING_TEXT, st, getStartY() + 63, 270, 0xFFFF0000);
+            drawSmartFixedWidthText(guiGraphics, RESPONSIBILITY_TEXT, st, getStartY() + 73, 270, 0xFFFF0000);
 
-            if (isUploading()) drawSmartText(poseStack, UPLOADING_TEXT, st, getStartY() + 83);
+            if (isUploading()) drawSmartText(guiGraphics, UPLOADING_TEXT, st, getStartY() + 83);
         }
     }
 

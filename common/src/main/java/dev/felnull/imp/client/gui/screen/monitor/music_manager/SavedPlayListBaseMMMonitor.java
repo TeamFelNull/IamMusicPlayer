@@ -14,6 +14,7 @@ import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
 import dev.felnull.otyacraftengine.util.FlagThread;
 import dev.felnull.otyacraftengine.util.OEPlayerUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
@@ -95,15 +96,15 @@ public abstract class SavedPlayListBaseMMMonitor extends PlayListBaseMMMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(CREATE_PLAYLIST_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(CREATE_PLAYLIST_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
 
 
-        drawSmartText(poseStack, INVITE_PLAYER_BY_MCID_OR_UUID_TEXT, getStartX() + 189, getStartY() + 102);
+        drawSmartText(guiGraphics, INVITE_PLAYER_BY_MCID_OR_UUID_TEXT, getStartX() + 189, getStartY() + 102);
 
-        drawSmartCenterText(poseStack, UNINVITED_TEXT, getStartX() + 230, getStartY() + 90);
-        drawSmartCenterText(poseStack, INVITED_TEXT, getStartX() + 312, getStartY() + 90);
+        drawSmartCenterText(guiGraphics, UNINVITED_TEXT, getStartX() + 230, getStartY() + 90);
+        drawSmartCenterText(guiGraphics, INVITED_TEXT, getStartX() + 312, getStartY() + 90);
     }
 
     @Override

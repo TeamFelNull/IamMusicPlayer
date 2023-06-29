@@ -12,6 +12,7 @@ import dev.felnull.imp.client.music.media.MusicMedia;
 import dev.felnull.imp.music.resource.MusicSource;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
 import dev.felnull.otyacraftengine.client.util.OERenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -86,12 +87,12 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
     }
 
     @Override
-    public void render(PoseStack poseStack, float f, int mouseX, int mouseY) {
-        super.render(poseStack, f, mouseX, mouseY);
-        OERenderUtils.drawTexture(isLoaderSelect ? ADD_MUSIC_TEXTURE : SHOW_MUSIC_TEXTURE, poseStack, getStartX(), getStartY(), 0f, 0f, width, height, width, height);
-        drawSmartText(poseStack, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
+    public void render(GuiGraphics guiGraphics, float f, int mouseX, int mouseY) {
+        super.render(guiGraphics, f, mouseX, mouseY);
+        OERenderUtils.drawTexture(isLoaderSelect ? ADD_MUSIC_TEXTURE : SHOW_MUSIC_TEXTURE, guiGraphics.pose(), getStartX(), getStartY(), 0f, 0f, width, height, width, height);
+        drawSmartText(guiGraphics, MUSIC_SOURCE_TEXT, getStartX() + 189, getStartY() + 13);
 
-        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, poseStack, getStartX() + playBackX, getStartY() + playBackY, 68, 90, 177, 20);
+        OERenderUtils.drawTexture(MusicManagerMonitor.WIDGETS_TEXTURE, guiGraphics.pose(), getStartX() + playBackX, getStartY() + playBackY, 68, 90, 177, 20);
 
         Component pt;
         if (getScreen().isMusicPlaying()) {
@@ -104,23 +105,23 @@ public abstract class MusicBaseMMMonitor extends ImageNameBaseMMMonitor {
         } else {
             pt = PLAYBACK_NON_PROGRESS_TEXT;
         }
-        drawSmartText(poseStack, pt, getStartX() + playBackX + 22, getStartY() + playBackY + 4);
+        drawSmartText(guiGraphics, pt, getStartX() + playBackX + 22, getStartY() + playBackY + 4);
 
 
         if (AUTHOR_TEXT != null)
-            drawSmartText(poseStack, AUTHOR_TEXT, getStartX() + this.playBackX, getStartY() + this.playBackY + 25);
+            drawSmartText(guiGraphics, AUTHOR_TEXT, getStartX() + this.playBackX, getStartY() + this.playBackY + 25);
 
         if (!isLoaderSelect) {
-            drawSmartButtonBox(poseStack, getStartX() + 189, getStartY() + 22, 176, 15, false);
+            drawSmartButtonBox(guiGraphics, getStartX() + 189, getStartY() + 22, 176, 15, false);
             var lt = getRawMusicLoaderType();
             if (lt != null) {
                 int sx = 0;
                 var ic = lt.getIcon();
                 if (ic != null) {
-                    OERenderUtils.drawTexture(ic, poseStack, getStartX() + 190, getStartY() + 23, 0, 0, 13, 13, 13, 13);
+                    OERenderUtils.drawTexture(ic, guiGraphics.pose(), getStartX() + 190, getStartY() + 23, 0, 0, 13, 13, 13, 13);
                     sx += 13;
                 }
-                drawSmartText(poseStack, lt.getMediaName(), getStartX() + 190 + sx + 2, getStartY() + 21f + (15f - 6.5f) / 2f);
+                drawSmartText(guiGraphics, lt.getMediaName(), getStartX() + 190 + sx + 2, getStartY() + 21f + (15f - 6.5f) / 2f);
             }
         }
     }

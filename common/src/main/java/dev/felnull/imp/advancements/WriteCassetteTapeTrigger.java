@@ -10,10 +10,15 @@ import net.minecraft.world.item.ItemStack;
 public class WriteCassetteTapeTrigger extends SimpleCriterionTrigger<WriteCassetteTapeTrigger.TriggerInstance> {
     private static final ResourceLocation ID = new ResourceLocation(IamMusicPlayer.MODID, "write_cassette_tape");
 
-    @Override
+    /*@Override
     protected TriggerInstance createInstance(JsonObject jsonObject, EntityPredicate.Composite composite, DeserializationContext deserializationContext) {
         ItemPredicate itemPredicate = ItemPredicate.fromJson(jsonObject.get("item"));
         return new TriggerInstance(composite, itemPredicate);
+    }*/
+    @Override
+    protected TriggerInstance createInstance(JsonObject jsonObject, ContextAwarePredicate contextAwarePredicate, DeserializationContext deserializationContext) {
+        ItemPredicate itemPredicate = ItemPredicate.fromJson(jsonObject.get("item"));
+        return new TriggerInstance(contextAwarePredicate, itemPredicate);
     }
 
     public void trigger(ServerPlayer serverPlayer, ItemStack itemStack) {
@@ -25,13 +30,15 @@ public class WriteCassetteTapeTrigger extends SimpleCriterionTrigger<WriteCasset
         return ID;
     }
 
+
     public static class TriggerInstance extends AbstractCriterionTriggerInstance {
         private final ItemPredicate item;
 
-        public TriggerInstance(EntityPredicate.Composite composite, ItemPredicate itemPredicat) {
-            super(ID, composite);
+        public TriggerInstance(ContextAwarePredicate contextAwarePredicate, ItemPredicate itemPredicat) {
+            super(ID, contextAwarePredicate);
             this.item = itemPredicat;
         }
+
 
         public boolean matches(ItemStack itemStack) {
             return item.matches(itemStack);
@@ -46,7 +53,7 @@ public class WriteCassetteTapeTrigger extends SimpleCriterionTrigger<WriteCasset
         }
 
         public static TriggerInstance writeCassetteTape() {
-            return new TriggerInstance(EntityPredicate.Composite.ANY, null);
+            return new TriggerInstance(ContextAwarePredicate.ANY, null);
         }
     }
 }

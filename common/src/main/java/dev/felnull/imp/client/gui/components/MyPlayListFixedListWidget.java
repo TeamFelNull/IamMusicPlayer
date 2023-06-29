@@ -1,10 +1,10 @@
 package dev.felnull.imp.client.gui.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.felnull.imp.client.renderer.PlayImageRenderer;
 import dev.felnull.imp.music.resource.MusicPlayList;
 import dev.felnull.otyacraftengine.client.gui.components.FixedListWidget;
 import dev.felnull.otyacraftengine.client.util.OEClientUtils;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,7 +23,7 @@ public class MyPlayListFixedListWidget extends PlayListFixedListWidget {
         this.selected = selected;
     }
 
-    @Override
+    /*@Override
     protected void renderOneButton(PoseStack poseStack, MusicPlayList item, int lnum, int bnum, int bX, int bY, int mx, int my, float parTick, boolean selected) {
         int k = this.getYImage(this.isEntryHovered(bnum));
         if (this.selected.apply(item))
@@ -41,5 +41,25 @@ public class MyPlayListFixedListWidget extends PlayListFixedListWidget {
 
         drawSmartText(poseStack, Component.literal(OEClientUtils.getWidthOmitText(item.getName(), getIndividualWidth() - sx - 2, "...")), bX + sx, bY + 2);
         drawSmartFixedWidthText(poseStack, Component.literal(dateFormat.format(new Date(item.getCreateDate()))), bX + sx, bY + 12, getIndividualWidth() - sx - 2);
+    }*/
+
+    @Override
+    protected void renderOneButton(GuiGraphics guiGraphics, MusicPlayList item, int lnum, int bnum, int bX, int bY, int mx, int my, float parTick, boolean selected) {
+        int k = this.getYImage(this.isEntryHovered(bnum));
+        if (this.selected.apply(item))
+            k = 0;
+        drawSmartButtonBox(guiGraphics, bX, bY, getIndividualWidth(), getIndividualHeight(), k);
+
+        var img = item.getImage();
+
+        float sx = 1;
+
+        if (!img.isEmpty()) {
+            sx += getIndividualHeight() - 2 + 1;
+            PlayImageRenderer.getInstance().draw(img, guiGraphics.pose(), bX + 1, bY + 1, getIndividualHeight() - 2);
+        }
+
+        drawSmartText(guiGraphics, Component.literal(OEClientUtils.getWidthOmitText(item.getName(), getIndividualWidth() - sx - 2, "...")), bX + sx, bY + 2);
+        drawSmartFixedWidthText(guiGraphics, Component.literal(dateFormat.format(new Date(item.getCreateDate()))), bX + sx, bY + 12, getIndividualWidth() - sx - 2);
     }
 }

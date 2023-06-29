@@ -19,7 +19,7 @@ public abstract class ItemEntityMixin {
     private void tick(CallbackInfo ci) {
         if (IamMusicPlayer.getConfig().dropItemRing && getItem().getItem() instanceof BoomboxItem) {
             var ths = (ItemEntity) (Object) this;
-            BoomboxItem.tick(ths.level, ths, getItem(), true);
+            BoomboxItem.tick(ths.level(), ths, getItem(), true);
         }
     }
 }
