@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 public class IMPCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(IamMusicPlayer.MODID, Registries.CREATIVE_MODE_TAB);
 
-    public static final RegistrySupplier<CreativeModeTab> MOD_TAB = TABS.register("mod_tab", () -> CreativeTabRegistry.create(Component.literal("IMP TAB")/*new ResourceLocation(IamMusicPlayer.MODID, IamMusicPlayer.MODID)*/, () -> new ItemStack(IMPBlocks.BOOMBOX.get())));
+    public static final RegistrySupplier<CreativeModeTab> MOD_TAB = TABS.register(IamMusicPlayer.MODID, () -> CreativeTabRegistry.create(Component.translatable("itemGroup." + IamMusicPlayer.MODID + "." + IamMusicPlayer.MODID), () -> new ItemStack(IMPBlocks.BOOMBOX.get())));
 
     public static void init() {
         TABS.register();
