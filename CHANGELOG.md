@@ -20,7 +20,7 @@ Changelog to track updates for this mod.
 ## [3.22.0-alpha.2] - 2023-09-08
 
 ### Fixed
-- +pre.1
+- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
 
 ## [3.22.0-alpha.1] - 2023-07-01
 
