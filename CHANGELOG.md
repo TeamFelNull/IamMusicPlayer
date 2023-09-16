@@ -14,8 +14,13 @@ Changelog to track updates for this mod.
 ### Removed
 
 ### Fixed
-- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
+
 ### Security
+
+## [3.20.3] - 2023-09-16
+
+### Fixed
+- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
 
 ## [3.20.2] - 2023-05-01
 
@@ -62,10 +67,11 @@ Changelog to track updates for this mod.
 - Port MC1.19.3
 - Embed OBJ loader (Fabric Only)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.2...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.3...HEAD
+[3.20.3]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.2...v3.20.3
 [3.20.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.1...v3.20.2
 [3.20.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0...v3.20.1
 [3.20.0]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-beta.1...v3.20.0
-[3.20.0-beta.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...v3.20.0-beta.1
-[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
 [3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
+[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
+[3.20.0-beta.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...v3.20.0-beta.1
