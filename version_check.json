@@ -49,8 +49,8 @@
     "1.15.2-recommended": "1.2",
     "1.19.3-latest": "3.20.2",
     "1.19.3-recommended": "3.20.2",
-    "1.19.4-latest": "3.21.4",
-    "1.19.4-recommended": "3.21.4",
+    "1.19.4-latest": "3.21.5",
+    "1.19.4-recommended": "3.21.5",
     "1.20-latest": "3.22.0-alpha.2",
     "1.20-recommended": "3.22.0-alpha.2",
     "1.20.1-latest": "3.22.0-alpha.2",
@@ -70,7 +70,8 @@
     "3.21.1": "Fixed\n- Fixed problems with recipes, etc. not being applied.\n",
     "3.21.2": "Added\n- AprilFool Antenna\nChanged\n- Update SpecialModelLoader\n",
     "3.21.3": "Changed\n- Updated LavaPlayer version to 1.4\nFixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n",
-    "3.21.4": "Added\n- Re-support Patchouli\n"
+    "3.21.4": "Added\n- Re-support Patchouli\n",
+    "3.21.5": "Fixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n"
   },
   "1.20": {
     "3.22.0-alpha.1": "Changed\n- Port MC1.20\n",
