@@ -14,7 +14,7 @@ Changelog to track updates for this mod.
 ### Removed
 
 ### Fixed
-
+- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
 ### Security
 
 ## [3.16.4] - 2023-05-01
