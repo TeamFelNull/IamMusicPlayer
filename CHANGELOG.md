@@ -14,8 +14,13 @@ Changelog to track updates for this mod.
 ### Removed
 
 ### Fixed
-- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
+
 ### Security
+
+## [3.16.5] - 2023-09-22
+
+### Fixed
+- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
 
 ## [3.16.4] - 2023-05-01
 
@@ -30,6 +35,7 @@ Changelog to track updates for this mod.
 ### Fixed
 - Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.16.4...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.16.5...HEAD
+[3.16.5]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.16.4...v3.16.5
 [3.16.4]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.16.3...v3.16.4
 [3.16.3]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.16.3
