@@ -1,0 +1,21 @@
+{
+  "name": "Boombox",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Gerät zum Abspielen von Musik."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:boombox",
+      "text": "Du kannst Musik von $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Kassettenbänder$(/l) abspielen, Radiostreams mit dem $(l:iammusicplayer: item_or_block_with_feature/antenna)Antenna$(/l) und mit der $(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)Parabolische Antenne$(/l) Musik direkt aus Wiedergabelisten abspielen."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:boombox"
+    }
+  ]
+}

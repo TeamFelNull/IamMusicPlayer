@@ -1,0 +1,21 @@
+{
+  "name": "Radio Antenne",
+  "icon": "iammusicplayer:radio_antenna",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Du kannst auch Live-Übertragungen anhören!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:radio_antenna",
+      "text": "Du kannst den Radiostream abspielen, indem du ihn in den Antennenschlitz der $(l:iammusicplayer:item_or_block_with_feature/boombox)Boombox$(/l) legst, den Radioknopf drückst und die URL eingibst.$(br)Gib die URL des Youtube Live oder Http Radio Streams ein."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:radio_antenna"
+    }
+  ]
+}

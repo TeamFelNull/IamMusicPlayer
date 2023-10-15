@@ -1,0 +1,20 @@
+{
+  "name": "Musik spielen",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:how_to_listen",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "So spielst du Musik auf einer $(l:iammusicplayer:item_or_block_with_feature/boombox)Boombox$(/l)."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/play_music/boombox_set_cassette_tape.png"
+      ],
+      "title": "Das Kassettenband einstellen",
+      "text": "Setze die $(l:iammusicplayer:item_or_block_with_feature/boombox)Boombox$(/l) und drücke die Play-Taste."
+    }
+  ]
+}

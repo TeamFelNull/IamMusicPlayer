@@ -1,0 +1,26 @@
+{
+  "name": "Anleitung",
+  "icon": "iammusicplayer:manual",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Das Buch, das du gerade ansiehst."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:manual",
+      "text": "Ein Handbuch, das fast alles über IamMusicPlayer beschreibt."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:manual",
+      "text": "Sehr einfach herzustellen!"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Wenn du Fragen zu diesem Mod hast, sieh bitte in dieser Anleitung nach, bevor du den Autor fragst."
+    }
+  ]
+}
