@@ -1,0 +1,27 @@
+{
+  "name": "Kassettenband",
+  "icon": "iammusicplayer:cassette_tape",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Schreibe deine Lieblingsmusik!$(br)Für die Schreibmethode siehe $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)Schreiben auf Kassette$(/l)."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape",
+      "text": "Es ist möglich, Musik auf einer Boombox abzuspielen, nachdem du sie auf ein Kassettendeck geschrieben hast.$(br)Kann durch Basteln mit Farbstoffen gefärbt werden."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape_glass",
+      "text": "Kassettenband, bei dem du den Inhalt sehen kannst.$(br)Es hat die gleiche Funktion und Kompatibilität wie ein normales Kassettenband."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_tape",
+      "recipe2": "iammusicplayer:cassette_tape_glass"
+    }
+  ]
+}

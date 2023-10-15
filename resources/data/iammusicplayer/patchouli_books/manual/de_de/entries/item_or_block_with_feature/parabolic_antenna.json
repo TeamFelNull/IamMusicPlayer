@@ -1,0 +1,18 @@
+{
+  "name": "Parabolantenne",
+  "icon": "iammusicplayer:parabolic_antenna",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Du kannst es abspielen, ohne es auf eine Kassette schreiben zu müssen!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:parabolic_antenna",
+      "link_recipe": true,
+      "text": "Setze sie in den Antennenschlitz der Boombox ein und drücke den Radioknopf, um die Wiedergabeliste anzuzeigen.$(br)Wähle die gewünschte Musik aus der Wiedergabeliste aus und sie beginnt zu spielen$(br)Es gibt keine Crafting-Rezepte und du kannst sie durch Handel mit DJ-Dorfbewohnern oder durch Beutetruhen erhalten."
+    }
+  ]
+}

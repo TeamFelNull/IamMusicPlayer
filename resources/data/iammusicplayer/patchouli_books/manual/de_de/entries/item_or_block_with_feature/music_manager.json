@@ -1,0 +1,21 @@
+{
+  "name": "Music Verwalter",
+  "icon": "iammusicplayer:music_manager",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Lass es uns erst einmal herstellen!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:music_manager",
+      "text": "Geräte zum Verwalten von Wiedergabelisten und Musik in der Welt.$(br)Du musst dieses Gerät erst herstellen, um Musik zu hören."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:music_manager"
+    }
+  ]
+}

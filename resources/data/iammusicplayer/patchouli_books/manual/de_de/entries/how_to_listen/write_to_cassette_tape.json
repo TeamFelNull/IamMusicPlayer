@@ -1,0 +1,21 @@
+{
+  "name": "Schreiben auf Kassettenband",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:how_to_listen",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "So schreibst du Musik auf ein $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Kassettenband$(/l) mit einem $(l:iammusicplayer:item_or_block_with_feature/cassette_deck)Kassettendeck$(/l). $(br)Wenn du eine $(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)Parabolantenne$(/l) hast, ist dieser Schritt nicht notwendig."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/click_write.png",
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/write.png"
+      ],
+      "title": "Beginne zu schreiben",
+      "text": "Bereite zuerst ein $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Kassettenband$(/l) vor, wähle die Musik, die du schreiben willst, unter [Write] aus und drücke das Startsymbol."
+    }
+  ]
+}
