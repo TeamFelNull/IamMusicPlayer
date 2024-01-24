@@ -6,7 +6,7 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-- Added config to hide display sprites and decorative antennas
+
 ### Changed
 
 ### Deprecated
@@ -16,6 +16,11 @@ Changelog to track updates for this mod.
 ### Fixed
 
 ### Security
+
+## [3.22.0-alpha.3] - 2024-01-24
+
+### Added
+- Added config to hide display sprites and decorative antennas
 
 ## [3.22.0-alpha.2] - 2023-09-08
 
@@ -100,9 +105,10 @@ Changelog to track updates for this mod.
 - Port MC1.19.3
 - Embed OBJ loader (Fabric Only)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.22.0-alpha.2...HEAD
-[3.22.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.4...v3.22.0-alpha.1
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.22.0-alpha.3...HEAD
 [3.22.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.22.0-alpha.1...v3.22.0-alpha.2
+[3.22.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.4...v3.22.0-alpha.1
+[3.22.0-alpha.3]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.22.0-alpha.2...v3.22.0-alpha.3
 [3.21.4]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.3...v3.21.4
 [3.21.3]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.2...v3.21.3
 [3.21.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.21.1...v3.21.2
@@ -111,6 +117,6 @@ Changelog to track updates for this mod.
 [3.21.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.1...v3.21.0-alpha.1
 [3.20.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0...v3.20.1
 [3.20.0]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-beta.1...v3.20.0
-[3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
-[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
 [3.20.0-beta.1]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.2...v3.20.0-beta.1
+[3.20.0-alpha.1]: https://github.com/TeamFelnull/IamMusicPlayer/commits/v3.20.0-alpha.1
+[3.20.0-alpha.2]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.20.0-alpha.1...v3.20.0-alpha.2
