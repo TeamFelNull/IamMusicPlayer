@@ -6,7 +6,7 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-
+- Added config to hide display sprites and decorative antennas
 ### Changed
 
 ### Deprecated

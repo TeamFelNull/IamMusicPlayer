@@ -230,6 +230,8 @@
   "text.autoconfig.iammusicplayer.option.relayServerURL": "Relay server url",
   "text.autoconfig.iammusicplayer.option.lavaPlayerNativesURL": "LavaPlayer native library url",
   "text.autoconfig.iammusicplayer.option.neteaseCloudMusicApiURL": "Netease Cloud Music API url",
+  "text.autoconfig.iammusicplayer.option.hideDisplaySprite": "Hide Display Sprite",
+  "text.autoconfig.iammusicplayer.option.hideDecorativeAntenna": "Hide Decorative Antenna",
   "text.autoconfig.iammusicplayer.category.server": "Server Side",
   "text.autoconfig.iammusicplayer.option.maxWaitTime": "Max Wait Time",
   "text.autoconfig.iammusicplayer.option.retryTime": "Retry Time",

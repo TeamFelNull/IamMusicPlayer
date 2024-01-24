@@ -2,6 +2,7 @@ package dev.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.CassetteDeckBlock;
 import dev.felnull.imp.blockentity.CassetteDeckBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.cassette_deck.CassetteDeckMonitor;
@@ -47,15 +48,16 @@ public class CassetteDeckBlockEntityRenderer extends AbstractBlockEntityRenderer
             poseStack.popPose();
         }
 
-
-        poseStack.pushPose();
-        poseStack.translate(1, 0, 0);
-        OERenderUtils.poseRotateY(poseStack, 180);
-        OERenderUtils.poseTrans16(poseStack, 0.6f, 2.35f, -1.9f);
-        var monitor = getMonitor(blockEntity.getMonitor());
-        float px16 = 1f / 16f;
-        monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 7.8f, px16 * 2.275f);
-        poseStack.popPose();
+        if (!IamMusicPlayer.getConfig().hideDisplaySprite) {
+            poseStack.pushPose();
+            poseStack.translate(1, 0, 0);
+            OERenderUtils.poseRotateY(poseStack, 180);
+            OERenderUtils.poseTrans16(poseStack, 0.6f, 2.35f, -1.9f);
+            var monitor = getMonitor(blockEntity.getMonitor());
+            float px16 = 1f / 16f;
+            monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 7.8f, px16 * 2.275f);
+            poseStack.popPose();
+        }
 
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 1.5f, 0.5f, 2f);
