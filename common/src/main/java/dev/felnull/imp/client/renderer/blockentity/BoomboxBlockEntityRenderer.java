@@ -2,6 +2,7 @@ package dev.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.BoomboxData;
 import dev.felnull.imp.block.MusicManagerBlock;
 import dev.felnull.imp.blockentity.BoomboxBlockEntity;
@@ -64,7 +65,9 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
             poseStack.popPose();
         }
 
-        renderAntenna(poseStack, multiBufferSource, i, j, antenna, parabolicAntennaRoted, antennaPar);
+        if (!IamMusicPlayer.getConfig().hideDecorativeAntenna) {
+            renderAntenna(poseStack, multiBufferSource, i, j, antenna, parabolicAntennaRoted, antennaPar);
+        }
 
         poseStack.pushPose();
         OERenderUtils.poseTrans16(poseStack, 1, 8, 6);
@@ -124,15 +127,16 @@ public class BoomboxBlockEntityRenderer extends AbstractBlockEntityRenderer<Boom
         OERenderUtils.renderModel(poseStack, vertexConsumer, buttonsM, i, j);
         poseStack.popPose();
 
-
-        poseStack.pushPose();
-        poseStack.translate(1, 0, 0);
-        OERenderUtils.poseRotateY(poseStack, 180);
-        OERenderUtils.poseTrans16(poseStack, 0.6, 5.6, -4.9);
-        var monitor = getMonitor(data.getMonitorType());
-        float px16 = 1f / 16f;
-        monitor.renderAppearance(poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 14.8f, px16 * 2.8f, data);
-        poseStack.popPose();
+        if (!IamMusicPlayer.getConfig().hideDisplaySprite) {
+            poseStack.pushPose();
+            poseStack.translate(1, 0, 0);
+            OERenderUtils.poseRotateY(poseStack, 180);
+            OERenderUtils.poseTrans16(poseStack, 0.6, 5.6, -4.9);
+            var monitor = getMonitor(data.getMonitorType());
+            float px16 = 1f / 16f;
+            monitor.renderAppearance(poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 14.8f, px16 * 2.8f, data);
+            poseStack.popPose();
+        }
 
         poseStack.popPose();
     }

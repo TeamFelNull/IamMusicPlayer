@@ -32,6 +32,12 @@ public class IMPConfig implements ConfigData {
     @ConfigEntry.Category("client")
     public String neteaseCloudMusicApiURL = "https://raw.githubusercontent.com/TeamFelnull/IamMusicPlayer/master/api_server.json";
 
+    @ConfigEntry.Category("client")
+    public boolean hideDisplaySprite = false;
+
+    @ConfigEntry.Category("client")
+    public boolean hideDecorativeAntenna = false;
+
     @ConfigEntry.Category("server")
     public long maxWaitTime = 1000 * 10;
 

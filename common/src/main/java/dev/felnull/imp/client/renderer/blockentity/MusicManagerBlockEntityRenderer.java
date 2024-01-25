@@ -2,6 +2,7 @@ package dev.felnull.imp.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import dev.felnull.imp.IamMusicPlayer;
 import dev.felnull.imp.block.MusicManagerBlock;
 import dev.felnull.imp.blockentity.MusicManagerBlockEntity;
 import dev.felnull.imp.client.gui.screen.monitor.music_manager.MusicManagerMonitor;
@@ -41,18 +42,21 @@ public class MusicManagerBlockEntityRenderer extends AbstractBlockEntityRenderer
         poseStack.pushPose();
         OERenderUtils.poseRotateDirection(poseStack, blockEntity.getBlockState().getValue(MusicManagerBlock.FACING), 1);
 
+
         poseStack.pushPose();
         OERenderUtils.renderModel(poseStack, vertexConsumer, acLmp, i, j);
         poseStack.popPose();
 
-        poseStack.pushPose();
-        poseStack.translate(1, 0, 0);
-        OERenderUtils.poseRotateY(poseStack, 180);
-        OERenderUtils.poseTrans16(poseStack, 0.25f, 1.75f, -12.375f);
-        var monitor = getMonitor(blockEntity.getMonitor(mc.player));
-        float px16 = 1f / 16f;
-        monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 10.5f, px16 * 6.5f);
-        poseStack.popPose();
+        if (!IamMusicPlayer.getConfig().hideDisplaySprite) {
+            poseStack.pushPose();
+            poseStack.translate(1, 0, 0);
+            OERenderUtils.poseRotateY(poseStack, 180);
+            OERenderUtils.poseTrans16(poseStack, 0.25f, 1.75f, -12.375f);
+            var monitor = getMonitor(blockEntity.getMonitor(mc.player));
+            float px16 = 1f / 16f;
+            monitor.renderAppearance(blockEntity, poseStack, multiBufferSource, LightTexture.FULL_BRIGHT, j, f, px16 * 10.5f, px16 * 6.5f);
+            poseStack.popPose();
+        }
 
         poseStack.popPose();
     }
