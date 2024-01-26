@@ -1,0 +1,13 @@
+name: Preview Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  preview_build:
+    uses: TeamFelnull/actions-reusable-workflows/.github/workflows/mcmod-preview-build.yml@master
+    with:
+      before_build_tasks: "fabric:runDatagen forge:runData"
+      build_tasks: "build publish"
+    secrets:
+      maven_password: ${{ secrets.MAVEN_PASSWORD }}
