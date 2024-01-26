@@ -6,7 +6,7 @@ Changelog to track updates for this mod.
 ## [Unreleased]
 
 ### Added
-- Added config to hide display sprites and decorative antennas
+
 ### Changed
 
 ### Deprecated
@@ -16,6 +16,11 @@ Changelog to track updates for this mod.
 ### Fixed
 
 ### Security
+
+## [3.19.11] - 2024-01-26
+
+### Added
+- Added config to hide display sprites and decorative antennas
 
 ## [3.19.10] - 2023-09-16
 
@@ -50,7 +55,8 @@ Changelog to track updates for this mod.
 ### Fixed
 - Fixed server crash due to `NullPointerException` [Issues#45](https://github.com/TeamFelnull/IamMusicPlayer/issues/45)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.10...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.11...HEAD
+[3.19.11]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.10...v3.19.11
 [3.19.10]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.9...v3.19.10
 [3.19.9]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.8...v3.19.9
 [3.19.8]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.7...v3.19.8
