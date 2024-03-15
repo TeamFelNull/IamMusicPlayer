@@ -17,10 +17,10 @@ dependencies {
     modApi "me.shedaniel.cloth:cloth-config:10.0.96"
 
     implementation "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
-    implementation("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
-        exclude group: 'com.sedmelluq', module: 'lavaplayer-natives'
+    implementation("dev.arbjerg:lavaplayer:${rootProject.lava_version}") {
+        exclude group: 'dev.arbjerg', module: 'lavaplayer-natives'
     }
-    implementation 'com.github.sealedtx:java-youtube-downloader:3.1.0'
+    implementation 'com.github.sealedtx:java-youtube-downloader:3.2.3'
     implementation 'com.mpatric:mp3agic:0.9.1'
 }
 
