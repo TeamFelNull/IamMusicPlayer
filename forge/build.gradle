@@ -23,11 +23,11 @@ loom {
         }
     }
 
-    launches {
+   /* launches {
         data {
             arg "--existing", file("src/main/resources").absolutePath, "--existing", file("../common/src/main/resources").absolutePath
         }
-    }
+    }*/
 }
 
 configurations {
