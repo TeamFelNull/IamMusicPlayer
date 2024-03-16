@@ -51,14 +51,17 @@ dependencies {
     modApi "dev.felnull:otyacraftengine-forge:${rootProject.oe_version}"
     modApi "me.shedaniel.cloth:cloth-config-forge:10.0.96"
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:10.0.578"
-    modApi "curse.maven:ctm-535489:4438790"//Sound Physics Remastered
+
+    // modApi "curse.maven:ctm-535489:4438790"//Sound Physics Remastered
+    modApi "maven.modrinth:sound-physics-remastered:forge-1.19.4-1.2.1"
+
     modCompileOnly "vazkii.patchouli:Patchouli:1.19.4-79-FORGE:api"
     modRuntimeOnly "vazkii.patchouli:Patchouli:1.19.4-79-FORGE"
 
-
-    shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}"){
+    shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'dev.arbjerg', module: 'lavaplayer-natives'
     }
+
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.2.3'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
@@ -114,18 +117,18 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier.set("dev-shadow")
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier.set(null)
     setArchivesBaseName("${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}")
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier.set("dev")
 }
 
 sourcesJar {

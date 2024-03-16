@@ -67,13 +67,18 @@ dependencies {
     modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:11.0.597"
     modApi "dev.felnull:special-model-loader:1.1.0"
     include "dev.felnull:special-model-loader:1.1.0"
-    modApi "curse.maven:ctm-535489:4438793"//Sound Physics Remastered
+
+    //modApi "curse.maven:ctm-535489:4438793"//Sound Physics Remastered
+    modApi "maven.modrinth:sound-physics-remastered:fabric-1.19.4-1.2.1"
+
     modApi "vazkii.patchouli:Patchouli:1.19.4-79-FABRIC"
 
     shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'dev.arbjerg', module: 'lavaplayer-natives'
     }
+
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.2.3'
+
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
 }
@@ -127,19 +132,19 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier.set("dev-shadow")
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    archiveClassifier.set(null)
     setArchivesBaseName("${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}")
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier.set("dev")
 }
 
 sourcesJar {
