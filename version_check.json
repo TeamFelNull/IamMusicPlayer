@@ -52,8 +52,8 @@
     "1.15.2-recommended": "1.2",
     "1.19.3-latest": "3.20.3",
     "1.19.3-recommended": "3.20.3",
-    "1.19.4-latest": "3.21.6",
-    "1.19.4-recommended": "3.21.6",
+    "1.19.4-latest": "3.21.7",
+    "1.19.4-recommended": "3.21.7",
     "1.20-latest": "3.22.0-alpha.4",
     "1.20-recommended": "3.22.0-alpha.4",
     "1.20.1-latest": "3.22.0-alpha.4",
@@ -76,7 +76,8 @@
     "3.21.3": "Changed\n- Updated LavaPlayer version to 1.4\nFixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n",
     "3.21.4": "Added\n- Re-support Patchouli\n",
     "3.21.5": "Fixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n",
-    "3.21.6": "Added\n- Added config to hide display sprites and decorative antennas\n"
+    "3.21.6": "Added\n- Added config to hide display sprites and decorative antennas\n",
+    "3.21.7": "Fixed\n- Fixed the problem that YouTube cannot be played\n"
   },
   "1.20": {
     "3.22.0-alpha.1": "Changed\n- Port MC1.20\n",
