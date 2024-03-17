@@ -14,7 +14,7 @@ Changelog to track updates for this mod.
 ### Removed
 
 ### Fixed
-
+- Fixed the problem that YouTube cannot be played
 ### Security
 
 ## [3.16.5] - 2023-09-22

@@ -19,3 +19,5 @@ jobs:
     name: Update after release
     needs: release
     uses: TeamFelnull/actions-reusable-workflows/.github/workflows/mcmod-post-release.yml@master
+    with:
+      update_neoforge_version_check: false
