@@ -14,8 +14,13 @@ Changelog to track updates for this mod.
 ### Removed
 
 ### Fixed
-- Fixed the problem that YouTube cannot be played
+
 ### Security
+
+## [3.19.12] - 2024-03-19
+
+### Fixed
+- Fixed the problem that YouTube cannot be played
 
 ## [3.19.11] - 2024-01-26
 
@@ -55,7 +60,8 @@ Changelog to track updates for this mod.
 ### Fixed
 - Fixed server crash due to `NullPointerException` [Issues#45](https://github.com/TeamFelnull/IamMusicPlayer/issues/45)
 
-[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.11...HEAD
+[Unreleased]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.12...HEAD
+[3.19.12]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.11...v3.19.12
 [3.19.11]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.10...v3.19.11
 [3.19.10]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.9...v3.19.10
 [3.19.9]: https://github.com/TeamFelnull/IamMusicPlayer/compare/v3.19.8...v3.19.9
