@@ -64,10 +64,20 @@ dependencies {
     modApi "vazkii.patchouli:Patchouli:1.19.2-76-FABRIC"
     modApi "curse.maven:ctm-535489:3949790"
 
-    shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
+/*    shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
     }
-    shadowIn 'com.github.sealedtx:java-youtube-downloader:3.1.0'
+    shadowIn 'com.github.sealedtx:java-youtube-downloader:3.1.0'*/
+
+    shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}") {
+        exclude group: 'dev.arbjerg', module: 'lavaplayer-natives'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
+        exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
+    }
+    shadowIn('com.fasterxml.jackson.core:jackson-core:2.14.3')
+    shadowIn('com.fasterxml.jackson.core:jackson-databind:2.14.3')
+    shadowIn 'com.github.sealedtx:java-youtube-downloader:3.2.3'
+
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
 
