@@ -6,7 +6,8 @@
     "3.19.8": "Fixed\n- Fixed problems with recipes, etc. not being applied.\n",
     "3.19.9": "Changed\n- Updated LavaPlayer version to 1.4\nFixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n",
     "3.19.10": "Fixed\n- Fixed an issue where YouTube could not be played (Fixed by updating LavaPlayer version)\n",
-    "3.19.11": "Added\n- Added config to hide display sprites and decorative antennas\n"
+    "3.19.11": "Added\n- Added config to hide display sprites and decorative antennas\n",
+    "3.19.12": "Fixed\n- Fixed the problem that YouTube cannot be played\n"
   },
   "1.18.2": {
     "3.5": "First 1.18.2",
@@ -37,8 +38,8 @@
     "1.0": "The Frist Release."
   },
   "promos": {
-    "1.19.2-latest": "3.19.11",
-    "1.19.2-recommended": "3.19.11",
+    "1.19.2-latest": "3.19.12",
+    "1.19.2-recommended": "3.19.12",
     "1.18.2-latest": "3.16.6",
     "1.18.2-recommended": "3.16.6",
     "1.18.1-latest": "3.4",
