@@ -2,11 +2,14 @@ package dev.felnull.imp.client.music.media;
 
 import com.google.common.collect.ImmutableList;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.felnull.imp.client.lava.LavaPlayerManager;
 import dev.felnull.imp.music.resource.ImageInfo;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.clients.Music;
+import dev.lavalink.youtube.clients.skeleton.Client;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.vehicle.Minecart;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +24,7 @@ public class YoutubeMusicMedia extends LavaPlayerBaseMusicMedia {
 
     @Override
     public void registerSourceManager(AudioPlayerManager audioPlayerManager) {
+        // FIXME 開発環境でForgeが起動できない
         audioPlayerManager.registerSourceManager(new YoutubeAudioSourceManager());
     }
 

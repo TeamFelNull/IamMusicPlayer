@@ -61,13 +61,15 @@ dependencies {
     /*shadowIn("com.github.walkyst:lavaplayer-fork:${rootProject.lava_version}") {
         exclude group: 'com.github.walkyst', module: 'lavaplayer-natives-fork'
     }*/
-    shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}"){
+    shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'dev.arbjerg', module: 'lavaplayer-natives'
     }
 
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.1.0'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
     shadowIn 'com.mpatric:mp3agic:0.9.1'
+
+    shadowIn("dev.lavalink.youtube:v2:${rootProject.lava_version_youtube}")
 }
 
 processResources {
@@ -111,8 +113,9 @@ shadowJar {
 
     relocate 'ibxm', 'dev.felnull.imp.include.ibxm'
     relocate 'net.sourceforge.jaad', 'dev.felnull.imp.include.net.sourceforge.jaad'
-    relocate 'org.mozilla.javascript', 'dev.felnull.imp.include.org.mozilla.javascript'
+    // relocate 'org.mozilla.javascript', 'dev.felnull.imp.include.org.mozilla.javascript'
     relocate 'org.mozilla.classfile', 'dev.felnull.imp.include.org.mozilla.classfile'
+    relocate 'dev.lavalink.youtube', 'dev.felnull.imp.include.dev.lavalink.youtube'
 }
 
 shadowJar {
@@ -208,7 +211,7 @@ curseforge {
                 requiredDependency "cloth-config"
                 requiredDependency "architectury-api"
                 requiredDependency "otyacraft-engine"
-            //    optionalDependency "patchouli"
+                //    optionalDependency "patchouli"
             }
 
             mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")) {
@@ -236,7 +239,7 @@ if (System.getenv('modrinthapikey') != null && "${modrinth_id}" != '') {
             required.project("9s6osm5g")//Cloth Config API
             required.project("lhGA9TYQ")//Architectury API
             required.project("iu3upNjC")//Otyacraft Engine
-          //  optional.project("nU0bVIaL")//Patchouli
+            //  optional.project("nU0bVIaL")//Patchouli
         }
         changelog = file('../LATEST_CHANGELOG.md').text
     }

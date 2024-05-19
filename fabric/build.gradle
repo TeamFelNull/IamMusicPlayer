@@ -78,6 +78,7 @@ dependencies {
     shadowIn("dev.arbjerg:lavaplayer:${rootProject.lava_version}") {
         exclude group: 'dev.arbjerg', module: 'lavaplayer-natives'
     }
+    shadowIn("dev.lavalink.youtube:v2:${rootProject.lava_version_youtube}")
 
     shadowIn 'com.github.sealedtx:java-youtube-downloader:3.2.3'
     shadowIn "dev.felnull:felnull-java-library:${rootProject.felnull_version}"
@@ -125,8 +126,9 @@ shadowJar {
 
     relocate 'ibxm', 'dev.felnull.imp.include.ibxm'
     relocate 'net.sourceforge.jaad', 'dev.felnull.imp.include.net.sourceforge.jaad'
-    relocate 'org.mozilla.javascript', 'dev.felnull.imp.include.org.mozilla.javascript'
+    // relocate 'org.mozilla.javascript', 'dev.felnull.imp.include.org.mozilla.javascript'
     relocate 'org.mozilla.classfile', 'dev.felnull.imp.include.org.mozilla.classfile'
+    relocate 'dev.lavalink.youtube', 'dev.felnull.imp.include.dev.lavalink.youtube'
 }
 
 shadowJar {

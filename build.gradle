@@ -56,6 +56,9 @@ allprojects {
         maven {
             url "https://cursemaven.com"
         }
+        maven {
+            url "https://maven.lavalink.dev/releases"
+        }
     }
 
     tasks.withType(JavaCompile) {
