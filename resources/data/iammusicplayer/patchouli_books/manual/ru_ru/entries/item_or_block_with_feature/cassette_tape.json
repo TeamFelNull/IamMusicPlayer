@@ -1,0 +1,27 @@
+{
+  "name": "Кассета",
+  "icon": "iammusicplayer:cassette_tape",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Записывайте свою любимую музыку!$(br)Ознакомьтесь, пожалуйста, с методом записи в $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)Запись кассет$(/l)."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape",
+      "text": "Она может воспроизводить музыку в бумбоксе, после записи в неё музыки в «Кассетном проигрывателе».$(br)Может быть окрашена красителями в верстаке."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_tape_glass",
+      "text": "Эта коссета позволяет Вам просматривать её содержимое.$(br)У неё такой же функционал и совместимость, как у обычной кассеты."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_tape",
+      "recipe2": "iammusicplayer:cassette_tape_glass"
+    }
+  ]
+}

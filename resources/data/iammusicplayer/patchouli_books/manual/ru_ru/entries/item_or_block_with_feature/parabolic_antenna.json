@@ -1,0 +1,18 @@
+{
+  "name": "Параболическая антенна",
+  "icon": "iammusicplayer:parabolic_antenna",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Вы можете воспроизводить музыку не записывая её на кассету!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:parabolic_antenna",
+      "link_recipe": true,
+      "text": "Поместите Антенну в Бумбокс и нажмите на кнопку «Радио» для отображения плейлиста.$(br)Выберите необходимую Вами композицию из плейлиста, и она запустится.$(br)Рецепта не существует, но её можно получить, обменяв её у ди-джея или с сундуков с добычей."
+    }
+  ]
+}

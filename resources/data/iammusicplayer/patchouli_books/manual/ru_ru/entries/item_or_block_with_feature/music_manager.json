@@ -1,0 +1,21 @@
+{
+  "name": "Диспетчер композиций",
+  "icon": "iammusicplayer:music_manager",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Сначала давайте его создадим!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:music_manager",
+      "text": "Устройства только для управления плейлистами и композициями.$(br)Сначала Вам следует создать это устройство, чтобы слушать музыку."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:music_manager"
+    }
+  ]
+}

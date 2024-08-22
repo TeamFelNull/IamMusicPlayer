@@ -1,0 +1,21 @@
+{
+  "name": "Записывание кассеты",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:how_to_listen",
+  "sortnum": 1,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Как записать композицию в $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Кассету$(/l) с помощью $(l:iammusicplayer:item_or_block_with_feature/cassette_deck)Кассетного проигрывателя$(/l).$(br)Если у Вас есть $(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)Параболическая антенна$(/l), — этот шаг не обязательный."
+    },
+    {
+      "type": "patchouli:image",
+      "images": [
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/click_write.png",
+        "iammusicplayer:textures/gui/patchouli/entries/how_to_listen/write_to_cassette_tape/write.png"
+      ],
+      "title": "Начатие записи",
+      "text": "Сперва подготовьте $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Кассету$(/l), выберите желаемую композицию для записи из кнопки [Записать], и нажмите на иконку «Начать запись»."
+    }
+  ]
+}
