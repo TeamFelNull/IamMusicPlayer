@@ -1,0 +1,21 @@
+{
+  "name": "Бумбокс",
+  "icon": "iammusicplayer:boombox",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Устройство для воспроизведения музыки."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:boombox",
+      "text": "Вы можете воспроизводить музыку из $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Кассет$(/l), воспроизводить радиостанции с помощью $(l:iammusicplayer:item_or_block_with_feature/antenna)Антенны$(/l), и слушать музыку непосредственно из плейлистов с помощью $(l:iammusicplayer:item_or_block_with_feature/parabolic_antenna)Параболической антенны$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:boombox"
+    }
+  ]
+}

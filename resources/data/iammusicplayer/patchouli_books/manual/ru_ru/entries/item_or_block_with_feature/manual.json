@@ -1,0 +1,26 @@
+{
+  "name": "Руководство",
+  "icon": "iammusicplayer:manual",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Эту книгу Вы сейчас просматриваете."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:manual",
+      "text": "Руководство, описывающее практически всё о моде I am Music Player."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:manual",
+      "text": "Весьма легко создаётся!"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Если у Вас есть какие-либо вопросы, касающиеся мода, сверьтесь с этим руководством прежде, чем спрашивать автора."
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Антенна",
+  "icon": "iammusicplayer:radio_antenna",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Вы можете также слушать прямые эфиры!"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:radio_antenna",
+      "text": "Вы можете воспроизводить радиостанции, установив Антенну в $(l:iammusicplayer:item_or_block_with_feature/boombox)Бумбокс$(/l), нажав кнопку «Радио» и, введя ссылку.$(br)Введите ссылку на Youtube Live или Http-ссылку радиостанции."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:radio_antenna"
+    }
+  ]
+}
