@@ -1,0 +1,21 @@
+{
+  "name": "Кассетный проигрыватель",
+  "icon": "iammusicplayer:cassette_deck",
+  "category": "iammusicplayer:item_or_block_with_feature",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Устройство, необходимое для записи музыки в $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Кассеты$(/l).$(br)Ознакомьтесь, пожалуйста, с методом записи в $(l:iammusicplayer:how_to_listen/write_to_cassette_tape)Запись кассет$(/l)."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "iammusicplayer:cassette_deck",
+      "text": "Помимо записывания музыки, Вы можете ещё и воспроизводить музыку из $(l:iammusicplayer:item_or_block_with_feature/cassette_tape)Кассет$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "iammusicplayer:cassette_deck"
+    }
+  ]
+}
